@@ -147,3 +147,4 @@ const data = await ctx.db.model.findMany({
 - Environment variables in `apps/server/.env`
 - Docker Compose provided for local database
 - Hot reload enabled for both frontend and backend
+- Nunca em hipotese nenhuma use o comando pnpm dev, pois o servidor sempre ja vai está rodando, então quando voce usa, ai acaba conflitando entendeu, então nunca use esse comando, pois o servidor ja vai está rodando, e quando n tiver, voce apenas fale pra mim startar o servidor.

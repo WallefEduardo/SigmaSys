@@ -1,23 +1,52 @@
-name: my-better-t-app
+name: erp-sys
 
 services:
   postgres:
-    image: postgres
-    container_name: my-better-t-app-postgres
+    image: postgres:16-alpine
+    container_name: erp-sys-postgres
     environment:
-      POSTGRES_DB: my-better-t-app
+      POSTGRES_DB: erp_system
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
     ports:
       - "5432:5432"
     volumes:
-      - my-better-t-app_postgres_data:/var/lib/postgresql/data
+      - erp_postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d erp_system"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    networks:
+      - erp-network
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: erp-sys-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@erpsys.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - erp_pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - erp-network
 
 volumes:
-  my-better-t-app_postgres_data:
+  erp_postgres_data:
+    driver: local
+  erp_pgadmin_data:
+    driver: local
+
+networks:
+  erp-network:
+    driver: bridge

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "../index.css";
-import Providers from "@/components/providers";
-import Header from "@/components/header";
+import "./globals.css";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { TRPCProvider } from "@/providers/trpc-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "my-better-t-app",
-  description: "my-better-t-app",
+  title: "ErpSys - Sistema de Comunicação Visual",
+  description: "Sistema ERP completo para empresas de comunicação visual",
 };
 
 export default function RootLayout({
@@ -25,16 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <div className="grid grid-rows-[auto_1fr] h-svh">
-            <Header />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
+          <TRPCProvider>
             {children}
-          </div>
-        </Providers>
+            <Toaster />
+          </TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

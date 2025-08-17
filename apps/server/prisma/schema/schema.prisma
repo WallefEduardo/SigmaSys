@@ -8,3 +8,293 @@ datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
 }
+
+// ==========================================
+// CORE MODELS - Sistema Base
+// ==========================================
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  cnpj        String?  @unique
+  email       String?
+  phone       String?
+  address     String?
+  plan        String   @default("trial") // trial, basic, premium, enterprise
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+  clients     Client[]
+  products    Product[]
+  materials   Material[]
+  equipments  Equipment[]
+  processes   Process[]
+  quotes      Quote[]
+  orders      Order[]
+  roles       Role[]
+
+  @@map("companies")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String
+  role        String   @default("user") // superadmin, master, admin, manager, user
+  permissions Json?    // permissões específicas
+  department  String?  // setor do usuário
+  position    String?  // cargo
+  avatar      String?  // URL do avatar
+  phone       String?
+  active      Boolean  @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy   String?  // quem criou este usuário
+  creator     User?    @relation("UserCreator", fields: [createdBy], references: [id])
+  createdUsers User[]  @relation("UserCreator")
+  
+  // Criações
+  createdClients Client[] @relation("ClientCreator")
+  clientInteractions ClientInteraction[] @relation("UserInteraction")
+
+  @@map("users")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   // nome único da permissão
+  description String?
+  module      String   // módulo do sistema (users, products, orders, etc)
+  action      String   // ação (create, read, update, delete, export, etc)
+  resource    String?  // recurso específico (opcional)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@unique([module, action, resource])
+  @@map("permissions")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  permissions Json     // array de IDs de permissões
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([companyId, name])
+  @@map("roles")
+}
+
+// ==========================================
+// CLIENTS - Sistema CRM
+// ==========================================
+
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  document    String?  // CPF ou CNPJ
+  type        String   @default("person") // person, company
+  address     Json?    // endereço completo
+  birthday    DateTime?
+  segment     String?  // segmento de mercado
+  tags        String[] // tags para categorização
+  notes       String?
+  status      String   @default("active") // active, inactive, prospect, lead
+  source      String?  // origem do lead
+  rating      Int?     // classificação 1-5
+  socialMedia Json?    // redes sociais
+  preferences Json?    // preferências do cliente
+  
+  // Campos comerciais
+  creditLimit Decimal? @db.Decimal(12, 4)
+  paymentTerm Int?     // prazo de pagamento padrão (dias)
+  discount    Decimal? @db.Decimal(5, 2) // desconto padrão (%)
+  
+  // Campos de controle
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy   String?
+  creator     User?    @relation("ClientCreator", fields: [createdBy], references: [id])
+  
+  // Relacionamentos comerciais
+  quotes      Quote[]
+  orders      Order[]
+  interactions ClientInteraction[]
+
+  @@map("clients")
+}
+
+model ClientInteraction {
+  id          String   @id @default(cuid())
+  type        String   // call, email, meeting, whatsapp, visit, etc
+  subject     String
+  description String?
+  status      String   @default("completed") // scheduled, completed, cancelled
+  scheduledAt DateTime?
+  completedAt DateTime?
+  duration    Int?     // duração em minutos
+  outcome     String?  // resultado da interação
+  nextAction  String?  // próxima ação
+  nextDate    DateTime?
+  
+  // Relations
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation("UserInteraction", fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("client_interactions")
+}
+
+// ==========================================
+// PRODUCTS - Sistema de Produtos (Fase 3)
+// ==========================================
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  sku         String?
+  type        String   // standard, composite, service
+  unit        String   @default("un") // un, m2, m, kg, etc
+  category    String?
+  subcategory String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+}
+
+model Material {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  sku         String?
+  unit        String   @default("un")
+  category    String?
+  density     Decimal? @db.Decimal(8, 4)
+  thickness   Decimal? @db.Decimal(8, 4)
+  width       Decimal? @db.Decimal(8, 4)
+  length      Decimal? @db.Decimal(8, 4)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("materials")
+}
+
+model Equipment {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   // printing, cutting, finishing
+  subtype     String?  // digital, offset, laser, etc
+  capacity    Json?    // capacidades técnicas
+  costPerHour Decimal? @db.Decimal(8, 4)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("equipments")
+}
+
+model Process {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   // production, finishing, shipping
+  duration    Int?     // duração estimada em minutos
+  cost        Decimal? @db.Decimal(8, 4)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("processes")
+}
+
+// ==========================================
+// QUOTES & ORDERS - Sistema Comercial (Fase 6)
+// ==========================================
+
+model Quote {
+  id          String   @id @default(cuid())
+  number      String
+  title       String
+  description String?
+  status      String   @default("draft") // draft, sent, approved, rejected, expired
+  validUntil  DateTime?
+  totalPrice  Decimal  @db.Decimal(12, 4)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, number])
+  @@map("quotes")
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  number      String
+  title       String
+  description String?
+  status      String   @default("pending") // pending, production, finished, delivered
+  totalPrice  Decimal  @db.Decimal(12, 4)
+  deliveryDate DateTime?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, number])
+  @@map("orders")
+}

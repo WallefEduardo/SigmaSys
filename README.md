@@ -1,4 +1,4 @@
-# my-better-t-app
+# Sigma Sys
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Fastify, TRPC, and more.
 
