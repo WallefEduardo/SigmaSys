@@ -27,11 +27,8 @@ export type ProductMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  sku: string | null
-  type: string | null
-  unit: string | null
+  code: string | null
   category: string | null
-  subcategory: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -42,11 +39,8 @@ export type ProductMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  sku: string | null
-  type: string | null
-  unit: string | null
+  code: string | null
   category: string | null
-  subcategory: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,11 +51,11 @@ export type ProductCountAggregateOutputType = {
   id: number
   name: number
   description: number
-  sku: number
-  type: number
-  unit: number
+  code: number
   category: number
-  subcategory: number
+  formula: number
+  checklist: number
+  margin: number
   active: number
   createdAt: number
   updatedAt: number
@@ -74,11 +68,8 @@ export type ProductMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
-  type?: true
-  unit?: true
+  code?: true
   category?: true
-  subcategory?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -89,11 +80,8 @@ export type ProductMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
-  type?: true
-  unit?: true
+  code?: true
   category?: true
-  subcategory?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -104,11 +92,11 @@ export type ProductCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
-  type?: true
-  unit?: true
+  code?: true
   category?: true
-  subcategory?: true
+  formula?: true
+  checklist?: true
+  margin?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -192,11 +180,11 @@ export type ProductGroupByOutputType = {
   id: string
   name: string
   description: string | null
-  sku: string | null
-  type: string
-  unit: string
+  code: string | null
   category: string | null
-  subcategory: string | null
+  formula: runtime.JsonValue | null
+  checklist: runtime.JsonValue | null
+  margin: runtime.JsonValue
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -228,32 +216,44 @@ export type ProductWhereInput = {
   id?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
-  sku?: Prisma.StringNullableFilter<"Product"> | string | null
-  type?: Prisma.StringFilter<"Product"> | string
-  unit?: Prisma.StringFilter<"Product"> | string
+  code?: Prisma.StringNullableFilter<"Product"> | string | null
   category?: Prisma.StringNullableFilter<"Product"> | string | null
-  subcategory?: Prisma.StringNullableFilter<"Product"> | string | null
+  formula?: Prisma.JsonNullableFilter<"Product">
+  checklist?: Prisma.JsonNullableFilter<"Product">
+  margin?: Prisma.JsonFilter<"Product">
   active?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   companyId?: Prisma.StringFilter<"Product"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  materials?: Prisma.ProductMaterialListRelationFilter
+  equipments?: Prisma.ProductEquipmentListRelationFilter
+  processes?: Prisma.ProductProcessListRelationFilter
+  finishes?: Prisma.ProductFinishListRelationFilter
+  quoteItems?: Prisma.QuoteItemListRelationFilter
+  orderItems?: Prisma.OrderItemListRelationFilter
 }
 
 export type ProductOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  sku?: Prisma.SortOrderInput | Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unit?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
-  subcategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  formula?: Prisma.SortOrderInput | Prisma.SortOrder
+  checklist?: Prisma.SortOrderInput | Prisma.SortOrder
+  margin?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  materials?: Prisma.ProductMaterialOrderByRelationAggregateInput
+  equipments?: Prisma.ProductEquipmentOrderByRelationAggregateInput
+  processes?: Prisma.ProductProcessOrderByRelationAggregateInput
+  finishes?: Prisma.ProductFinishOrderByRelationAggregateInput
+  quoteItems?: Prisma.QuoteItemOrderByRelationAggregateInput
+  orderItems?: Prisma.OrderItemOrderByRelationAggregateInput
 }
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -263,27 +263,33 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
-  sku?: Prisma.StringNullableFilter<"Product"> | string | null
-  type?: Prisma.StringFilter<"Product"> | string
-  unit?: Prisma.StringFilter<"Product"> | string
+  code?: Prisma.StringNullableFilter<"Product"> | string | null
   category?: Prisma.StringNullableFilter<"Product"> | string | null
-  subcategory?: Prisma.StringNullableFilter<"Product"> | string | null
+  formula?: Prisma.JsonNullableFilter<"Product">
+  checklist?: Prisma.JsonNullableFilter<"Product">
+  margin?: Prisma.JsonFilter<"Product">
   active?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   companyId?: Prisma.StringFilter<"Product"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  materials?: Prisma.ProductMaterialListRelationFilter
+  equipments?: Prisma.ProductEquipmentListRelationFilter
+  processes?: Prisma.ProductProcessListRelationFilter
+  finishes?: Prisma.ProductFinishListRelationFilter
+  quoteItems?: Prisma.QuoteItemListRelationFilter
+  orderItems?: Prisma.OrderItemListRelationFilter
 }, "id">
 
 export type ProductOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  sku?: Prisma.SortOrderInput | Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unit?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
-  subcategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  formula?: Prisma.SortOrderInput | Prisma.SortOrder
+  checklist?: Prisma.SortOrderInput | Prisma.SortOrder
+  margin?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,11 +306,11 @@ export type ProductScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Product"> | string
   name?: Prisma.StringWithAggregatesFilter<"Product"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
-  sku?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
-  type?: Prisma.StringWithAggregatesFilter<"Product"> | string
-  unit?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  code?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   category?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
-  subcategory?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  formula?: Prisma.JsonNullableWithAggregatesFilter<"Product">
+  checklist?: Prisma.JsonNullableWithAggregatesFilter<"Product">
+  margin?: Prisma.JsonWithAggregatesFilter<"Product">
   active?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -315,71 +321,95 @@ export type ProductCreateInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -390,11 +420,11 @@ export type ProductUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,11 +434,11 @@ export type ProductUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -429,11 +459,11 @@ export type ProductCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unit?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  subcategory?: Prisma.SortOrder
+  formula?: Prisma.SortOrder
+  checklist?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -444,11 +474,8 @@ export type ProductMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unit?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  subcategory?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -459,15 +486,17 @@ export type ProductMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unit?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  subcategory?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
+}
+
+export type ProductScalarRelationFilter = {
+  is?: Prisma.ProductWhereInput
+  isNot?: Prisma.ProductWhereInput
 }
 
 export type ProductCreateNestedManyWithoutCompanyInput = {
@@ -512,32 +541,128 @@ export type ProductUncheckedUpdateManyWithoutCompanyNestedInput = {
   deleteMany?: Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[]
 }
 
+export type ProductCreateNestedOneWithoutMaterialsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutMaterialsInput, Prisma.ProductUncheckedCreateWithoutMaterialsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutMaterialsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutMaterialsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutMaterialsInput, Prisma.ProductUncheckedCreateWithoutMaterialsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutMaterialsInput
+  upsert?: Prisma.ProductUpsertWithoutMaterialsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutMaterialsInput, Prisma.ProductUpdateWithoutMaterialsInput>, Prisma.ProductUncheckedUpdateWithoutMaterialsInput>
+}
+
+export type ProductCreateNestedOneWithoutEquipmentsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutEquipmentsInput, Prisma.ProductUncheckedCreateWithoutEquipmentsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutEquipmentsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutEquipmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutEquipmentsInput, Prisma.ProductUncheckedCreateWithoutEquipmentsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutEquipmentsInput
+  upsert?: Prisma.ProductUpsertWithoutEquipmentsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutEquipmentsInput, Prisma.ProductUpdateWithoutEquipmentsInput>, Prisma.ProductUncheckedUpdateWithoutEquipmentsInput>
+}
+
+export type ProductCreateNestedOneWithoutProcessesInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutProcessesInput, Prisma.ProductUncheckedCreateWithoutProcessesInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutProcessesInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutProcessesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutProcessesInput, Prisma.ProductUncheckedCreateWithoutProcessesInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutProcessesInput
+  upsert?: Prisma.ProductUpsertWithoutProcessesInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutProcessesInput, Prisma.ProductUpdateWithoutProcessesInput>, Prisma.ProductUncheckedUpdateWithoutProcessesInput>
+}
+
+export type ProductCreateNestedOneWithoutFinishesInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutFinishesInput, Prisma.ProductUncheckedCreateWithoutFinishesInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutFinishesInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutFinishesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutFinishesInput, Prisma.ProductUncheckedCreateWithoutFinishesInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutFinishesInput
+  upsert?: Prisma.ProductUpsertWithoutFinishesInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutFinishesInput, Prisma.ProductUpdateWithoutFinishesInput>, Prisma.ProductUncheckedUpdateWithoutFinishesInput>
+}
+
+export type ProductCreateNestedOneWithoutQuoteItemsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutQuoteItemsInput, Prisma.ProductUncheckedCreateWithoutQuoteItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutQuoteItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutQuoteItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutQuoteItemsInput, Prisma.ProductUncheckedCreateWithoutQuoteItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutQuoteItemsInput
+  upsert?: Prisma.ProductUpsertWithoutQuoteItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutQuoteItemsInput, Prisma.ProductUpdateWithoutQuoteItemsInput>, Prisma.ProductUncheckedUpdateWithoutQuoteItemsInput>
+}
+
+export type ProductCreateNestedOneWithoutOrderItemsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutOrderItemsInput, Prisma.ProductUncheckedCreateWithoutOrderItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutOrderItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutOrderItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutOrderItemsInput, Prisma.ProductUncheckedCreateWithoutOrderItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutOrderItemsInput
+  upsert?: Prisma.ProductUpsertWithoutOrderItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutOrderItemsInput, Prisma.ProductUpdateWithoutOrderItemsInput>, Prisma.ProductUncheckedUpdateWithoutOrderItemsInput>
+}
+
 export type ProductCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutCompanyInput = {
@@ -573,26 +698,602 @@ export type ProductScalarWhereInput = {
   id?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
-  sku?: Prisma.StringNullableFilter<"Product"> | string | null
-  type?: Prisma.StringFilter<"Product"> | string
-  unit?: Prisma.StringFilter<"Product"> | string
+  code?: Prisma.StringNullableFilter<"Product"> | string | null
   category?: Prisma.StringNullableFilter<"Product"> | string | null
-  subcategory?: Prisma.StringNullableFilter<"Product"> | string | null
+  formula?: Prisma.JsonNullableFilter<"Product">
+  checklist?: Prisma.JsonNullableFilter<"Product">
+  margin?: Prisma.JsonFilter<"Product">
   active?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   companyId?: Prisma.StringFilter<"Product"> | string
 }
 
+export type ProductCreateWithoutMaterialsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutMaterialsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutMaterialsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutMaterialsInput, Prisma.ProductUncheckedCreateWithoutMaterialsInput>
+}
+
+export type ProductUpsertWithoutMaterialsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutMaterialsInput, Prisma.ProductUncheckedUpdateWithoutMaterialsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutMaterialsInput, Prisma.ProductUncheckedCreateWithoutMaterialsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutMaterialsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutMaterialsInput, Prisma.ProductUncheckedUpdateWithoutMaterialsInput>
+}
+
+export type ProductUpdateWithoutMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutEquipmentsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutEquipmentsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutEquipmentsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutEquipmentsInput, Prisma.ProductUncheckedCreateWithoutEquipmentsInput>
+}
+
+export type ProductUpsertWithoutEquipmentsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutEquipmentsInput, Prisma.ProductUncheckedUpdateWithoutEquipmentsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutEquipmentsInput, Prisma.ProductUncheckedCreateWithoutEquipmentsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutEquipmentsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutEquipmentsInput, Prisma.ProductUncheckedUpdateWithoutEquipmentsInput>
+}
+
+export type ProductUpdateWithoutEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutProcessesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutProcessesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutProcessesInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutProcessesInput, Prisma.ProductUncheckedCreateWithoutProcessesInput>
+}
+
+export type ProductUpsertWithoutProcessesInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutProcessesInput, Prisma.ProductUncheckedUpdateWithoutProcessesInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutProcessesInput, Prisma.ProductUncheckedCreateWithoutProcessesInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutProcessesInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutProcessesInput, Prisma.ProductUncheckedUpdateWithoutProcessesInput>
+}
+
+export type ProductUpdateWithoutProcessesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutProcessesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutFinishesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutFinishesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutFinishesInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutFinishesInput, Prisma.ProductUncheckedCreateWithoutFinishesInput>
+}
+
+export type ProductUpsertWithoutFinishesInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutFinishesInput, Prisma.ProductUncheckedUpdateWithoutFinishesInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutFinishesInput, Prisma.ProductUncheckedCreateWithoutFinishesInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutFinishesInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutFinishesInput, Prisma.ProductUncheckedUpdateWithoutFinishesInput>
+}
+
+export type ProductUpdateWithoutFinishesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutFinishesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutQuoteItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutQuoteItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutQuoteItemsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutQuoteItemsInput, Prisma.ProductUncheckedCreateWithoutQuoteItemsInput>
+}
+
+export type ProductUpsertWithoutQuoteItemsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutQuoteItemsInput, Prisma.ProductUncheckedUpdateWithoutQuoteItemsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutQuoteItemsInput, Prisma.ProductUncheckedCreateWithoutQuoteItemsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutQuoteItemsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutQuoteItemsInput, Prisma.ProductUncheckedUpdateWithoutQuoteItemsInput>
+}
+
+export type ProductUpdateWithoutQuoteItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutQuoteItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutOrderItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProductsInput
+  materials?: Prisma.ProductMaterialCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutOrderItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  category?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  materials?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutProductInput
+  equipments?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutProductInput
+  processes?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProductInput
+  finishes?: Prisma.ProductFinishUncheckedCreateNestedManyWithoutProductInput
+  quoteItems?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutOrderItemsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutOrderItemsInput, Prisma.ProductUncheckedCreateWithoutOrderItemsInput>
+}
+
+export type ProductUpsertWithoutOrderItemsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutOrderItemsInput, Prisma.ProductUncheckedUpdateWithoutOrderItemsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutOrderItemsInput, Prisma.ProductUncheckedCreateWithoutOrderItemsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutOrderItemsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutOrderItemsInput, Prisma.ProductUncheckedUpdateWithoutOrderItemsInput>
+}
+
+export type ProductUpdateWithoutOrderItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProductsNestedInput
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutOrderItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
 export type ProductCreateManyCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  type: string
-  unit?: string
+  code?: string | null
   category?: string | null
-  subcategory?: string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -602,71 +1303,164 @@ export type ProductUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.ProductMaterialUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.ProductMaterialUncheckedUpdateManyWithoutProductNestedInput
+  equipments?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutProductNestedInput
+  processes?: Prisma.ProductProcessUncheckedUpdateManyWithoutProductNestedInput
+  finishes?: Prisma.ProductFinishUncheckedUpdateManyWithoutProductNestedInput
+  quoteItems?: Prisma.QuoteItemUncheckedUpdateManyWithoutProductNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  formula?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  margin?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
+/**
+ * Count Type ProductCountOutputType
+ */
+
+export type ProductCountOutputType = {
+  materials: number
+  equipments: number
+  processes: number
+  finishes: number
+  quoteItems: number
+  orderItems: number
+}
+
+export type ProductCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  materials?: boolean | ProductCountOutputTypeCountMaterialsArgs
+  equipments?: boolean | ProductCountOutputTypeCountEquipmentsArgs
+  processes?: boolean | ProductCountOutputTypeCountProcessesArgs
+  finishes?: boolean | ProductCountOutputTypeCountFinishesArgs
+  quoteItems?: boolean | ProductCountOutputTypeCountQuoteItemsArgs
+  orderItems?: boolean | ProductCountOutputTypeCountOrderItemsArgs
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductCountOutputType
+   */
+  select?: Prisma.ProductCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductMaterialWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountEquipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductEquipmentWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountProcessesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductProcessWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountFinishesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductFinishWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountQuoteItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuoteItemWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountOrderItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderItemWhereInput
+}
+
 
 export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
-  type?: boolean
-  unit?: boolean
+  code?: boolean
   category?: boolean
-  subcategory?: boolean
+  formula?: boolean
+  checklist?: boolean
+  margin?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  materials?: boolean | Prisma.Product$materialsArgs<ExtArgs>
+  equipments?: boolean | Prisma.Product$equipmentsArgs<ExtArgs>
+  processes?: boolean | Prisma.Product$processesArgs<ExtArgs>
+  finishes?: boolean | Prisma.Product$finishesArgs<ExtArgs>
+  quoteItems?: boolean | Prisma.Product$quoteItemsArgs<ExtArgs>
+  orderItems?: boolean | Prisma.Product$orderItemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product"]>
 
 export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
-  type?: boolean
-  unit?: boolean
+  code?: boolean
   category?: boolean
-  subcategory?: boolean
+  formula?: boolean
+  checklist?: boolean
+  margin?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -678,11 +1472,11 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
-  type?: boolean
-  unit?: boolean
+  code?: boolean
   category?: boolean
-  subcategory?: boolean
+  formula?: boolean
+  checklist?: boolean
+  margin?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -694,20 +1488,27 @@ export type ProductSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
-  type?: boolean
-  unit?: boolean
+  code?: boolean
   category?: boolean
-  subcategory?: boolean
+  formula?: boolean
+  checklist?: boolean
+  margin?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   companyId?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "sku" | "type" | "unit" | "category" | "subcategory" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "category" | "formula" | "checklist" | "margin" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  materials?: boolean | Prisma.Product$materialsArgs<ExtArgs>
+  equipments?: boolean | Prisma.Product$equipmentsArgs<ExtArgs>
+  processes?: boolean | Prisma.Product$processesArgs<ExtArgs>
+  finishes?: boolean | Prisma.Product$finishesArgs<ExtArgs>
+  quoteItems?: boolean | Prisma.Product$quoteItemsArgs<ExtArgs>
+  orderItems?: boolean | Prisma.Product$orderItemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
@@ -720,16 +1521,22 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Product"
   objects: {
     company: Prisma.$CompanyPayload<ExtArgs>
+    materials: Prisma.$ProductMaterialPayload<ExtArgs>[]
+    equipments: Prisma.$ProductEquipmentPayload<ExtArgs>[]
+    processes: Prisma.$ProductProcessPayload<ExtArgs>[]
+    finishes: Prisma.$ProductFinishPayload<ExtArgs>[]
+    quoteItems: Prisma.$QuoteItemPayload<ExtArgs>[]
+    orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string | null
-    sku: string | null
-    type: string
-    unit: string
+    code: string | null
     category: string | null
-    subcategory: string | null
+    formula: runtime.JsonValue | null
+    checklist: runtime.JsonValue | null
+    margin: runtime.JsonValue
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -1129,6 +1936,12 @@ readonly fields: ProductFieldRefs;
 export interface Prisma__ProductClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  materials<T extends Prisma.Product$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  equipments<T extends Prisma.Product$equipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$equipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  processes<T extends Prisma.Product$processesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$processesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductProcessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finishes<T extends Prisma.Product$finishesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$finishesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductFinishPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  quoteItems<T extends Prisma.Product$quoteItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$quoteItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuoteItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orderItems<T extends Prisma.Product$orderItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1161,11 +1974,11 @@ export interface ProductFieldRefs {
   readonly id: Prisma.FieldRef<"Product", 'String'>
   readonly name: Prisma.FieldRef<"Product", 'String'>
   readonly description: Prisma.FieldRef<"Product", 'String'>
-  readonly sku: Prisma.FieldRef<"Product", 'String'>
-  readonly type: Prisma.FieldRef<"Product", 'String'>
-  readonly unit: Prisma.FieldRef<"Product", 'String'>
+  readonly code: Prisma.FieldRef<"Product", 'String'>
   readonly category: Prisma.FieldRef<"Product", 'String'>
-  readonly subcategory: Prisma.FieldRef<"Product", 'String'>
+  readonly formula: Prisma.FieldRef<"Product", 'Json'>
+  readonly checklist: Prisma.FieldRef<"Product", 'Json'>
+  readonly margin: Prisma.FieldRef<"Product", 'Json'>
   readonly active: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
@@ -1563,6 +2376,150 @@ export type ProductDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Products to delete.
    */
   limit?: number
+}
+
+/**
+ * Product.materials
+ */
+export type Product$materialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductMaterial
+   */
+  select?: Prisma.ProductMaterialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductMaterial
+   */
+  omit?: Prisma.ProductMaterialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductMaterialInclude<ExtArgs> | null
+  where?: Prisma.ProductMaterialWhereInput
+  orderBy?: Prisma.ProductMaterialOrderByWithRelationInput | Prisma.ProductMaterialOrderByWithRelationInput[]
+  cursor?: Prisma.ProductMaterialWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductMaterialScalarFieldEnum | Prisma.ProductMaterialScalarFieldEnum[]
+}
+
+/**
+ * Product.equipments
+ */
+export type Product$equipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductEquipment
+   */
+  select?: Prisma.ProductEquipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductEquipment
+   */
+  omit?: Prisma.ProductEquipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductEquipmentInclude<ExtArgs> | null
+  where?: Prisma.ProductEquipmentWhereInput
+  orderBy?: Prisma.ProductEquipmentOrderByWithRelationInput | Prisma.ProductEquipmentOrderByWithRelationInput[]
+  cursor?: Prisma.ProductEquipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductEquipmentScalarFieldEnum | Prisma.ProductEquipmentScalarFieldEnum[]
+}
+
+/**
+ * Product.processes
+ */
+export type Product$processesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductProcess
+   */
+  select?: Prisma.ProductProcessSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductProcess
+   */
+  omit?: Prisma.ProductProcessOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductProcessInclude<ExtArgs> | null
+  where?: Prisma.ProductProcessWhereInput
+  orderBy?: Prisma.ProductProcessOrderByWithRelationInput | Prisma.ProductProcessOrderByWithRelationInput[]
+  cursor?: Prisma.ProductProcessWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductProcessScalarFieldEnum | Prisma.ProductProcessScalarFieldEnum[]
+}
+
+/**
+ * Product.finishes
+ */
+export type Product$finishesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductFinish
+   */
+  select?: Prisma.ProductFinishSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductFinish
+   */
+  omit?: Prisma.ProductFinishOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductFinishInclude<ExtArgs> | null
+  where?: Prisma.ProductFinishWhereInput
+  orderBy?: Prisma.ProductFinishOrderByWithRelationInput | Prisma.ProductFinishOrderByWithRelationInput[]
+  cursor?: Prisma.ProductFinishWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductFinishScalarFieldEnum | Prisma.ProductFinishScalarFieldEnum[]
+}
+
+/**
+ * Product.quoteItems
+ */
+export type Product$quoteItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QuoteItem
+   */
+  select?: Prisma.QuoteItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QuoteItem
+   */
+  omit?: Prisma.QuoteItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuoteItemInclude<ExtArgs> | null
+  where?: Prisma.QuoteItemWhereInput
+  orderBy?: Prisma.QuoteItemOrderByWithRelationInput | Prisma.QuoteItemOrderByWithRelationInput[]
+  cursor?: Prisma.QuoteItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuoteItemScalarFieldEnum | Prisma.QuoteItemScalarFieldEnum[]
+}
+
+/**
+ * Product.orderItems
+ */
+export type Product$orderItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderItem
+   */
+  select?: Prisma.OrderItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrderItem
+   */
+  omit?: Prisma.OrderItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderItemInclude<ExtArgs> | null
+  where?: Prisma.OrderItemWhereInput
+  orderBy?: Prisma.OrderItemOrderByWithRelationInput | Prisma.OrderItemOrderByWithRelationInput[]
+  cursor?: Prisma.OrderItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderItemScalarFieldEnum | Prisma.OrderItemScalarFieldEnum[]
 }
 
 /**

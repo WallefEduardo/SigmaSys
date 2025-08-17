@@ -26,33 +26,56 @@ export type AggregateMaterial = {
 }
 
 export type MaterialAvgAggregateOutputType = {
+  cost: runtime.Decimal | null
+  lastCost: runtime.Decimal | null
+  minStock: runtime.Decimal | null
+  maxStock: runtime.Decimal | null
+  weight: runtime.Decimal | null
+  volume: runtime.Decimal | null
   density: runtime.Decimal | null
-  thickness: runtime.Decimal | null
-  width: runtime.Decimal | null
-  length: runtime.Decimal | null
 }
 
 export type MaterialSumAggregateOutputType = {
+  cost: runtime.Decimal | null
+  lastCost: runtime.Decimal | null
+  minStock: runtime.Decimal | null
+  maxStock: runtime.Decimal | null
+  weight: runtime.Decimal | null
+  volume: runtime.Decimal | null
   density: runtime.Decimal | null
-  thickness: runtime.Decimal | null
-  width: runtime.Decimal | null
-  length: runtime.Decimal | null
 }
 
 export type MaterialMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  sku: string | null
+  code: string | null
+  barcode: string | null
   unit: string | null
+  cost: runtime.Decimal | null
+  lastCost: runtime.Decimal | null
+  supplier: string | null
+  supplierCode: string | null
+  minStock: runtime.Decimal | null
+  maxStock: runtime.Decimal | null
+  location: string | null
   category: string | null
+  subcategory: string | null
+  brand: string | null
+  model: string | null
+  color: string | null
+  weight: runtime.Decimal | null
+  volume: runtime.Decimal | null
   density: runtime.Decimal | null
-  thickness: runtime.Decimal | null
-  width: runtime.Decimal | null
-  length: runtime.Decimal | null
+  quality: string | null
+  certification: string | null
+  notes: string | null
   active: boolean | null
+  discontinued: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string | null
 }
 
@@ -60,16 +83,33 @@ export type MaterialMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  sku: string | null
+  code: string | null
+  barcode: string | null
   unit: string | null
+  cost: runtime.Decimal | null
+  lastCost: runtime.Decimal | null
+  supplier: string | null
+  supplierCode: string | null
+  minStock: runtime.Decimal | null
+  maxStock: runtime.Decimal | null
+  location: string | null
   category: string | null
+  subcategory: string | null
+  brand: string | null
+  model: string | null
+  color: string | null
+  weight: runtime.Decimal | null
+  volume: runtime.Decimal | null
   density: runtime.Decimal | null
-  thickness: runtime.Decimal | null
-  width: runtime.Decimal | null
-  length: runtime.Decimal | null
+  quality: string | null
+  certification: string | null
+  notes: string | null
   active: boolean | null
+  discontinued: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string | null
 }
 
@@ -77,49 +117,96 @@ export type MaterialCountAggregateOutputType = {
   id: number
   name: number
   description: number
-  sku: number
+  code: number
+  barcode: number
   unit: number
+  cost: number
+  lastCost: number
+  costHistory: number
+  supplier: number
+  supplierCode: number
+  supplierContact: number
+  minStock: number
+  maxStock: number
+  location: number
   category: number
+  subcategory: number
+  brand: number
+  model: number
+  color: number
+  dimensions: number
+  weight: number
+  volume: number
   density: number
-  thickness: number
-  width: number
-  length: number
+  alternativeUnits: number
+  quality: number
+  certification: number
+  images: number
+  documents: number
+  notes: number
+  tags: number
   active: number
+  discontinued: number
   createdAt: number
   updatedAt: number
+  createdBy: number
+  updatedBy: number
   companyId: number
   _all: number
 }
 
 
 export type MaterialAvgAggregateInputType = {
+  cost?: true
+  lastCost?: true
+  minStock?: true
+  maxStock?: true
+  weight?: true
+  volume?: true
   density?: true
-  thickness?: true
-  width?: true
-  length?: true
 }
 
 export type MaterialSumAggregateInputType = {
+  cost?: true
+  lastCost?: true
+  minStock?: true
+  maxStock?: true
+  weight?: true
+  volume?: true
   density?: true
-  thickness?: true
-  width?: true
-  length?: true
 }
 
 export type MaterialMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
+  code?: true
+  barcode?: true
   unit?: true
+  cost?: true
+  lastCost?: true
+  supplier?: true
+  supplierCode?: true
+  minStock?: true
+  maxStock?: true
+  location?: true
   category?: true
+  subcategory?: true
+  brand?: true
+  model?: true
+  color?: true
+  weight?: true
+  volume?: true
   density?: true
-  thickness?: true
-  width?: true
-  length?: true
+  quality?: true
+  certification?: true
+  notes?: true
   active?: true
+  discontinued?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
 }
 
@@ -127,16 +214,33 @@ export type MaterialMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
+  code?: true
+  barcode?: true
   unit?: true
+  cost?: true
+  lastCost?: true
+  supplier?: true
+  supplierCode?: true
+  minStock?: true
+  maxStock?: true
+  location?: true
   category?: true
+  subcategory?: true
+  brand?: true
+  model?: true
+  color?: true
+  weight?: true
+  volume?: true
   density?: true
-  thickness?: true
-  width?: true
-  length?: true
+  quality?: true
+  certification?: true
+  notes?: true
   active?: true
+  discontinued?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
 }
 
@@ -144,16 +248,40 @@ export type MaterialCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  sku?: true
+  code?: true
+  barcode?: true
   unit?: true
+  cost?: true
+  lastCost?: true
+  costHistory?: true
+  supplier?: true
+  supplierCode?: true
+  supplierContact?: true
+  minStock?: true
+  maxStock?: true
+  location?: true
   category?: true
+  subcategory?: true
+  brand?: true
+  model?: true
+  color?: true
+  dimensions?: true
+  weight?: true
+  volume?: true
   density?: true
-  thickness?: true
-  width?: true
-  length?: true
+  alternativeUnits?: true
+  quality?: true
+  certification?: true
+  images?: true
+  documents?: true
+  notes?: true
+  tags?: true
   active?: true
+  discontinued?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
   _all?: true
 }
@@ -248,16 +376,40 @@ export type MaterialGroupByOutputType = {
   id: string
   name: string
   description: string | null
-  sku: string | null
+  code: string | null
+  barcode: string | null
   unit: string
+  cost: runtime.Decimal
+  lastCost: runtime.Decimal | null
+  costHistory: runtime.JsonValue | null
+  supplier: string | null
+  supplierCode: string | null
+  supplierContact: runtime.JsonValue | null
+  minStock: runtime.Decimal | null
+  maxStock: runtime.Decimal | null
+  location: string | null
   category: string | null
+  subcategory: string | null
+  brand: string | null
+  model: string | null
+  color: string | null
+  dimensions: runtime.JsonValue | null
+  weight: runtime.Decimal | null
+  volume: runtime.Decimal | null
   density: runtime.Decimal | null
-  thickness: runtime.Decimal | null
-  width: runtime.Decimal | null
-  length: runtime.Decimal | null
+  alternativeUnits: runtime.JsonValue | null
+  quality: string | null
+  certification: string | null
+  images: string[]
+  documents: string[]
+  notes: string | null
+  tags: string[]
   active: boolean
+  discontinued: boolean
   createdAt: Date
   updatedAt: Date
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string
   _count: MaterialCountAggregateOutputType | null
   _avg: MaterialAvgAggregateOutputType | null
@@ -288,73 +440,185 @@ export type MaterialWhereInput = {
   id?: Prisma.StringFilter<"Material"> | string
   name?: Prisma.StringFilter<"Material"> | string
   description?: Prisma.StringNullableFilter<"Material"> | string | null
-  sku?: Prisma.StringNullableFilter<"Material"> | string | null
+  code?: Prisma.StringNullableFilter<"Material"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Material"> | string | null
   unit?: Prisma.StringFilter<"Material"> | string
+  cost?: Prisma.DecimalFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.JsonNullableFilter<"Material">
+  supplier?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierCode?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierContact?: Prisma.JsonNullableFilter<"Material">
+  minStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.StringNullableFilter<"Material"> | string | null
   category?: Prisma.StringNullableFilter<"Material"> | string | null
+  subcategory?: Prisma.StringNullableFilter<"Material"> | string | null
+  brand?: Prisma.StringNullableFilter<"Material"> | string | null
+  model?: Prisma.StringNullableFilter<"Material"> | string | null
+  color?: Prisma.StringNullableFilter<"Material"> | string | null
+  dimensions?: Prisma.JsonNullableFilter<"Material">
+  weight?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.JsonNullableFilter<"Material">
+  quality?: Prisma.StringNullableFilter<"Material"> | string | null
+  certification?: Prisma.StringNullableFilter<"Material"> | string | null
+  images?: Prisma.StringNullableListFilter<"Material">
+  documents?: Prisma.StringNullableListFilter<"Material">
+  notes?: Prisma.StringNullableFilter<"Material"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Material">
   active?: Prisma.BoolFilter<"Material"> | boolean
+  discontinued?: Prisma.BoolFilter<"Material"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Material"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Material"> | string | null
   companyId?: Prisma.StringFilter<"Material"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  updater?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  productItems?: Prisma.ProductMaterialListRelationFilter
+  inventory?: Prisma.InventoryItemListRelationFilter
+  priceHistory?: Prisma.MaterialPriceHistoryListRelationFilter
 }
 
 export type MaterialOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  sku?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
+  barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   unit?: Prisma.SortOrder
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  costHistory?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplier?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplierCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplierContact?: Prisma.SortOrderInput | Prisma.SortOrder
+  minStock?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxStock?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
+  subcategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  model?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
+  weight?: Prisma.SortOrderInput | Prisma.SortOrder
+  volume?: Prisma.SortOrderInput | Prisma.SortOrder
   density?: Prisma.SortOrderInput | Prisma.SortOrder
-  thickness?: Prisma.SortOrderInput | Prisma.SortOrder
-  width?: Prisma.SortOrderInput | Prisma.SortOrder
-  length?: Prisma.SortOrderInput | Prisma.SortOrder
+  alternativeUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  quality?: Prisma.SortOrderInput | Prisma.SortOrder
+  certification?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  discontinued?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   companyId?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  creator?: Prisma.UserOrderByWithRelationInput
+  updater?: Prisma.UserOrderByWithRelationInput
+  productItems?: Prisma.ProductMaterialOrderByRelationAggregateInput
+  inventory?: Prisma.InventoryItemOrderByRelationAggregateInput
+  priceHistory?: Prisma.MaterialPriceHistoryOrderByRelationAggregateInput
 }
 
 export type MaterialWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  companyId_code?: Prisma.MaterialCompanyIdCodeCompoundUniqueInput
   AND?: Prisma.MaterialWhereInput | Prisma.MaterialWhereInput[]
   OR?: Prisma.MaterialWhereInput[]
   NOT?: Prisma.MaterialWhereInput | Prisma.MaterialWhereInput[]
   name?: Prisma.StringFilter<"Material"> | string
   description?: Prisma.StringNullableFilter<"Material"> | string | null
-  sku?: Prisma.StringNullableFilter<"Material"> | string | null
+  code?: Prisma.StringNullableFilter<"Material"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Material"> | string | null
   unit?: Prisma.StringFilter<"Material"> | string
+  cost?: Prisma.DecimalFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.JsonNullableFilter<"Material">
+  supplier?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierCode?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierContact?: Prisma.JsonNullableFilter<"Material">
+  minStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.StringNullableFilter<"Material"> | string | null
   category?: Prisma.StringNullableFilter<"Material"> | string | null
+  subcategory?: Prisma.StringNullableFilter<"Material"> | string | null
+  brand?: Prisma.StringNullableFilter<"Material"> | string | null
+  model?: Prisma.StringNullableFilter<"Material"> | string | null
+  color?: Prisma.StringNullableFilter<"Material"> | string | null
+  dimensions?: Prisma.JsonNullableFilter<"Material">
+  weight?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.JsonNullableFilter<"Material">
+  quality?: Prisma.StringNullableFilter<"Material"> | string | null
+  certification?: Prisma.StringNullableFilter<"Material"> | string | null
+  images?: Prisma.StringNullableListFilter<"Material">
+  documents?: Prisma.StringNullableListFilter<"Material">
+  notes?: Prisma.StringNullableFilter<"Material"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Material">
   active?: Prisma.BoolFilter<"Material"> | boolean
+  discontinued?: Prisma.BoolFilter<"Material"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Material"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Material"> | string | null
   companyId?: Prisma.StringFilter<"Material"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
-}, "id">
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  updater?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  productItems?: Prisma.ProductMaterialListRelationFilter
+  inventory?: Prisma.InventoryItemListRelationFilter
+  priceHistory?: Prisma.MaterialPriceHistoryListRelationFilter
+}, "id" | "companyId_code">
 
 export type MaterialOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  sku?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
+  barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   unit?: Prisma.SortOrder
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  costHistory?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplier?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplierCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  supplierContact?: Prisma.SortOrderInput | Prisma.SortOrder
+  minStock?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxStock?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
+  subcategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  model?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
+  weight?: Prisma.SortOrderInput | Prisma.SortOrder
+  volume?: Prisma.SortOrderInput | Prisma.SortOrder
   density?: Prisma.SortOrderInput | Prisma.SortOrder
-  thickness?: Prisma.SortOrderInput | Prisma.SortOrder
-  width?: Prisma.SortOrderInput | Prisma.SortOrder
-  length?: Prisma.SortOrderInput | Prisma.SortOrder
+  alternativeUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  quality?: Prisma.SortOrderInput | Prisma.SortOrder
+  certification?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  discontinued?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   companyId?: Prisma.SortOrder
   _count?: Prisma.MaterialCountOrderByAggregateInput
   _avg?: Prisma.MaterialAvgOrderByAggregateInput
@@ -370,16 +634,40 @@ export type MaterialScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Material"> | string
   name?: Prisma.StringWithAggregatesFilter<"Material"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
-  sku?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  code?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  barcode?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
   unit?: Prisma.StringWithAggregatesFilter<"Material"> | string
+  cost?: Prisma.DecimalWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.JsonNullableWithAggregatesFilter<"Material">
+  supplier?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  supplierCode?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  supplierContact?: Prisma.JsonNullableWithAggregatesFilter<"Material">
+  minStock?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
   category?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  subcategory?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  brand?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  model?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  color?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  dimensions?: Prisma.JsonNullableWithAggregatesFilter<"Material">
+  weight?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.DecimalNullableWithAggregatesFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.JsonNullableWithAggregatesFilter<"Material">
+  quality?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  certification?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  images?: Prisma.StringNullableListFilter<"Material">
+  documents?: Prisma.StringNullableListFilter<"Material">
+  notes?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Material">
   active?: Prisma.BoolWithAggregatesFilter<"Material"> | boolean
+  discontinued?: Prisma.BoolWithAggregatesFilter<"Material"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Material"> | Date | string
+  createdBy?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
+  updatedBy?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
   companyId?: Prisma.StringWithAggregatesFilter<"Material"> | string
 }
 
@@ -387,84 +675,216 @@ export type MaterialCreateInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
 }
 
 export type MaterialUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
   companyId: string
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
 }
 
 export type MaterialUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
 }
 
 export type MaterialUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
 }
 
 export type MaterialCreateManyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
   companyId: string
 }
 
@@ -472,14 +892,36 @@ export type MaterialUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -488,16 +930,40 @@ export type MaterialUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -511,44 +977,93 @@ export type MaterialOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type MaterialCompanyIdCodeCompoundUniqueInput = {
+  companyId: string
+  code: string
+}
+
 export type MaterialCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrder
+  costHistory?: Prisma.SortOrder
+  supplier?: Prisma.SortOrder
+  supplierCode?: Prisma.SortOrder
+  supplierContact?: Prisma.SortOrder
+  minStock?: Prisma.SortOrder
+  maxStock?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  subcategory?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  dimensions?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  volume?: Prisma.SortOrder
   density?: Prisma.SortOrder
-  thickness?: Prisma.SortOrder
-  width?: Prisma.SortOrder
-  length?: Prisma.SortOrder
+  alternativeUnits?: Prisma.SortOrder
+  quality?: Prisma.SortOrder
+  certification?: Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  discontinued?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
 export type MaterialAvgOrderByAggregateInput = {
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrder
+  minStock?: Prisma.SortOrder
+  maxStock?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  volume?: Prisma.SortOrder
   density?: Prisma.SortOrder
-  thickness?: Prisma.SortOrder
-  width?: Prisma.SortOrder
-  length?: Prisma.SortOrder
 }
 
 export type MaterialMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrder
+  supplier?: Prisma.SortOrder
+  supplierCode?: Prisma.SortOrder
+  minStock?: Prisma.SortOrder
+  maxStock?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  subcategory?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  volume?: Prisma.SortOrder
   density?: Prisma.SortOrder
-  thickness?: Prisma.SortOrder
-  width?: Prisma.SortOrder
-  length?: Prisma.SortOrder
+  quality?: Prisma.SortOrder
+  certification?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  discontinued?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
@@ -556,24 +1071,49 @@ export type MaterialMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  sku?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrder
+  supplier?: Prisma.SortOrder
+  supplierCode?: Prisma.SortOrder
+  minStock?: Prisma.SortOrder
+  maxStock?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  subcategory?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  volume?: Prisma.SortOrder
   density?: Prisma.SortOrder
-  thickness?: Prisma.SortOrder
-  width?: Prisma.SortOrder
-  length?: Prisma.SortOrder
+  quality?: Prisma.SortOrder
+  certification?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  discontinued?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
 export type MaterialSumOrderByAggregateInput = {
+  cost?: Prisma.SortOrder
+  lastCost?: Prisma.SortOrder
+  minStock?: Prisma.SortOrder
+  maxStock?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  volume?: Prisma.SortOrder
   density?: Prisma.SortOrder
-  thickness?: Prisma.SortOrder
-  width?: Prisma.SortOrder
-  length?: Prisma.SortOrder
+}
+
+export type MaterialScalarRelationFilter = {
+  is?: Prisma.MaterialWhereInput
+  isNot?: Prisma.MaterialWhereInput
 }
 
 export type MaterialCreateNestedManyWithoutCompanyInput = {
@@ -618,36 +1158,251 @@ export type MaterialUncheckedUpdateManyWithoutCompanyNestedInput = {
   deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
 }
 
+export type MaterialCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput> | Prisma.MaterialCreateWithoutCreatorInput[] | Prisma.MaterialUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCreatorInput | Prisma.MaterialCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.MaterialCreateManyCreatorInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialCreateNestedManyWithoutUpdaterInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput> | Prisma.MaterialCreateWithoutUpdaterInput[] | Prisma.MaterialUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutUpdaterInput | Prisma.MaterialCreateOrConnectWithoutUpdaterInput[]
+  createMany?: Prisma.MaterialCreateManyUpdaterInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialUncheckedCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput> | Prisma.MaterialCreateWithoutCreatorInput[] | Prisma.MaterialUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCreatorInput | Prisma.MaterialCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.MaterialCreateManyCreatorInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialUncheckedCreateNestedManyWithoutUpdaterInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput> | Prisma.MaterialCreateWithoutUpdaterInput[] | Prisma.MaterialUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutUpdaterInput | Prisma.MaterialCreateOrConnectWithoutUpdaterInput[]
+  createMany?: Prisma.MaterialCreateManyUpdaterInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput> | Prisma.MaterialCreateWithoutCreatorInput[] | Prisma.MaterialUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCreatorInput | Prisma.MaterialCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutCreatorInput | Prisma.MaterialUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.MaterialCreateManyCreatorInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutCreatorInput | Prisma.MaterialUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutCreatorInput | Prisma.MaterialUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+}
+
+export type MaterialUpdateManyWithoutUpdaterNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput> | Prisma.MaterialCreateWithoutUpdaterInput[] | Prisma.MaterialUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutUpdaterInput | Prisma.MaterialCreateOrConnectWithoutUpdaterInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutUpdaterInput | Prisma.MaterialUpsertWithWhereUniqueWithoutUpdaterInput[]
+  createMany?: Prisma.MaterialCreateManyUpdaterInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutUpdaterInput | Prisma.MaterialUpdateWithWhereUniqueWithoutUpdaterInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutUpdaterInput | Prisma.MaterialUpdateManyWithWhereWithoutUpdaterInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+}
+
+export type MaterialUncheckedUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput> | Prisma.MaterialCreateWithoutCreatorInput[] | Prisma.MaterialUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCreatorInput | Prisma.MaterialCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutCreatorInput | Prisma.MaterialUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.MaterialCreateManyCreatorInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutCreatorInput | Prisma.MaterialUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutCreatorInput | Prisma.MaterialUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+}
+
+export type MaterialUncheckedUpdateManyWithoutUpdaterNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput> | Prisma.MaterialCreateWithoutUpdaterInput[] | Prisma.MaterialUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutUpdaterInput | Prisma.MaterialCreateOrConnectWithoutUpdaterInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutUpdaterInput | Prisma.MaterialUpsertWithWhereUniqueWithoutUpdaterInput[]
+  createMany?: Prisma.MaterialCreateManyUpdaterInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutUpdaterInput | Prisma.MaterialUpdateWithWhereUniqueWithoutUpdaterInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutUpdaterInput | Prisma.MaterialUpdateManyWithWhereWithoutUpdaterInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+}
+
+export type MaterialCreateimagesInput = {
+  set: string[]
+}
+
+export type MaterialCreatedocumentsInput = {
+  set: string[]
+}
+
+export type MaterialCreatetagsInput = {
+  set: string[]
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type MaterialUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type MaterialUpdatedocumentsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type MaterialUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type MaterialCreateNestedOneWithoutPriceHistoryInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutPriceHistoryInput, Prisma.MaterialUncheckedCreateWithoutPriceHistoryInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutPriceHistoryInput
+  connect?: Prisma.MaterialWhereUniqueInput
+}
+
+export type MaterialUpdateOneRequiredWithoutPriceHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutPriceHistoryInput, Prisma.MaterialUncheckedCreateWithoutPriceHistoryInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutPriceHistoryInput
+  upsert?: Prisma.MaterialUpsertWithoutPriceHistoryInput
+  connect?: Prisma.MaterialWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialUpdateToOneWithWhereWithoutPriceHistoryInput, Prisma.MaterialUpdateWithoutPriceHistoryInput>, Prisma.MaterialUncheckedUpdateWithoutPriceHistoryInput>
+}
+
+export type MaterialCreateNestedOneWithoutProductItemsInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutProductItemsInput, Prisma.MaterialUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutProductItemsInput
+  connect?: Prisma.MaterialWhereUniqueInput
+}
+
+export type MaterialUpdateOneRequiredWithoutProductItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutProductItemsInput, Prisma.MaterialUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutProductItemsInput
+  upsert?: Prisma.MaterialUpsertWithoutProductItemsInput
+  connect?: Prisma.MaterialWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialUpdateToOneWithWhereWithoutProductItemsInput, Prisma.MaterialUpdateWithoutProductItemsInput>, Prisma.MaterialUncheckedUpdateWithoutProductItemsInput>
+}
+
+export type MaterialCreateNestedOneWithoutInventoryInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutInventoryInput, Prisma.MaterialUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutInventoryInput
+  connect?: Prisma.MaterialWhereUniqueInput
+}
+
+export type MaterialUpdateOneRequiredWithoutInventoryNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutInventoryInput, Prisma.MaterialUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutInventoryInput
+  upsert?: Prisma.MaterialUpsertWithoutInventoryInput
+  connect?: Prisma.MaterialWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialUpdateToOneWithWhereWithoutInventoryInput, Prisma.MaterialUpdateWithoutInventoryInput>, Prisma.MaterialUncheckedUpdateWithoutInventoryInput>
+}
+
 export type MaterialCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
 }
 
 export type MaterialUncheckedCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
 }
 
 export type MaterialCreateOrConnectWithoutCompanyInput = {
@@ -683,186 +1438,1624 @@ export type MaterialScalarWhereInput = {
   id?: Prisma.StringFilter<"Material"> | string
   name?: Prisma.StringFilter<"Material"> | string
   description?: Prisma.StringNullableFilter<"Material"> | string | null
-  sku?: Prisma.StringNullableFilter<"Material"> | string | null
+  code?: Prisma.StringNullableFilter<"Material"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Material"> | string | null
   unit?: Prisma.StringFilter<"Material"> | string
+  cost?: Prisma.DecimalFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.JsonNullableFilter<"Material">
+  supplier?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierCode?: Prisma.StringNullableFilter<"Material"> | string | null
+  supplierContact?: Prisma.JsonNullableFilter<"Material">
+  minStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.StringNullableFilter<"Material"> | string | null
   category?: Prisma.StringNullableFilter<"Material"> | string | null
+  subcategory?: Prisma.StringNullableFilter<"Material"> | string | null
+  brand?: Prisma.StringNullableFilter<"Material"> | string | null
+  model?: Prisma.StringNullableFilter<"Material"> | string | null
+  color?: Prisma.StringNullableFilter<"Material"> | string | null
+  dimensions?: Prisma.JsonNullableFilter<"Material">
+  weight?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.DecimalNullableFilter<"Material"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.JsonNullableFilter<"Material">
+  quality?: Prisma.StringNullableFilter<"Material"> | string | null
+  certification?: Prisma.StringNullableFilter<"Material"> | string | null
+  images?: Prisma.StringNullableListFilter<"Material">
+  documents?: Prisma.StringNullableListFilter<"Material">
+  notes?: Prisma.StringNullableFilter<"Material"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Material">
   active?: Prisma.BoolFilter<"Material"> | boolean
+  discontinued?: Prisma.BoolFilter<"Material"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Material"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Material"> | string | null
   companyId?: Prisma.StringFilter<"Material"> | string
+}
+
+export type MaterialCreateWithoutCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutCreatorInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput>
+}
+
+export type MaterialCreateManyCreatorInputEnvelope = {
+  data: Prisma.MaterialCreateManyCreatorInput | Prisma.MaterialCreateManyCreatorInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaterialCreateWithoutUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutUpdaterInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput>
+}
+
+export type MaterialCreateManyUpdaterInputEnvelope = {
+  data: Prisma.MaterialCreateManyUpdaterInput | Prisma.MaterialCreateManyUpdaterInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaterialUpsertWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutCreatorInput, Prisma.MaterialUncheckedUpdateWithoutCreatorInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutCreatorInput, Prisma.MaterialUncheckedCreateWithoutCreatorInput>
+}
+
+export type MaterialUpdateWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutCreatorInput, Prisma.MaterialUncheckedUpdateWithoutCreatorInput>
+}
+
+export type MaterialUpdateManyWithWhereWithoutCreatorInput = {
+  where: Prisma.MaterialScalarWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateManyMutationInput, Prisma.MaterialUncheckedUpdateManyWithoutCreatorInput>
+}
+
+export type MaterialUpsertWithWhereUniqueWithoutUpdaterInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutUpdaterInput, Prisma.MaterialUncheckedUpdateWithoutUpdaterInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutUpdaterInput, Prisma.MaterialUncheckedCreateWithoutUpdaterInput>
+}
+
+export type MaterialUpdateWithWhereUniqueWithoutUpdaterInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutUpdaterInput, Prisma.MaterialUncheckedUpdateWithoutUpdaterInput>
+}
+
+export type MaterialUpdateManyWithWhereWithoutUpdaterInput = {
+  where: Prisma.MaterialScalarWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateManyMutationInput, Prisma.MaterialUncheckedUpdateManyWithoutUpdaterInput>
+}
+
+export type MaterialCreateWithoutPriceHistoryInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutPriceHistoryInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutPriceHistoryInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutPriceHistoryInput, Prisma.MaterialUncheckedCreateWithoutPriceHistoryInput>
+}
+
+export type MaterialUpsertWithoutPriceHistoryInput = {
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutPriceHistoryInput, Prisma.MaterialUncheckedUpdateWithoutPriceHistoryInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutPriceHistoryInput, Prisma.MaterialUncheckedCreateWithoutPriceHistoryInput>
+  where?: Prisma.MaterialWhereInput
+}
+
+export type MaterialUpdateToOneWithWhereWithoutPriceHistoryInput = {
+  where?: Prisma.MaterialWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutPriceHistoryInput, Prisma.MaterialUncheckedUpdateWithoutPriceHistoryInput>
+}
+
+export type MaterialUpdateWithoutPriceHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutPriceHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutProductItemsInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutProductItemsInput, Prisma.MaterialUncheckedCreateWithoutProductItemsInput>
+}
+
+export type MaterialUpsertWithoutProductItemsInput = {
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutProductItemsInput, Prisma.MaterialUncheckedUpdateWithoutProductItemsInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutProductItemsInput, Prisma.MaterialUncheckedCreateWithoutProductItemsInput>
+  where?: Prisma.MaterialWhereInput
+}
+
+export type MaterialUpdateToOneWithWhereWithoutProductItemsInput = {
+  where?: Prisma.MaterialWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutProductItemsInput, Prisma.MaterialUncheckedUpdateWithoutProductItemsInput>
+}
+
+export type MaterialUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialCreateWithoutInventoryInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutMaterialsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedMaterialsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedMaterialsInput
+  productItems?: Prisma.ProductMaterialCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutInventoryInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductMaterialUncheckedCreateNestedManyWithoutMaterialInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutInventoryInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutInventoryInput, Prisma.MaterialUncheckedCreateWithoutInventoryInput>
+}
+
+export type MaterialUpsertWithoutInventoryInput = {
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutInventoryInput, Prisma.MaterialUncheckedUpdateWithoutInventoryInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutInventoryInput, Prisma.MaterialUncheckedCreateWithoutInventoryInput>
+  where?: Prisma.MaterialWhereInput
+}
+
+export type MaterialUpdateToOneWithWhereWithoutInventoryInput = {
+  where?: Prisma.MaterialWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutInventoryInput, Prisma.MaterialUncheckedUpdateWithoutInventoryInput>
+}
+
+export type MaterialUpdateWithoutInventoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutInventoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
 }
 
 export type MaterialCreateManyCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  sku?: string | null
-  unit?: string
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
   category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
   active?: boolean
+  discontinued?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
 }
 
 export type MaterialUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
 }
 
 export type MaterialUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
 }
 
 export type MaterialUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  thickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  width?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  length?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type MaterialCreateManyCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy?: string | null
+  companyId: string
+}
+
+export type MaterialCreateManyUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  barcode?: string | null
+  unit: string
+  cost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: string | null
+  supplierCode?: string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: string | null
+  category?: string | null
+  subcategory?: string | null
+  brand?: string | null
+  model?: string | null
+  color?: string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: string | null
+  certification?: string | null
+  images?: Prisma.MaterialCreateimagesInput | string[]
+  documents?: Prisma.MaterialCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.MaterialCreatetagsInput | string[]
+  active?: boolean
+  discontinued?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  companyId: string
+}
+
+export type MaterialUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateManyWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type MaterialUpdateWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutMaterialsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedMaterialsNestedInput
+  productItems?: Prisma.ProductMaterialUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductMaterialUncheckedUpdateManyWithoutMaterialNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutMaterialNestedInput
+  priceHistory?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateManyWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unit?: Prisma.StringFieldUpdateOperationsInput | string
+  cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  lastCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  minStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxStock?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subcategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  weight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volume?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  density?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  alternativeUnits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  quality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certification?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.MaterialUpdateimagesInput | string[]
+  documents?: Prisma.MaterialUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.MaterialUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discontinued?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+
+/**
+ * Count Type MaterialCountOutputType
+ */
+
+export type MaterialCountOutputType = {
+  productItems: number
+  inventory: number
+  priceHistory: number
+}
+
+export type MaterialCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  productItems?: boolean | MaterialCountOutputTypeCountProductItemsArgs
+  inventory?: boolean | MaterialCountOutputTypeCountInventoryArgs
+  priceHistory?: boolean | MaterialCountOutputTypeCountPriceHistoryArgs
+}
+
+/**
+ * MaterialCountOutputType without action
+ */
+export type MaterialCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialCountOutputType
+   */
+  select?: Prisma.MaterialCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MaterialCountOutputType without action
+ */
+export type MaterialCountOutputTypeCountProductItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductMaterialWhereInput
+}
+
+/**
+ * MaterialCountOutputType without action
+ */
+export type MaterialCountOutputTypeCountInventoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InventoryItemWhereInput
+}
+
+/**
+ * MaterialCountOutputType without action
+ */
+export type MaterialCountOutputTypeCountPriceHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialPriceHistoryWhereInput
+}
 
 
 export type MaterialSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
+  code?: boolean
+  barcode?: boolean
   unit?: boolean
+  cost?: boolean
+  lastCost?: boolean
+  costHistory?: boolean
+  supplier?: boolean
+  supplierCode?: boolean
+  supplierContact?: boolean
+  minStock?: boolean
+  maxStock?: boolean
+  location?: boolean
   category?: boolean
+  subcategory?: boolean
+  brand?: boolean
+  model?: boolean
+  color?: boolean
+  dimensions?: boolean
+  weight?: boolean
+  volume?: boolean
   density?: boolean
-  thickness?: boolean
-  width?: boolean
-  length?: boolean
+  alternativeUnits?: boolean
+  quality?: boolean
+  certification?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
+  discontinued?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
+  productItems?: boolean | Prisma.Material$productItemsArgs<ExtArgs>
+  inventory?: boolean | Prisma.Material$inventoryArgs<ExtArgs>
+  priceHistory?: boolean | Prisma.Material$priceHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.MaterialCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
 
 export type MaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
+  code?: boolean
+  barcode?: boolean
   unit?: boolean
+  cost?: boolean
+  lastCost?: boolean
+  costHistory?: boolean
+  supplier?: boolean
+  supplierCode?: boolean
+  supplierContact?: boolean
+  minStock?: boolean
+  maxStock?: boolean
+  location?: boolean
   category?: boolean
+  subcategory?: boolean
+  brand?: boolean
+  model?: boolean
+  color?: boolean
+  dimensions?: boolean
+  weight?: boolean
+  volume?: boolean
   density?: boolean
-  thickness?: boolean
-  width?: boolean
-  length?: boolean
+  alternativeUnits?: boolean
+  quality?: boolean
+  certification?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
+  discontinued?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
 
 export type MaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
+  code?: boolean
+  barcode?: boolean
   unit?: boolean
+  cost?: boolean
+  lastCost?: boolean
+  costHistory?: boolean
+  supplier?: boolean
+  supplierCode?: boolean
+  supplierContact?: boolean
+  minStock?: boolean
+  maxStock?: boolean
+  location?: boolean
   category?: boolean
+  subcategory?: boolean
+  brand?: boolean
+  model?: boolean
+  color?: boolean
+  dimensions?: boolean
+  weight?: boolean
+  volume?: boolean
   density?: boolean
-  thickness?: boolean
-  width?: boolean
-  length?: boolean
+  alternativeUnits?: boolean
+  quality?: boolean
+  certification?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
+  discontinued?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
 
 export type MaterialSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
-  sku?: boolean
+  code?: boolean
+  barcode?: boolean
   unit?: boolean
+  cost?: boolean
+  lastCost?: boolean
+  costHistory?: boolean
+  supplier?: boolean
+  supplierCode?: boolean
+  supplierContact?: boolean
+  minStock?: boolean
+  maxStock?: boolean
+  location?: boolean
   category?: boolean
+  subcategory?: boolean
+  brand?: boolean
+  model?: boolean
+  color?: boolean
+  dimensions?: boolean
+  weight?: boolean
+  volume?: boolean
   density?: boolean
-  thickness?: boolean
-  width?: boolean
-  length?: boolean
+  alternativeUnits?: boolean
+  quality?: boolean
+  certification?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
+  discontinued?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
 }
 
-export type MaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "sku" | "unit" | "category" | "density" | "thickness" | "width" | "length" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["material"]>
+export type MaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "barcode" | "unit" | "cost" | "lastCost" | "costHistory" | "supplier" | "supplierCode" | "supplierContact" | "minStock" | "maxStock" | "location" | "category" | "subcategory" | "brand" | "model" | "color" | "dimensions" | "weight" | "volume" | "density" | "alternativeUnits" | "quality" | "certification" | "images" | "documents" | "notes" | "tags" | "active" | "discontinued" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["material"]>
 export type MaterialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
+  productItems?: boolean | Prisma.Material$productItemsArgs<ExtArgs>
+  inventory?: boolean | Prisma.Material$inventoryArgs<ExtArgs>
+  priceHistory?: boolean | Prisma.Material$priceHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.MaterialCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MaterialIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
 }
 export type MaterialIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Material$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Material$updaterArgs<ExtArgs>
 }
 
 export type $MaterialPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Material"
   objects: {
     company: Prisma.$CompanyPayload<ExtArgs>
+    creator: Prisma.$UserPayload<ExtArgs> | null
+    updater: Prisma.$UserPayload<ExtArgs> | null
+    productItems: Prisma.$ProductMaterialPayload<ExtArgs>[]
+    inventory: Prisma.$InventoryItemPayload<ExtArgs>[]
+    priceHistory: Prisma.$MaterialPriceHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string | null
-    sku: string | null
+    code: string | null
+    barcode: string | null
     unit: string
+    cost: runtime.Decimal
+    lastCost: runtime.Decimal | null
+    costHistory: runtime.JsonValue | null
+    supplier: string | null
+    supplierCode: string | null
+    supplierContact: runtime.JsonValue | null
+    minStock: runtime.Decimal | null
+    maxStock: runtime.Decimal | null
+    location: string | null
     category: string | null
+    subcategory: string | null
+    brand: string | null
+    model: string | null
+    color: string | null
+    dimensions: runtime.JsonValue | null
+    weight: runtime.Decimal | null
+    volume: runtime.Decimal | null
     density: runtime.Decimal | null
-    thickness: runtime.Decimal | null
-    width: runtime.Decimal | null
-    length: runtime.Decimal | null
+    alternativeUnits: runtime.JsonValue | null
+    quality: string | null
+    certification: string | null
+    images: string[]
+    documents: string[]
+    notes: string | null
+    tags: string[]
     active: boolean
+    discontinued: boolean
     createdAt: Date
     updatedAt: Date
+    createdBy: string | null
+    updatedBy: string | null
     companyId: string
   }, ExtArgs["result"]["material"]>
   composites: {}
@@ -1259,6 +3452,11 @@ readonly fields: MaterialFieldRefs;
 export interface Prisma__MaterialClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  creator<T extends Prisma.Material$creatorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$creatorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  updater<T extends Prisma.Material$updaterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$updaterArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  productItems<T extends Prisma.Material$productItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$productItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  inventory<T extends Prisma.Material$inventoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$inventoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InventoryItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priceHistory<T extends Prisma.Material$priceHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$priceHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1291,16 +3489,40 @@ export interface MaterialFieldRefs {
   readonly id: Prisma.FieldRef<"Material", 'String'>
   readonly name: Prisma.FieldRef<"Material", 'String'>
   readonly description: Prisma.FieldRef<"Material", 'String'>
-  readonly sku: Prisma.FieldRef<"Material", 'String'>
+  readonly code: Prisma.FieldRef<"Material", 'String'>
+  readonly barcode: Prisma.FieldRef<"Material", 'String'>
   readonly unit: Prisma.FieldRef<"Material", 'String'>
+  readonly cost: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly lastCost: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly costHistory: Prisma.FieldRef<"Material", 'Json'>
+  readonly supplier: Prisma.FieldRef<"Material", 'String'>
+  readonly supplierCode: Prisma.FieldRef<"Material", 'String'>
+  readonly supplierContact: Prisma.FieldRef<"Material", 'Json'>
+  readonly minStock: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly maxStock: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly location: Prisma.FieldRef<"Material", 'String'>
   readonly category: Prisma.FieldRef<"Material", 'String'>
+  readonly subcategory: Prisma.FieldRef<"Material", 'String'>
+  readonly brand: Prisma.FieldRef<"Material", 'String'>
+  readonly model: Prisma.FieldRef<"Material", 'String'>
+  readonly color: Prisma.FieldRef<"Material", 'String'>
+  readonly dimensions: Prisma.FieldRef<"Material", 'Json'>
+  readonly weight: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly volume: Prisma.FieldRef<"Material", 'Decimal'>
   readonly density: Prisma.FieldRef<"Material", 'Decimal'>
-  readonly thickness: Prisma.FieldRef<"Material", 'Decimal'>
-  readonly width: Prisma.FieldRef<"Material", 'Decimal'>
-  readonly length: Prisma.FieldRef<"Material", 'Decimal'>
+  readonly alternativeUnits: Prisma.FieldRef<"Material", 'Json'>
+  readonly quality: Prisma.FieldRef<"Material", 'String'>
+  readonly certification: Prisma.FieldRef<"Material", 'String'>
+  readonly images: Prisma.FieldRef<"Material", 'String[]'>
+  readonly documents: Prisma.FieldRef<"Material", 'String[]'>
+  readonly notes: Prisma.FieldRef<"Material", 'String'>
+  readonly tags: Prisma.FieldRef<"Material", 'String[]'>
   readonly active: Prisma.FieldRef<"Material", 'Boolean'>
+  readonly discontinued: Prisma.FieldRef<"Material", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Material", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Material", 'DateTime'>
+  readonly createdBy: Prisma.FieldRef<"Material", 'String'>
+  readonly updatedBy: Prisma.FieldRef<"Material", 'String'>
   readonly companyId: Prisma.FieldRef<"Material", 'String'>
 }
     
@@ -1695,6 +3917,116 @@ export type MaterialDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Materials to delete.
    */
   limit?: number
+}
+
+/**
+ * Material.creator
+ */
+export type Material$creatorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Material.updater
+ */
+export type Material$updaterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Material.productItems
+ */
+export type Material$productItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductMaterial
+   */
+  select?: Prisma.ProductMaterialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductMaterial
+   */
+  omit?: Prisma.ProductMaterialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductMaterialInclude<ExtArgs> | null
+  where?: Prisma.ProductMaterialWhereInput
+  orderBy?: Prisma.ProductMaterialOrderByWithRelationInput | Prisma.ProductMaterialOrderByWithRelationInput[]
+  cursor?: Prisma.ProductMaterialWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductMaterialScalarFieldEnum | Prisma.ProductMaterialScalarFieldEnum[]
+}
+
+/**
+ * Material.inventory
+ */
+export type Material$inventoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InventoryItem
+   */
+  select?: Prisma.InventoryItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InventoryItem
+   */
+  omit?: Prisma.InventoryItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InventoryItemInclude<ExtArgs> | null
+  where?: Prisma.InventoryItemWhereInput
+  orderBy?: Prisma.InventoryItemOrderByWithRelationInput | Prisma.InventoryItemOrderByWithRelationInput[]
+  cursor?: Prisma.InventoryItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InventoryItemScalarFieldEnum | Prisma.InventoryItemScalarFieldEnum[]
+}
+
+/**
+ * Material.priceHistory
+ */
+export type Material$priceHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialPriceHistory
+   */
+  select?: Prisma.MaterialPriceHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaterialPriceHistory
+   */
+  omit?: Prisma.MaterialPriceHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialPriceHistoryInclude<ExtArgs> | null
+  where?: Prisma.MaterialPriceHistoryWhereInput
+  orderBy?: Prisma.MaterialPriceHistoryOrderByWithRelationInput | Prisma.MaterialPriceHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialPriceHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialPriceHistoryScalarFieldEnum | Prisma.MaterialPriceHistoryScalarFieldEnum[]
 }
 
 /**

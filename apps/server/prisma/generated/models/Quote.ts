@@ -26,11 +26,15 @@ export type AggregateQuote = {
 }
 
 export type QuoteAvgAggregateOutputType = {
+  totalCost: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
+  margin: runtime.Decimal | null
 }
 
 export type QuoteSumAggregateOutputType = {
+  totalCost: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
+  margin: runtime.Decimal | null
 }
 
 export type QuoteMinAggregateOutputType = {
@@ -39,13 +43,15 @@ export type QuoteMinAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
-  validUntil: Date | null
+  totalCost: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
+  margin: runtime.Decimal | null
+  validUntil: Date | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  clientId: string | null
   companyId: string | null
+  clientId: string | null
 }
 
 export type QuoteMaxAggregateOutputType = {
@@ -54,13 +60,15 @@ export type QuoteMaxAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
-  validUntil: Date | null
+  totalCost: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
+  margin: runtime.Decimal | null
+  validUntil: Date | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  clientId: string | null
   companyId: string | null
+  clientId: string | null
 }
 
 export type QuoteCountAggregateOutputType = {
@@ -69,23 +77,29 @@ export type QuoteCountAggregateOutputType = {
   title: number
   description: number
   status: number
-  validUntil: number
+  totalCost: number
   totalPrice: number
+  margin: number
+  validUntil: number
   notes: number
   createdAt: number
   updatedAt: number
-  clientId: number
   companyId: number
+  clientId: number
   _all: number
 }
 
 
 export type QuoteAvgAggregateInputType = {
+  totalCost?: true
   totalPrice?: true
+  margin?: true
 }
 
 export type QuoteSumAggregateInputType = {
+  totalCost?: true
   totalPrice?: true
+  margin?: true
 }
 
 export type QuoteMinAggregateInputType = {
@@ -94,13 +108,15 @@ export type QuoteMinAggregateInputType = {
   title?: true
   description?: true
   status?: true
-  validUntil?: true
+  totalCost?: true
   totalPrice?: true
+  margin?: true
+  validUntil?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
-  clientId?: true
   companyId?: true
+  clientId?: true
 }
 
 export type QuoteMaxAggregateInputType = {
@@ -109,13 +125,15 @@ export type QuoteMaxAggregateInputType = {
   title?: true
   description?: true
   status?: true
-  validUntil?: true
+  totalCost?: true
   totalPrice?: true
+  margin?: true
+  validUntil?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
-  clientId?: true
   companyId?: true
+  clientId?: true
 }
 
 export type QuoteCountAggregateInputType = {
@@ -124,13 +142,15 @@ export type QuoteCountAggregateInputType = {
   title?: true
   description?: true
   status?: true
-  validUntil?: true
+  totalCost?: true
   totalPrice?: true
+  margin?: true
+  validUntil?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
-  clientId?: true
   companyId?: true
+  clientId?: true
   _all?: true
 }
 
@@ -226,13 +246,15 @@ export type QuoteGroupByOutputType = {
   title: string
   description: string | null
   status: string
-  validUntil: Date | null
+  totalCost: runtime.Decimal
   totalPrice: runtime.Decimal
+  margin: runtime.Decimal
+  validUntil: Date | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
-  clientId: string
   companyId: string
+  clientId: string
   _count: QuoteCountAggregateOutputType | null
   _avg: QuoteAvgAggregateOutputType | null
   _sum: QuoteSumAggregateOutputType | null
@@ -264,15 +286,19 @@ export type QuoteWhereInput = {
   title?: Prisma.StringFilter<"Quote"> | string
   description?: Prisma.StringNullableFilter<"Quote"> | string | null
   status?: Prisma.StringFilter<"Quote"> | string
-  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
+  totalCost?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Quote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
-  clientId?: Prisma.StringFilter<"Quote"> | string
   companyId?: Prisma.StringFilter<"Quote"> | string
-  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  clientId?: Prisma.StringFilter<"Quote"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  items?: Prisma.QuoteItemListRelationFilter
+  order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }
 
 export type QuoteOrderByWithRelationInput = {
@@ -281,15 +307,19 @@ export type QuoteOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  validUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+  validUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
-  client?: Prisma.ClientOrderByWithRelationInput
+  clientId?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  client?: Prisma.ClientOrderByWithRelationInput
+  items?: Prisma.QuoteItemOrderByRelationAggregateInput
+  order?: Prisma.OrderOrderByWithRelationInput
 }
 
 export type QuoteWhereUniqueInput = Prisma.AtLeast<{
@@ -302,15 +332,19 @@ export type QuoteWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Quote"> | string
   description?: Prisma.StringNullableFilter<"Quote"> | string | null
   status?: Prisma.StringFilter<"Quote"> | string
-  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
+  totalCost?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Quote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
-  clientId?: Prisma.StringFilter<"Quote"> | string
   companyId?: Prisma.StringFilter<"Quote"> | string
-  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  clientId?: Prisma.StringFilter<"Quote"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  items?: Prisma.QuoteItemListRelationFilter
+  order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }, "id" | "companyId_number">
 
 export type QuoteOrderByWithAggregationInput = {
@@ -319,13 +353,15 @@ export type QuoteOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  validUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+  validUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   _count?: Prisma.QuoteCountOrderByAggregateInput
   _avg?: Prisma.QuoteAvgOrderByAggregateInput
   _max?: Prisma.QuoteMaxOrderByAggregateInput
@@ -342,13 +378,15 @@ export type QuoteScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Quote"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Quote"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Quote"> | string
-  validUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"Quote"> | Date | string | null
+  totalCost?: Prisma.DecimalWithAggregatesFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalWithAggregatesFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalWithAggregatesFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"Quote"> | Date | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Quote"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Quote"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Quote"> | Date | string
-  clientId?: Prisma.StringWithAggregatesFilter<"Quote"> | string
   companyId?: Prisma.StringWithAggregatesFilter<"Quote"> | string
+  clientId?: Prisma.StringWithAggregatesFilter<"Quote"> | string
 }
 
 export type QuoteCreateInput = {
@@ -357,13 +395,17 @@ export type QuoteCreateInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  client: Prisma.ClientCreateNestedOneWithoutQuotesInput
   company: Prisma.CompanyCreateNestedOneWithoutQuotesInput
+  client: Prisma.ClientCreateNestedOneWithoutQuotesInput
+  items?: Prisma.QuoteItemCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteUncheckedCreateInput = {
@@ -372,13 +414,17 @@ export type QuoteUncheckedCreateInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  clientId: string
   companyId: string
+  clientId: string
+  items?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteUpdateInput = {
@@ -387,13 +433,17 @@ export type QuoteUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  client?: Prisma.ClientUpdateOneRequiredWithoutQuotesNestedInput
   company?: Prisma.CompanyUpdateOneRequiredWithoutQuotesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutQuotesNestedInput
+  items?: Prisma.QuoteItemUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteUncheckedUpdateInput = {
@@ -402,13 +452,17 @@ export type QuoteUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  items?: Prisma.QuoteItemUncheckedUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteCreateManyInput = {
@@ -417,13 +471,15 @@ export type QuoteCreateManyInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  clientId: string
   companyId: string
+  clientId: string
 }
 
 export type QuoteUpdateManyMutationInput = {
@@ -432,8 +488,10 @@ export type QuoteUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -445,13 +503,15 @@ export type QuoteUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type QuoteListRelationFilter = {
@@ -475,17 +535,21 @@ export type QuoteCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  validUntil?: Prisma.SortOrder
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+  validUntil?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
 }
 
 export type QuoteAvgOrderByAggregateInput = {
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
 }
 
 export type QuoteMaxOrderByAggregateInput = {
@@ -494,13 +558,15 @@ export type QuoteMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  validUntil?: Prisma.SortOrder
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+  validUntil?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
 }
 
 export type QuoteMinOrderByAggregateInput = {
@@ -509,17 +575,31 @@ export type QuoteMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  validUntil?: Prisma.SortOrder
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+  validUntil?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
 }
 
 export type QuoteSumOrderByAggregateInput = {
+  totalCost?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  margin?: Prisma.SortOrder
+}
+
+export type QuoteScalarRelationFilter = {
+  is?: Prisma.QuoteWhereInput
+  isNot?: Prisma.QuoteWhereInput
+}
+
+export type QuoteNullableScalarRelationFilter = {
+  is?: Prisma.QuoteWhereInput | null
+  isNot?: Prisma.QuoteWhereInput | null
 }
 
 export type QuoteCreateNestedManyWithoutCompanyInput = {
@@ -606,12 +686,34 @@ export type QuoteUncheckedUpdateManyWithoutClientNestedInput = {
   deleteMany?: Prisma.QuoteScalarWhereInput | Prisma.QuoteScalarWhereInput[]
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type QuoteCreateNestedOneWithoutItemsInput = {
+  create?: Prisma.XOR<Prisma.QuoteCreateWithoutItemsInput, Prisma.QuoteUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.QuoteCreateOrConnectWithoutItemsInput
+  connect?: Prisma.QuoteWhereUniqueInput
+}
+
+export type QuoteUpdateOneRequiredWithoutItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.QuoteCreateWithoutItemsInput, Prisma.QuoteUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.QuoteCreateOrConnectWithoutItemsInput
+  upsert?: Prisma.QuoteUpsertWithoutItemsInput
+  connect?: Prisma.QuoteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.QuoteUpdateToOneWithWhereWithoutItemsInput, Prisma.QuoteUpdateWithoutItemsInput>, Prisma.QuoteUncheckedUpdateWithoutItemsInput>
+}
+
+export type QuoteCreateNestedOneWithoutOrderInput = {
+  create?: Prisma.XOR<Prisma.QuoteCreateWithoutOrderInput, Prisma.QuoteUncheckedCreateWithoutOrderInput>
+  connectOrCreate?: Prisma.QuoteCreateOrConnectWithoutOrderInput
+  connect?: Prisma.QuoteWhereUniqueInput
+}
+
+export type QuoteUpdateOneWithoutOrderNestedInput = {
+  create?: Prisma.XOR<Prisma.QuoteCreateWithoutOrderInput, Prisma.QuoteUncheckedCreateWithoutOrderInput>
+  connectOrCreate?: Prisma.QuoteCreateOrConnectWithoutOrderInput
+  upsert?: Prisma.QuoteUpsertWithoutOrderInput
+  disconnect?: Prisma.QuoteWhereInput | boolean
+  delete?: Prisma.QuoteWhereInput | boolean
+  connect?: Prisma.QuoteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.QuoteUpdateToOneWithWhereWithoutOrderInput, Prisma.QuoteUpdateWithoutOrderInput>, Prisma.QuoteUncheckedUpdateWithoutOrderInput>
 }
 
 export type QuoteCreateWithoutCompanyInput = {
@@ -620,12 +722,16 @@ export type QuoteCreateWithoutCompanyInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutQuotesInput
+  items?: Prisma.QuoteItemCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteUncheckedCreateWithoutCompanyInput = {
@@ -634,12 +740,16 @@ export type QuoteUncheckedCreateWithoutCompanyInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clientId: string
+  items?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteCreateOrConnectWithoutCompanyInput = {
@@ -677,13 +787,15 @@ export type QuoteScalarWhereInput = {
   title?: Prisma.StringFilter<"Quote"> | string
   description?: Prisma.StringNullableFilter<"Quote"> | string | null
   status?: Prisma.StringFilter<"Quote"> | string
-  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
+  totalCost?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFilter<"Quote"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.DateTimeNullableFilter<"Quote"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Quote"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quote"> | Date | string
-  clientId?: Prisma.StringFilter<"Quote"> | string
   companyId?: Prisma.StringFilter<"Quote"> | string
+  clientId?: Prisma.StringFilter<"Quote"> | string
 }
 
 export type QuoteCreateWithoutClientInput = {
@@ -692,12 +804,16 @@ export type QuoteCreateWithoutClientInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutQuotesInput
+  items?: Prisma.QuoteItemCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteUncheckedCreateWithoutClientInput = {
@@ -706,12 +822,16 @@ export type QuoteUncheckedCreateWithoutClientInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   companyId: string
+  items?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutQuoteInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuoteInput
 }
 
 export type QuoteCreateOrConnectWithoutClientInput = {
@@ -740,14 +860,192 @@ export type QuoteUpdateManyWithWhereWithoutClientInput = {
   data: Prisma.XOR<Prisma.QuoteUpdateManyMutationInput, Prisma.QuoteUncheckedUpdateManyWithoutClientInput>
 }
 
+export type QuoteCreateWithoutItemsInput = {
+  id?: string
+  number: string
+  title: string
+  description?: string | null
+  status?: string
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutQuotesInput
+  client: Prisma.ClientCreateNestedOneWithoutQuotesInput
+  order?: Prisma.OrderCreateNestedOneWithoutQuoteInput
+}
+
+export type QuoteUncheckedCreateWithoutItemsInput = {
+  id?: string
+  number: string
+  title: string
+  description?: string | null
+  status?: string
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  clientId: string
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuoteInput
+}
+
+export type QuoteCreateOrConnectWithoutItemsInput = {
+  where: Prisma.QuoteWhereUniqueInput
+  create: Prisma.XOR<Prisma.QuoteCreateWithoutItemsInput, Prisma.QuoteUncheckedCreateWithoutItemsInput>
+}
+
+export type QuoteUpsertWithoutItemsInput = {
+  update: Prisma.XOR<Prisma.QuoteUpdateWithoutItemsInput, Prisma.QuoteUncheckedUpdateWithoutItemsInput>
+  create: Prisma.XOR<Prisma.QuoteCreateWithoutItemsInput, Prisma.QuoteUncheckedCreateWithoutItemsInput>
+  where?: Prisma.QuoteWhereInput
+}
+
+export type QuoteUpdateToOneWithWhereWithoutItemsInput = {
+  where?: Prisma.QuoteWhereInput
+  data: Prisma.XOR<Prisma.QuoteUpdateWithoutItemsInput, Prisma.QuoteUncheckedUpdateWithoutItemsInput>
+}
+
+export type QuoteUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutQuotesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutQuotesNestedInput
+  order?: Prisma.OrderUpdateOneWithoutQuoteNestedInput
+}
+
+export type QuoteUncheckedUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.OrderUncheckedUpdateOneWithoutQuoteNestedInput
+}
+
+export type QuoteCreateWithoutOrderInput = {
+  id?: string
+  number: string
+  title: string
+  description?: string | null
+  status?: string
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutQuotesInput
+  client: Prisma.ClientCreateNestedOneWithoutQuotesInput
+  items?: Prisma.QuoteItemCreateNestedManyWithoutQuoteInput
+}
+
+export type QuoteUncheckedCreateWithoutOrderInput = {
+  id?: string
+  number: string
+  title: string
+  description?: string | null
+  status?: string
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  clientId: string
+  items?: Prisma.QuoteItemUncheckedCreateNestedManyWithoutQuoteInput
+}
+
+export type QuoteCreateOrConnectWithoutOrderInput = {
+  where: Prisma.QuoteWhereUniqueInput
+  create: Prisma.XOR<Prisma.QuoteCreateWithoutOrderInput, Prisma.QuoteUncheckedCreateWithoutOrderInput>
+}
+
+export type QuoteUpsertWithoutOrderInput = {
+  update: Prisma.XOR<Prisma.QuoteUpdateWithoutOrderInput, Prisma.QuoteUncheckedUpdateWithoutOrderInput>
+  create: Prisma.XOR<Prisma.QuoteCreateWithoutOrderInput, Prisma.QuoteUncheckedCreateWithoutOrderInput>
+  where?: Prisma.QuoteWhereInput
+}
+
+export type QuoteUpdateToOneWithWhereWithoutOrderInput = {
+  where?: Prisma.QuoteWhereInput
+  data: Prisma.XOR<Prisma.QuoteUpdateWithoutOrderInput, Prisma.QuoteUncheckedUpdateWithoutOrderInput>
+}
+
+export type QuoteUpdateWithoutOrderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutQuotesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutQuotesNestedInput
+  items?: Prisma.QuoteItemUpdateManyWithoutQuoteNestedInput
+}
+
+export type QuoteUncheckedUpdateWithoutOrderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  items?: Prisma.QuoteItemUncheckedUpdateManyWithoutQuoteNestedInput
+}
+
 export type QuoteCreateManyCompanyInput = {
   id?: string
   number: string
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -760,12 +1058,16 @@ export type QuoteUpdateWithoutCompanyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutQuotesNestedInput
+  items?: Prisma.QuoteItemUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteUncheckedUpdateWithoutCompanyInput = {
@@ -774,12 +1076,16 @@ export type QuoteUncheckedUpdateWithoutCompanyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  items?: Prisma.QuoteItemUncheckedUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteUncheckedUpdateManyWithoutCompanyInput = {
@@ -788,8 +1094,10 @@ export type QuoteUncheckedUpdateManyWithoutCompanyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,8 +1110,10 @@ export type QuoteCreateManyClientInput = {
   title: string
   description?: string | null
   status?: string
-  validUntil?: Date | string | null
+  totalCost: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -816,12 +1126,16 @@ export type QuoteUpdateWithoutClientInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutQuotesNestedInput
+  items?: Prisma.QuoteItemUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteUncheckedUpdateWithoutClientInput = {
@@ -830,12 +1144,16 @@ export type QuoteUncheckedUpdateWithoutClientInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  items?: Prisma.QuoteItemUncheckedUpdateManyWithoutQuoteNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutQuoteNestedInput
 }
 
 export type QuoteUncheckedUpdateManyWithoutClientInput = {
@@ -844,14 +1162,45 @@ export type QuoteUncheckedUpdateManyWithoutClientInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  margin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+
+/**
+ * Count Type QuoteCountOutputType
+ */
+
+export type QuoteCountOutputType = {
+  items: number
+}
+
+export type QuoteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  items?: boolean | QuoteCountOutputTypeCountItemsArgs
+}
+
+/**
+ * QuoteCountOutputType without action
+ */
+export type QuoteCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QuoteCountOutputType
+   */
+  select?: Prisma.QuoteCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * QuoteCountOutputType without action
+ */
+export type QuoteCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuoteItemWhereInput
+}
 
 
 export type QuoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -860,15 +1209,20 @@ export type QuoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   title?: boolean
   description?: boolean
   status?: boolean
-  validUntil?: boolean
+  totalCost?: boolean
   totalPrice?: boolean
+  margin?: boolean
+  validUntil?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  clientId?: boolean
   companyId?: boolean
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  clientId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  items?: boolean | Prisma.Quote$itemsArgs<ExtArgs>
+  order?: boolean | Prisma.Quote$orderArgs<ExtArgs>
+  _count?: boolean | Prisma.QuoteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quote"]>
 
 export type QuoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -877,15 +1231,17 @@ export type QuoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   title?: boolean
   description?: boolean
   status?: boolean
-  validUntil?: boolean
+  totalCost?: boolean
   totalPrice?: boolean
+  margin?: boolean
+  validUntil?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  clientId?: boolean
   companyId?: boolean
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  clientId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quote"]>
 
 export type QuoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -894,15 +1250,17 @@ export type QuoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   title?: boolean
   description?: boolean
   status?: boolean
-  validUntil?: boolean
+  totalCost?: boolean
   totalPrice?: boolean
+  margin?: boolean
+  validUntil?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  clientId?: boolean
   companyId?: boolean
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  clientId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quote"]>
 
 export type QuoteSelectScalar = {
@@ -911,34 +1269,41 @@ export type QuoteSelectScalar = {
   title?: boolean
   description?: boolean
   status?: boolean
-  validUntil?: boolean
+  totalCost?: boolean
   totalPrice?: boolean
+  margin?: boolean
+  validUntil?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  clientId?: boolean
   companyId?: boolean
+  clientId?: boolean
 }
 
-export type QuoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "title" | "description" | "status" | "validUntil" | "totalPrice" | "notes" | "createdAt" | "updatedAt" | "clientId" | "companyId", ExtArgs["result"]["quote"]>
+export type QuoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "title" | "description" | "status" | "totalCost" | "totalPrice" | "margin" | "validUntil" | "notes" | "createdAt" | "updatedAt" | "companyId" | "clientId", ExtArgs["result"]["quote"]>
 export type QuoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  items?: boolean | Prisma.Quote$itemsArgs<ExtArgs>
+  order?: boolean | Prisma.Quote$orderArgs<ExtArgs>
+  _count?: boolean | Prisma.QuoteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type QuoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 export type QuoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 
 export type $QuotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Quote"
   objects: {
-    client: Prisma.$ClientPayload<ExtArgs>
     company: Prisma.$CompanyPayload<ExtArgs>
+    client: Prisma.$ClientPayload<ExtArgs>
+    items: Prisma.$QuoteItemPayload<ExtArgs>[]
+    order: Prisma.$OrderPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -946,13 +1311,15 @@ export type $QuotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     title: string
     description: string | null
     status: string
-    validUntil: Date | null
+    totalCost: runtime.Decimal
     totalPrice: runtime.Decimal
+    margin: runtime.Decimal
+    validUntil: Date | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
-    clientId: string
     companyId: string
+    clientId: string
   }, ExtArgs["result"]["quote"]>
   composites: {}
 }
@@ -1347,8 +1714,10 @@ readonly fields: QuoteFieldRefs;
  */
 export interface Prisma__QuoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  items<T extends Prisma.Quote$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Quote$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuoteItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  order<T extends Prisma.Quote$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Quote$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1383,13 +1752,15 @@ export interface QuoteFieldRefs {
   readonly title: Prisma.FieldRef<"Quote", 'String'>
   readonly description: Prisma.FieldRef<"Quote", 'String'>
   readonly status: Prisma.FieldRef<"Quote", 'String'>
-  readonly validUntil: Prisma.FieldRef<"Quote", 'DateTime'>
+  readonly totalCost: Prisma.FieldRef<"Quote", 'Decimal'>
   readonly totalPrice: Prisma.FieldRef<"Quote", 'Decimal'>
+  readonly margin: Prisma.FieldRef<"Quote", 'Decimal'>
+  readonly validUntil: Prisma.FieldRef<"Quote", 'DateTime'>
   readonly notes: Prisma.FieldRef<"Quote", 'String'>
   readonly createdAt: Prisma.FieldRef<"Quote", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Quote", 'DateTime'>
-  readonly clientId: Prisma.FieldRef<"Quote", 'String'>
   readonly companyId: Prisma.FieldRef<"Quote", 'String'>
+  readonly clientId: Prisma.FieldRef<"Quote", 'String'>
 }
     
 
@@ -1783,6 +2154,49 @@ export type QuoteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Quotes to delete.
    */
   limit?: number
+}
+
+/**
+ * Quote.items
+ */
+export type Quote$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QuoteItem
+   */
+  select?: Prisma.QuoteItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QuoteItem
+   */
+  omit?: Prisma.QuoteItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuoteItemInclude<ExtArgs> | null
+  where?: Prisma.QuoteItemWhereInput
+  orderBy?: Prisma.QuoteItemOrderByWithRelationInput | Prisma.QuoteItemOrderByWithRelationInput[]
+  cursor?: Prisma.QuoteItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuoteItemScalarFieldEnum | Prisma.QuoteItemScalarFieldEnum[]
+}
+
+/**
+ * Quote.order
+ */
+export type Quote$orderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
 }
 
 /**

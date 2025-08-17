@@ -26,22 +26,20 @@ export type AggregateProcess = {
 }
 
 export type ProcessAvgAggregateOutputType = {
-  duration: number | null
-  cost: runtime.Decimal | null
+  costPerHour: runtime.Decimal | null
 }
 
 export type ProcessSumAggregateOutputType = {
-  duration: number | null
-  cost: runtime.Decimal | null
+  costPerHour: runtime.Decimal | null
 }
 
 export type ProcessMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  type: string | null
-  duration: number | null
-  cost: runtime.Decimal | null
+  costPerHour: runtime.Decimal | null
+  sector: string | null
+  timeUnit: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,9 +50,9 @@ export type ProcessMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
-  type: string | null
-  duration: number | null
-  cost: runtime.Decimal | null
+  costPerHour: runtime.Decimal | null
+  sector: string | null
+  timeUnit: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,9 +63,9 @@ export type ProcessCountAggregateOutputType = {
   id: number
   name: number
   description: number
-  type: number
-  duration: number
-  cost: number
+  costPerHour: number
+  sector: number
+  timeUnit: number
   active: number
   createdAt: number
   updatedAt: number
@@ -77,22 +75,20 @@ export type ProcessCountAggregateOutputType = {
 
 
 export type ProcessAvgAggregateInputType = {
-  duration?: true
-  cost?: true
+  costPerHour?: true
 }
 
 export type ProcessSumAggregateInputType = {
-  duration?: true
-  cost?: true
+  costPerHour?: true
 }
 
 export type ProcessMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  type?: true
-  duration?: true
-  cost?: true
+  costPerHour?: true
+  sector?: true
+  timeUnit?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -103,9 +99,9 @@ export type ProcessMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  type?: true
-  duration?: true
-  cost?: true
+  costPerHour?: true
+  sector?: true
+  timeUnit?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -116,9 +112,9 @@ export type ProcessCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
-  type?: true
-  duration?: true
-  cost?: true
+  costPerHour?: true
+  sector?: true
+  timeUnit?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -216,9 +212,9 @@ export type ProcessGroupByOutputType = {
   id: string
   name: string
   description: string | null
-  type: string
-  duration: number | null
-  cost: runtime.Decimal | null
+  costPerHour: runtime.Decimal
+  sector: string | null
+  timeUnit: string
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -252,28 +248,30 @@ export type ProcessWhereInput = {
   id?: Prisma.StringFilter<"Process"> | string
   name?: Prisma.StringFilter<"Process"> | string
   description?: Prisma.StringNullableFilter<"Process"> | string | null
-  type?: Prisma.StringFilter<"Process"> | string
-  duration?: Prisma.IntNullableFilter<"Process"> | number | null
-  cost?: Prisma.DecimalNullableFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.StringNullableFilter<"Process"> | string | null
+  timeUnit?: Prisma.StringFilter<"Process"> | string
   active?: Prisma.BoolFilter<"Process"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   companyId?: Prisma.StringFilter<"Process"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  productItems?: Prisma.ProductProcessListRelationFilter
 }
 
 export type ProcessOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  type?: Prisma.SortOrder
-  duration?: Prisma.SortOrderInput | Prisma.SortOrder
-  cost?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  sector?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeUnit?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  productItems?: Prisma.ProductProcessOrderByRelationAggregateInput
 }
 
 export type ProcessWhereUniqueInput = Prisma.AtLeast<{
@@ -283,23 +281,24 @@ export type ProcessWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProcessWhereInput | Prisma.ProcessWhereInput[]
   name?: Prisma.StringFilter<"Process"> | string
   description?: Prisma.StringNullableFilter<"Process"> | string | null
-  type?: Prisma.StringFilter<"Process"> | string
-  duration?: Prisma.IntNullableFilter<"Process"> | number | null
-  cost?: Prisma.DecimalNullableFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.StringNullableFilter<"Process"> | string | null
+  timeUnit?: Prisma.StringFilter<"Process"> | string
   active?: Prisma.BoolFilter<"Process"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   companyId?: Prisma.StringFilter<"Process"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  productItems?: Prisma.ProductProcessListRelationFilter
 }, "id">
 
 export type ProcessOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  type?: Prisma.SortOrder
-  duration?: Prisma.SortOrderInput | Prisma.SortOrder
-  cost?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  sector?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeUnit?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -318,9 +317,9 @@ export type ProcessScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Process"> | string
   name?: Prisma.StringWithAggregatesFilter<"Process"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Process"> | string | null
-  type?: Prisma.StringWithAggregatesFilter<"Process"> | string
-  duration?: Prisma.IntNullableWithAggregatesFilter<"Process"> | number | null
-  cost?: Prisma.DecimalNullableWithAggregatesFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalWithAggregatesFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.StringNullableWithAggregatesFilter<"Process"> | string | null
+  timeUnit?: Prisma.StringWithAggregatesFilter<"Process"> | string
   active?: Prisma.BoolWithAggregatesFilter<"Process"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Process"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Process"> | Date | string
@@ -331,61 +330,65 @@ export type ProcessCreateInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutProcessesInput
+  productItems?: Prisma.ProductProcessCreateNestedManyWithoutProcessInput
 }
 
 export type ProcessUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   companyId: string
+  productItems?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProcessInput
 }
 
 export type ProcessUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutProcessesNestedInput
+  productItems?: Prisma.ProductProcessUpdateManyWithoutProcessNestedInput
 }
 
 export type ProcessUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductProcessUncheckedUpdateManyWithoutProcessNestedInput
 }
 
 export type ProcessCreateManyInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -396,9 +399,9 @@ export type ProcessUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,9 +411,9 @@ export type ProcessUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -431,9 +434,9 @@ export type ProcessCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  duration?: Prisma.SortOrder
-  cost?: Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
+  timeUnit?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -441,17 +444,16 @@ export type ProcessCountOrderByAggregateInput = {
 }
 
 export type ProcessAvgOrderByAggregateInput = {
-  duration?: Prisma.SortOrder
-  cost?: Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
 }
 
 export type ProcessMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  duration?: Prisma.SortOrder
-  cost?: Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
+  timeUnit?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -462,9 +464,9 @@ export type ProcessMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  duration?: Prisma.SortOrder
-  cost?: Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
+  timeUnit?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -472,8 +474,12 @@ export type ProcessMinOrderByAggregateInput = {
 }
 
 export type ProcessSumOrderByAggregateInput = {
-  duration?: Prisma.SortOrder
-  cost?: Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+}
+
+export type ProcessScalarRelationFilter = {
+  is?: Prisma.ProcessWhereInput
+  isNot?: Prisma.ProcessWhereInput
 }
 
 export type ProcessCreateNestedManyWithoutCompanyInput = {
@@ -518,28 +524,44 @@ export type ProcessUncheckedUpdateManyWithoutCompanyNestedInput = {
   deleteMany?: Prisma.ProcessScalarWhereInput | Prisma.ProcessScalarWhereInput[]
 }
 
+export type ProcessCreateNestedOneWithoutProductItemsInput = {
+  create?: Prisma.XOR<Prisma.ProcessCreateWithoutProductItemsInput, Prisma.ProcessUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.ProcessCreateOrConnectWithoutProductItemsInput
+  connect?: Prisma.ProcessWhereUniqueInput
+}
+
+export type ProcessUpdateOneRequiredWithoutProductItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProcessCreateWithoutProductItemsInput, Prisma.ProcessUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.ProcessCreateOrConnectWithoutProductItemsInput
+  upsert?: Prisma.ProcessUpsertWithoutProductItemsInput
+  connect?: Prisma.ProcessWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProcessUpdateToOneWithWhereWithoutProductItemsInput, Prisma.ProcessUpdateWithoutProductItemsInput>, Prisma.ProcessUncheckedUpdateWithoutProductItemsInput>
+}
+
 export type ProcessCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  productItems?: Prisma.ProductProcessCreateNestedManyWithoutProcessInput
 }
 
 export type ProcessUncheckedCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  productItems?: Prisma.ProductProcessUncheckedCreateNestedManyWithoutProcessInput
 }
 
 export type ProcessCreateOrConnectWithoutCompanyInput = {
@@ -575,22 +597,90 @@ export type ProcessScalarWhereInput = {
   id?: Prisma.StringFilter<"Process"> | string
   name?: Prisma.StringFilter<"Process"> | string
   description?: Prisma.StringNullableFilter<"Process"> | string | null
-  type?: Prisma.StringFilter<"Process"> | string
-  duration?: Prisma.IntNullableFilter<"Process"> | number | null
-  cost?: Prisma.DecimalNullableFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Process"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.StringNullableFilter<"Process"> | string | null
+  timeUnit?: Prisma.StringFilter<"Process"> | string
   active?: Prisma.BoolFilter<"Process"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Process"> | Date | string
   companyId?: Prisma.StringFilter<"Process"> | string
 }
 
+export type ProcessCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutProcessesInput
+}
+
+export type ProcessUncheckedCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+}
+
+export type ProcessCreateOrConnectWithoutProductItemsInput = {
+  where: Prisma.ProcessWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProcessCreateWithoutProductItemsInput, Prisma.ProcessUncheckedCreateWithoutProductItemsInput>
+}
+
+export type ProcessUpsertWithoutProductItemsInput = {
+  update: Prisma.XOR<Prisma.ProcessUpdateWithoutProductItemsInput, Prisma.ProcessUncheckedUpdateWithoutProductItemsInput>
+  create: Prisma.XOR<Prisma.ProcessCreateWithoutProductItemsInput, Prisma.ProcessUncheckedCreateWithoutProductItemsInput>
+  where?: Prisma.ProcessWhereInput
+}
+
+export type ProcessUpdateToOneWithWhereWithoutProductItemsInput = {
+  where?: Prisma.ProcessWhereInput
+  data: Prisma.XOR<Prisma.ProcessUpdateWithoutProductItemsInput, Prisma.ProcessUncheckedUpdateWithoutProductItemsInput>
+}
+
+export type ProcessUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutProcessesNestedInput
+}
+
+export type ProcessUncheckedUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type ProcessCreateManyCompanyInput = {
   id?: string
   name: string
   description?: string | null
-  type: string
-  duration?: number | null
-  cost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: string | null
+  timeUnit: string
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -600,61 +690,94 @@ export type ProcessUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  productItems?: Prisma.ProductProcessUpdateManyWithoutProcessNestedInput
 }
 
 export type ProcessUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  productItems?: Prisma.ProductProcessUncheckedUpdateManyWithoutProcessNestedInput
 }
 
 export type ProcessUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeUnit?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
+/**
+ * Count Type ProcessCountOutputType
+ */
+
+export type ProcessCountOutputType = {
+  productItems: number
+}
+
+export type ProcessCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  productItems?: boolean | ProcessCountOutputTypeCountProductItemsArgs
+}
+
+/**
+ * ProcessCountOutputType without action
+ */
+export type ProcessCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProcessCountOutputType
+   */
+  select?: Prisma.ProcessCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProcessCountOutputType without action
+ */
+export type ProcessCountOutputTypeCountProductItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductProcessWhereInput
+}
+
 
 export type ProcessSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  type?: boolean
-  duration?: boolean
-  cost?: boolean
+  costPerHour?: boolean
+  sector?: boolean
+  timeUnit?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  productItems?: boolean | Prisma.Process$productItemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProcessCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["process"]>
 
 export type ProcessSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
-  type?: boolean
-  duration?: boolean
-  cost?: boolean
+  costPerHour?: boolean
+  sector?: boolean
+  timeUnit?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -666,9 +789,9 @@ export type ProcessSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   description?: boolean
-  type?: boolean
-  duration?: boolean
-  cost?: boolean
+  costPerHour?: boolean
+  sector?: boolean
+  timeUnit?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -680,18 +803,20 @@ export type ProcessSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
-  type?: boolean
-  duration?: boolean
-  cost?: boolean
+  costPerHour?: boolean
+  sector?: boolean
+  timeUnit?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   companyId?: boolean
 }
 
-export type ProcessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "type" | "duration" | "cost" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["process"]>
+export type ProcessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "costPerHour" | "sector" | "timeUnit" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["process"]>
 export type ProcessInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  productItems?: boolean | Prisma.Process$productItemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProcessCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProcessIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
@@ -704,14 +829,15 @@ export type $ProcessPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Process"
   objects: {
     company: Prisma.$CompanyPayload<ExtArgs>
+    productItems: Prisma.$ProductProcessPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string | null
-    type: string
-    duration: number | null
-    cost: runtime.Decimal | null
+    costPerHour: runtime.Decimal
+    sector: string | null
+    timeUnit: string
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -1111,6 +1237,7 @@ readonly fields: ProcessFieldRefs;
 export interface Prisma__ProcessClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  productItems<T extends Prisma.Process$productItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Process$productItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductProcessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1143,9 +1270,9 @@ export interface ProcessFieldRefs {
   readonly id: Prisma.FieldRef<"Process", 'String'>
   readonly name: Prisma.FieldRef<"Process", 'String'>
   readonly description: Prisma.FieldRef<"Process", 'String'>
-  readonly type: Prisma.FieldRef<"Process", 'String'>
-  readonly duration: Prisma.FieldRef<"Process", 'Int'>
-  readonly cost: Prisma.FieldRef<"Process", 'Decimal'>
+  readonly costPerHour: Prisma.FieldRef<"Process", 'Decimal'>
+  readonly sector: Prisma.FieldRef<"Process", 'String'>
+  readonly timeUnit: Prisma.FieldRef<"Process", 'String'>
   readonly active: Prisma.FieldRef<"Process", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Process", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Process", 'DateTime'>
@@ -1543,6 +1670,30 @@ export type ProcessDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Processes to delete.
    */
   limit?: number
+}
+
+/**
+ * Process.productItems
+ */
+export type Process$productItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductProcess
+   */
+  select?: Prisma.ProductProcessSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductProcess
+   */
+  omit?: Prisma.ProductProcessOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductProcessInclude<ExtArgs> | null
+  where?: Prisma.ProductProcessWhereInput
+  orderBy?: Prisma.ProductProcessOrderByWithRelationInput | Prisma.ProductProcessOrderByWithRelationInput[]
+  cursor?: Prisma.ProductProcessWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductProcessScalarFieldEnum | Prisma.ProductProcessScalarFieldEnum[]
 }
 
 /**

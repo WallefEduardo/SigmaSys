@@ -27,22 +27,55 @@ export type AggregateEquipment = {
 
 export type EquipmentAvgAggregateOutputType = {
   costPerHour: runtime.Decimal | null
+  maintenanceCost: runtime.Decimal | null
+  energyCost: runtime.Decimal | null
+  maxWidth: runtime.Decimal | null
+  maxHeight: runtime.Decimal | null
+  maxThickness: runtime.Decimal | null
+  year: number | null
+  maintenanceInterval: number | null
 }
 
 export type EquipmentSumAggregateOutputType = {
   costPerHour: runtime.Decimal | null
+  maintenanceCost: runtime.Decimal | null
+  energyCost: runtime.Decimal | null
+  maxWidth: runtime.Decimal | null
+  maxHeight: runtime.Decimal | null
+  maxThickness: runtime.Decimal | null
+  year: number | null
+  maintenanceInterval: number | null
 }
 
 export type EquipmentMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  code: string | null
   type: string | null
-  subtype: string | null
   costPerHour: runtime.Decimal | null
+  maintenanceCost: runtime.Decimal | null
+  energyCost: runtime.Decimal | null
+  maxWidth: runtime.Decimal | null
+  maxHeight: runtime.Decimal | null
+  maxThickness: runtime.Decimal | null
+  status: string | null
+  location: string | null
+  serialNumber: string | null
+  manufacturer: string | null
+  model: string | null
+  year: number | null
+  lastMaintenance: Date | null
+  nextMaintenance: Date | null
+  maintenanceInterval: number | null
+  maintenanceNotes: string | null
+  manualUrl: string | null
+  notes: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string | null
 }
 
@@ -50,12 +83,31 @@ export type EquipmentMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  code: string | null
   type: string | null
-  subtype: string | null
   costPerHour: runtime.Decimal | null
+  maintenanceCost: runtime.Decimal | null
+  energyCost: runtime.Decimal | null
+  maxWidth: runtime.Decimal | null
+  maxHeight: runtime.Decimal | null
+  maxThickness: runtime.Decimal | null
+  status: string | null
+  location: string | null
+  serialNumber: string | null
+  manufacturer: string | null
+  model: string | null
+  year: number | null
+  lastMaintenance: Date | null
+  nextMaintenance: Date | null
+  maintenanceInterval: number | null
+  maintenanceNotes: string | null
+  manualUrl: string | null
+  notes: string | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string | null
 }
 
@@ -63,13 +115,37 @@ export type EquipmentCountAggregateOutputType = {
   id: number
   name: number
   description: number
+  code: number
   type: number
-  subtype: number
-  capacity: number
   costPerHour: number
+  maintenanceCost: number
+  energyCost: number
+  maxWidth: number
+  maxHeight: number
+  maxThickness: number
+  printingConfig: number
+  machiningConfig: number
+  consumables: number
+  status: number
+  location: number
+  serialNumber: number
+  manufacturer: number
+  model: number
+  year: number
+  lastMaintenance: number
+  nextMaintenance: number
+  maintenanceInterval: number
+  maintenanceNotes: number
+  manualUrl: number
+  images: number
+  documents: number
+  notes: number
+  tags: number
   active: number
   createdAt: number
   updatedAt: number
+  createdBy: number
+  updatedBy: number
   companyId: number
   _all: number
 }
@@ -77,22 +153,55 @@ export type EquipmentCountAggregateOutputType = {
 
 export type EquipmentAvgAggregateInputType = {
   costPerHour?: true
+  maintenanceCost?: true
+  energyCost?: true
+  maxWidth?: true
+  maxHeight?: true
+  maxThickness?: true
+  year?: true
+  maintenanceInterval?: true
 }
 
 export type EquipmentSumAggregateInputType = {
   costPerHour?: true
+  maintenanceCost?: true
+  energyCost?: true
+  maxWidth?: true
+  maxHeight?: true
+  maxThickness?: true
+  year?: true
+  maintenanceInterval?: true
 }
 
 export type EquipmentMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  code?: true
   type?: true
-  subtype?: true
   costPerHour?: true
+  maintenanceCost?: true
+  energyCost?: true
+  maxWidth?: true
+  maxHeight?: true
+  maxThickness?: true
+  status?: true
+  location?: true
+  serialNumber?: true
+  manufacturer?: true
+  model?: true
+  year?: true
+  lastMaintenance?: true
+  nextMaintenance?: true
+  maintenanceInterval?: true
+  maintenanceNotes?: true
+  manualUrl?: true
+  notes?: true
   active?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
 }
 
@@ -100,12 +209,31 @@ export type EquipmentMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  code?: true
   type?: true
-  subtype?: true
   costPerHour?: true
+  maintenanceCost?: true
+  energyCost?: true
+  maxWidth?: true
+  maxHeight?: true
+  maxThickness?: true
+  status?: true
+  location?: true
+  serialNumber?: true
+  manufacturer?: true
+  model?: true
+  year?: true
+  lastMaintenance?: true
+  nextMaintenance?: true
+  maintenanceInterval?: true
+  maintenanceNotes?: true
+  manualUrl?: true
+  notes?: true
   active?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
 }
 
@@ -113,13 +241,37 @@ export type EquipmentCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  code?: true
   type?: true
-  subtype?: true
-  capacity?: true
   costPerHour?: true
+  maintenanceCost?: true
+  energyCost?: true
+  maxWidth?: true
+  maxHeight?: true
+  maxThickness?: true
+  printingConfig?: true
+  machiningConfig?: true
+  consumables?: true
+  status?: true
+  location?: true
+  serialNumber?: true
+  manufacturer?: true
+  model?: true
+  year?: true
+  lastMaintenance?: true
+  nextMaintenance?: true
+  maintenanceInterval?: true
+  maintenanceNotes?: true
+  manualUrl?: true
+  images?: true
+  documents?: true
+  notes?: true
+  tags?: true
   active?: true
   createdAt?: true
   updatedAt?: true
+  createdBy?: true
+  updatedBy?: true
   companyId?: true
   _all?: true
 }
@@ -214,13 +366,37 @@ export type EquipmentGroupByOutputType = {
   id: string
   name: string
   description: string | null
+  code: string | null
   type: string
-  subtype: string | null
-  capacity: runtime.JsonValue | null
-  costPerHour: runtime.Decimal | null
+  costPerHour: runtime.Decimal
+  maintenanceCost: runtime.Decimal | null
+  energyCost: runtime.Decimal | null
+  maxWidth: runtime.Decimal | null
+  maxHeight: runtime.Decimal | null
+  maxThickness: runtime.Decimal | null
+  printingConfig: runtime.JsonValue | null
+  machiningConfig: runtime.JsonValue | null
+  consumables: runtime.JsonValue | null
+  status: string
+  location: string | null
+  serialNumber: string | null
+  manufacturer: string | null
+  model: string | null
+  year: number | null
+  lastMaintenance: Date | null
+  nextMaintenance: Date | null
+  maintenanceInterval: number | null
+  maintenanceNotes: string | null
+  manualUrl: string | null
+  images: string[]
+  documents: string[]
+  notes: string | null
+  tags: string[]
   active: boolean
   createdAt: Date
   updatedAt: Date
+  createdBy: string | null
+  updatedBy: string | null
   companyId: string
   _count: EquipmentCountAggregateOutputType | null
   _avg: EquipmentAvgAggregateOutputType | null
@@ -251,61 +427,170 @@ export type EquipmentWhereInput = {
   id?: Prisma.StringFilter<"Equipment"> | string
   name?: Prisma.StringFilter<"Equipment"> | string
   description?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  code?: Prisma.StringNullableFilter<"Equipment"> | string | null
   type?: Prisma.StringFilter<"Equipment"> | string
-  subtype?: Prisma.StringNullableFilter<"Equipment"> | string | null
-  capacity?: Prisma.JsonNullableFilter<"Equipment">
-  costPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.JsonNullableFilter<"Equipment">
+  machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
+  consumables?: Prisma.JsonNullableFilter<"Equipment">
+  status?: Prisma.StringFilter<"Equipment"> | string
+  location?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manufacturer?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  model?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  year?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  lastMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  nextMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  maintenanceInterval?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  maintenanceNotes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manualUrl?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  images?: Prisma.StringNullableListFilter<"Equipment">
+  documents?: Prisma.StringNullableListFilter<"Equipment">
+  notes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Equipment">
   active?: Prisma.BoolFilter<"Equipment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
   companyId?: Prisma.StringFilter<"Equipment"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  updater?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  productItems?: Prisma.ProductEquipmentListRelationFilter
+  usageLog?: Prisma.EquipmentUsageListRelationFilter
 }
 
 export type EquipmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
-  subtype?: Prisma.SortOrderInput | Prisma.SortOrder
-  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
-  costPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  energyCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxWidth?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxHeight?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxThickness?: Prisma.SortOrderInput | Prisma.SortOrder
+  printingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  machiningConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  consumables?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  manufacturer?: Prisma.SortOrderInput | Prisma.SortOrder
+  model?: Prisma.SortOrderInput | Prisma.SortOrder
+  year?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastMaintenance?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextMaintenance?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  manualUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   companyId?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  creator?: Prisma.UserOrderByWithRelationInput
+  updater?: Prisma.UserOrderByWithRelationInput
+  productItems?: Prisma.ProductEquipmentOrderByRelationAggregateInput
+  usageLog?: Prisma.EquipmentUsageOrderByRelationAggregateInput
 }
 
 export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  companyId_code?: Prisma.EquipmentCompanyIdCodeCompoundUniqueInput
   AND?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[]
   OR?: Prisma.EquipmentWhereInput[]
   NOT?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[]
   name?: Prisma.StringFilter<"Equipment"> | string
   description?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  code?: Prisma.StringNullableFilter<"Equipment"> | string | null
   type?: Prisma.StringFilter<"Equipment"> | string
-  subtype?: Prisma.StringNullableFilter<"Equipment"> | string | null
-  capacity?: Prisma.JsonNullableFilter<"Equipment">
-  costPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.JsonNullableFilter<"Equipment">
+  machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
+  consumables?: Prisma.JsonNullableFilter<"Equipment">
+  status?: Prisma.StringFilter<"Equipment"> | string
+  location?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manufacturer?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  model?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  year?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  lastMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  nextMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  maintenanceInterval?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  maintenanceNotes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manualUrl?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  images?: Prisma.StringNullableListFilter<"Equipment">
+  documents?: Prisma.StringNullableListFilter<"Equipment">
+  notes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Equipment">
   active?: Prisma.BoolFilter<"Equipment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
   companyId?: Prisma.StringFilter<"Equipment"> | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
-}, "id">
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  updater?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  productItems?: Prisma.ProductEquipmentListRelationFilter
+  usageLog?: Prisma.EquipmentUsageListRelationFilter
+}, "id" | "companyId_code">
 
 export type EquipmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
-  subtype?: Prisma.SortOrderInput | Prisma.SortOrder
-  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
-  costPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  energyCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxWidth?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxHeight?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxThickness?: Prisma.SortOrderInput | Prisma.SortOrder
+  printingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  machiningConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  consumables?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  manufacturer?: Prisma.SortOrderInput | Prisma.SortOrder
+  model?: Prisma.SortOrderInput | Prisma.SortOrder
+  year?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastMaintenance?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextMaintenance?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  manualUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   companyId?: Prisma.SortOrder
   _count?: Prisma.EquipmentCountOrderByAggregateInput
   _avg?: Prisma.EquipmentAvgOrderByAggregateInput
@@ -321,13 +606,37 @@ export type EquipmentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
   name?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  code?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   type?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
-  subtype?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
-  capacity?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
-  costPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
+  machiningConfig?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
+  consumables?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
+  status?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
+  location?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  serialNumber?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  manufacturer?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  model?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  year?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
+  lastMaintenance?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null
+  nextMaintenance?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null
+  maintenanceInterval?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
+  maintenanceNotes?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  manualUrl?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  images?: Prisma.StringNullableListFilter<"Equipment">
+  documents?: Prisma.StringNullableListFilter<"Equipment">
+  notes?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Equipment">
   active?: Prisma.BoolWithAggregatesFilter<"Equipment"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string
+  createdBy?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  updatedBy?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   companyId?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
 }
 
@@ -335,69 +644,197 @@ export type EquipmentCreateInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
   companyId: string
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateManyInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
   companyId: string
 }
 
@@ -405,10 +842,32 @@ export type EquipmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,13 +877,37 @@ export type EquipmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -438,34 +921,89 @@ export type EquipmentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type EquipmentCompanyIdCodeCompoundUniqueInput = {
+  companyId: string
+  code: string
+}
+
 export type EquipmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  subtype?: Prisma.SortOrder
-  capacity?: Prisma.SortOrder
   costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrder
+  energyCost?: Prisma.SortOrder
+  maxWidth?: Prisma.SortOrder
+  maxHeight?: Prisma.SortOrder
+  maxThickness?: Prisma.SortOrder
+  printingConfig?: Prisma.SortOrder
+  machiningConfig?: Prisma.SortOrder
+  consumables?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  serialNumber?: Prisma.SortOrder
+  manufacturer?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  year?: Prisma.SortOrder
+  lastMaintenance?: Prisma.SortOrder
+  nextMaintenance?: Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrder
+  maintenanceNotes?: Prisma.SortOrder
+  manualUrl?: Prisma.SortOrder
+  images?: Prisma.SortOrder
+  documents?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
 export type EquipmentAvgOrderByAggregateInput = {
   costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrder
+  energyCost?: Prisma.SortOrder
+  maxWidth?: Prisma.SortOrder
+  maxHeight?: Prisma.SortOrder
+  maxThickness?: Prisma.SortOrder
+  year?: Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrder
 }
 
 export type EquipmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  subtype?: Prisma.SortOrder
   costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrder
+  energyCost?: Prisma.SortOrder
+  maxWidth?: Prisma.SortOrder
+  maxHeight?: Prisma.SortOrder
+  maxThickness?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  serialNumber?: Prisma.SortOrder
+  manufacturer?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  year?: Prisma.SortOrder
+  lastMaintenance?: Prisma.SortOrder
+  nextMaintenance?: Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrder
+  maintenanceNotes?: Prisma.SortOrder
+  manualUrl?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
@@ -473,17 +1011,48 @@ export type EquipmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  subtype?: Prisma.SortOrder
   costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrder
+  energyCost?: Prisma.SortOrder
+  maxWidth?: Prisma.SortOrder
+  maxHeight?: Prisma.SortOrder
+  maxThickness?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  serialNumber?: Prisma.SortOrder
+  manufacturer?: Prisma.SortOrder
+  model?: Prisma.SortOrder
+  year?: Prisma.SortOrder
+  lastMaintenance?: Prisma.SortOrder
+  nextMaintenance?: Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrder
+  maintenanceNotes?: Prisma.SortOrder
+  manualUrl?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
 }
 
 export type EquipmentSumOrderByAggregateInput = {
   costPerHour?: Prisma.SortOrder
+  maintenanceCost?: Prisma.SortOrder
+  energyCost?: Prisma.SortOrder
+  maxWidth?: Prisma.SortOrder
+  maxHeight?: Prisma.SortOrder
+  maxThickness?: Prisma.SortOrder
+  year?: Prisma.SortOrder
+  maintenanceInterval?: Prisma.SortOrder
+}
+
+export type EquipmentScalarRelationFilter = {
+  is?: Prisma.EquipmentWhereInput
+  isNot?: Prisma.EquipmentWhereInput
 }
 
 export type EquipmentCreateNestedManyWithoutCompanyInput = {
@@ -528,30 +1097,221 @@ export type EquipmentUncheckedUpdateManyWithoutCompanyNestedInput = {
   deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[]
 }
 
+export type EquipmentCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput> | Prisma.EquipmentCreateWithoutCreatorInput[] | Prisma.EquipmentUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCreatorInput | Prisma.EquipmentCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.EquipmentCreateManyCreatorInputEnvelope
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+}
+
+export type EquipmentCreateNestedManyWithoutUpdaterInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput> | Prisma.EquipmentCreateWithoutUpdaterInput[] | Prisma.EquipmentUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUpdaterInput | Prisma.EquipmentCreateOrConnectWithoutUpdaterInput[]
+  createMany?: Prisma.EquipmentCreateManyUpdaterInputEnvelope
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+}
+
+export type EquipmentUncheckedCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput> | Prisma.EquipmentCreateWithoutCreatorInput[] | Prisma.EquipmentUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCreatorInput | Prisma.EquipmentCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.EquipmentCreateManyCreatorInputEnvelope
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+}
+
+export type EquipmentUncheckedCreateNestedManyWithoutUpdaterInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput> | Prisma.EquipmentCreateWithoutUpdaterInput[] | Prisma.EquipmentUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUpdaterInput | Prisma.EquipmentCreateOrConnectWithoutUpdaterInput[]
+  createMany?: Prisma.EquipmentCreateManyUpdaterInputEnvelope
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+}
+
+export type EquipmentUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput> | Prisma.EquipmentCreateWithoutCreatorInput[] | Prisma.EquipmentUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCreatorInput | Prisma.EquipmentCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.EquipmentUpsertWithWhereUniqueWithoutCreatorInput | Prisma.EquipmentUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.EquipmentCreateManyCreatorInputEnvelope
+  set?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  disconnect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  delete?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  update?: Prisma.EquipmentUpdateWithWhereUniqueWithoutCreatorInput | Prisma.EquipmentUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.EquipmentUpdateManyWithWhereWithoutCreatorInput | Prisma.EquipmentUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[]
+}
+
+export type EquipmentUpdateManyWithoutUpdaterNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput> | Prisma.EquipmentCreateWithoutUpdaterInput[] | Prisma.EquipmentUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUpdaterInput | Prisma.EquipmentCreateOrConnectWithoutUpdaterInput[]
+  upsert?: Prisma.EquipmentUpsertWithWhereUniqueWithoutUpdaterInput | Prisma.EquipmentUpsertWithWhereUniqueWithoutUpdaterInput[]
+  createMany?: Prisma.EquipmentCreateManyUpdaterInputEnvelope
+  set?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  disconnect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  delete?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  update?: Prisma.EquipmentUpdateWithWhereUniqueWithoutUpdaterInput | Prisma.EquipmentUpdateWithWhereUniqueWithoutUpdaterInput[]
+  updateMany?: Prisma.EquipmentUpdateManyWithWhereWithoutUpdaterInput | Prisma.EquipmentUpdateManyWithWhereWithoutUpdaterInput[]
+  deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[]
+}
+
+export type EquipmentUncheckedUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput> | Prisma.EquipmentCreateWithoutCreatorInput[] | Prisma.EquipmentUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCreatorInput | Prisma.EquipmentCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.EquipmentUpsertWithWhereUniqueWithoutCreatorInput | Prisma.EquipmentUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.EquipmentCreateManyCreatorInputEnvelope
+  set?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  disconnect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  delete?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  update?: Prisma.EquipmentUpdateWithWhereUniqueWithoutCreatorInput | Prisma.EquipmentUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.EquipmentUpdateManyWithWhereWithoutCreatorInput | Prisma.EquipmentUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[]
+}
+
+export type EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput> | Prisma.EquipmentCreateWithoutUpdaterInput[] | Prisma.EquipmentUncheckedCreateWithoutUpdaterInput[]
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUpdaterInput | Prisma.EquipmentCreateOrConnectWithoutUpdaterInput[]
+  upsert?: Prisma.EquipmentUpsertWithWhereUniqueWithoutUpdaterInput | Prisma.EquipmentUpsertWithWhereUniqueWithoutUpdaterInput[]
+  createMany?: Prisma.EquipmentCreateManyUpdaterInputEnvelope
+  set?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  disconnect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  delete?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  connect?: Prisma.EquipmentWhereUniqueInput | Prisma.EquipmentWhereUniqueInput[]
+  update?: Prisma.EquipmentUpdateWithWhereUniqueWithoutUpdaterInput | Prisma.EquipmentUpdateWithWhereUniqueWithoutUpdaterInput[]
+  updateMany?: Prisma.EquipmentUpdateManyWithWhereWithoutUpdaterInput | Prisma.EquipmentUpdateManyWithWhereWithoutUpdaterInput[]
+  deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[]
+}
+
+export type EquipmentCreateimagesInput = {
+  set: string[]
+}
+
+export type EquipmentCreatedocumentsInput = {
+  set: string[]
+}
+
+export type EquipmentCreatetagsInput = {
+  set: string[]
+}
+
+export type EquipmentUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type EquipmentUpdatedocumentsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type EquipmentUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type EquipmentCreateNestedOneWithoutUsageLogInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUsageLogInput, Prisma.EquipmentUncheckedCreateWithoutUsageLogInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUsageLogInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+}
+
+export type EquipmentUpdateOneRequiredWithoutUsageLogNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUsageLogInput, Prisma.EquipmentUncheckedCreateWithoutUsageLogInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUsageLogInput
+  upsert?: Prisma.EquipmentUpsertWithoutUsageLogInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutUsageLogInput, Prisma.EquipmentUpdateWithoutUsageLogInput>, Prisma.EquipmentUncheckedUpdateWithoutUsageLogInput>
+}
+
+export type EquipmentCreateNestedOneWithoutProductItemsInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutProductItemsInput, Prisma.EquipmentUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutProductItemsInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+}
+
+export type EquipmentUpdateOneRequiredWithoutProductItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutProductItemsInput, Prisma.EquipmentUncheckedCreateWithoutProductItemsInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutProductItemsInput
+  upsert?: Prisma.EquipmentUpsertWithoutProductItemsInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutProductItemsInput, Prisma.EquipmentUpdateWithoutProductItemsInput>, Prisma.EquipmentUncheckedUpdateWithoutProductItemsInput>
+}
+
 export type EquipmentCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutCompanyInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutCompanyInput = {
@@ -587,156 +1347,1316 @@ export type EquipmentScalarWhereInput = {
   id?: Prisma.StringFilter<"Equipment"> | string
   name?: Prisma.StringFilter<"Equipment"> | string
   description?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  code?: Prisma.StringNullableFilter<"Equipment"> | string | null
   type?: Prisma.StringFilter<"Equipment"> | string
-  subtype?: Prisma.StringNullableFilter<"Equipment"> | string | null
-  capacity?: Prisma.JsonNullableFilter<"Equipment">
-  costPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.JsonNullableFilter<"Equipment">
+  machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
+  consumables?: Prisma.JsonNullableFilter<"Equipment">
+  status?: Prisma.StringFilter<"Equipment"> | string
+  location?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manufacturer?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  model?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  year?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  lastMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  nextMaintenance?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
+  maintenanceInterval?: Prisma.IntNullableFilter<"Equipment"> | number | null
+  maintenanceNotes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  manualUrl?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  images?: Prisma.StringNullableListFilter<"Equipment">
+  documents?: Prisma.StringNullableListFilter<"Equipment">
+  notes?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  tags?: Prisma.StringNullableListFilter<"Equipment">
   active?: Prisma.BoolFilter<"Equipment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string
+  createdBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  updatedBy?: Prisma.StringNullableFilter<"Equipment"> | string | null
   companyId?: Prisma.StringFilter<"Equipment"> | string
+}
+
+export type EquipmentCreateWithoutCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentUncheckedCreateWithoutCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentCreateOrConnectWithoutCreatorInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput>
+}
+
+export type EquipmentCreateManyCreatorInputEnvelope = {
+  data: Prisma.EquipmentCreateManyCreatorInput | Prisma.EquipmentCreateManyCreatorInput[]
+  skipDuplicates?: boolean
+}
+
+export type EquipmentCreateWithoutUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentUncheckedCreateWithoutUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentCreateOrConnectWithoutUpdaterInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput>
+}
+
+export type EquipmentCreateManyUpdaterInputEnvelope = {
+  data: Prisma.EquipmentCreateManyUpdaterInput | Prisma.EquipmentCreateManyUpdaterInput[]
+  skipDuplicates?: boolean
+}
+
+export type EquipmentUpsertWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.EquipmentUpdateWithoutCreatorInput, Prisma.EquipmentUncheckedUpdateWithoutCreatorInput>
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutCreatorInput, Prisma.EquipmentUncheckedCreateWithoutCreatorInput>
+}
+
+export type EquipmentUpdateWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateWithoutCreatorInput, Prisma.EquipmentUncheckedUpdateWithoutCreatorInput>
+}
+
+export type EquipmentUpdateManyWithWhereWithoutCreatorInput = {
+  where: Prisma.EquipmentScalarWhereInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateManyMutationInput, Prisma.EquipmentUncheckedUpdateManyWithoutCreatorInput>
+}
+
+export type EquipmentUpsertWithWhereUniqueWithoutUpdaterInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.EquipmentUpdateWithoutUpdaterInput, Prisma.EquipmentUncheckedUpdateWithoutUpdaterInput>
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutUpdaterInput, Prisma.EquipmentUncheckedCreateWithoutUpdaterInput>
+}
+
+export type EquipmentUpdateWithWhereUniqueWithoutUpdaterInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateWithoutUpdaterInput, Prisma.EquipmentUncheckedUpdateWithoutUpdaterInput>
+}
+
+export type EquipmentUpdateManyWithWhereWithoutUpdaterInput = {
+  where: Prisma.EquipmentScalarWhereInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateManyMutationInput, Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterInput>
+}
+
+export type EquipmentCreateWithoutUsageLogInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentUncheckedCreateWithoutUsageLogInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentCreateOrConnectWithoutUsageLogInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutUsageLogInput, Prisma.EquipmentUncheckedCreateWithoutUsageLogInput>
+}
+
+export type EquipmentUpsertWithoutUsageLogInput = {
+  update: Prisma.XOR<Prisma.EquipmentUpdateWithoutUsageLogInput, Prisma.EquipmentUncheckedUpdateWithoutUsageLogInput>
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutUsageLogInput, Prisma.EquipmentUncheckedCreateWithoutUsageLogInput>
+  where?: Prisma.EquipmentWhereInput
+}
+
+export type EquipmentUpdateToOneWithWhereWithoutUsageLogInput = {
+  where?: Prisma.EquipmentWhereInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateWithoutUsageLogInput, Prisma.EquipmentUncheckedUpdateWithoutUsageLogInput>
+}
+
+export type EquipmentUpdateWithoutUsageLogInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateWithoutUsageLogInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentUncheckedCreateWithoutProductItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentCreateOrConnectWithoutProductItemsInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutProductItemsInput, Prisma.EquipmentUncheckedCreateWithoutProductItemsInput>
+}
+
+export type EquipmentUpsertWithoutProductItemsInput = {
+  update: Prisma.XOR<Prisma.EquipmentUpdateWithoutProductItemsInput, Prisma.EquipmentUncheckedUpdateWithoutProductItemsInput>
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutProductItemsInput, Prisma.EquipmentUncheckedCreateWithoutProductItemsInput>
+  where?: Prisma.EquipmentWhereInput
+}
+
+export type EquipmentUpdateToOneWithWhereWithoutProductItemsInput = {
+  where?: Prisma.EquipmentWhereInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateWithoutProductItemsInput, Prisma.EquipmentUncheckedUpdateWithoutProductItemsInput>
+}
+
+export type EquipmentUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateWithoutProductItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateManyCompanyInput = {
   id?: string
   name: string
   description?: string | null
+  code?: string | null
   type: string
-  subtype?: string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
 }
 
 export type EquipmentUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  capacity?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  costPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type EquipmentCreateManyCreatorInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy?: string | null
+  companyId: string
+}
+
+export type EquipmentCreateManyUpdaterInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  costPerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  companyId: string
+}
+
+export type EquipmentUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateManyWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type EquipmentUpdateWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateManyWithoutUpdaterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  costPerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  maintenanceCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  energyCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+
+/**
+ * Count Type EquipmentCountOutputType
+ */
+
+export type EquipmentCountOutputType = {
+  productItems: number
+  usageLog: number
+}
+
+export type EquipmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  productItems?: boolean | EquipmentCountOutputTypeCountProductItemsArgs
+  usageLog?: boolean | EquipmentCountOutputTypeCountUsageLogArgs
+}
+
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentCountOutputType
+   */
+  select?: Prisma.EquipmentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountProductItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductEquipmentWhereInput
+}
+
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountUsageLogArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentUsageWhereInput
+}
 
 
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
+  code?: boolean
   type?: boolean
-  subtype?: boolean
-  capacity?: boolean
   costPerHour?: boolean
+  maintenanceCost?: boolean
+  energyCost?: boolean
+  maxWidth?: boolean
+  maxHeight?: boolean
+  maxThickness?: boolean
+  printingConfig?: boolean
+  machiningConfig?: boolean
+  consumables?: boolean
+  status?: boolean
+  location?: boolean
+  serialNumber?: boolean
+  manufacturer?: boolean
+  model?: boolean
+  year?: boolean
+  lastMaintenance?: boolean
+  nextMaintenance?: boolean
+  maintenanceInterval?: boolean
+  maintenanceNotes?: boolean
+  manualUrl?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
+  productItems?: boolean | Prisma.Equipment$productItemsArgs<ExtArgs>
+  usageLog?: boolean | Prisma.Equipment$usageLogArgs<ExtArgs>
+  _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["equipment"]>
 
 export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
+  code?: boolean
   type?: boolean
-  subtype?: boolean
-  capacity?: boolean
   costPerHour?: boolean
+  maintenanceCost?: boolean
+  energyCost?: boolean
+  maxWidth?: boolean
+  maxHeight?: boolean
+  maxThickness?: boolean
+  printingConfig?: boolean
+  machiningConfig?: boolean
+  consumables?: boolean
+  status?: boolean
+  location?: boolean
+  serialNumber?: boolean
+  manufacturer?: boolean
+  model?: boolean
+  year?: boolean
+  lastMaintenance?: boolean
+  nextMaintenance?: boolean
+  maintenanceInterval?: boolean
+  maintenanceNotes?: boolean
+  manualUrl?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
 }, ExtArgs["result"]["equipment"]>
 
 export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
+  code?: boolean
   type?: boolean
-  subtype?: boolean
-  capacity?: boolean
   costPerHour?: boolean
+  maintenanceCost?: boolean
+  energyCost?: boolean
+  maxWidth?: boolean
+  maxHeight?: boolean
+  maxThickness?: boolean
+  printingConfig?: boolean
+  machiningConfig?: boolean
+  consumables?: boolean
+  status?: boolean
+  location?: boolean
+  serialNumber?: boolean
+  manufacturer?: boolean
+  model?: boolean
+  year?: boolean
+  lastMaintenance?: boolean
+  nextMaintenance?: boolean
+  maintenanceInterval?: boolean
+  maintenanceNotes?: boolean
+  manualUrl?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
 }, ExtArgs["result"]["equipment"]>
 
 export type EquipmentSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
+  code?: boolean
   type?: boolean
-  subtype?: boolean
-  capacity?: boolean
   costPerHour?: boolean
+  maintenanceCost?: boolean
+  energyCost?: boolean
+  maxWidth?: boolean
+  maxHeight?: boolean
+  maxThickness?: boolean
+  printingConfig?: boolean
+  machiningConfig?: boolean
+  consumables?: boolean
+  status?: boolean
+  location?: boolean
+  serialNumber?: boolean
+  manufacturer?: boolean
+  model?: boolean
+  year?: boolean
+  lastMaintenance?: boolean
+  nextMaintenance?: boolean
+  maintenanceInterval?: boolean
+  maintenanceNotes?: boolean
+  manualUrl?: boolean
+  images?: boolean
+  documents?: boolean
+  notes?: boolean
+  tags?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean
+  updatedBy?: boolean
   companyId?: boolean
 }
 
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "type" | "subtype" | "capacity" | "costPerHour" | "active" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["equipment"]>
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "costPerHour" | "maintenanceCost" | "energyCost" | "maxWidth" | "maxHeight" | "maxThickness" | "printingConfig" | "machiningConfig" | "consumables" | "status" | "location" | "serialNumber" | "manufacturer" | "model" | "year" | "lastMaintenance" | "nextMaintenance" | "maintenanceInterval" | "maintenanceNotes" | "manualUrl" | "images" | "documents" | "notes" | "tags" | "active" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["equipment"]>
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
+  productItems?: boolean | Prisma.Equipment$productItemsArgs<ExtArgs>
+  usageLog?: boolean | Prisma.Equipment$usageLogArgs<ExtArgs>
+  _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
 }
 export type EquipmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
+  updater?: boolean | Prisma.Equipment$updaterArgs<ExtArgs>
 }
 
 export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Equipment"
   objects: {
     company: Prisma.$CompanyPayload<ExtArgs>
+    creator: Prisma.$UserPayload<ExtArgs> | null
+    updater: Prisma.$UserPayload<ExtArgs> | null
+    productItems: Prisma.$ProductEquipmentPayload<ExtArgs>[]
+    usageLog: Prisma.$EquipmentUsagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string | null
+    code: string | null
     type: string
-    subtype: string | null
-    capacity: runtime.JsonValue | null
-    costPerHour: runtime.Decimal | null
+    costPerHour: runtime.Decimal
+    maintenanceCost: runtime.Decimal | null
+    energyCost: runtime.Decimal | null
+    maxWidth: runtime.Decimal | null
+    maxHeight: runtime.Decimal | null
+    maxThickness: runtime.Decimal | null
+    printingConfig: runtime.JsonValue | null
+    machiningConfig: runtime.JsonValue | null
+    consumables: runtime.JsonValue | null
+    status: string
+    location: string | null
+    serialNumber: string | null
+    manufacturer: string | null
+    model: string | null
+    year: number | null
+    lastMaintenance: Date | null
+    nextMaintenance: Date | null
+    maintenanceInterval: number | null
+    maintenanceNotes: string | null
+    manualUrl: string | null
+    images: string[]
+    documents: string[]
+    notes: string | null
+    tags: string[]
     active: boolean
     createdAt: Date
     updatedAt: Date
+    createdBy: string | null
+    updatedBy: string | null
     companyId: string
   }, ExtArgs["result"]["equipment"]>
   composites: {}
@@ -1133,6 +3053,10 @@ readonly fields: EquipmentFieldRefs;
 export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  creator<T extends Prisma.Equipment$creatorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$creatorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  updater<T extends Prisma.Equipment$updaterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$updaterArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  productItems<T extends Prisma.Equipment$productItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$productItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  usageLog<T extends Prisma.Equipment$usageLogArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$usageLogArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1165,13 +3089,37 @@ export interface EquipmentFieldRefs {
   readonly id: Prisma.FieldRef<"Equipment", 'String'>
   readonly name: Prisma.FieldRef<"Equipment", 'String'>
   readonly description: Prisma.FieldRef<"Equipment", 'String'>
+  readonly code: Prisma.FieldRef<"Equipment", 'String'>
   readonly type: Prisma.FieldRef<"Equipment", 'String'>
-  readonly subtype: Prisma.FieldRef<"Equipment", 'String'>
-  readonly capacity: Prisma.FieldRef<"Equipment", 'Json'>
   readonly costPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly maintenanceCost: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly energyCost: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly maxWidth: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly maxHeight: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly maxThickness: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly printingConfig: Prisma.FieldRef<"Equipment", 'Json'>
+  readonly machiningConfig: Prisma.FieldRef<"Equipment", 'Json'>
+  readonly consumables: Prisma.FieldRef<"Equipment", 'Json'>
+  readonly status: Prisma.FieldRef<"Equipment", 'String'>
+  readonly location: Prisma.FieldRef<"Equipment", 'String'>
+  readonly serialNumber: Prisma.FieldRef<"Equipment", 'String'>
+  readonly manufacturer: Prisma.FieldRef<"Equipment", 'String'>
+  readonly model: Prisma.FieldRef<"Equipment", 'String'>
+  readonly year: Prisma.FieldRef<"Equipment", 'Int'>
+  readonly lastMaintenance: Prisma.FieldRef<"Equipment", 'DateTime'>
+  readonly nextMaintenance: Prisma.FieldRef<"Equipment", 'DateTime'>
+  readonly maintenanceInterval: Prisma.FieldRef<"Equipment", 'Int'>
+  readonly maintenanceNotes: Prisma.FieldRef<"Equipment", 'String'>
+  readonly manualUrl: Prisma.FieldRef<"Equipment", 'String'>
+  readonly images: Prisma.FieldRef<"Equipment", 'String[]'>
+  readonly documents: Prisma.FieldRef<"Equipment", 'String[]'>
+  readonly notes: Prisma.FieldRef<"Equipment", 'String'>
+  readonly tags: Prisma.FieldRef<"Equipment", 'String[]'>
   readonly active: Prisma.FieldRef<"Equipment", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Equipment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Equipment", 'DateTime'>
+  readonly createdBy: Prisma.FieldRef<"Equipment", 'String'>
+  readonly updatedBy: Prisma.FieldRef<"Equipment", 'String'>
   readonly companyId: Prisma.FieldRef<"Equipment", 'String'>
 }
     
@@ -1566,6 +3514,92 @@ export type EquipmentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many Equipment to delete.
    */
   limit?: number
+}
+
+/**
+ * Equipment.creator
+ */
+export type Equipment$creatorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Equipment.updater
+ */
+export type Equipment$updaterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Equipment.productItems
+ */
+export type Equipment$productItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductEquipment
+   */
+  select?: Prisma.ProductEquipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductEquipment
+   */
+  omit?: Prisma.ProductEquipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductEquipmentInclude<ExtArgs> | null
+  where?: Prisma.ProductEquipmentWhereInput
+  orderBy?: Prisma.ProductEquipmentOrderByWithRelationInput | Prisma.ProductEquipmentOrderByWithRelationInput[]
+  cursor?: Prisma.ProductEquipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductEquipmentScalarFieldEnum | Prisma.ProductEquipmentScalarFieldEnum[]
+}
+
+/**
+ * Equipment.usageLog
+ */
+export type Equipment$usageLogArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentUsage
+   */
+  select?: Prisma.EquipmentUsageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EquipmentUsage
+   */
+  omit?: Prisma.EquipmentUsageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentUsageInclude<ExtArgs> | null
+  where?: Prisma.EquipmentUsageWhereInput
+  orderBy?: Prisma.EquipmentUsageOrderByWithRelationInput | Prisma.EquipmentUsageOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentUsageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentUsageScalarFieldEnum | Prisma.EquipmentUsageScalarFieldEnum[]
 }
 
 /**

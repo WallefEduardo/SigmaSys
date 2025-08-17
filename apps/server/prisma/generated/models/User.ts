@@ -270,6 +270,12 @@ export type UserWhereInput = {
   createdUsers?: Prisma.UserListRelationFilter
   createdClients?: Prisma.ClientListRelationFilter
   clientInteractions?: Prisma.ClientInteractionListRelationFilter
+  createdMaterials?: Prisma.MaterialListRelationFilter
+  updatedMaterials?: Prisma.MaterialListRelationFilter
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryListRelationFilter
+  createdEquipments?: Prisma.EquipmentListRelationFilter
+  updatedEquipments?: Prisma.EquipmentListRelationFilter
+  equipmentOperations?: Prisma.EquipmentUsageListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -294,6 +300,12 @@ export type UserOrderByWithRelationInput = {
   createdUsers?: Prisma.UserOrderByRelationAggregateInput
   createdClients?: Prisma.ClientOrderByRelationAggregateInput
   clientInteractions?: Prisma.ClientInteractionOrderByRelationAggregateInput
+  createdMaterials?: Prisma.MaterialOrderByRelationAggregateInput
+  updatedMaterials?: Prisma.MaterialOrderByRelationAggregateInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryOrderByRelationAggregateInput
+  createdEquipments?: Prisma.EquipmentOrderByRelationAggregateInput
+  updatedEquipments?: Prisma.EquipmentOrderByRelationAggregateInput
+  equipmentOperations?: Prisma.EquipmentUsageOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -321,6 +333,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdUsers?: Prisma.UserListRelationFilter
   createdClients?: Prisma.ClientListRelationFilter
   clientInteractions?: Prisma.ClientInteractionListRelationFilter
+  createdMaterials?: Prisma.MaterialListRelationFilter
+  updatedMaterials?: Prisma.MaterialListRelationFilter
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryListRelationFilter
+  createdEquipments?: Prisma.EquipmentListRelationFilter
+  updatedEquipments?: Prisma.EquipmentListRelationFilter
+  equipmentOperations?: Prisma.EquipmentUsageListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -387,6 +405,12 @@ export type UserCreateInput = {
   createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -409,6 +433,12 @@ export type UserUncheckedCreateInput = {
   createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUpdateInput = {
@@ -431,6 +461,12 @@ export type UserUpdateInput = {
   createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -453,6 +489,12 @@ export type UserUncheckedUpdateInput = {
   createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -719,6 +761,102 @@ export type UserUpdateOneRequiredWithoutClientInteractionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutClientInteractionsInput, Prisma.UserUpdateWithoutClientInteractionsInput>, Prisma.UserUncheckedUpdateWithoutClientInteractionsInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedMaterialsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaterialsInput, Prisma.UserUncheckedCreateWithoutCreatedMaterialsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedMaterialsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedMaterialsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedCreateWithoutUpdatedMaterialsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedMaterialsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedMaterialsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaterialsInput, Prisma.UserUncheckedCreateWithoutCreatedMaterialsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedMaterialsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedMaterialsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedMaterialsInput, Prisma.UserUpdateWithoutCreatedMaterialsInput>, Prisma.UserUncheckedUpdateWithoutCreatedMaterialsInput>
+}
+
+export type UserUpdateOneWithoutUpdatedMaterialsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedCreateWithoutUpdatedMaterialsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedMaterialsInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedMaterialsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedMaterialsInput, Prisma.UserUpdateWithoutUpdatedMaterialsInput>, Prisma.UserUncheckedUpdateWithoutUpdatedMaterialsInput>
+}
+
+export type UserCreateNestedOneWithoutPriceHistoryRecordsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedCreateWithoutPriceHistoryRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPriceHistoryRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPriceHistoryRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedCreateWithoutPriceHistoryRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPriceHistoryRecordsInput
+  upsert?: Prisma.UserUpsertWithoutPriceHistoryRecordsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPriceHistoryRecordsInput, Prisma.UserUpdateWithoutPriceHistoryRecordsInput>, Prisma.UserUncheckedUpdateWithoutPriceHistoryRecordsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedEquipmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutCreatedEquipmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedEquipmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedEquipmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutUpdatedEquipmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedEquipmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedEquipmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutCreatedEquipmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedEquipmentsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedEquipmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedEquipmentsInput, Prisma.UserUpdateWithoutCreatedEquipmentsInput>, Prisma.UserUncheckedUpdateWithoutCreatedEquipmentsInput>
+}
+
+export type UserUpdateOneWithoutUpdatedEquipmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutUpdatedEquipmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedEquipmentsInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedEquipmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedEquipmentsInput, Prisma.UserUpdateWithoutUpdatedEquipmentsInput>, Prisma.UserUncheckedUpdateWithoutUpdatedEquipmentsInput>
+}
+
+export type UserCreateNestedOneWithoutEquipmentOperationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEquipmentOperationsInput, Prisma.UserUncheckedCreateWithoutEquipmentOperationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEquipmentOperationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutEquipmentOperationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEquipmentOperationsInput, Prisma.UserUncheckedCreateWithoutEquipmentOperationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEquipmentOperationsInput
+  upsert?: Prisma.UserUpsertWithoutEquipmentOperationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEquipmentOperationsInput, Prisma.UserUpdateWithoutEquipmentOperationsInput>, Prisma.UserUncheckedUpdateWithoutEquipmentOperationsInput>
+}
+
 export type UserCreateWithoutCompanyInput = {
   id?: string
   email: string
@@ -738,6 +876,12 @@ export type UserCreateWithoutCompanyInput = {
   createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateWithoutCompanyInput = {
@@ -759,6 +903,12 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserCreateOrConnectWithoutCompanyInput = {
@@ -828,6 +978,12 @@ export type UserCreateWithoutCreatedUsersInput = {
   creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
   createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -849,6 +1005,12 @@ export type UserUncheckedCreateWithoutCreatedUsersInput = {
   createdBy?: string | null
   createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -875,6 +1037,12 @@ export type UserCreateWithoutCreatorInput = {
   createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateWithoutCreatorInput = {
@@ -896,6 +1064,12 @@ export type UserUncheckedCreateWithoutCreatorInput = {
   createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserCreateOrConnectWithoutCreatorInput = {
@@ -938,6 +1112,12 @@ export type UserUpdateWithoutCreatedUsersInput = {
   creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
   createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -959,6 +1139,12 @@ export type UserUncheckedUpdateWithoutCreatedUsersInput = {
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutCreatorInput = {
@@ -996,6 +1182,12 @@ export type UserCreateWithoutCreatedClientsInput = {
   creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
   createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateWithoutCreatedClientsInput = {
@@ -1017,6 +1209,12 @@ export type UserUncheckedCreateWithoutCreatedClientsInput = {
   createdBy?: string | null
   createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
   clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserCreateOrConnectWithoutCreatedClientsInput = {
@@ -1054,6 +1252,12 @@ export type UserUpdateWithoutCreatedClientsInput = {
   creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
   createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedClientsInput = {
@@ -1075,6 +1279,12 @@ export type UserUncheckedUpdateWithoutCreatedClientsInput = {
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserCreateWithoutClientInteractionsInput = {
@@ -1096,6 +1306,12 @@ export type UserCreateWithoutClientInteractionsInput = {
   creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
   createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
 }
 
 export type UserUncheckedCreateWithoutClientInteractionsInput = {
@@ -1117,6 +1333,12 @@ export type UserUncheckedCreateWithoutClientInteractionsInput = {
   createdBy?: string | null
   createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
   createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
 }
 
 export type UserCreateOrConnectWithoutClientInteractionsInput = {
@@ -1154,6 +1376,12 @@ export type UserUpdateWithoutClientInteractionsInput = {
   creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
   createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientInteractionsInput = {
@@ -1175,6 +1403,756 @@ export type UserUncheckedUpdateWithoutClientInteractionsInput = {
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserCreateWithoutCreatedMaterialsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
+}
+
+export type UserUncheckedCreateWithoutCreatedMaterialsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
+}
+
+export type UserCreateOrConnectWithoutCreatedMaterialsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaterialsInput, Prisma.UserUncheckedCreateWithoutCreatedMaterialsInput>
+}
+
+export type UserCreateWithoutUpdatedMaterialsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedMaterialsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedMaterialsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedCreateWithoutUpdatedMaterialsInput>
+}
+
+export type UserUpsertWithoutCreatedMaterialsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedMaterialsInput, Prisma.UserUncheckedUpdateWithoutCreatedMaterialsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaterialsInput, Prisma.UserUncheckedCreateWithoutCreatedMaterialsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedMaterialsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedMaterialsInput, Prisma.UserUncheckedUpdateWithoutCreatedMaterialsInput>
+}
+
+export type UserUpdateWithoutCreatedMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUpsertWithoutUpdatedMaterialsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedUpdateWithoutUpdatedMaterialsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedCreateWithoutUpdatedMaterialsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedMaterialsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedMaterialsInput, Prisma.UserUncheckedUpdateWithoutUpdatedMaterialsInput>
+}
+
+export type UserUpdateWithoutUpdatedMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedMaterialsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserCreateWithoutPriceHistoryRecordsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
+}
+
+export type UserUncheckedCreateWithoutPriceHistoryRecordsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
+}
+
+export type UserCreateOrConnectWithoutPriceHistoryRecordsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedCreateWithoutPriceHistoryRecordsInput>
+}
+
+export type UserUpsertWithoutPriceHistoryRecordsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedUpdateWithoutPriceHistoryRecordsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedCreateWithoutPriceHistoryRecordsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPriceHistoryRecordsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPriceHistoryRecordsInput, Prisma.UserUncheckedUpdateWithoutPriceHistoryRecordsInput>
+}
+
+export type UserUpdateWithoutPriceHistoryRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPriceHistoryRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserCreateWithoutCreatedEquipmentsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
+}
+
+export type UserUncheckedCreateWithoutCreatedEquipmentsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
+}
+
+export type UserCreateOrConnectWithoutCreatedEquipmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutCreatedEquipmentsInput>
+}
+
+export type UserCreateWithoutUpdatedEquipmentsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  equipmentOperations?: Prisma.EquipmentUsageCreateNestedManyWithoutOperatorInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedEquipmentsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutOperatorInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedEquipmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutUpdatedEquipmentsInput>
+}
+
+export type UserUpsertWithoutCreatedEquipmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedUpdateWithoutCreatedEquipmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutCreatedEquipmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedEquipmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedEquipmentsInput, Prisma.UserUncheckedUpdateWithoutCreatedEquipmentsInput>
+}
+
+export type UserUpdateWithoutCreatedEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUpsertWithoutUpdatedEquipmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedUpdateWithoutUpdatedEquipmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedCreateWithoutUpdatedEquipmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedEquipmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedEquipmentsInput, Prisma.UserUncheckedUpdateWithoutUpdatedEquipmentsInput>
+}
+
+export type UserUpdateWithoutUpdatedEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedEquipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
+}
+
+export type UserCreateWithoutEquipmentOperationsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutUsersInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedUsersInput
+  createdUsers?: Prisma.UserCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentCreateNestedManyWithoutUpdaterInput
+}
+
+export type UserUncheckedCreateWithoutEquipmentOperationsInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: string | null
+  position?: string | null
+  avatar?: string | null
+  phone?: string | null
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companyId: string
+  createdBy?: string | null
+  createdUsers?: Prisma.UserUncheckedCreateNestedManyWithoutCreatorInput
+  createdClients?: Prisma.ClientUncheckedCreateNestedManyWithoutCreatorInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedCreateNestedManyWithoutUserInput
+  createdMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCreatorInput
+  updatedMaterials?: Prisma.MaterialUncheckedCreateNestedManyWithoutUpdaterInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedCreateNestedManyWithoutUserInput
+  createdEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCreatorInput
+  updatedEquipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutUpdaterInput
+}
+
+export type UserCreateOrConnectWithoutEquipmentOperationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEquipmentOperationsInput, Prisma.UserUncheckedCreateWithoutEquipmentOperationsInput>
+}
+
+export type UserUpsertWithoutEquipmentOperationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEquipmentOperationsInput, Prisma.UserUncheckedUpdateWithoutEquipmentOperationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEquipmentOperationsInput, Prisma.UserUncheckedCreateWithoutEquipmentOperationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEquipmentOperationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEquipmentOperationsInput, Prisma.UserUncheckedUpdateWithoutEquipmentOperationsInput>
+}
+
+export type UserUpdateWithoutEquipmentOperationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedUsersNestedInput
+  createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEquipmentOperationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  permissions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
+  createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
+  clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
 }
 
 export type UserCreateManyCompanyInput = {
@@ -1214,6 +2192,12 @@ export type UserUpdateWithoutCompanyInput = {
   createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompanyInput = {
@@ -1235,6 +2219,12 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutCompanyInput = {
@@ -1292,6 +2282,12 @@ export type UserUpdateWithoutCreatorInput = {
   createdUsers?: Prisma.UserUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatorInput = {
@@ -1313,6 +2309,12 @@ export type UserUncheckedUpdateWithoutCreatorInput = {
   createdUsers?: Prisma.UserUncheckedUpdateManyWithoutCreatorNestedInput
   createdClients?: Prisma.ClientUncheckedUpdateManyWithoutCreatorNestedInput
   clientInteractions?: Prisma.ClientInteractionUncheckedUpdateManyWithoutUserNestedInput
+  createdMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedMaterials?: Prisma.MaterialUncheckedUpdateManyWithoutUpdaterNestedInput
+  priceHistoryRecords?: Prisma.MaterialPriceHistoryUncheckedUpdateManyWithoutUserNestedInput
+  createdEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCreatorNestedInput
+  updatedEquipments?: Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterNestedInput
+  equipmentOperations?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutOperatorNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutCreatorInput = {
@@ -1342,12 +2344,24 @@ export type UserCountOutputType = {
   createdUsers: number
   createdClients: number
   clientInteractions: number
+  createdMaterials: number
+  updatedMaterials: number
+  priceHistoryRecords: number
+  createdEquipments: number
+  updatedEquipments: number
+  equipmentOperations: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdUsers?: boolean | UserCountOutputTypeCountCreatedUsersArgs
   createdClients?: boolean | UserCountOutputTypeCountCreatedClientsArgs
   clientInteractions?: boolean | UserCountOutputTypeCountClientInteractionsArgs
+  createdMaterials?: boolean | UserCountOutputTypeCountCreatedMaterialsArgs
+  updatedMaterials?: boolean | UserCountOutputTypeCountUpdatedMaterialsArgs
+  priceHistoryRecords?: boolean | UserCountOutputTypeCountPriceHistoryRecordsArgs
+  createdEquipments?: boolean | UserCountOutputTypeCountCreatedEquipmentsArgs
+  updatedEquipments?: boolean | UserCountOutputTypeCountUpdatedEquipmentsArgs
+  equipmentOperations?: boolean | UserCountOutputTypeCountEquipmentOperationsArgs
 }
 
 /**
@@ -1381,6 +2395,48 @@ export type UserCountOutputTypeCountClientInteractionsArgs<ExtArgs extends runti
   where?: Prisma.ClientInteractionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUpdatedMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPriceHistoryRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialPriceHistoryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedEquipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUpdatedEquipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEquipmentOperationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentUsageWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1404,6 +2460,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdUsers?: boolean | Prisma.User$createdUsersArgs<ExtArgs>
   createdClients?: boolean | Prisma.User$createdClientsArgs<ExtArgs>
   clientInteractions?: boolean | Prisma.User$clientInteractionsArgs<ExtArgs>
+  createdMaterials?: boolean | Prisma.User$createdMaterialsArgs<ExtArgs>
+  updatedMaterials?: boolean | Prisma.User$updatedMaterialsArgs<ExtArgs>
+  priceHistoryRecords?: boolean | Prisma.User$priceHistoryRecordsArgs<ExtArgs>
+  createdEquipments?: boolean | Prisma.User$createdEquipmentsArgs<ExtArgs>
+  updatedEquipments?: boolean | Prisma.User$updatedEquipmentsArgs<ExtArgs>
+  equipmentOperations?: boolean | Prisma.User$equipmentOperationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1475,6 +2537,12 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdUsers?: boolean | Prisma.User$createdUsersArgs<ExtArgs>
   createdClients?: boolean | Prisma.User$createdClientsArgs<ExtArgs>
   clientInteractions?: boolean | Prisma.User$clientInteractionsArgs<ExtArgs>
+  createdMaterials?: boolean | Prisma.User$createdMaterialsArgs<ExtArgs>
+  updatedMaterials?: boolean | Prisma.User$updatedMaterialsArgs<ExtArgs>
+  priceHistoryRecords?: boolean | Prisma.User$priceHistoryRecordsArgs<ExtArgs>
+  createdEquipments?: boolean | Prisma.User$createdEquipmentsArgs<ExtArgs>
+  updatedEquipments?: boolean | Prisma.User$updatedEquipmentsArgs<ExtArgs>
+  equipmentOperations?: boolean | Prisma.User$equipmentOperationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1494,6 +2562,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdUsers: Prisma.$UserPayload<ExtArgs>[]
     createdClients: Prisma.$ClientPayload<ExtArgs>[]
     clientInteractions: Prisma.$ClientInteractionPayload<ExtArgs>[]
+    createdMaterials: Prisma.$MaterialPayload<ExtArgs>[]
+    updatedMaterials: Prisma.$MaterialPayload<ExtArgs>[]
+    priceHistoryRecords: Prisma.$MaterialPriceHistoryPayload<ExtArgs>[]
+    createdEquipments: Prisma.$EquipmentPayload<ExtArgs>[]
+    updatedEquipments: Prisma.$EquipmentPayload<ExtArgs>[]
+    equipmentOperations: Prisma.$EquipmentUsagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1911,6 +2985,12 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdUsers<T extends Prisma.User$createdUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdClients<T extends Prisma.User$createdClientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdClientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clientInteractions<T extends Prisma.User$clientInteractionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdMaterials<T extends Prisma.User$createdMaterialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdMaterialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  updatedMaterials<T extends Prisma.User$updatedMaterialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedMaterialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priceHistoryRecords<T extends Prisma.User$priceHistoryRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$priceHistoryRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdEquipments<T extends Prisma.User$createdEquipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEquipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  updatedEquipments<T extends Prisma.User$updatedEquipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedEquipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  equipmentOperations<T extends Prisma.User$equipmentOperationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$equipmentOperationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2440,6 +3520,150 @@ export type User$clientInteractionsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ClientInteractionScalarFieldEnum | Prisma.ClientInteractionScalarFieldEnum[]
+}
+
+/**
+ * User.createdMaterials
+ */
+export type User$createdMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Material
+   */
+  select?: Prisma.MaterialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Material
+   */
+  omit?: Prisma.MaterialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialInclude<ExtArgs> | null
+  where?: Prisma.MaterialWhereInput
+  orderBy?: Prisma.MaterialOrderByWithRelationInput | Prisma.MaterialOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialScalarFieldEnum | Prisma.MaterialScalarFieldEnum[]
+}
+
+/**
+ * User.updatedMaterials
+ */
+export type User$updatedMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Material
+   */
+  select?: Prisma.MaterialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Material
+   */
+  omit?: Prisma.MaterialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialInclude<ExtArgs> | null
+  where?: Prisma.MaterialWhereInput
+  orderBy?: Prisma.MaterialOrderByWithRelationInput | Prisma.MaterialOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialScalarFieldEnum | Prisma.MaterialScalarFieldEnum[]
+}
+
+/**
+ * User.priceHistoryRecords
+ */
+export type User$priceHistoryRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialPriceHistory
+   */
+  select?: Prisma.MaterialPriceHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaterialPriceHistory
+   */
+  omit?: Prisma.MaterialPriceHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialPriceHistoryInclude<ExtArgs> | null
+  where?: Prisma.MaterialPriceHistoryWhereInput
+  orderBy?: Prisma.MaterialPriceHistoryOrderByWithRelationInput | Prisma.MaterialPriceHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialPriceHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialPriceHistoryScalarFieldEnum | Prisma.MaterialPriceHistoryScalarFieldEnum[]
+}
+
+/**
+ * User.createdEquipments
+ */
+export type User$createdEquipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Equipment
+   */
+  select?: Prisma.EquipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Equipment
+   */
+  omit?: Prisma.EquipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentInclude<ExtArgs> | null
+  where?: Prisma.EquipmentWhereInput
+  orderBy?: Prisma.EquipmentOrderByWithRelationInput | Prisma.EquipmentOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentScalarFieldEnum | Prisma.EquipmentScalarFieldEnum[]
+}
+
+/**
+ * User.updatedEquipments
+ */
+export type User$updatedEquipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Equipment
+   */
+  select?: Prisma.EquipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Equipment
+   */
+  omit?: Prisma.EquipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentInclude<ExtArgs> | null
+  where?: Prisma.EquipmentWhereInput
+  orderBy?: Prisma.EquipmentOrderByWithRelationInput | Prisma.EquipmentOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentScalarFieldEnum | Prisma.EquipmentScalarFieldEnum[]
+}
+
+/**
+ * User.equipmentOperations
+ */
+export type User$equipmentOperationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentUsage
+   */
+  select?: Prisma.EquipmentUsageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EquipmentUsage
+   */
+  omit?: Prisma.EquipmentUsageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentUsageInclude<ExtArgs> | null
+  where?: Prisma.EquipmentUsageWhereInput
+  orderBy?: Prisma.EquipmentUsageOrderByWithRelationInput | Prisma.EquipmentUsageOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentUsageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentUsageScalarFieldEnum | Prisma.EquipmentUsageScalarFieldEnum[]
 }
 
 /**

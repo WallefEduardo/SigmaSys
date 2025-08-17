@@ -82,24 +82,79 @@ export type Product = Prisma.ProductModel
  */
 export type Material = Prisma.MaterialModel
 /**
+ * Model MaterialPriceHistory
+ * 
+ */
+export type MaterialPriceHistory = Prisma.MaterialPriceHistoryModel
+/**
  * Model Equipment
  * 
  */
 export type Equipment = Prisma.EquipmentModel
+/**
+ * Model EquipmentUsage
+ * 
+ */
+export type EquipmentUsage = Prisma.EquipmentUsageModel
 /**
  * Model Process
  * 
  */
 export type Process = Prisma.ProcessModel
 /**
+ * Model ProductMaterial
+ * 
+ */
+export type ProductMaterial = Prisma.ProductMaterialModel
+/**
+ * Model ProductEquipment
+ * 
+ */
+export type ProductEquipment = Prisma.ProductEquipmentModel
+/**
+ * Model ProductProcess
+ * 
+ */
+export type ProductProcess = Prisma.ProductProcessModel
+/**
+ * Model ProductFinish
+ * 
+ */
+export type ProductFinish = Prisma.ProductFinishModel
+/**
+ * Model Finish
+ * 
+ */
+export type Finish = Prisma.FinishModel
+/**
+ * Model InventoryItem
+ * 
+ */
+export type InventoryItem = Prisma.InventoryItemModel
+/**
+ * Model InventoryMovement
+ * 
+ */
+export type InventoryMovement = Prisma.InventoryMovementModel
+/**
  * Model Quote
  * 
  */
 export type Quote = Prisma.QuoteModel
 /**
+ * Model QuoteItem
+ * 
+ */
+export type QuoteItem = Prisma.QuoteItemModel
+/**
  * Model Order
  * 
  */
 export type Order = Prisma.OrderModel
+/**
+ * Model OrderItem
+ * 
+ */
+export type OrderItem = Prisma.OrderItemModel
 
 
