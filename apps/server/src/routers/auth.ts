@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { router, publicProcedure, protectedProcedure } from '../lib/trpc'
 import { authService } from '../lib/auth'
 import { TRPCError } from '@trpc/server'
+import { authLogger, performanceLogger } from '../lib/logger'
 
 export const authRouter = router({
   // Login
@@ -12,6 +13,9 @@ export const authRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const { email, password } = input
+      const timer = performanceLogger.start('auth.login')
+
+      authLogger.info({ email: email.replace(/(.{2}).*@/, '$1***@') }, 'Login attempt')
 
       // Buscar usuário por email
       const user = await ctx.db.user.findUnique({
@@ -29,6 +33,7 @@ export const authRouter = router({
       })
 
       if (!user) {
+        authLogger.warn({ email: email.replace(/(.{2}).*@/, '$1***@') }, 'Login failed: user not found')
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Invalid credentials'
@@ -54,6 +59,10 @@ export const authRouter = router({
       // Verificar senha
       const isValidPassword = await authService.comparePassword(password, user.password)
       if (!isValidPassword) {
+        authLogger.warn({ 
+          email: email.replace(/(.{2}).*@/, '$1***@'),
+          userId: user.id 
+        }, 'Login failed: invalid password')
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Invalid credentials'
@@ -73,6 +82,15 @@ export const authRouter = router({
         role: user.role,
         permissions: user.permissions as string[] | undefined
       })
+
+      authLogger.info({ 
+        userId: user.id,
+        email: email.replace(/(.{2}).*@/, '$1***@'),
+        role: user.role,
+        companyId: user.companyId 
+      }, 'Login successful')
+      
+      timer.end()
 
       return {
         token,

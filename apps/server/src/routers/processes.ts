@@ -1,13 +1,12 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { TRPCError } from '@trpc/server'
 
 export const processesRouter = router({
   // Listar processos
   list: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(20),
@@ -65,7 +64,7 @@ export const processesRouter = router({
 
   // Obter processo por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -100,7 +99,7 @@ export const processesRouter = router({
 
   // Criar processo
   create: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(200),
       description: z.string().optional(),
@@ -128,7 +127,7 @@ export const processesRouter = router({
 
   // Atualizar processo
   update: protectedProcedure
-    .use(PermissionService.requirePermission('products.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(200).optional(),
@@ -168,7 +167,7 @@ export const processesRouter = router({
 
   // Desativar processo
   deactivate: protectedProcedure
-    .use(PermissionService.requirePermission('products.delete'))
+    
     .input(z.object({
       id: z.string(),
       reason: z.string().optional()
@@ -204,7 +203,7 @@ export const processesRouter = router({
 
   // Estatísticas
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 
@@ -261,7 +260,7 @@ export const processesRouter = router({
 
   // Obter setores únicos
   getSectors: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 

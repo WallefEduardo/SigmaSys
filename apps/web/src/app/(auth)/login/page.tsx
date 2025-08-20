@@ -35,9 +35,17 @@ export default function LoginPage() {
 
   const loginMutation = api.auth.login.useMutation({
     onSuccess: (data) => {
+      // Chamar a função login que salva no cookie
       login(data)
+      
       toast.success('Login realizado com sucesso!')
-      router.push('/dashboard')
+      
+      // Verificar se há redirect URL
+      const urlParams = new URLSearchParams(window.location.search)
+      const redirectUrl = urlParams.get('redirect')
+      
+      // Usar router.push para navegação
+      router.push(redirectUrl || '/dashboard')
     },
     onError: (error) => {
       toast.error(error.message || 'Erro ao fazer login')
@@ -52,14 +60,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,#3b82f6_0%,transparent_50%),radial-gradient(circle_at_75%_75%,#16a34a_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,#58DDAA_0%,transparent_50%),radial-gradient(circle_at_75%_75%,#151C24_0%,transparent_50%)]" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl shadow-lg">
-            <Building2 className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-secondary to-primary rounded-2xl shadow-lg">
+            <Building2 className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">ErpSys</h1>
           <p className="text-slate-400 flex items-center justify-center gap-2">
@@ -87,7 +95,7 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     placeholder="seu@email.com"
-                    className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20"
+                    className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-secondary focus:ring-secondary/20"
                     {...register('email')}
                     disabled={isSubmitting}
                   />
@@ -105,7 +113,7 @@ export default function LoginPage() {
                     id="password"
                     type="password"
                     placeholder="Sua senha"
-                    className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20"
+                    className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-secondary focus:ring-secondary/20"
                     {...register('password')}
                     disabled={isSubmitting}
                   />
@@ -117,7 +125,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white font-semibold h-11 transition-all duration-200"
+                className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold h-11 transition-all duration-200 shadow-lg hover:shadow-secondary/20"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -158,7 +166,7 @@ export default function LoginPage() {
                   <span>usuario@empresateste.com</span>
                 </div>
                 <div className="text-center mt-2 pt-2 border-t border-amber-500/20">
-                  <span className="font-semibold">Senha: 123456</span>
+                  <span className="font-semibold">Senhas: admin123 (Super) / 123456 (Outros)</span>
                 </div>
               </div>
             </div>

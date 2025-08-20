@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { UnitsService } from '../lib/units'
 import { TRPCError } from '@trpc/server'
@@ -28,7 +27,7 @@ const supplierContactSchema = z.object({
 export const materialsRouter = router({
   // Listar materiais
   list: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(20),
@@ -110,7 +109,7 @@ export const materialsRouter = router({
 
   // Obter material por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -162,7 +161,7 @@ export const materialsRouter = router({
 
   // Criar material
   create: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(200),
       description: z.string().optional(),
@@ -240,7 +239,7 @@ export const materialsRouter = router({
 
   // Atualizar material
   update: protectedProcedure
-    .use(PermissionService.requirePermission('products.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(200).optional(),
@@ -360,7 +359,7 @@ export const materialsRouter = router({
 
   // Desativar material
   deactivate: protectedProcedure
-    .use(PermissionService.requirePermission('products.delete'))
+    
     .input(z.object({
       id: z.string(),
       reason: z.string().optional()
@@ -399,7 +398,7 @@ export const materialsRouter = router({
 
   // Estatísticas
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 
@@ -457,7 +456,7 @@ export const materialsRouter = router({
 
   // Buscar por código de barras
   findByBarcode: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       barcode: z.string()
     }))

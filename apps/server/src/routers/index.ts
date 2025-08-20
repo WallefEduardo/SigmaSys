@@ -3,6 +3,7 @@ import {
   router,
 } from "../lib/trpc";
 import { authRouter } from "./auth";
+import { plansRouter } from "./plans";
 import { companiesRouter } from "./companies";
 import { usersRouter } from "./users";
 import { clientsRouter } from "./clients";
@@ -21,6 +22,7 @@ export const appRouter = router({
   auth: authRouter,
   
   // FASE 2 - Cadastros Fundamentais
+  plans: plansRouter,
   companies: companiesRouter,
   users: usersRouter,
   clients: clientsRouter,

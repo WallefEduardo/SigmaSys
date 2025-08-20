@@ -13,6 +13,42 @@ datasource db {
 // CORE MODELS - Sistema Base
 // ==========================================
 
+model Plan {
+  id              String   @id @default(cuid())
+  name            String   @unique // Nome do plano
+  description     String?  // Descrição detalhada
+  price           Decimal  @db.Decimal(10, 2) // Preço mensal
+  yearlyPrice     Decimal? @db.Decimal(10, 2) // Preço anual (com desconto)
+  currency        String   @default("BRL")
+  
+  // Limites do plano
+  maxUsers        Int      @default(1) // Máximo de usuários
+  maxCompanies    Int      @default(1) // Para superadmin: quantas empresas pode gerenciar
+  maxClients      Int      @default(100) // Máximo de clientes
+  maxProducts     Int      @default(50) // Máximo de produtos
+  maxOrders       Int      @default(100) // Máximo de ordens mensais
+  maxQuotes       Int      @default(100) // Máximo de orçamentos mensais
+  maxStorage      Int      @default(1024) // Storage em MB
+  
+  // Funcionalidades incluídas
+  features        Json     // Array de features habilitadas
+  modules         Json     // Módulos disponíveis
+  
+  // Configurações
+  trialDays       Int      @default(15) // Dias de trial
+  popular         Boolean  @default(false) // Plano popular/destaque
+  active          Boolean  @default(true)
+  
+  // Metadados
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  companies       Company[]
+  
+  @@map("plans")
+}
+
 model Company {
   id          String   @id @default(cuid())
   name        String
@@ -20,7 +56,12 @@ model Company {
   email       String?
   phone       String?
   address     String?
-  plan        String   @default("trial") // trial, basic, premium, enterprise
+  
+  // Plano e trial
+  planId      String?
+  plan        Plan?    @relation(fields: [planId], references: [id])
+  trialEndsAt DateTime? // Quando expira o trial
+  
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

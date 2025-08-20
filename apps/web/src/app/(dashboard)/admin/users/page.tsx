@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, Plus, MoreHorizontal, Users, Building2, Shield, Activity } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -36,12 +37,15 @@ import { roleLabels, roleColors } from "@/lib/mock-data/users"
 import { api } from "@/lib/trpc"
 
 export default function UsersPage() {
+  const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<any>(null)
   const [page, setPage] = useState(1)
+
+  // Componente carregado sem verificação de permissão
 
   // tRPC queries
   const { data: usersData, isLoading, refetch } = api.users.list.useQuery({

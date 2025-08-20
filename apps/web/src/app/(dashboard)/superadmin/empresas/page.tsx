@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Search, Filter, MoreHorizontal, Building2, Users, Package, ShoppingCart } from 'lucide-react'
+import { Plus, Search, Filter, MoreHorizontal, Building2, Users, Package, ShoppingCart, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -30,33 +30,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { mockCompanies, planLabels, planColors } from '@/lib/mock-data/companies'
+import { api } from '@/lib/trpc'
 import { formatDate } from '@/lib/utils'
+import { toast } from '@/hooks/use-toast'
 
 export default function EmpresasPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [planFilter, setPlanFilter] = useState<string>('all')
+  const [page, setPage] = useState(1)
 
-  const filteredCompanies = mockCompanies.filter(company => {
-    const matchesSearch = company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         company.cnpj?.includes(searchTerm) ||
-                         company.email?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'active' && company.active) ||
-                         (statusFilter === 'inactive' && !company.active)
-    
-    const matchesPlan = planFilter === 'all' || company.plan === planFilter
-
-    return matchesSearch && matchesStatus && matchesPlan
+  // Queries
+  const { data: companiesData, isLoading: loadingCompanies, refetch } = api.companies.list.useQuery({
+    page,
+    limit: 10,
+    search: searchTerm || undefined,
+    planId: planFilter === 'all' ? undefined : planFilter,
+    active: statusFilter === 'all' ? undefined : statusFilter === 'active'
   })
 
+  const { data: plans, isLoading: loadingPlans } = api.companies.plans.useQuery()
+
+  // Mutations
+  const toggleActiveMutation = api.companies.toggleActive.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Status alterado',
+        description: 'O status da empresa foi alterado com sucesso.'
+      })
+      refetch()
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erro',
+        description: error.message,
+        variant: 'destructive'
+      })
+    }
+  })
+
+  const handleToggleActive = async (id: string, active: boolean) => {
+    if (confirm(`Tem certeza que deseja ${active ? 'ativar' : 'desativar'} esta empresa?`)) {
+      toggleActiveMutation.mutate({ id, active })
+    }
+  }
+
+  const companies = companiesData?.companies || []
+  const pagination = companiesData?.pagination
+
   const stats = {
-    total: mockCompanies.length,
-    active: mockCompanies.filter(c => c.active).length,
-    inactive: mockCompanies.filter(c => !c.active).length,
-    trial: mockCompanies.filter(c => c.plan === 'trial').length
+    total: pagination?.total || 0,
+    active: companies.filter(c => c.active).length,
+    inactive: companies.filter(c => !c.active).length,
+    trial: companies.filter(c => c.plan?.name.toLowerCase().includes('trial')).length
   }
 
   return (
@@ -168,10 +194,11 @@ export default function EmpresasPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os planos</SelectItem>
-                <SelectItem value="trial">Trial</SelectItem>
-                <SelectItem value="basic">Básico</SelectItem>
-                <SelectItem value="premium">Premium</SelectItem>
-                <SelectItem value="enterprise">Enterprise</SelectItem>
+                {plans?.map((plan) => (
+                  <SelectItem key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -181,80 +208,126 @@ export default function EmpresasPage() {
       {/* Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Empresas ({filteredCompanies.length})</CardTitle>
+          <CardTitle>Lista de Empresas ({companies.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Empresa</TableHead>
-                  <TableHead>Plano</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Usuários</TableHead>
-                  <TableHead>Clientes</TableHead>
-                  <TableHead>Criada em</TableHead>
-                  <TableHead className="w-12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCompanies.map((company) => (
-                  <TableRow key={company.id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{company.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {company.cnpj}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {company.email}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={planColors[company.plan]}>
-                        {planLabels[company.plan]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={company.active ? "default" : "secondary"}>
-                        {company.active ? "Ativa" : "Inativa"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{company.stats.users}</TableCell>
-                    <TableCell>{company.stats.clients}</TableCell>
-                    <TableCell>{formatDate(company.createdAt)}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/superadmin/empresas/${company.id}`}>
-                              Ver detalhes
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/superadmin/empresas/${company.id}/editar`}>
-                              Editar
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-600">
-                            {company.active ? "Desativar" : "Ativar"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+          {loadingCompanies ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Empresa</TableHead>
+                    <TableHead>Plano</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Usuários</TableHead>
+                    <TableHead>Clientes</TableHead>
+                    <TableHead>Trial</TableHead>
+                    <TableHead>Criada em</TableHead>
+                    <TableHead className="w-12"></TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {companies.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                        Nenhuma empresa encontrada
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    companies.map((company) => (
+                      <TableRow key={company.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{company.name}</div>
+                            {company.cnpj && (
+                              <div className="text-sm text-muted-foreground">
+                                {company.cnpj}
+                              </div>
+                            )}
+                            {company.email && (
+                              <div className="text-sm text-muted-foreground">
+                                {company.email}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {company.plan ? (
+                            <Badge className="bg-primary/10 text-primary border-primary/20">
+                              {company.plan.name}
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline">Sem plano</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={company.active ? "default" : "secondary"}>
+                            {company.active ? "Ativa" : "Inativa"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{company._count.users}</TableCell>
+                        <TableCell>{company._count.clients}</TableCell>
+                        <TableCell>
+                          {company.trialEndsAt ? (
+                            <div className="text-sm">
+                              <div>Até {formatDate(company.trialEndsAt)}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {new Date(company.trialEndsAt) > new Date() ? (
+                                  <span className="text-amber-600">Em trial</span>
+                                ) : (
+                                  <span className="text-red-600">Trial expirado</span>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">N/A</span>
+                          )}
+                        </TableCell>
+                        <TableCell>{formatDate(company.createdAt)}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/superadmin/empresas/${company.id}`}>
+                                  Ver detalhes
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/superadmin/empresas/${company.id}/editar`}>
+                                  Editar
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                className={company.active ? "text-red-600" : "text-green-600"}
+                                onClick={() => handleToggleActive(company.id, !company.active)}
+                                disabled={toggleActiveMutation.isLoading}
+                              >
+                                {toggleActiveMutation.isLoading ? (
+                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                {company.active ? "Desativar" : "Ativar"}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

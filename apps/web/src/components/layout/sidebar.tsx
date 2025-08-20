@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/use-auth'
 import {
   ChevronLeft,
   ChevronRight,
@@ -100,6 +101,7 @@ const menuItems: MenuItem[] = [
     label: 'Administração',
     icon: Settings,
     children: [
+      { id: 'planos', label: 'Planos', icon: Package, href: '/admin/planos' },
       { id: 'empresas', label: 'Empresas', icon: Users, href: '/admin/companies' },
       { id: 'usuarios-sistema', label: 'Usuários do Sistema', icon: Users, href: '/admin/users' },
     ]
@@ -123,6 +125,18 @@ export function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const pathname = usePathname()
+  const { user } = useAuth()
+
+  // Filtrar menus baseado no role do usuário
+  const filteredMenuItems = useMemo(() => {
+    return menuItems.filter(item => {
+      // Seção de Administração só para superadmin
+      if (item.id === 'admin' && user?.role !== 'superadmin') {
+        return false
+      }
+      return true
+    })
+  }, [user?.role])
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev =>
@@ -157,7 +171,7 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-        {menuItems.map((item) => (
+        {filteredMenuItems.map((item) => (
           <div key={item.id}>
             {item.children ? (
               // Menu com submenu
@@ -200,7 +214,7 @@ export function Sidebar({ className }: SidebarProps) {
                             className={cn(
                               "w-full justify-start",
                               pathname === child.href &&
-                                "bg-accent text-accent-foreground"
+                                "bg-secondary/10 text-secondary border-r-2 border-secondary"
                             )}
                           >
                             <Link href={child.href || '#'}>
@@ -222,7 +236,7 @@ export function Sidebar({ className }: SidebarProps) {
                   "w-full",
                   isCollapsed ? "justify-center p-2" : "justify-start",
                   pathname === item.href &&
-                    "bg-accent text-accent-foreground"
+                    "bg-secondary/10 text-secondary border-r-2 border-secondary"
                 )}
               >
                 <Link href={item.href || '#'}>

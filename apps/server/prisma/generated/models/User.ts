@@ -689,10 +689,6 @@ export type UserUncheckedCreateNestedManyWithoutCreatorInput = {
   connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type UserUpdateOneWithoutCreatedUsersNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedUsersInput, Prisma.UserUncheckedCreateWithoutCreatedUsersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedUsersInput

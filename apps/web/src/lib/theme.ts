@@ -1,29 +1,42 @@
 export const themeColors = {
   light: {
-    primary: "#2d3748",      // Cinza escuro da imagem
-    secondary: "#16a34a",    // Verde escuro que contrasta com texto branco
+    primary: "#151C24",      // Cinza escuro principal
+    secondary: "#58DDAA",    // Verde claro para botões e elementos interativos
     accent: "#3b82f6",
     background: "#ffffff",
-    foreground: "#2d3748",
+    foreground: "#151C24",
     muted: "#f7fafc",
     border: "#e2e8f0",
-    success: "#16a34a",
+    success: "#58DDAA",
     warning: "#d69e2e",
     error: "#e53e3e",
-    info: "#3182ce"
+    info: "#3182ce",
+    // Texto sobre secondary (botões verdes)
+    "secondary-foreground": "#151C24"  // Texto escuro sobre fundo verde
   },
   dark: {
     primary: "#ffffff",
-    secondary: "#16a34a",    // Verde escuro que contrasta bem
+    secondary: "#58DDAA",    // Verde claro mantido no dark mode
     accent: "#63b3ed",
-    background: "#1a202c",   // Cinza escuro como base
+    background: "#151C24",   // Fundo escuro principal
     foreground: "#ffffff",
-    muted: "#2d3748",       // Cinza escuro intermediário
+    muted: "#2d3748",
     border: "#4a5568",
-    success: "#16a34a",
+    success: "#58DDAA",
     warning: "#d69e2e",
     error: "#e53e3e",
-    info: "#63b3ed"
+    info: "#63b3ed",
+    // Texto sobre secondary (botões verdes)
+    "secondary-foreground": "#151C24"  // Texto escuro sobre fundo verde
+  }
+}
+
+// Regras de Contraste para Secondary
+export const contrastRules = {
+  secondary: {
+    background: "#58DDAA",     // Verde claro para botões
+    foreground: "#151C24",     // Texto escuro (primary) para contraste
+    description: "Todos os textos sobre backgrounds #58DDAA devem usar cor escura (#151C24) para garantir legibilidade"
   }
 }
 

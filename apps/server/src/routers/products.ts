@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { FormulaEngine, type FormulaContext } from '../lib/formulas'
 import { TRPCError } from '@trpc/server'
@@ -46,7 +45,7 @@ const marginSchema = z.object({
 export const productsRouter = router({
   // Listar produtos
   list: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(20),
@@ -106,7 +105,7 @@ export const productsRouter = router({
 
   // Obter produto por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -181,7 +180,7 @@ export const productsRouter = router({
 
   // Criar produto
   create: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(200),
       description: z.string().optional(),
@@ -322,7 +321,7 @@ export const productsRouter = router({
 
   // Atualizar produto
   update: protectedProcedure
-    .use(PermissionService.requirePermission('products.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(200).optional(),
@@ -443,7 +442,7 @@ export const productsRouter = router({
 
   // Calcular custo do produto
   calculateCost: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string(),
       context: z.object({
@@ -642,7 +641,7 @@ export const productsRouter = router({
 
   // Validar fórmula
   validateFormula: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       formula: z.string()
     }))
@@ -652,7 +651,7 @@ export const productsRouter = router({
 
   // Preview de fórmula
   previewFormula: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       formula: z.string(),
       context: z.object({
@@ -668,7 +667,7 @@ export const productsRouter = router({
 
   // Estatísticas
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 

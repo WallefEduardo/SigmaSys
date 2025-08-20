@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { TRPCError } from '@trpc/server'
 
@@ -37,7 +36,7 @@ const consumablesSchema = z.array(z.object({
 export const equipmentsRouter = router({
   // Listar equipamentos
   list: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(20),
@@ -109,7 +108,7 @@ export const equipmentsRouter = router({
 
   // Obter equipamento por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -153,7 +152,7 @@ export const equipmentsRouter = router({
 
   // Criar equipamento
   create: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(200),
       description: z.string().optional(),
@@ -226,7 +225,7 @@ export const equipmentsRouter = router({
 
   // Atualizar equipamento
   update: protectedProcedure
-    .use(PermissionService.requirePermission('products.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(200).optional(),
@@ -325,7 +324,7 @@ export const equipmentsRouter = router({
 
   // Desativar equipamento
   deactivate: protectedProcedure
-    .use(PermissionService.requirePermission('products.delete'))
+    
     .input(z.object({
       id: z.string(),
       reason: z.string().optional()
@@ -365,7 +364,7 @@ export const equipmentsRouter = router({
 
   // Registrar uso do equipamento
   logUsage: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       equipmentId: z.string(),
       startTime: z.date(),
@@ -439,7 +438,7 @@ export const equipmentsRouter = router({
 
   // Estatísticas
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 

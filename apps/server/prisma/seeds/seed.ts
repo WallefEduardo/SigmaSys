@@ -1,6 +1,7 @@
 import { config } from 'dotenv'
 import { PrismaClient } from '../generated/client'
 import { AuthService } from '../../src/lib/auth'
+import { seedPlans } from './plans-seed'
 
 // Carregar variáveis de ambiente
 config()
@@ -10,7 +11,10 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Iniciando seeds...')
 
-  // 1. Criar empresa modelo
+  // 1. Criar planos primeiro
+  const plans = await seedPlans()
+
+  // 2. Criar empresa modelo
   const company = await prisma.company.upsert({
     where: { id: 'company-1' },
     update: {},
@@ -21,14 +25,15 @@ async function main() {
       email: 'contato@empresateste.com',
       phone: '(11) 98765-4321',
       address: 'Rua das Empresas, 123 - São Paulo/SP',
-      plan: 'premium',
+      planId: plans.proPlan.id, // Usar o plano Profissional
+      trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias trial
       active: true,
     },
   })
 
   console.log('✅ Empresa criada:', company.name)
 
-  // 2. Criar Super Admin (acesso a todas as empresas)
+  // 3. Criar Super Admin (acesso a todas as empresas)
   const superAdminPassword = await AuthService.hashPassword('admin123')
   const superAdmin = await prisma.user.upsert({
     where: { email: 'superadmin@erpsys.com' },
@@ -38,7 +43,7 @@ async function main() {
       name: 'Super Administrador',
       email: 'superadmin@erpsys.com',
       password: superAdminPassword,
-      role: 'SUPERADMIN',
+      role: 'superadmin',
       active: true,
       companyId: company.id,
     },
@@ -46,7 +51,7 @@ async function main() {
 
   console.log('✅ Super Admin criado:', superAdmin.email)
 
-  // 3. Criar Admin da empresa teste
+  // 4. Criar Admin da empresa teste
   const adminPassword = await AuthService.hashPassword('123456')
   const admin = await prisma.user.upsert({
     where: { email: 'admin@empresateste.com' },
@@ -56,18 +61,48 @@ async function main() {
       name: 'Administrador Teste',
       email: 'admin@empresateste.com',
       password: adminPassword,
-      role: 'ADMIN',
+      role: 'admin',
       department: 'Administração',
       position: 'Administrador',
       phone: '(11) 99999-0001',
       active: true,
       companyId: company.id,
+      permissions: [
+        // Dashboard
+        'dashboard.read',
+        // Cadastros - acesso completo
+        'clients.read', 'clients.create', 'clients.update', 'clients.delete',
+        'products.read', 'products.create', 'products.update', 'products.delete',
+        'materials.read', 'materials.create', 'materials.update', 'materials.delete',
+        'equipments.read', 'equipments.create', 'equipments.update', 'equipments.delete',
+        'processes.read', 'processes.create', 'processes.update', 'processes.delete',
+        'finishes.read', 'finishes.create', 'finishes.update', 'finishes.delete',
+        // Comercial - acesso completo
+        'quotes.read', 'quotes.create', 'quotes.update', 'quotes.delete', 'quotes.approve',
+        'orders.read', 'orders.create', 'orders.update', 'orders.delete',
+        'sales.read', 'sales.manage',
+        // Financeiro - acesso completo
+        'financial.read', 'accounts-receivable.read', 'accounts-receivable.create', 'accounts-receivable.update',
+        'accounts-payable.read', 'accounts-payable.create', 'accounts-payable.update',
+        'chart-accounts.read', 'chart-accounts.manage', 'break-even.read', 'break-even.manage',
+        // Produção
+        'production.read', 'pcp.read', 'pcp.manage', 'tracking.read', 'tracking.create', 'tracking.update',
+        // Estoque
+        'inventory.read', 'inventory.create', 'inventory.update', 'inventory.manage',
+        // Chat
+        'chat.read', 'chat.send', 'chat.manage',
+        // Admin - PERMISSÕES CRÍTICAS
+        'system-users.read', 'system-users.create', 'system-users.update', 'system-users.delete', 'system-users.permissions',
+        // Configurações
+        'users.read', 'users.create', 'users.update', 'users.delete',
+        'parameters.read', 'parameters.update', 'settings.manage'
+      ]
     },
   })
 
   console.log('✅ Admin criado:', admin.email)
 
-  // 4. Criar usuário gerente
+  // 5. Criar usuário gerente
   const managerPassword = await AuthService.hashPassword('123456')
   const manager = await prisma.user.upsert({
     where: { email: 'gerente@empresateste.com' },
@@ -77,7 +112,7 @@ async function main() {
       name: 'Maria Santos',
       email: 'gerente@empresateste.com',
       password: managerPassword,
-      role: 'MANAGER',
+      role: 'user',
       department: 'Comercial',
       position: 'Gerente Comercial',
       phone: '(11) 99999-0002',
@@ -89,7 +124,7 @@ async function main() {
 
   console.log('✅ Gerente criado:', manager.email)
 
-  // 5. Criar usuário comum
+  // 6. Criar usuário comum
   const userPassword = await AuthService.hashPassword('123456')
   const user = await prisma.user.upsert({
     where: { email: 'usuario@empresateste.com' },
@@ -99,7 +134,7 @@ async function main() {
       name: 'João Silva',
       email: 'usuario@empresateste.com',
       password: userPassword,
-      role: 'USER',
+      role: 'user',
       department: 'Atendimento',
       position: 'Atendente',
       phone: '(11) 99999-0003',
@@ -111,7 +146,7 @@ async function main() {
 
   console.log('✅ Usuário criado:', user.email)
 
-  // 6. Criar alguns clientes de exemplo
+  // 7. Criar alguns clientes de exemplo
   const clients = [
     {
       id: 'client-1',

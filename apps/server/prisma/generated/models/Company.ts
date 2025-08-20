@@ -30,7 +30,8 @@ export type CompanyMinAggregateOutputType = {
   email: string | null
   phone: string | null
   address: string | null
-  plan: string | null
+  planId: string | null
+  trialEndsAt: Date | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,7 +44,8 @@ export type CompanyMaxAggregateOutputType = {
   email: string | null
   phone: string | null
   address: string | null
-  plan: string | null
+  planId: string | null
+  trialEndsAt: Date | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,7 +58,8 @@ export type CompanyCountAggregateOutputType = {
   email: number
   phone: number
   address: number
-  plan: number
+  planId: number
+  trialEndsAt: number
   active: number
   createdAt: number
   updatedAt: number
@@ -71,7 +74,8 @@ export type CompanyMinAggregateInputType = {
   email?: true
   phone?: true
   address?: true
-  plan?: true
+  planId?: true
+  trialEndsAt?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -84,7 +88,8 @@ export type CompanyMaxAggregateInputType = {
   email?: true
   phone?: true
   address?: true
-  plan?: true
+  planId?: true
+  trialEndsAt?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -97,7 +102,8 @@ export type CompanyCountAggregateInputType = {
   email?: true
   phone?: true
   address?: true
-  plan?: true
+  planId?: true
+  trialEndsAt?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -183,7 +189,8 @@ export type CompanyGroupByOutputType = {
   email: string | null
   phone: string | null
   address: string | null
-  plan: string
+  planId: string | null
+  trialEndsAt: Date | null
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -217,10 +224,12 @@ export type CompanyWhereInput = {
   email?: Prisma.StringNullableFilter<"Company"> | string | null
   phone?: Prisma.StringNullableFilter<"Company"> | string | null
   address?: Prisma.StringNullableFilter<"Company"> | string | null
-  plan?: Prisma.StringFilter<"Company"> | string
+  planId?: Prisma.StringNullableFilter<"Company"> | string | null
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
   active?: Prisma.BoolFilter<"Company"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+  plan?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
   users?: Prisma.UserListRelationFilter
   clients?: Prisma.ClientListRelationFilter
   products?: Prisma.ProductListRelationFilter
@@ -241,10 +250,12 @@ export type CompanyOrderByWithRelationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
-  plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrderInput | Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  plan?: Prisma.PlanOrderByWithRelationInput
   users?: Prisma.UserOrderByRelationAggregateInput
   clients?: Prisma.ClientOrderByRelationAggregateInput
   products?: Prisma.ProductOrderByRelationAggregateInput
@@ -268,10 +279,12 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringNullableFilter<"Company"> | string | null
   phone?: Prisma.StringNullableFilter<"Company"> | string | null
   address?: Prisma.StringNullableFilter<"Company"> | string | null
-  plan?: Prisma.StringFilter<"Company"> | string
+  planId?: Prisma.StringNullableFilter<"Company"> | string | null
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
   active?: Prisma.BoolFilter<"Company"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+  plan?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
   users?: Prisma.UserListRelationFilter
   clients?: Prisma.ClientListRelationFilter
   products?: Prisma.ProductListRelationFilter
@@ -292,7 +305,8 @@ export type CompanyOrderByWithAggregationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
-  plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrderInput | Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -311,7 +325,8 @@ export type CompanyScalarWhereWithAggregatesInput = {
   email?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
-  plan?: Prisma.StringWithAggregatesFilter<"Company"> | string
+  planId?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  trialEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Company"> | Date | string | null
   active?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Company"> | Date | string
@@ -324,10 +339,11 @@ export type CompanyCreateInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -348,7 +364,8 @@ export type CompanyUncheckedCreateInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -372,10 +389,11 @@ export type CompanyUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -396,7 +414,8 @@ export type CompanyUncheckedUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,7 +439,8 @@ export type CompanyCreateManyInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -433,7 +453,7 @@ export type CompanyUpdateManyMutationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -446,10 +466,21 @@ export type CompanyUncheckedUpdateManyInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CompanyListRelationFilter = {
+  every?: Prisma.CompanyWhereInput
+  some?: Prisma.CompanyWhereInput
+  none?: Prisma.CompanyWhereInput
+}
+
+export type CompanyOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CompanyCountOrderByAggregateInput = {
@@ -459,7 +490,8 @@ export type CompanyCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -472,7 +504,8 @@ export type CompanyMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -485,7 +518,8 @@ export type CompanyMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  plan?: Prisma.SortOrder
+  planId?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -496,20 +530,50 @@ export type CompanyScalarRelationFilter = {
   isNot?: Prisma.CompanyWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type CompanyCreateNestedManyWithoutPlanInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput> | Prisma.CompanyCreateWithoutPlanInput[] | Prisma.CompanyUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPlanInput | Prisma.CompanyCreateOrConnectWithoutPlanInput[]
+  createMany?: Prisma.CompanyCreateManyPlanInputEnvelope
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type CompanyUncheckedCreateNestedManyWithoutPlanInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput> | Prisma.CompanyCreateWithoutPlanInput[] | Prisma.CompanyUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPlanInput | Prisma.CompanyCreateOrConnectWithoutPlanInput[]
+  createMany?: Prisma.CompanyCreateManyPlanInputEnvelope
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
+export type CompanyUpdateManyWithoutPlanNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput> | Prisma.CompanyCreateWithoutPlanInput[] | Prisma.CompanyUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPlanInput | Prisma.CompanyCreateOrConnectWithoutPlanInput[]
+  upsert?: Prisma.CompanyUpsertWithWhereUniqueWithoutPlanInput | Prisma.CompanyUpsertWithWhereUniqueWithoutPlanInput[]
+  createMany?: Prisma.CompanyCreateManyPlanInputEnvelope
+  set?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  disconnect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  delete?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  update?: Prisma.CompanyUpdateWithWhereUniqueWithoutPlanInput | Prisma.CompanyUpdateWithWhereUniqueWithoutPlanInput[]
+  updateMany?: Prisma.CompanyUpdateManyWithWhereWithoutPlanInput | Prisma.CompanyUpdateManyWithWhereWithoutPlanInput[]
+  deleteMany?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type CompanyUncheckedUpdateManyWithoutPlanNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput> | Prisma.CompanyCreateWithoutPlanInput[] | Prisma.CompanyUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPlanInput | Prisma.CompanyCreateOrConnectWithoutPlanInput[]
+  upsert?: Prisma.CompanyUpsertWithWhereUniqueWithoutPlanInput | Prisma.CompanyUpsertWithWhereUniqueWithoutPlanInput[]
+  createMany?: Prisma.CompanyCreateManyPlanInputEnvelope
+  set?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  disconnect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  delete?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  update?: Prisma.CompanyUpdateWithWhereUniqueWithoutPlanInput | Prisma.CompanyUpdateWithWhereUniqueWithoutPlanInput[]
+  updateMany?: Prisma.CompanyUpdateManyWithWhereWithoutPlanInput | Prisma.CompanyUpdateManyWithWhereWithoutPlanInput[]
+  deleteMany?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type CompanyCreateNestedOneWithoutUsersInput = {
@@ -666,6 +730,97 @@ export type CompanyUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanyUpdateToOneWithWhereWithoutOrdersInput, Prisma.CompanyUpdateWithoutOrdersInput>, Prisma.CompanyUncheckedUpdateWithoutOrdersInput>
 }
 
+export type CompanyCreateWithoutPlanInput = {
+  id?: string
+  name: string
+  cnpj?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  trialEndsAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutCompanyInput
+  clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
+  products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
+  materials?: Prisma.MaterialCreateNestedManyWithoutCompanyInput
+  equipments?: Prisma.EquipmentCreateNestedManyWithoutCompanyInput
+  processes?: Prisma.ProcessCreateNestedManyWithoutCompanyInput
+  finishes?: Prisma.FinishCreateNestedManyWithoutCompanyInput
+  inventory?: Prisma.InventoryItemCreateNestedManyWithoutCompanyInput
+  quotes?: Prisma.QuoteCreateNestedManyWithoutCompanyInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCompanyInput
+  roles?: Prisma.RoleCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyUncheckedCreateWithoutPlanInput = {
+  id?: string
+  name: string
+  cnpj?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  trialEndsAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCompanyInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutCompanyInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCompanyInput
+  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutCompanyInput
+  equipments?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCompanyInput
+  processes?: Prisma.ProcessUncheckedCreateNestedManyWithoutCompanyInput
+  finishes?: Prisma.FinishUncheckedCreateNestedManyWithoutCompanyInput
+  inventory?: Prisma.InventoryItemUncheckedCreateNestedManyWithoutCompanyInput
+  quotes?: Prisma.QuoteUncheckedCreateNestedManyWithoutCompanyInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCompanyInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyCreateOrConnectWithoutPlanInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput>
+}
+
+export type CompanyCreateManyPlanInputEnvelope = {
+  data: Prisma.CompanyCreateManyPlanInput | Prisma.CompanyCreateManyPlanInput[]
+  skipDuplicates?: boolean
+}
+
+export type CompanyUpsertWithWhereUniqueWithoutPlanInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  update: Prisma.XOR<Prisma.CompanyUpdateWithoutPlanInput, Prisma.CompanyUncheckedUpdateWithoutPlanInput>
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutPlanInput, Prisma.CompanyUncheckedCreateWithoutPlanInput>
+}
+
+export type CompanyUpdateWithWhereUniqueWithoutPlanInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  data: Prisma.XOR<Prisma.CompanyUpdateWithoutPlanInput, Prisma.CompanyUncheckedUpdateWithoutPlanInput>
+}
+
+export type CompanyUpdateManyWithWhereWithoutPlanInput = {
+  where: Prisma.CompanyScalarWhereInput
+  data: Prisma.XOR<Prisma.CompanyUpdateManyMutationInput, Prisma.CompanyUncheckedUpdateManyWithoutPlanInput>
+}
+
+export type CompanyScalarWhereInput = {
+  AND?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+  OR?: Prisma.CompanyScalarWhereInput[]
+  NOT?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+  id?: Prisma.StringFilter<"Company"> | string
+  name?: Prisma.StringFilter<"Company"> | string
+  cnpj?: Prisma.StringNullableFilter<"Company"> | string | null
+  email?: Prisma.StringNullableFilter<"Company"> | string | null
+  phone?: Prisma.StringNullableFilter<"Company"> | string | null
+  address?: Prisma.StringNullableFilter<"Company"> | string | null
+  planId?: Prisma.StringNullableFilter<"Company"> | string | null
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
+  active?: Prisma.BoolFilter<"Company"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+}
+
 export type CompanyCreateWithoutUsersInput = {
   id?: string
   name: string
@@ -673,10 +828,11 @@ export type CompanyCreateWithoutUsersInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
   materials?: Prisma.MaterialCreateNestedManyWithoutCompanyInput
@@ -696,7 +852,8 @@ export type CompanyUncheckedCreateWithoutUsersInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -735,10 +892,11 @@ export type CompanyUpdateWithoutUsersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
   materials?: Prisma.MaterialUpdateManyWithoutCompanyNestedInput
@@ -758,7 +916,8 @@ export type CompanyUncheckedUpdateWithoutUsersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -781,10 +940,11 @@ export type CompanyCreateWithoutRolesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -804,7 +964,8 @@ export type CompanyUncheckedCreateWithoutRolesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -843,10 +1004,11 @@ export type CompanyUpdateWithoutRolesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -866,7 +1028,8 @@ export type CompanyUncheckedUpdateWithoutRolesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -889,10 +1052,11 @@ export type CompanyCreateWithoutClientsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
   materials?: Prisma.MaterialCreateNestedManyWithoutCompanyInput
@@ -912,7 +1076,8 @@ export type CompanyUncheckedCreateWithoutClientsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -951,10 +1116,11 @@ export type CompanyUpdateWithoutClientsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
   materials?: Prisma.MaterialUpdateManyWithoutCompanyNestedInput
@@ -974,7 +1140,8 @@ export type CompanyUncheckedUpdateWithoutClientsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -997,10 +1164,11 @@ export type CompanyCreateWithoutProductsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   materials?: Prisma.MaterialCreateNestedManyWithoutCompanyInput
@@ -1020,7 +1188,8 @@ export type CompanyUncheckedCreateWithoutProductsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1059,10 +1228,11 @@ export type CompanyUpdateWithoutProductsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   materials?: Prisma.MaterialUpdateManyWithoutCompanyNestedInput
@@ -1082,7 +1252,8 @@ export type CompanyUncheckedUpdateWithoutProductsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1105,10 +1276,11 @@ export type CompanyCreateWithoutMaterialsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1128,7 +1300,8 @@ export type CompanyUncheckedCreateWithoutMaterialsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1167,10 +1340,11 @@ export type CompanyUpdateWithoutMaterialsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1190,7 +1364,8 @@ export type CompanyUncheckedUpdateWithoutMaterialsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1213,10 +1388,11 @@ export type CompanyCreateWithoutEquipmentsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1236,7 +1412,8 @@ export type CompanyUncheckedCreateWithoutEquipmentsInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1275,10 +1452,11 @@ export type CompanyUpdateWithoutEquipmentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1298,7 +1476,8 @@ export type CompanyUncheckedUpdateWithoutEquipmentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1321,10 +1500,11 @@ export type CompanyCreateWithoutProcessesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1344,7 +1524,8 @@ export type CompanyUncheckedCreateWithoutProcessesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1383,10 +1564,11 @@ export type CompanyUpdateWithoutProcessesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1406,7 +1588,8 @@ export type CompanyUncheckedUpdateWithoutProcessesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1429,10 +1612,11 @@ export type CompanyCreateWithoutFinishesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1452,7 +1636,8 @@ export type CompanyUncheckedCreateWithoutFinishesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1491,10 +1676,11 @@ export type CompanyUpdateWithoutFinishesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1514,7 +1700,8 @@ export type CompanyUncheckedUpdateWithoutFinishesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1537,10 +1724,11 @@ export type CompanyCreateWithoutInventoryInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1560,7 +1748,8 @@ export type CompanyUncheckedCreateWithoutInventoryInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1599,10 +1788,11 @@ export type CompanyUpdateWithoutInventoryInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1622,7 +1812,8 @@ export type CompanyUncheckedUpdateWithoutInventoryInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1645,10 +1836,11 @@ export type CompanyCreateWithoutQuotesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1668,7 +1860,8 @@ export type CompanyUncheckedCreateWithoutQuotesInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1707,10 +1900,11 @@ export type CompanyUpdateWithoutQuotesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1730,7 +1924,8 @@ export type CompanyUncheckedUpdateWithoutQuotesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1753,10 +1948,11 @@ export type CompanyCreateWithoutOrdersInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  plan?: Prisma.PlanCreateNestedOneWithoutCompaniesInput
   users?: Prisma.UserCreateNestedManyWithoutCompanyInput
   clients?: Prisma.ClientCreateNestedManyWithoutCompanyInput
   products?: Prisma.ProductCreateNestedManyWithoutCompanyInput
@@ -1776,7 +1972,8 @@ export type CompanyUncheckedCreateWithoutOrdersInput = {
   email?: string | null
   phone?: string | null
   address?: string | null
-  plan?: string
+  planId?: string | null
+  trialEndsAt?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1815,10 +2012,11 @@ export type CompanyUpdateWithoutOrdersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.PlanUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
   products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
@@ -1838,7 +2036,8 @@ export type CompanyUncheckedUpdateWithoutOrdersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1852,6 +2051,80 @@ export type CompanyUncheckedUpdateWithoutOrdersInput = {
   inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutCompanyNestedInput
   quotes?: Prisma.QuoteUncheckedUpdateManyWithoutCompanyNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyCreateManyPlanInput = {
+  id?: string
+  name: string
+  cnpj?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  trialEndsAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CompanyUpdateWithoutPlanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutCompanyNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutCompanyNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCompanyNestedInput
+  materials?: Prisma.MaterialUpdateManyWithoutCompanyNestedInput
+  equipments?: Prisma.EquipmentUpdateManyWithoutCompanyNestedInput
+  processes?: Prisma.ProcessUpdateManyWithoutCompanyNestedInput
+  finishes?: Prisma.FinishUpdateManyWithoutCompanyNestedInput
+  inventory?: Prisma.InventoryItemUpdateManyWithoutCompanyNestedInput
+  quotes?: Prisma.QuoteUpdateManyWithoutCompanyNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCompanyNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateWithoutPlanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutCompanyNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutCompanyNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCompanyNestedInput
+  materials?: Prisma.MaterialUncheckedUpdateManyWithoutCompanyNestedInput
+  equipments?: Prisma.EquipmentUncheckedUpdateManyWithoutCompanyNestedInput
+  processes?: Prisma.ProcessUncheckedUpdateManyWithoutCompanyNestedInput
+  finishes?: Prisma.FinishUncheckedUpdateManyWithoutCompanyNestedInput
+  inventory?: Prisma.InventoryItemUncheckedUpdateManyWithoutCompanyNestedInput
+  quotes?: Prisma.QuoteUncheckedUpdateManyWithoutCompanyNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCompanyNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateManyWithoutPlanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1982,10 +2255,12 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   email?: boolean
   phone?: boolean
   address?: boolean
-  plan?: boolean
+  planId?: boolean
+  trialEndsAt?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
   users?: boolean | Prisma.Company$usersArgs<ExtArgs>
   clients?: boolean | Prisma.Company$clientsArgs<ExtArgs>
   products?: boolean | Prisma.Company$productsArgs<ExtArgs>
@@ -2007,10 +2282,12 @@ export type CompanySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   phone?: boolean
   address?: boolean
-  plan?: boolean
+  planId?: boolean
+  trialEndsAt?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
 export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2020,10 +2297,12 @@ export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   phone?: boolean
   address?: boolean
-  plan?: boolean
+  planId?: boolean
+  trialEndsAt?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
 export type CompanySelectScalar = {
@@ -2033,14 +2312,16 @@ export type CompanySelectScalar = {
   email?: boolean
   phone?: boolean
   address?: boolean
-  plan?: boolean
+  planId?: boolean
+  trialEndsAt?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "cnpj" | "email" | "phone" | "address" | "plan" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "cnpj" | "email" | "phone" | "address" | "planId" | "trialEndsAt" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
   users?: boolean | Prisma.Company$usersArgs<ExtArgs>
   clients?: boolean | Prisma.Company$clientsArgs<ExtArgs>
   products?: boolean | Prisma.Company$productsArgs<ExtArgs>
@@ -2054,12 +2335,17 @@ export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   roles?: boolean | Prisma.Company$rolesArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type CompanyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type CompanyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CompanyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
+}
+export type CompanyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.Company$planArgs<ExtArgs>
+}
 
 export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Company"
   objects: {
+    plan: Prisma.$PlanPayload<ExtArgs> | null
     users: Prisma.$UserPayload<ExtArgs>[]
     clients: Prisma.$ClientPayload<ExtArgs>[]
     products: Prisma.$ProductPayload<ExtArgs>[]
@@ -2079,7 +2365,8 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     email: string | null
     phone: string | null
     address: string | null
-    plan: string
+    planId: string | null
+    trialEndsAt: Date | null
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -2477,6 +2764,7 @@ readonly fields: CompanyFieldRefs;
  */
 export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  plan<T extends Prisma.Company$planArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$planArgs<ExtArgs>>): Prisma.Prisma__PlanClient<runtime.Types.Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   users<T extends Prisma.Company$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clients<T extends Prisma.Company$clientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   products<T extends Prisma.Company$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2523,7 +2811,8 @@ export interface CompanyFieldRefs {
   readonly email: Prisma.FieldRef<"Company", 'String'>
   readonly phone: Prisma.FieldRef<"Company", 'String'>
   readonly address: Prisma.FieldRef<"Company", 'String'>
-  readonly plan: Prisma.FieldRef<"Company", 'String'>
+  readonly planId: Prisma.FieldRef<"Company", 'String'>
+  readonly trialEndsAt: Prisma.FieldRef<"Company", 'DateTime'>
   readonly active: Prisma.FieldRef<"Company", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Company", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Company", 'DateTime'>
@@ -2776,6 +3065,10 @@ export type CompanyCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.CompanyCreateManyInput | Prisma.CompanyCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2846,6 +3139,10 @@ export type CompanyUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Companies to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2912,6 +3209,25 @@ export type CompanyDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Companies to delete.
    */
   limit?: number
+}
+
+/**
+ * Company.plan
+ */
+export type Company$planArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Plan
+   */
+  select?: Prisma.PlanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Plan
+   */
+  omit?: Prisma.PlanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanInclude<ExtArgs> | null
+  where?: Prisma.PlanWhereInput
 }
 
 /**

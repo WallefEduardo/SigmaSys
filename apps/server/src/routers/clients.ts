@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { TRPCError } from '@trpc/server'
 
@@ -26,7 +25,7 @@ const socialMediaSchema = z.object({
 export const clientsRouter = router({
   // Listar clientes
   list: protectedProcedure
-    .use(PermissionService.requirePermission('clients.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(10),
@@ -94,7 +93,7 @@ export const clientsRouter = router({
 
   // Obter cliente por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('clients.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -165,7 +164,7 @@ export const clientsRouter = router({
 
   // Criar cliente
   create: protectedProcedure
-    .use(PermissionService.requirePermission('clients.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(100),
       email: z.string().email().optional(),
@@ -235,7 +234,7 @@ export const clientsRouter = router({
 
   // Atualizar cliente
   update: protectedProcedure
-    .use(PermissionService.requirePermission('clients.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(100).optional(),
@@ -318,7 +317,7 @@ export const clientsRouter = router({
 
   // Desativar cliente
   deactivate: protectedProcedure
-    .use(PermissionService.requirePermission('clients.delete'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -338,7 +337,7 @@ export const clientsRouter = router({
 
   // Adicionar interação
   addInteraction: protectedProcedure
-    .use(PermissionService.requirePermission('clients.update'))
+    
     .input(z.object({
       clientId: z.string(),
       type: z.enum(['call', 'email', 'meeting', 'whatsapp', 'visit', 'other']),
@@ -389,7 +388,7 @@ export const clientsRouter = router({
 
   // Listar interações do cliente
   getInteractions: protectedProcedure
-    .use(PermissionService.requirePermission('clients.read'))
+    
     .input(z.object({
       clientId: z.string(),
       page: z.number().min(1).default(1),
@@ -440,7 +439,7 @@ export const clientsRouter = router({
 
   // Estatísticas dos clientes
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('clients.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 

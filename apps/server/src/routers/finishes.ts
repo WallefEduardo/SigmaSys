@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '../lib/trpc'
-import { PermissionService } from '../lib/permissions'
 import { ensureCompanyAccess } from '../lib/tenancy'
 import { TRPCError } from '@trpc/server'
 
@@ -20,7 +19,7 @@ const compositionSchema = z.object({
 export const finishesRouter = router({
   // Listar acabamentos
   list: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(20),
@@ -73,7 +72,7 @@ export const finishesRouter = router({
 
   // Obter acabamento por ID
   getById: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string()
     }))
@@ -108,7 +107,7 @@ export const finishesRouter = router({
 
   // Criar acabamento
   create: protectedProcedure
-    .use(PermissionService.requirePermission('products.create'))
+    
     .input(z.object({
       name: z.string().min(2).max(200),
       description: z.string().optional(),
@@ -170,7 +169,7 @@ export const finishesRouter = router({
 
   // Atualizar acabamento
   update: protectedProcedure
-    .use(PermissionService.requirePermission('products.update'))
+    
     .input(z.object({
       id: z.string(),
       name: z.string().min(2).max(200).optional(),
@@ -247,7 +246,7 @@ export const finishesRouter = router({
 
   // Desativar acabamento
   deactivate: protectedProcedure
-    .use(PermissionService.requirePermission('products.delete'))
+    
     .input(z.object({
       id: z.string(),
       reason: z.string().optional()
@@ -283,7 +282,7 @@ export const finishesRouter = router({
 
   // Calcular custo de um acabamento
   calculateCost: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .input(z.object({
       id: z.string(),
       quantity: z.number().min(0).default(1),
@@ -380,7 +379,7 @@ export const finishesRouter = router({
 
   // Estatísticas
   stats: protectedProcedure
-    .use(PermissionService.requirePermission('products.read'))
+    
     .query(async ({ ctx }) => {
       const companyId = ensureCompanyAccess()(ctx)
 
