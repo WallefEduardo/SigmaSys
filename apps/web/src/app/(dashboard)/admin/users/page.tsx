@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import Link from "next/link"
 import { Search, Plus, MoreHorizontal, Users, Building2, Shield, Activity } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { RoleGuard } from "@/components/auth/role-guard"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,29 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 
-import { roleLabels, roleColors } from "@/lib/mock-data/users"
 import { api } from "@/lib/trpc"
 
-export default function UsersPage() {
-  const { user } = useAuth()
+function UsersPageContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
   const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<any>(null)
   const [page, setPage] = useState(1)
-
-  // Componente carregado sem verificação de permissão
 
   // tRPC queries
   const { data: usersData, isLoading, refetch } = api.users.list.useQuery({
@@ -56,64 +42,20 @@ export default function UsersPage() {
     active: statusFilter === "all" ? undefined : statusFilter === "active"
   })
 
-  const createUserMutation = api.users.create.useMutation({
+  const toggleActiveMutation = api.users.toggleActive.useMutation({
     onSuccess: () => {
       refetch()
-      setIsDialogOpen(false)
-      setEditingUser(null)
-    }
-  })
-
-  const updateUserMutation = api.users.update.useMutation({
-    onSuccess: () => {
-      refetch()
-      setIsDialogOpen(false)
-      setEditingUser(null)
     }
   })
 
   const users = usersData?.users || []
   const pagination = usersData?.pagination
 
-  const handleEdit = (user: any) => {
-    setEditingUser(user)
-    setIsDialogOpen(true)
-  }
-
-  const handleCreate = () => {
-    setEditingUser(null)
-    setIsDialogOpen(true)
-  }
-
   const handleToggleStatus = (userId: string, currentActive: boolean) => {
-    updateUserMutation.mutate({
+    toggleActiveMutation.mutate({
       id: userId,
       active: !currentActive
     })
-  }
-
-  const handleSubmit = (formData: FormData) => {
-    const data = {
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      role: formData.get('role') as "admin" | "manager" | "user",
-      department: formData.get('department') as string || undefined,
-      position: formData.get('position') as string || undefined,
-      phone: formData.get('phone') as string || undefined,
-    }
-
-    if (editingUser) {
-      updateUserMutation.mutate({
-        id: editingUser.id,
-        ...data
-      })
-    } else {
-      const password = formData.get('password') as string
-      createUserMutation.mutate({
-        ...data,
-        password
-      })
-    }
   }
 
   const getRoleStats = () => {
@@ -127,11 +69,37 @@ export default function UsersPage() {
 
   const roleStats = getRoleStats()
 
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'superadmin': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      case 'admin': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'manager': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case 'user': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    }
+  }
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'superadmin': return 'Super Admin'
+      case 'admin': return 'Administrador'
+      case 'manager': return 'Gerente'
+      case 'user': return 'Usuário'
+      default: return role
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex items-center justify-center h-32">
-          <div className="text-muted-foreground">Carregando usuários...</div>
+        <div className="flex items-center justify-between space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">Gestão de Usuários do Sistema</h2>
+        </div>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-2 text-muted-foreground">Carregando usuários...</p>
+          </div>
         </div>
       </div>
     )
@@ -142,9 +110,11 @@ export default function UsersPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Gestão de Usuários do Sistema</h2>
         <div className="flex items-center space-x-2">
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Usuário
+          <Button asChild>
+            <Link href="/admin/users/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Usuário
+            </Link>
           </Button>
         </div>
       </div>
@@ -157,24 +127,26 @@ export default function UsersPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pagination?.total || 0}</div>
+            <div className="text-2xl font-bold">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              {users.filter(u => u.active).length} ativos
+              Usuários cadastrados
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Administradores</CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{roleStats.admin || 0}</div>
+            <div className="text-2xl font-bold">{(roleStats.admin || 0) + (roleStats.superadmin || 0)}</div>
             <p className="text-xs text-muted-foreground">
-              Acesso total
+              Super Admin + Admin
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Gerentes</CardTitle>
@@ -183,147 +155,141 @@ export default function UsersPage() {
           <CardContent>
             <div className="text-2xl font-bold">{roleStats.manager || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Usuários gerenciais
+              Usuários gerentes
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuários Comuns</CardTitle>
+            <CardTitle className="text-sm font-medium">Usuários Ativos</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{roleStats.user || 0}</div>
+            <div className="text-2xl font-bold">{users.filter(u => u.active).length}</div>
             <p className="text-xs text-muted-foreground">
-              Operacionais
+              {((users.filter(u => u.active).length / users.length) * 100).toFixed(1)}% do total
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtros</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar usuários..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
-            <div className="w-full md:w-[180px]">
-              <Select value={roleFilter} onValueChange={setRoleFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filtrar por cargo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os cargos</SelectItem>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="manager">Gerente</SelectItem>
-                  <SelectItem value="user">Usuário</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="w-full md:w-[180px]">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filtrar por status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  <SelectItem value="active">Ativos</SelectItem>
-                  <SelectItem value="inactive">Inativos</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Filtros */}
+      <div className="flex items-center space-x-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Buscar usuários..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="active">Ativos</SelectItem>
+            <SelectItem value="inactive">Inativos</SelectItem>
+          </SelectContent>
+        </Select>
 
-      {/* Users Table */}
+        <Select value={roleFilter} onValueChange={setRoleFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Cargo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="superadmin">Super Admin</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="manager">Gerente</SelectItem>
+            <SelectItem value="user">Usuário</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Tabela */}
       <Card>
-        <CardHeader>
-          <CardTitle>Usuários ({users.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Usuário</TableHead>
                 <TableHead>Cargo</TableHead>
-                <TableHead>Departamento</TableHead>
+                <TableHead>Empresa</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Último Login</TableHead>
-                <TableHead>Criado em</TableHead>
+                <TableHead>Último Acesso</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user: any) => (
+              {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">
+                  <TableCell>
                     <div>
                       <div className="font-medium">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">{user.email}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {user.email}
+                      </div>
                       {user.phone && (
-                        <div className="text-xs text-muted-foreground">{user.phone}</div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={roleColors[user.role.toUpperCase() as keyof typeof roleColors]}>
-                      {roleLabels[user.role.toUpperCase() as keyof typeof roleLabels]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="text-sm">{user.department || "-"}</div>
-                      {user.position && (
-                        <div className="text-xs text-muted-foreground">{user.position}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {user.phone}
+                        </div>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge 
-                      className={user.active 
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
-                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                      }
+                      variant="secondary" 
+                      className={getRoleColor(user.role)}
+                    >
+                      {getRoleLabel(user.role)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium">{user.company?.name}</div>
+                      {user.department && (
+                        <div className="text-sm text-muted-foreground">
+                          {user.department}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={user.active ? "default" : "destructive"}
                     >
                       {user.active ? "Ativo" : "Inativo"}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {user.lastLoginAt 
-                      ? new Date(user.lastLoginAt).toLocaleDateString('pt-BR')
-                      : "Nunca"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString('pt-BR')}
+                    <div className="text-sm">
+                      {user.lastLogin 
+                        ? new Date(user.lastLogin).toLocaleDateString('pt-BR')
+                        : 'Nunca'
+                      }
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleEdit(user)}
+                        asChild
                       >
-                        Editar
+                        <Link href={`/admin/users/editar/${user.id}`}>
+                          Editar
+                        </Link>
                       </Button>
                       <Button
                         variant={user.active ? "destructive" : "default"}
                         size="sm"
                         onClick={() => handleToggleStatus(user.id, user.active)}
-                        disabled={updateUserMutation.isPending}
+                        disabled={toggleActiveMutation.isPending}
                       >
                         {user.active ? "Desativar" : "Ativar"}
                       </Button>
@@ -335,123 +301,14 @@ export default function UsersPage() {
           </Table>
         </CardContent>
       </Card>
-
-      {/* Dialog for Create/Edit User */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>
-              {editingUser ? "Editar Usuário" : "Novo Usuário"}
-            </DialogTitle>
-            <DialogDescription>
-              {editingUser 
-                ? "Altere as informações do usuário aqui."
-                : "Preencha as informações para criar um novo usuário."
-              }
-            </DialogDescription>
-          </DialogHeader>
-          <form action={handleSubmit} className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="name" className="text-right">
-                Nome
-              </label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={editingUser?.name || ""}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="email" className="text-right">
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                defaultValue={editingUser?.email || ""}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="phone" className="text-right">
-                Telefone
-              </label>
-              <Input
-                id="phone"
-                name="phone"
-                defaultValue={editingUser?.phone || ""}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="role" className="text-right">
-                Cargo
-              </label>
-              <Select name="role" defaultValue={editingUser?.role || "user"}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Selecione um cargo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="manager">Gerente</SelectItem>
-                  <SelectItem value="user">Usuário</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="department" className="text-right">
-                Departamento
-              </label>
-              <Input
-                id="department"
-                name="department"
-                defaultValue={editingUser?.department || ""}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="position" className="text-right">
-                Cargo
-              </label>
-              <Input
-                id="position"
-                name="position"
-                defaultValue={editingUser?.position || ""}
-                className="col-span-3"
-              />
-            </div>
-            {!editingUser && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="password" className="text-right">
-                  Senha
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  className="col-span-3"
-                  required
-                />
-              </div>
-            )}
-            <DialogFooter>
-              <Button 
-                type="submit" 
-                disabled={createUserMutation.isPending || updateUserMutation.isPending}
-              >
-                {createUserMutation.isPending || updateUserMutation.isPending 
-                  ? "Salvando..." 
-                  : editingUser ? "Salvar alterações" : "Criar usuário"
-                }
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
+  )
+}
+
+export default function UsersPage() {
+  return (
+    <RoleGuard allowedRoles={['superadmin']}>
+      <UsersPageContent />
+    </RoleGuard>
   )
 }
