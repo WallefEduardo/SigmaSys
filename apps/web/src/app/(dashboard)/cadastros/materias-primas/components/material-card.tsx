@@ -1,142 +1,136 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import { Edit, Package, MapPin } from 'lucide-react'
+import { Edit, MapPin, Package } from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Material } from '@/lib/mock-data/materials'
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import type { Material, getStockStatus, stockStatusColors, stockStatusLabels } from "@/lib/mock-data/materials";
+import { formatCurrency } from "@/lib/utils/currency";
 
 interface MaterialCardProps {
-  material: Material
+	material: Material;
 }
 
 export function MaterialCard({ material }: MaterialCardProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value)
-  }
+	const stockStatus = getStockStatus(material);
+	const stockBadgeVariant = stockStatusColors[stockStatus];
+	const stockLabel = stockStatusLabels[stockStatus];
 
-  const getStockStatus = () => {
-    if (!material.stock || !material.minStock) return 'normal'
-    if (material.stock <= material.minStock) return 'low'
-    if (material.maxStock && material.stock >= material.maxStock) return 'high'
-    return 'normal'
-  }
+	return (
+		<Card className="flex h-full flex-col transition-shadow hover:shadow-lg">
+			<CardHeader className="pb-3">
+				<div className="flex items-start justify-between gap-2">
+					<div className="min-w-0 flex-1">
+						<CardTitle className="line-clamp-2 text-lg leading-tight">
+							{material.name}
+						</CardTitle>
+						<CardDescription className="mt-1 flex items-center gap-2">
+							<span>{material.code}</span>
+							{material.category && (
+								<Badge variant="outline" className="text-xs">
+									{material.category}
+								</Badge>
+							)}
+						</CardDescription>
+					</div>
+					<Badge
+						variant={material.active ? "default" : "secondary"}
+						className="shrink-0"
+					>
+						{material.active ? "Ativo" : "Inativo"}
+					</Badge>
+				</div>
+			</CardHeader>
 
-  const stockStatus = getStockStatus()
-  const stockBadgeVariant = stockStatus === 'low' ? 'destructive' : stockStatus === 'high' ? 'secondary' : 'default'
+			<CardContent className="flex-1 space-y-3">
+				<div className="space-y-2">
+					<div className="flex items-center justify-between">
+						<span className="text-muted-foreground text-sm">Custo:</span>
+						<span className="font-semibold text-green-600">
+							{formatCurrency(material.cost)} / {material.unit}
+						</span>
+					</div>
 
-  return (
-    <Card className="hover:shadow-lg transition-shadow h-full flex flex-col">
-      <CardHeader className="pb-3">
-        <div className="flex justify-between items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg leading-tight line-clamp-2">
-              {material.name}
-            </CardTitle>
-            <CardDescription className="flex items-center gap-2 mt-1">
-              <span>{material.code}</span>
-              {material.category && (
-                <Badge variant="outline" className="text-xs">
-                  {material.category}
-                </Badge>
-              )}
-            </CardDescription>
-          </div>
-          <Badge variant={material.active ? 'default' : 'secondary'} className="shrink-0">
-            {material.active ? 'Ativo' : 'Inativo'}
-          </Badge>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="flex-1 space-y-3">
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Custo:</span>
-            <span className="font-semibold text-green-600">
-              {formatCurrency(material.cost)} / {material.unit}
-            </span>
-          </div>
-          
-          {material.stock !== undefined && (
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Estoque:</span>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">
-                  {material.stock} {material.unit}
-                </span>
-                <Badge variant={stockBadgeVariant} className="text-xs">
-                  {stockStatus === 'low' ? 'Baixo' : stockStatus === 'high' ? 'Alto' : 'OK'}
-                </Badge>
-              </div>
-            </div>
-          )}
-          
-          {material.brand && (
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Marca:</span>
-              <span className="text-sm font-medium">{material.brand}</span>
-            </div>
-          )}
-          
-          {material.supplier && (
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Fornecedor:</span>
-              <span className="text-sm font-medium truncate ml-2" title={material.supplier}>
-                {material.supplier}
-              </span>
-            </div>
-          )}
-        </div>
-        
-        {material.location && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2 rounded">
-            <MapPin className="h-3 w-3 shrink-0" />
-            <span className="truncate">{material.location}</span>
-          </div>
-        )}
-        
-        {material.tags && material.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {material.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
-            {material.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs">
-                +{material.tags.length - 3}
-              </Badge>
-            )}
-          </div>
-        )}
-      </CardContent>
-      
-      <CardFooter className="pt-3">
-        <div className="flex gap-2 w-full">
-          <Button variant="outline" size="sm" asChild className="flex-1">
-            <Link href={`/cadastros/materias-primas/${material.id}`}>
-              <Package className="h-4 w-4 mr-1" />
-              Detalhes
-            </Link>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/cadastros/materias-primas/${material.id}/editar`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
-  )
+					{material.currentStock !== undefined && (
+						<div className="flex items-center justify-between">
+							<span className="text-muted-foreground text-sm">Estoque:</span>
+							<div className="flex items-center gap-2">
+								<span className="font-medium">
+									{material.currentStock} {material.unit}
+								</span>
+								<Badge variant={stockBadgeVariant} className="text-xs">
+									{stockLabel}
+								</Badge>
+							</div>
+						</div>
+					)}
+
+					{material.brand && (
+						<div className="flex items-center justify-between">
+							<span className="text-muted-foreground text-sm">Marca:</span>
+							<span className="font-medium text-sm">{material.brand}</span>
+						</div>
+					)}
+
+					{material.supplier && (
+						<div className="flex items-center justify-between">
+							<span className="text-muted-foreground text-sm">Fornecedor:</span>
+							<span
+								className="ml-2 truncate font-medium text-sm"
+								title={material.supplier}
+							>
+								{material.supplier}
+							</span>
+						</div>
+					)}
+				</div>
+
+				{material.location && (
+					<div className="flex items-center gap-2 rounded bg-muted/50 p-2 text-muted-foreground text-sm">
+						<MapPin className="h-3 w-3 shrink-0" />
+						<span className="truncate">{material.location}</span>
+					</div>
+				)}
+
+				{material.tags && material.tags.length > 0 && (
+					<div className="flex flex-wrap gap-1">
+						{material.tags.slice(0, 3).map((tag) => (
+							<Badge key={tag} variant="outline" className="text-xs">
+								{tag}
+							</Badge>
+						))}
+						{material.tags.length > 3 && (
+							<Badge variant="outline" className="text-xs">
+								+{material.tags.length - 3}
+							</Badge>
+						)}
+					</div>
+				)}
+			</CardContent>
+
+			<CardFooter className="pt-3">
+				<div className="flex w-full gap-2">
+					<Button variant="outline" size="sm" asChild className="flex-1">
+						<Link href={`/cadastros/materias-primas/${material.id}`}>
+							<Package className="mr-1 h-4 w-4" />
+							Detalhes
+						</Link>
+					</Button>
+					<Button variant="outline" size="sm" asChild>
+						<Link href={`/cadastros/materias-primas/${material.id}/editar`}>
+							<Edit className="h-4 w-4" />
+						</Link>
+					</Button>
+				</div>
+			</CardFooter>
+		</Card>
+	);
 }

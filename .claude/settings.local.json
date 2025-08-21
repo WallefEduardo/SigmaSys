@@ -22,7 +22,8 @@
       "Bash(npx shadcn@latest add:*)",
       "mcp__browser__puppeteer_click",
       "mcp__browser__puppeteer_navigate",
-      "mcp__browser__puppeteer_fill"
+      "mcp__browser__puppeteer_fill",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

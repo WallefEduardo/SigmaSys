@@ -1,24 +1,20 @@
-'use client'
+"use client";
 
-import { ThemeProvider } from '@/providers/theme-provider'
-import { TRPCProvider } from '@/providers/trpc-provider'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { TRPCProvider } from "@/providers/trpc-provider";
 
 interface ClientProvidersProps {
-  children: React.ReactNode
+	children: React.ReactNode;
 }
 
 export function ClientProviders({ children }: ClientProvidersProps) {
-  return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-    >
-      <TRPCProvider>
-        {children}
-        <Toaster />
-      </TRPCProvider>
-    </ThemeProvider>
-  )
+	return (
+		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+			<TRPCProvider>
+				{children}
+				<Toaster />
+			</TRPCProvider>
+		</ThemeProvider>
+	);
 }
