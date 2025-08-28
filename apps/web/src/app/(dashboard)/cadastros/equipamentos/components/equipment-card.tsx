@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Edit, MapPin, Settings, Trash2, Zap } from "lucide-react";
+import { Calendar, Calculator, Edit, MapPin, Settings, Trash2, Zap } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import type { Equipment } from "@/lib/mock-data/equipments";
 import { formatCurrency } from "@/lib/utils/currency";
+import { EquipmentCostPreviewModal } from "./equipment-cost-preview-modal";
 
 interface EquipmentCardProps {
 	equipment: Equipment;
@@ -23,6 +24,8 @@ interface EquipmentCardProps {
 
 export const EquipmentCard = React.memo<EquipmentCardProps>(
 	function EquipmentCard({ equipment, onDelete }) {
+		const [showCostPreview, setShowCostPreview] = React.useState(false);
+		
 		// Usando utility function de formatação
 
 		const getStatusInfo = (status: string) => {
@@ -78,6 +81,7 @@ export const EquipmentCard = React.memo<EquipmentCardProps>(
 		};
 
 		return (
+			<>
 			<Card className="flex h-full flex-col transition-shadow hover:shadow-lg">
 				<CardHeader className="pb-3">
 					<div className="flex items-start justify-between gap-2">
@@ -100,13 +104,26 @@ export const EquipmentCard = React.memo<EquipmentCardProps>(
 					<div className="space-y-2">
 						<div className="flex items-center justify-between">
 							<span className="text-muted-foreground text-sm">
-								{equipment.costUnit === "PER_HOUR" ? "Custo/hora:" : "Custo/m²:"}
+								Custo por m²: {/* Sempre m² para impressoras */}
 							</span>
-							<span className="font-semibold text-green-600">
-								{equipment.calculatedCostPerM2 ? `${formatCurrency(equipment.calculatedCostPerM2)}/m²` :
-								 equipment.calculatedCostPerHour ? `${formatCurrency(equipment.calculatedCostPerHour)}/h` :
-								 "Não calculado"}
-							</span>
+							<div className="flex items-center gap-2">
+								<span className="font-semibold text-green-600">
+									{equipment.calculatedCostPerM2 ? `${formatCurrency(equipment.calculatedCostPerM2)}/m²` :
+									 equipment.calculatedCostPerHour ? `${formatCurrency(equipment.calculatedCostPerHour)}/h` :
+									 "Não calculado"}
+								</span>
+								{equipment.type === "printing" && (
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-6 w-6 p-0"
+										onClick={() => setShowCostPreview(true)}
+										title="Ver detalhamento dos custos"
+									>
+										<Calculator className="h-3 w-3" />
+									</Button>
+								)}
+							</div>
 						</div>
 
 						{equipment.manufacturer && (
@@ -240,6 +257,17 @@ export const EquipmentCard = React.memo<EquipmentCardProps>(
 					</div>
 				</CardFooter>
 			</Card>
+			
+			{/* Modal de preview de custos */}
+			{showCostPreview && (
+				<EquipmentCostPreviewModal
+					equipmentId={equipment.id}
+					equipmentName={equipment.name}
+					isOpen={showCostPreview}
+					onClose={() => setShowCostPreview(false)}
+				/>
+			)}
+			</>
 		);
 	},
 );

@@ -225,7 +225,7 @@ export const equipmentsRouter = router({
 				type: z.enum(["printing", "machining"]),
 				energyCostPerHour: z.number().min(0).optional(),
 				maintenanceCostPerHour: z.number().min(0).optional(),
-				costUnit: z.enum(["PER_HOUR", "PER_M2"]).default("PER_M2"),
+				// Removido costUnit - impressoras sempre usam m²
 				
 				// Campos de depreciação
 				acquisitionValue: z.number().min(0).optional(),
@@ -240,15 +240,32 @@ export const equipmentsRouter = router({
 				printingConfig: printingConfigSchema,
 				machiningConfig: machiningConfigSchema,
 				
-				// Sistema de passadas (para impressoras)
+				// Sistema de passadas integrado com insumos cadastrados
 				passes: z.record(
+					z.string(),
 					z.object({
-						quality: z.string(),
-						speed: z.number().min(0),
-						inkConsumption: z.number().min(0),
-						powerConsumption: z.number().min(0),
-						printHeadWear: z.number().min(0),
+						name: z.string(),
 						description: z.string().optional(),
+						speedM2PerHour: z.number().min(0), // velocidade em m²/h para conversões
+						inkConsumables: z.array(z.object({
+							consumableId: z.string(), // ID do insumo cadastrado tipo "ink"
+							consumptionMlPerM2: z.number().min(0), // ml consumidos por m²
+						})).default([]),
+						printHeadConsumables: z.array(z.object({
+							consumableId: z.string(), // ID do insumo cadastrado tipo "printHead"
+						})).default([]),
+					})
+				).optional(),
+
+				// Sistema de cabeças de impressão instaladas
+				printHeads: z.record(
+					z.string(),
+					z.object({
+						id: z.string(),
+						consumableId: z.string(), // ID do insumo tipo cabeça
+						position: z.string(), // Posição da cabeça (A1, B2, etc)
+						installationDate: z.string(), // Data de instalação
+						notes: z.string().optional(),
 					})
 				).optional(),
 				
@@ -276,12 +293,24 @@ export const equipmentsRouter = router({
 			const companyId = ensureCompanyAccess()(ctx);
 
 			try {
+				// Separar passes e printHeads do input
+				const { passes, printHeads, ...equipmentData } = input;
+				
+				// Log para debug
+				apiLogger.info('Equipment creation data received', {
+					companyId,
+					hasPassses: !!passes,
+					passCount: passes ? Object.keys(passes).length : 0,
+					hasPrintHeads: !!printHeads,
+					printHeadCount: printHeads ? Object.keys(printHeads).length : 0,
+				});
+
 				// Verificar se código já existe (se fornecido)
-				if (input.code) {
+				if (equipmentData.code) {
 					const existingEquipment = await ctx.db.equipment.findFirst({
 						where: {
 							companyId,
-							code: input.code,
+							code: equipmentData.code,
 						},
 					});
 
@@ -294,17 +323,28 @@ export const equipmentsRouter = router({
 				}
 
 				// Calcular próxima manutenção se intervalo fornecido (em dias)
-				const nextMaintenance = input.maintenanceInterval && input.maintenanceInterval > 0 && input.maintenanceInterval <= 3650
-					? new Date(Date.now() + input.maintenanceInterval * 24 * 60 * 60 * 1000)
+				const nextMaintenance = equipmentData.maintenanceInterval && equipmentData.maintenanceInterval > 0 && equipmentData.maintenanceInterval <= 3650
+					? new Date(Date.now() + equipmentData.maintenanceInterval * 24 * 60 * 60 * 1000)
 					: undefined;
 
+				// Se tem passes, salvar no campo passes (JSON)
+				// IMPORTANTE: Não incluir printHeads em dataToSave pois não é campo do banco
+				const dataToSave: any = {
+					...equipmentData,
+					companyId,
+					nextMaintenance,
+					createdBy: ctx.user!.id,
+				};
+				
+				// Remover printHeads se existir (veio no equipmentData mas não existe no schema)
+				delete dataToSave.printHeads;
+				
+				if (passes && Object.keys(passes).length > 0) {
+					dataToSave.passes = passes;
+				}
+
 				const equipment = await ctx.db.equipment.create({
-					data: {
-						...input,
-						companyId,
-						nextMaintenance,
-						createdBy: ctx.user!.id,
-					},
+					data: dataToSave,
 					include: {
 						creator: { select: { name: true } },
 						_count: {
@@ -312,6 +352,46 @@ export const equipmentsRouter = router({
 						},
 					},
 				});
+				
+				// Se tem cabeças de impressão, criar registros EquipmentConsumable
+				if (printHeads && Object.keys(printHeads).length > 0) {
+					const headRecords = Object.values(printHeads).map((head: any) => ({
+						equipmentId: equipment.id,
+						consumableId: head.consumableId,
+						position: head.position,
+						installationDate: new Date(head.installationDate),
+						notes: head.notes || null,
+						active: true,
+					}));
+					
+					apiLogger.info('Creating print head installations', {
+						companyId,
+						equipmentId: equipment.id,
+						headCount: headRecords.length,
+					});
+					
+					await ctx.db.equipmentConsumable.createMany({
+						data: headRecords,
+					});
+					
+					// Buscar o equipamento com as relações
+					const equipmentWithRelations = await ctx.db.equipment.findUnique({
+						where: { id: equipment.id },
+						include: {
+							creator: { select: { name: true } },
+							installedConsumables: {
+								include: {
+									consumable: true,
+								},
+							},
+							_count: {
+								select: { productItems: true },
+							},
+						},
+					});
+					
+					return equipmentWithRelations || equipment;
+				}
 
 				const duration = performance.now() - startTime;
 
@@ -371,7 +451,7 @@ export const equipmentsRouter = router({
 				type: z.enum(["printing", "machining"]).optional(),
 				energyCostPerHour: z.number().min(0).optional(),
 				maintenanceCostPerHour: z.number().min(0).optional(),
-				costUnit: z.enum(["PER_HOUR", "PER_M2"]).optional(),
+				// Removido costUnit - impressoras sempre usam m²
 				maxWidth: z.number().min(0).optional(),
 				maxHeight: z.number().min(0).optional(),
 				maxThickness: z.number().min(0).optional(),
@@ -633,15 +713,17 @@ export const equipmentsRouter = router({
 				});
 			}
 
-			// Calcular duração e custo
+			// Calcular duração e custo 
 			const duration = input.endTime
 				? Math.round(
 						(input.endTime.getTime() - input.startTime.getTime()) / (1000 * 60),
 					)
 				: undefined;
 
-			const hourlyRate = Number(equipment.costPerHour);
-			const cost = duration ? (duration / 60) * hourlyRate : undefined;
+			// Usar custo calculado em m² ou por hora conforme disponível
+			const costPerM2 = Number(equipment.calculatedCostPerM2 || 0);
+			const costPerHour = Number(equipment.calculatedCostPerHour || 0);
+			const cost = duration && costPerHour > 0 ? (duration / 60) * costPerHour : undefined;
 
 			const usage = await ctx.db.equipmentUsage.create({
 				data: {
@@ -940,11 +1022,9 @@ export const equipmentsRouter = router({
 
 				const consumables = equipment.consumables as any;
 				const equipmentConfig = {
-					costPerHour: Number(equipment.costPerHour),
-					energyCostPerHour: Number(equipment.energyCost || 0),
-					inkCostPerMl: 0.05, // Valor padrão, pode vir dos consumables
-					printHeadCost: consumables?.printHeads?.cost || 500,
-					printHeadLifespan: consumables?.printHeads?.lifespan || 10000,
+					energyCostPerHour: Number(equipment.energyCostPerHour || 0),
+					maintenanceCostPerHour: Number(equipment.maintenanceCostPerHour || 0),
+					// Custos de tinta e cabeça vêm dos insumos cadastrados
 				};
 
 				const result = EquipmentPassesService.calculatePrintJob({
@@ -1087,11 +1167,9 @@ export const equipmentsRouter = router({
 				}
 
 				const equipmentConfig = {
-					costPerHour: Number(equipment.costPerHour),
-					energyCostPerHour: Number(equipment.energyCost || 0),
-					inkCostPerMl: 0.05,
-					printHeadCost: 500,
-					printHeadLifespan: 10000,
+					energyCostPerHour: Number(equipment.energyCostPerHour || 0),
+					maintenanceCostPerHour: Number(equipment.maintenanceCostPerHour || 0),
+					// Custos vêm dos insumos cadastrados na nova lógica
 				};
 
 				const suggestion = EquipmentPassesService.suggestBestPass(
@@ -1391,11 +1469,10 @@ export const equipmentsRouter = router({
 
 	// === SISTEMA DE CÁLCULO AUTOMÁTICO DE CUSTOS ===
 	
-	// Calcular custos de equipamento em tempo real
+	// Calcular custos de equipamento em tempo real (nova lógica)
 	calculateCosts: protectedProcedure
 		.input(z.object({
 			equipmentId: z.string(),
-			passQuality: z.string().optional(),
 		}))
 		.query(async ({ ctx, input }) => {
 			const startTime = performance.now();
@@ -1418,20 +1495,16 @@ export const equipmentsRouter = router({
 				}
 
 				const calculator = new EquipmentCostCalculator(ctx.db);
-				const breakdown = await calculator.calculateEquipmentCost(
-					input.equipmentId,
-					input.passQuality
-				);
+				const breakdown = await calculator.calculateEquipmentCost(input.equipmentId);
 
 				const duration = performance.now() - startTime;
 
-				apiLogger.info('Equipment costs calculated', {
+				apiLogger.info('Equipment costs calculated with new logic', {
 					companyId,
 					userId: ctx.user!.id,
 					equipmentId: input.equipmentId,
-					passQuality: input.passQuality,
-					totalCost: breakdown.totalCostPerUnit,
-					unit: breakdown.unit,
+					fixedCostPerM2: breakdown.fixedCosts.totalFixedPerM2,
+					passCount: breakdown.passCosts.length,
 					duration: Math.round(duration)
 				});
 
@@ -1444,7 +1517,6 @@ export const equipmentsRouter = router({
 					companyId,
 					userId: ctx.user!.id,
 					equipmentId: input.equipmentId,
-					passQuality: input.passQuality,
 					error: error instanceof Error ? error.message : String(error),
 					duration: Math.round(duration)
 				});
@@ -1453,11 +1525,10 @@ export const equipmentsRouter = router({
 			}
 		}),
 
-	// Recalcular e salvar custos de equipamento
+	// Recalcular e salvar custos de equipamento (nova lógica)
 	recalculateCosts: protectedProcedure
 		.input(z.object({
 			equipmentId: z.string(),
-			passQuality: z.string().optional(),
 		}))
 		.mutation(async ({ ctx, input }) => {
 			const startTime = performance.now();
@@ -1480,18 +1551,14 @@ export const equipmentsRouter = router({
 				}
 
 				const calculator = new EquipmentCostCalculator(ctx.db);
-				await calculator.recalculateAndSaveEquipmentCost(
-					input.equipmentId,
-					input.passQuality
-				);
+				await calculator.recalculateAndSaveEquipmentCost(input.equipmentId);
 
 				const duration = performance.now() - startTime;
 
-				apiLogger.info('Equipment costs recalculated and saved', {
+				apiLogger.info('Equipment costs recalculated and saved with new logic', {
 					companyId,
 					userId: ctx.user!.id,
 					equipmentId: input.equipmentId,
-					passQuality: input.passQuality,
 					duration: Math.round(duration)
 				});
 
@@ -1504,7 +1571,6 @@ export const equipmentsRouter = router({
 					companyId,
 					userId: ctx.user!.id,
 					equipmentId: input.equipmentId,
-					passQuality: input.passQuality,
 					error: error instanceof Error ? error.message : String(error),
 					duration: Math.round(duration)
 				});

@@ -8,10 +8,8 @@ const redis = new Redis({
 	port: Number(process.env.REDIS_PORT) || 6379,
 	password: process.env.REDIS_PASSWORD,
 	db: Number(process.env.REDIS_DB) || 0,
-	retryDelayOnFailover: 100,
 	maxRetriesPerRequest: 3,
 	connectTimeout: 10000,
-	commandTimeout: 5000,
 	lazyConnect: true,
 });
 
@@ -21,7 +19,7 @@ redis.on("connect", () => {
 });
 
 redis.on("error", (error) => {
-	logger.error("❌ Redis connection error:", error);
+	logger.error("❌ Redis connection error: " + String(error));
 });
 
 redis.on("ready", () => {
@@ -72,7 +70,7 @@ export class CacheService {
 			TelemetryService.recordCacheOperation("hit", key);
 			return JSON.parse(value) as T;
 		} catch (error) {
-			logger.error("Cache get error:", { key, error });
+			logger.error(`Cache get error for key ${key}: ${String(error)}`);
 			TelemetryService.recordCacheOperation("miss", key);
 			return null;
 		}
@@ -90,7 +88,7 @@ export class CacheService {
 
 			return true;
 		} catch (error) {
-			logger.error("Cache set error:", { key, error });
+			logger.error(`Cache set error for key ${key}: ${String(error)}`);
 			return false;
 		}
 	}
@@ -100,7 +98,7 @@ export class CacheService {
 			await redis.del(key);
 			return true;
 		} catch (error) {
-			logger.error("Cache delete error:", { key, error });
+			logger.error(`Cache delete error for key ${key}: ${String(error)}`);
 			return false;
 		}
 	}
@@ -117,7 +115,7 @@ export class CacheService {
 				}
 			});
 		} catch (error) {
-			logger.error("Cache mget error:", { keys, error });
+			logger.error(`Cache mget error for keys ${keys.join(',')}: ${String(error)}`);
 			return keys.map(() => null);
 		}
 	}
@@ -140,10 +138,8 @@ export class CacheService {
 			await pipeline.exec();
 			return true;
 		} catch (error) {
-			logger.error("Cache mset error:", {
-				pairs: pairs.map((p) => p.key),
-				error,
-			});
+			const keys = pairs.map((p) => p.key).join(',');
+			logger.error(`Cache mset error for keys ${keys}: ${String(error)}`);
 			return false;
 		}
 	}
@@ -158,7 +154,7 @@ export class CacheService {
 			logger.info(`Cache invalidated: ${keys.length} keys matching ${pattern}`);
 			return keys.length;
 		} catch (error) {
-			logger.error("Cache pattern invalidation error:", { pattern, error });
+			logger.error(`Cache pattern invalidation error for ${pattern}: ${String(error)}`);
 			return 0;
 		}
 	}
@@ -184,7 +180,7 @@ export class CacheService {
 
 			return value;
 		} catch (error) {
-			logger.error("Cache getOrSet error:", { key, error });
+			logger.error(`Cache getOrSet error for key ${key}: ${String(error)}`);
 			// Em caso de erro, executar fallback diretamente
 			return await fallback();
 		}
@@ -221,7 +217,7 @@ export class CacheService {
 				total: cached.total,
 			};
 		} catch (error) {
-			logger.error("List cache get error:", { key, page, limit, error });
+			logger.error(`List cache get error for key ${key} (page ${page}, limit ${limit}): ${String(error)}`);
 			return null;
 		}
 	}
@@ -241,7 +237,7 @@ export class CacheService {
 
 			return await CacheService.set(key, cacheData, ttl);
 		} catch (error) {
-			logger.error("List cache set error:", { key, error });
+			logger.error(`List cache set error for key ${key}: ${String(error)}`);
 			return false;
 		}
 	}
@@ -276,7 +272,7 @@ export class CacheService {
 
 			return retrieved !== null;
 		} catch (error) {
-			logger.error("Cache health check failed:", error);
+			logger.error(`Cache health check failed: ${String(error)}`);
 			return false;
 		}
 	}
@@ -294,7 +290,7 @@ export class CacheService {
 				timestamp: new Date().toISOString(),
 			};
 		} catch (error) {
-			logger.error("Cache stats error:", error);
+			logger.error(`Cache stats error: ${String(error)}`);
 			return {
 				connected: false,
 				error: error instanceof Error ? error.message : "Unknown error",
@@ -312,6 +308,6 @@ export const closeRedisConnection = async (): Promise<void> => {
 		await redis.quit();
 		logger.info("🔴 Redis connection closed");
 	} catch (error) {
-		logger.error("Error closing Redis connection:", error);
+		logger.error(`Error closing Redis connection: ${String(error)}`);
 	}
 };

@@ -28,6 +28,10 @@ export class TelemetryService {
     // Mock - não faz nada
   }
 
+  static recordCacheOperation(operation: string, key: string) {
+    // Mock - não faz nada
+  }
+
   static trackCacheMiss(key: string) {
     // Mock - não faz nada
   }

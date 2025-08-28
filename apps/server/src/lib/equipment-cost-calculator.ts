@@ -1,122 +1,129 @@
 import type { Prisma, PrismaClient } from "../generated/client";
 
 export interface EquipmentCostBreakdown {
-	// Componentes do custo
-	depreciationPerUnit: number;
-	energyPerUnit: number;
-	maintenancePerUnit: number;
-	consumablesPerUnit: number;
+	// === CUSTOS FIXOS (sem passada específica) ===
+	fixedCosts: {
+		depreciationPerM2: number;
+		energyPerM2: number;
+		maintenancePerM2: number;
+		totalFixedPerM2: number;
+	};
 	
-	// Total
-	totalCostPerUnit: number;
-	unit: "PER_HOUR" | "PER_M2";
+	// === CUSTOS VARIÁVEIS POR PASSADA ===
+	passCosts: Array<{
+		passKey: string;
+		passName: string;
+		speedM2PerHour: number;
+		
+		// Custos de tintas
+		inkCosts: Array<{
+			consumableId: string;
+			consumableName: string;
+			consumptionMlPerM2: number;
+			costPerLiter: number;
+			costPerM2: number;
+		}>;
+		totalInkCostPerM2: number;
+		
+		// Custos de cabeças
+		printHeadCosts: Array<{
+			consumableId: string;
+			consumableName: string;
+			costPerShot: number;
+			shotsPerM2: number;
+			costPerM2: number;
+		}>;
+		totalPrintHeadCostPerM2: number;
+		
+		// Total desta passada
+		totalPassCostPerM2: number;
+	}>;
 	
 	// Metadados
 	calculatedAt: Date;
-	passQuality?: string;
+	equipmentType: string;
+	unit: "m²"; // Sempre m² para impressoras
 }
 
 export interface EquipmentForCostCalculation {
 	id: string;
 	type: string;
-	costUnit: string;
+	
+	// Custos base por hora (inputs do usuário)
+	energyCostPerHour?: number;
+	maintenanceCostPerHour?: number;
 	
 	// Depreciação
 	acquisitionValue?: number;
 	residualValue?: number;
 	usefulLifeHours?: number;
 	usefulLifeYears?: number;
-	accumulatedHours?: number;
 	
-	// Custos base
-	energyCostPerHour?: number;
-	maintenanceCostPerHour?: number;
-	
-	// Configurações de passes (para impressoras)
-	passes?: any;
-	
-	// Consumíveis instalados
-	equipmentConsumables?: Array<{
-		consumable: {
-			id: string;
-			cost: number;
-			unit: string;
-			lifespan?: number;
+	// Nova estrutura de passadas integradas com insumos
+	passes?: {
+		[passKey: string]: {
+			name: string;
+			description?: string;
+			speedM2PerHour: number; // velocidade para conversão
+			inkConsumables: Array<{
+				consumableId: string;
+				consumptionMlPerM2: number;
+			}>;
+			printHeadConsumables: Array<{
+				consumableId: string;
+			}>;
 		};
-		currentUse?: number;
-	}>;
+	};
 }
 
 export class EquipmentCostCalculator {
 	constructor(private db: PrismaClient) {}
 
 	/**
-	 * Calcula o custo automático de um equipamento
+	 * NOVA LÓGICA: Calcula custos separados - fixos + variáveis por passada
 	 */
-	async calculateEquipmentCost(
-		equipmentId: string, 
-		passQuality?: string
-	): Promise<EquipmentCostBreakdown> {
-		
-		// Buscar dados completos do equipamento
+	async calculateEquipmentCost(equipmentId: string): Promise<EquipmentCostBreakdown> {
+		// Buscar equipamento com dados completos
 		const equipment = await this.getEquipmentWithRelations(equipmentId);
 		
 		if (!equipment) {
 			throw new Error(`Equipment ${equipmentId} not found`);
 		}
 
-		const unit = equipment.costUnit as "PER_HOUR" | "PER_M2";
-		const isPerM2 = unit === "PER_M2";
+		// APENAS IMPRESSORAS por enquanto (sempre m²)
+		if (equipment.type !== "printing") {
+			throw new Error("Only printing equipment supported with new logic");
+		}
 
-		// Obter velocidade da passada (para conversão hora -> m²)
-		const passSpeed = this.getPassSpeed(equipment, passQuality);
+		// === CALCULAR CUSTOS FIXOS ===
+		const fixedCosts = await this.calculateFixedCosts(equipment);
 
-		// Calcular cada componente
-		const depreciationPerUnit = this.calculateDepreciation(equipment, isPerM2, passSpeed);
-		const energyPerUnit = this.calculateEnergyCost(equipment, isPerM2, passSpeed);
-		const maintenancePerUnit = this.calculateMaintenanceCost(equipment, isPerM2, passSpeed);
-		const consumablesPerUnit = this.calculateConsumablesCost(equipment, passQuality, isPerM2, passSpeed);
-
-		const totalCostPerUnit = 
-			depreciationPerUnit + 
-			energyPerUnit + 
-			maintenancePerUnit + 
-			consumablesPerUnit;
+		// === CALCULAR CUSTOS VARIÁVEIS POR PASSADA ===
+		const passCosts = await this.calculatePassCosts(equipment);
 
 		return {
-			depreciationPerUnit,
-			energyPerUnit,
-			maintenancePerUnit,
-			consumablesPerUnit,
-			totalCostPerUnit,
-			unit,
+			fixedCosts,
+			passCosts,
 			calculatedAt: new Date(),
-			passQuality
+			equipmentType: equipment.type,
+			unit: "m²",
 		};
 	}
 
 	/**
-	 * Recalcular e salvar custos de um equipamento
+	 * Recalcular e salvar custos (apenas custos fixos no banco)
 	 */
-	async recalculateAndSaveEquipmentCost(
-		equipmentId: string,
-		passQuality?: string
-	): Promise<void> {
-		const breakdown = await this.calculateEquipmentCost(equipmentId, passQuality);
+	async recalculateAndSaveEquipmentCost(equipmentId: string): Promise<void> {
+		const breakdown = await this.calculateEquipmentCost(equipmentId);
 		
-		const updateData: any = {
-			lastCostCalculation: breakdown.calculatedAt
-		};
-
-		if (breakdown.unit === "PER_M2") {
-			updateData.calculatedCostPerM2 = breakdown.totalCostPerUnit;
-		} else {
-			updateData.calculatedCostPerHour = breakdown.totalCostPerUnit;
-		}
-
+		// Salvar apenas custos fixos no banco (passadas são calculadas dinamicamente)
 		await this.db.equipment.update({
 			where: { id: equipmentId },
-			data: updateData
+			data: {
+				calculatedCostPerM2: breakdown.fixedCosts.totalFixedPerM2,
+				calculatedCostPerHour: null, // não usado mais para impressoras
+				lastCostCalculation: breakdown.calculatedAt,
+			}
 		});
 	}
 
@@ -126,187 +133,165 @@ export class EquipmentCostCalculator {
 	private async getEquipmentWithRelations(equipmentId: string): Promise<EquipmentForCostCalculation | null> {
 		return await this.db.equipment.findUnique({
 			where: { id: equipmentId },
-			include: {
-				equipmentConsumables: {
-					where: { active: true },
-					include: {
-						consumable: true
-					}
-				}
-			}
 		}) as EquipmentForCostCalculation | null;
 	}
 
 	/**
-	 * Obter velocidade da passada específica (m²/hora)
+	 * Calcular custos fixos que não dependem da passada
 	 */
-	private getPassSpeed(equipment: EquipmentForCostCalculation, passQuality?: string): number {
-		if (!passQuality || !equipment.passes) {
-			return 60; // Velocidade padrão
-		}
+	private async calculateFixedCosts(equipment: EquipmentForCostCalculation) {
+		// Para custos fixos, usamos uma velocidade média de 60 m²/h para conversão
+		const averageSpeed = this.getAveragePassSpeed(equipment) || 60;
 
-		const passes = equipment.passes as any;
-		const pass = passes[passQuality];
-		
-		return pass?.speed || 60;
+		// Depreciação por m²
+		const depreciationPerM2 = this.calculateDepreciationPerM2(equipment, averageSpeed);
+
+		// Energia por m²
+		const energyPerM2 = (equipment.energyCostPerHour || 0) / averageSpeed;
+
+		// Manutenção por m²
+		const maintenancePerM2 = (equipment.maintenanceCostPerHour || 0) / averageSpeed;
+
+		const totalFixedPerM2 = depreciationPerM2 + energyPerM2 + maintenancePerM2;
+
+		return {
+			depreciationPerM2,
+			energyPerM2,
+			maintenancePerM2,
+			totalFixedPerM2,
+		};
 	}
 
 	/**
-	 * Calcular custo de depreciação por unidade
+	 * Calcular custos variáveis por passada (tintas + cabeças)
 	 */
-	private calculateDepreciation(
-		equipment: EquipmentForCostCalculation, 
-		isPerM2: boolean, 
-		speedM2PerHour: number
-	): number {
-		if (!equipment.acquisitionValue || !equipment.residualValue || !equipment.usefulLifeHours) {
+	private async calculatePassCosts(equipment: EquipmentForCostCalculation) {
+		const passCosts = [];
+
+		if (!equipment.passes) {
+			return passCosts;
+		}
+
+		for (const [passKey, passConfig] of Object.entries(equipment.passes)) {
+			// Calcular custos de tintas desta passada
+			const inkCosts = await this.calculateInkCostsForPass(passConfig);
+
+			// Calcular custos de cabeças desta passada  
+			const printHeadCosts = await this.calculatePrintHeadCostsForPass(passConfig);
+
+			const totalInkCostPerM2 = inkCosts.reduce((sum, ink) => sum + ink.costPerM2, 0);
+			const totalPrintHeadCostPerM2 = printHeadCosts.reduce((sum, head) => sum + head.costPerM2, 0);
+			const totalPassCostPerM2 = totalInkCostPerM2 + totalPrintHeadCostPerM2;
+
+			passCosts.push({
+				passKey,
+				passName: passConfig.name,
+				speedM2PerHour: passConfig.speedM2PerHour,
+				inkCosts,
+				totalInkCostPerM2,
+				printHeadCosts,
+				totalPrintHeadCostPerM2,
+				totalPassCostPerM2,
+			});
+		}
+
+		return passCosts;
+	}
+
+	// === NOVAS FUNÇÕES AUXILIARES ===
+
+	/**
+	 * Calcular velocidade média das passadas para custos fixos
+	 */
+	private getAveragePassSpeed(equipment: EquipmentForCostCalculation): number | null {
+		if (!equipment.passes) return null;
+
+		const speeds = Object.values(equipment.passes).map(pass => pass.speedM2PerHour);
+		if (speeds.length === 0) return null;
+
+		return speeds.reduce((sum, speed) => sum + speed, 0) / speeds.length;
+	}
+
+	/**
+	 * Calcular depreciação por m²
+	 */
+	private calculateDepreciationPerM2(equipment: EquipmentForCostCalculation, averageSpeed: number): number {
+		if (!equipment.acquisitionValue || !equipment.usefulLifeHours) {
 			return 0;
 		}
 
-		const depreciableValue = equipment.acquisitionValue - equipment.residualValue;
+		const residualValue = equipment.residualValue || 0;
+		const depreciableValue = equipment.acquisitionValue - residualValue;
 		const depreciationPerHour = depreciableValue / equipment.usefulLifeHours;
-
-		if (isPerM2) {
-			// Converter depreciação/hora para depreciação/m²
-			return depreciationPerHour / speedM2PerHour;
-		}
-
-		return depreciationPerHour;
+		
+		return depreciationPerHour / averageSpeed;
 	}
 
 	/**
-	 * Calcular custo de energia por unidade
+	 * Calcular custos de tintas para uma passada específica
 	 */
-	private calculateEnergyCost(
-		equipment: EquipmentForCostCalculation, 
-		isPerM2: boolean, 
-		speedM2PerHour: number
-	): number {
-		const energyCostPerHour = equipment.energyCostPerHour || 0;
+	private async calculateInkCostsForPass(passConfig: any) {
+		const inkCosts = [];
 
-		if (isPerM2) {
-			// Converter energia/hora para energia/m²
-			return energyCostPerHour / speedM2PerHour;
-		}
+		for (const inkConsumable of passConfig.inkConsumables || []) {
+			// Buscar dados do insumo cadastrado
+			const consumable = await this.db.consumable.findUnique({
+				where: { id: inkConsumable.consumableId },
+			});
 
-		return energyCostPerHour;
-	}
-
-	/**
-	 * Calcular custo de manutenção por unidade
-	 */
-	private calculateMaintenanceCost(
-		equipment: EquipmentForCostCalculation, 
-		isPerM2: boolean, 
-		speedM2PerHour: number
-	): number {
-		const maintenanceCostPerHour = equipment.maintenanceCostPerHour || 0;
-
-		if (isPerM2) {
-			// Converter manutenção/hora para manutenção/m²
-			return maintenanceCostPerHour / speedM2PerHour;
-		}
-
-		return maintenanceCostPerHour;
-	}
-
-	/**
-	 * Calcular custo de consumíveis por unidade
-	 */
-	private calculateConsumablesCost(
-		equipment: EquipmentForCostCalculation, 
-		passQuality: string | undefined,
-		isPerM2: boolean, 
-		speedM2PerHour: number
-	): number {
-		if (!equipment.equipmentConsumables || equipment.equipmentConsumables.length === 0) {
-			return 0;
-		}
-
-		let totalConsumablesCost = 0;
-
-		for (const equipConsumable of equipment.equipmentConsumables) {
-			const consumable = equipConsumable.consumable;
-			
-			if (consumable.unit === "ML_M2" && isPerM2) {
-				// Tinta: custo baseado no consumo específico da passada
-				const consumptionRate = this.getInkConsumptionRate(equipment, passQuality, consumable.id);
-				totalConsumablesCost += consumptionRate * consumable.cost;
-				
-			} else if (consumable.lifespan && consumable.unit === "PCS") {
-				// Cabeças/ferramentas: custo baseado na vida útil
-				const wearRate = this.getConsumableWearRate(equipment, passQuality, consumable.id);
-				const costPerUse = consumable.cost / consumable.lifespan;
-				
-				if (isPerM2) {
-					totalConsumablesCost += costPerUse * wearRate;
-				} else {
-					// Para custo/hora, assumir desgaste constante
-					totalConsumablesCost += costPerUse * wearRate;
-				}
+			if (!consumable || consumable.type !== 'ink') {
+				continue; // Pula se insumo não existe ou não é tinta
 			}
+
+			// Calcular custo: ml/m² * (custo_por_litro / 1000ml)
+			const costPerLiter = Number(consumable.cost);
+			const consumptionMlPerM2 = inkConsumable.consumptionMlPerM2;
+			const costPerM2 = (consumptionMlPerM2 / 1000) * costPerLiter;
+
+			inkCosts.push({
+				consumableId: consumable.id,
+				consumableName: consumable.name,
+				consumptionMlPerM2,
+				costPerLiter,
+				costPerM2,
+			});
 		}
 
-		return totalConsumablesCost;
+		return inkCosts;
 	}
 
 	/**
-	 * Obter taxa de consumo de tinta para uma passada específica
+	 * Calcular custos de cabeças de impressão para uma passada específica
 	 */
-	private getInkConsumptionRate(
-		equipment: EquipmentForCostCalculation,
-		passQuality: string | undefined,
-		inkId: string
-	): number {
-		if (!passQuality || !equipment.passes) {
-			return 1.0; // Consumo padrão
+	private async calculatePrintHeadCostsForPass(passConfig: any) {
+		const printHeadCosts = [];
+
+		for (const headConsumable of passConfig.printHeadConsumables || []) {
+			// Buscar dados do insumo cadastrado
+			const consumable = await this.db.consumable.findUnique({
+				where: { id: headConsumable.consumableId },
+			});
+
+			if (!consumable || consumable.type !== 'printHead') {
+				continue; // Pula se insumo não existe ou não é cabeça
+			}
+
+			// Calcular custo: (custo_cabeça / lifespan_disparos) * disparos_por_m²
+			const lifespan = consumable.lifespan || 10000000; // disparos totais padrão
+			const shotsPerM2 = consumable.shotsPerM2 || 1000; // disparos por m² padrão
+			const costPerShot = Number(consumable.cost) / lifespan;
+			const costPerM2 = costPerShot * shotsPerM2;
+
+			printHeadCosts.push({
+				consumableId: consumable.id,
+				consumableName: consumable.name,
+				costPerShot,
+				shotsPerM2,
+				costPerM2,
+			});
 		}
 
-		const passes = equipment.passes as any;
-		const pass = passes[passQuality];
-		
-		if (!pass || !pass.inkConfiguration) {
-			return pass?.inkConsumption || 1.0; // Multiplicador base
-		}
-
-		// Consumo específico: Multiplicador Base × Consumo Específico
-		const baseMultiplier = pass.inkConsumption || 1.0;
-		const specificConsumption = pass.inkConfiguration[inkId]?.consumptionRate || 0;
-		
-		return baseMultiplier * specificConsumption;
-	}
-
-	/**
-	 * Obter taxa de desgaste de consumível para uma passada específica
-	 */
-	private getConsumableWearRate(
-		equipment: EquipmentForCostCalculation,
-		passQuality: string | undefined,
-		consumableId: string
-	): number {
-		if (!passQuality || !equipment.passes) {
-			return 1.0; // Desgaste padrão
-		}
-
-		const passes = equipment.passes as any;
-		const pass = passes[passQuality];
-		
-		// Para cabeças de impressão, usar printHeadWear
-		return pass?.printHeadWear || 1.0;
-	}
-
-	/**
-	 * Obter sugestão automática da unidade baseada no tipo
-	 */
-	static getDefaultCostUnit(equipmentType: string): "PER_HOUR" | "PER_M2" {
-		switch (equipmentType) {
-			case "printing":
-				return "PER_M2"; // Impressão sempre em m²
-			case "machining":
-				return "PER_HOUR"; // Usinagem padrão em hora
-			default:
-				return "PER_HOUR";
-		}
+		return printHeadCosts;
 	}
 }
 

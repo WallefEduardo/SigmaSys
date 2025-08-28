@@ -30,7 +30,7 @@ export class AuthService {
 	static generateToken(payload: JWTPayload): string {
 		return jwt.sign(payload, AuthService.JWT_SECRET, {
 			expiresIn: AuthService.JWT_EXPIRES_IN,
-		});
+		} as jwt.SignOptions);
 	}
 
 	static verifyToken(token: string): JWTPayload {

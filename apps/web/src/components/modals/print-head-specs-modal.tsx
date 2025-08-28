@@ -36,11 +36,10 @@ interface PrintHeadSpecsModalProps {
   onOpenChange: (open: boolean) => void;
   onSelectSpec: (spec: {
     model: string;
-    lifespan: number;
-    shotsPerM2?: number;
+    lifespanM2: number;
     optimalSpeedRange: string;
-    unit?: string;
-    durationMonths?: number;
+    cost: number;
+    costPerM2: number;
   }) => void;
 }
 
@@ -79,12 +78,16 @@ export function PrintHeadSpecsModal({ open, onOpenChange, onSelectSpec }: PrintH
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handleSelectSpec = (spec: PrintHeadSpec, dpi: 720 | 1440) => {
+  const handleSelectSpec = (spec: PrintHeadSpec) => {
+    const cost = (spec.estimatedCost.min + spec.estimatedCost.max) / 2; // usar custo médio
+    const costPerM2 = cost / spec.lifespanM2;
+    
     onSelectSpec({
       model: spec.model,
-      lifespan: spec.lifespan,
-      shotsPerM2: spec.shotsPerM2[`dpi${dpi}`],
-      optimalSpeedRange: spec.optimalSpeedRange
+      lifespanM2: spec.lifespanM2,
+      optimalSpeedRange: spec.optimalSpeedRange,
+      cost,
+      costPerM2
     });
     onOpenChange(false);
   };
@@ -225,15 +228,15 @@ export function PrintHeadSpecsModal({ open, onOpenChange, onSelectSpec }: PrintH
                         <div className="flex-1">
                           <p className="text-xs text-muted-foreground">Vida Útil</p>
                           <p className="font-medium">
-                            {spec.lifespan.toLocaleString()} disparos
+                            {(spec.lifespanM2 / 1000).toFixed(0)}K m² ({spec.lifespanM2.toLocaleString()} m²)
                           </p>
                         </div>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => copyToClipboard(spec.lifespan.toString(), `${spec.id}-lifespan`)}
+                          onClick={() => copyToClipboard(spec.lifespanM2.toString(), `${spec.id}-lifespanM2`)}
                         >
-                          {copiedField === `${spec.id}-lifespan` ? (
+                          {copiedField === `${spec.id}-lifespanM2` ? (
                             <Check className="h-3 w-3" />
                           ) : (
                             <Copy className="h-3 w-3" />
@@ -261,17 +264,26 @@ export function PrintHeadSpecsModal({ open, onOpenChange, onSelectSpec }: PrintH
                         </Button>
                       </div>
 
-                      {/* Disparos/m² */}
-                      <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                        <TrendingUp className="h-4 w-4 text-orange-500" />
+                      {/* Custo por m² */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-950/20">
+                        <TrendingUp className="h-4 w-4 text-green-500" />
                         <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Disparos/m²</p>
-                          <p className="font-medium text-xs">
-                            720dpi: {spec.shotsPerM2.dpi720.toLocaleString()}
-                            <br />
-                            1440dpi: {spec.shotsPerM2.dpi1440.toLocaleString()}
+                          <p className="text-xs text-muted-foreground">Custo de Desgaste</p>
+                          <p className="font-medium text-green-600">
+                            R$ {((spec.estimatedCost.min + spec.estimatedCost.max) / 2 / spec.lifespanM2).toFixed(4)}/m²
                           </p>
                         </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => copyToClipboard(((spec.estimatedCost.min + spec.estimatedCost.max) / 2 / spec.lifespanM2).toFixed(4), `${spec.id}-costPerM2`)}
+                        >
+                          {copiedField === `${spec.id}-costPerM2` ? (
+                            <Check className="h-3 w-3" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
                       </div>
                     </div>
 
@@ -299,66 +311,36 @@ export function PrintHeadSpecsModal({ open, onOpenChange, onSelectSpec }: PrintH
                       </div>
                     )}
 
-                    {/* Exemplos de Cálculo */}
+                    {/* Faixa de Preços */}
                     <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-xs font-medium mb-2">💰 Exemplos de custo por unidade:</p>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                      <p className="text-xs font-medium mb-2">💰 Faixa de Preços:</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                         <div className="bg-blue-50 dark:bg-blue-950/30 p-2 rounded">
-                          <p className="font-medium text-blue-800 dark:text-blue-200">PCS:</p>
+                          <p className="font-medium text-blue-800 dark:text-blue-200">Custo da Cabeça:</p>
                           <p className="text-blue-600 dark:text-blue-400">
-                            {formatCurrency(spec.estimatedCost.min)}/peça
+                            {formatCurrency(spec.estimatedCost.min)} - {formatCurrency(spec.estimatedCost.max)}
                           </p>
                         </div>
                         <div className="bg-green-50 dark:bg-green-950/30 p-2 rounded">
-                          <p className="font-medium text-green-800 dark:text-green-200">DISPAROS:</p>
+                          <p className="font-medium text-green-800 dark:text-green-200">Desgaste por m²:</p>
                           <p className="text-green-600 dark:text-green-400">
-                            {formatCurrency((spec.estimatedCost.min / spec.lifespan) * 1000000)}/1M disparos
-                          </p>
-                        </div>
-                        <div className="bg-orange-50 dark:bg-orange-950/30 p-2 rounded">
-                          <p className="font-medium text-orange-800 dark:text-orange-200">DISPAROS/M²:</p>
-                          <p className="text-orange-600 dark:text-orange-400">
-                            {formatCurrency((spec.estimatedCost.min / spec.lifespan) * spec.shotsPerM2.dpi720)}/m² (720dpi)
+                            R$ {(spec.estimatedCost.min / spec.lifespanM2).toFixed(4)} - R$ {(spec.estimatedCost.max / spec.lifespanM2).toFixed(4)}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Botões de Ação */}
-                    <div className="space-y-2 pt-2 border-t">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => onSelectSpec({
-                            model: spec.model,
-                            lifespan: spec.lifespan,
-                            optimalSpeedRange: spec.optimalSpeedRange,
-                            unit: "PCS",
-                            durationMonths: 12 // Duração padrão de 12 meses para PCS
-                          })}
-                          className="text-xs"
-                        >
-                          🔧 Usar como PCS
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleSelectSpec(spec, 720)}
-                          className="text-xs"
-                        >
-                          🎯 DISPAROS/M² (720dpi)
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleSelectSpec(spec, 1440)}
-                          className="text-xs"
-                        >
-                          📐 DISPAROS/M² (1440dpi)
-                        </Button>
-                      </div>
-                      <p className="text-xs text-center text-muted-foreground">
-                        Escolha a unidade conforme sua necessidade de cálculo
+                    {/* Botão de Ação Simplificado */}
+                    <div className="pt-2 border-t">
+                      <Button
+                        size="sm"
+                        onClick={() => handleSelectSpec(spec)}
+                        className="w-full text-sm"
+                      >
+                        ✅ Usar Esta Cabeça
+                      </Button>
+                      <p className="text-xs text-center text-muted-foreground mt-2">
+                        Custo por m²: R$ {((spec.estimatedCost.min + spec.estimatedCost.max) / 2 / spec.lifespanM2).toFixed(4)}
                       </p>
                     </div>
                   </CardContent>

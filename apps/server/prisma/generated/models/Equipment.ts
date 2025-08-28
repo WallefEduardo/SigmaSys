@@ -31,11 +31,9 @@ export type EquipmentAvgAggregateOutputType = {
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   acquisitionValue: runtime.Decimal | null
-  residualValue: runtime.Decimal | null
+  depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
-  accumulatedDepreciation: runtime.Decimal | null
-  accumulatedHours: number | null
   maxWidth: runtime.Decimal | null
   maxHeight: runtime.Decimal | null
   maxThickness: runtime.Decimal | null
@@ -49,11 +47,9 @@ export type EquipmentSumAggregateOutputType = {
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   acquisitionValue: runtime.Decimal | null
-  residualValue: runtime.Decimal | null
+  depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
-  accumulatedDepreciation: runtime.Decimal | null
-  accumulatedHours: number | null
   maxWidth: runtime.Decimal | null
   maxHeight: runtime.Decimal | null
   maxThickness: runtime.Decimal | null
@@ -69,17 +65,13 @@ export type EquipmentMinAggregateOutputType = {
   type: string | null
   energyCostPerHour: runtime.Decimal | null
   maintenanceCostPerHour: runtime.Decimal | null
-  costUnit: string | null
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
-  residualValue: runtime.Decimal | null
-  depreciationMethod: string | null
+  depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
-  accumulatedDepreciation: runtime.Decimal | null
-  accumulatedHours: number | null
   maxWidth: runtime.Decimal | null
   maxHeight: runtime.Decimal | null
   maxThickness: runtime.Decimal | null
@@ -111,17 +103,13 @@ export type EquipmentMaxAggregateOutputType = {
   type: string | null
   energyCostPerHour: runtime.Decimal | null
   maintenanceCostPerHour: runtime.Decimal | null
-  costUnit: string | null
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
-  residualValue: runtime.Decimal | null
-  depreciationMethod: string | null
+  depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
-  accumulatedDepreciation: runtime.Decimal | null
-  accumulatedHours: number | null
   maxWidth: runtime.Decimal | null
   maxHeight: runtime.Decimal | null
   maxThickness: runtime.Decimal | null
@@ -153,24 +141,19 @@ export type EquipmentCountAggregateOutputType = {
   type: number
   energyCostPerHour: number
   maintenanceCostPerHour: number
-  costUnit: number
   calculatedCostPerM2: number
   calculatedCostPerHour: number
   lastCostCalculation: number
   acquisitionValue: number
-  residualValue: number
-  depreciationMethod: number
+  depreciationPerHour: number
   usefulLifeHours: number
   usefulLifeYears: number
-  accumulatedDepreciation: number
-  accumulatedHours: number
   maxWidth: number
   maxHeight: number
   maxThickness: number
   printingConfig: number
   machiningConfig: number
   passes: number
-  consumables: number
   status: number
   location: number
   serialNumber: number
@@ -202,11 +185,9 @@ export type EquipmentAvgAggregateInputType = {
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   acquisitionValue?: true
-  residualValue?: true
+  depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
-  accumulatedDepreciation?: true
-  accumulatedHours?: true
   maxWidth?: true
   maxHeight?: true
   maxThickness?: true
@@ -220,11 +201,9 @@ export type EquipmentSumAggregateInputType = {
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   acquisitionValue?: true
-  residualValue?: true
+  depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
-  accumulatedDepreciation?: true
-  accumulatedHours?: true
   maxWidth?: true
   maxHeight?: true
   maxThickness?: true
@@ -240,17 +219,13 @@ export type EquipmentMinAggregateInputType = {
   type?: true
   energyCostPerHour?: true
   maintenanceCostPerHour?: true
-  costUnit?: true
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
-  residualValue?: true
-  depreciationMethod?: true
+  depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
-  accumulatedDepreciation?: true
-  accumulatedHours?: true
   maxWidth?: true
   maxHeight?: true
   maxThickness?: true
@@ -282,17 +257,13 @@ export type EquipmentMaxAggregateInputType = {
   type?: true
   energyCostPerHour?: true
   maintenanceCostPerHour?: true
-  costUnit?: true
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
-  residualValue?: true
-  depreciationMethod?: true
+  depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
-  accumulatedDepreciation?: true
-  accumulatedHours?: true
   maxWidth?: true
   maxHeight?: true
   maxThickness?: true
@@ -324,24 +295,19 @@ export type EquipmentCountAggregateInputType = {
   type?: true
   energyCostPerHour?: true
   maintenanceCostPerHour?: true
-  costUnit?: true
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
-  residualValue?: true
-  depreciationMethod?: true
+  depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
-  accumulatedDepreciation?: true
-  accumulatedHours?: true
   maxWidth?: true
   maxHeight?: true
   maxThickness?: true
   printingConfig?: true
   machiningConfig?: true
   passes?: true
-  consumables?: true
   status?: true
   location?: true
   serialNumber?: true
@@ -460,24 +426,19 @@ export type EquipmentGroupByOutputType = {
   type: string
   energyCostPerHour: runtime.Decimal | null
   maintenanceCostPerHour: runtime.Decimal | null
-  costUnit: string
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
-  residualValue: runtime.Decimal | null
-  depreciationMethod: string | null
+  depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
-  accumulatedDepreciation: runtime.Decimal | null
-  accumulatedHours: number | null
   maxWidth: runtime.Decimal | null
   maxHeight: runtime.Decimal | null
   maxThickness: runtime.Decimal | null
   printingConfig: runtime.JsonValue | null
   machiningConfig: runtime.JsonValue | null
   passes: runtime.JsonValue | null
-  consumables: runtime.JsonValue | null
   status: string
   location: string | null
   serialNumber: string | null
@@ -532,24 +493,19 @@ export type EquipmentWhereInput = {
   type?: Prisma.StringFilter<"Equipment"> | string
   energyCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFilter<"Equipment"> | string
   calculatedCostPerM2?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
-  accumulatedDepreciation?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.JsonNullableFilter<"Equipment">
   machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
   passes?: Prisma.JsonNullableFilter<"Equipment">
-  consumables?: Prisma.JsonNullableFilter<"Equipment">
   status?: Prisma.StringFilter<"Equipment"> | string
   location?: Prisma.StringNullableFilter<"Equipment"> | string | null
   serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
@@ -587,24 +543,19 @@ export type EquipmentOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   energyCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   maintenanceCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
-  costUnit?: Prisma.SortOrder
   calculatedCostPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrderInput | Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  residualValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  depreciationMethod?: Prisma.SortOrderInput | Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrderInput | Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrderInput | Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrderInput | Prisma.SortOrder
   maxWidth?: Prisma.SortOrderInput | Prisma.SortOrder
   maxHeight?: Prisma.SortOrderInput | Prisma.SortOrder
   maxThickness?: Prisma.SortOrderInput | Prisma.SortOrder
   printingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   machiningConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   passes?: Prisma.SortOrderInput | Prisma.SortOrder
-  consumables?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -646,24 +597,19 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.StringFilter<"Equipment"> | string
   energyCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFilter<"Equipment"> | string
   calculatedCostPerM2?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
-  accumulatedDepreciation?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.JsonNullableFilter<"Equipment">
   machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
   passes?: Prisma.JsonNullableFilter<"Equipment">
-  consumables?: Prisma.JsonNullableFilter<"Equipment">
   status?: Prisma.StringFilter<"Equipment"> | string
   location?: Prisma.StringNullableFilter<"Equipment"> | string | null
   serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
@@ -701,24 +647,19 @@ export type EquipmentOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   energyCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   maintenanceCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
-  costUnit?: Prisma.SortOrder
   calculatedCostPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrderInput | Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  residualValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  depreciationMethod?: Prisma.SortOrderInput | Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrderInput | Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrderInput | Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrderInput | Prisma.SortOrder
   maxWidth?: Prisma.SortOrderInput | Prisma.SortOrder
   maxHeight?: Prisma.SortOrderInput | Prisma.SortOrder
   maxThickness?: Prisma.SortOrderInput | Prisma.SortOrder
   printingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   machiningConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   passes?: Prisma.SortOrderInput | Prisma.SortOrder
-  consumables?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -758,24 +699,19 @@ export type EquipmentScalarWhereWithAggregatesInput = {
   type?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
   energyCostPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
   calculatedCostPerM2?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
+  depreciationPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
-  accumulatedDepreciation?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
   maxWidth?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
   machiningConfig?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
   passes?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
-  consumables?: Prisma.JsonNullableWithAggregatesFilter<"Equipment">
   status?: Prisma.StringWithAggregatesFilter<"Equipment"> | string
   location?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   serialNumber?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
@@ -807,24 +743,19 @@ export type EquipmentCreateInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -859,24 +790,19 @@ export type EquipmentUncheckedCreateInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -911,24 +837,19 @@ export type EquipmentUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -963,24 +884,19 @@ export type EquipmentUncheckedUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1015,24 +931,19 @@ export type EquipmentCreateManyInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1064,24 +975,19 @@ export type EquipmentUpdateManyMutationInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1110,24 +1016,19 @@ export type EquipmentUncheckedUpdateManyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1174,24 +1075,19 @@ export type EquipmentCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   energyCostPerHour?: Prisma.SortOrder
   maintenanceCostPerHour?: Prisma.SortOrder
-  costUnit?: Prisma.SortOrder
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
-  residualValue?: Prisma.SortOrder
-  depreciationMethod?: Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrder
   maxWidth?: Prisma.SortOrder
   maxHeight?: Prisma.SortOrder
   maxThickness?: Prisma.SortOrder
   printingConfig?: Prisma.SortOrder
   machiningConfig?: Prisma.SortOrder
   passes?: Prisma.SortOrder
-  consumables?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrder
@@ -1221,11 +1117,9 @@ export type EquipmentAvgOrderByAggregateInput = {
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
-  residualValue?: Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrder
   maxWidth?: Prisma.SortOrder
   maxHeight?: Prisma.SortOrder
   maxThickness?: Prisma.SortOrder
@@ -1241,17 +1135,13 @@ export type EquipmentMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   energyCostPerHour?: Prisma.SortOrder
   maintenanceCostPerHour?: Prisma.SortOrder
-  costUnit?: Prisma.SortOrder
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
-  residualValue?: Prisma.SortOrder
-  depreciationMethod?: Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrder
   maxWidth?: Prisma.SortOrder
   maxHeight?: Prisma.SortOrder
   maxThickness?: Prisma.SortOrder
@@ -1283,17 +1173,13 @@ export type EquipmentMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   energyCostPerHour?: Prisma.SortOrder
   maintenanceCostPerHour?: Prisma.SortOrder
-  costUnit?: Prisma.SortOrder
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
-  residualValue?: Prisma.SortOrder
-  depreciationMethod?: Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrder
   maxWidth?: Prisma.SortOrder
   maxHeight?: Prisma.SortOrder
   maxThickness?: Prisma.SortOrder
@@ -1323,11 +1209,9 @@ export type EquipmentSumOrderByAggregateInput = {
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
-  residualValue?: Prisma.SortOrder
+  depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
-  accumulatedDepreciation?: Prisma.SortOrder
-  accumulatedHours?: Prisma.SortOrder
   maxWidth?: Prisma.SortOrder
   maxHeight?: Prisma.SortOrder
   maxThickness?: Prisma.SortOrder
@@ -1543,24 +1427,19 @@ export type EquipmentCreateWithoutCompanyInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1594,24 +1473,19 @@ export type EquipmentUncheckedCreateWithoutCompanyInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1674,24 +1548,19 @@ export type EquipmentScalarWhereInput = {
   type?: Prisma.StringFilter<"Equipment"> | string
   energyCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFilter<"Equipment"> | string
   calculatedCostPerM2?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
+  depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
-  accumulatedDepreciation?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   maxWidth?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.JsonNullableFilter<"Equipment">
   machiningConfig?: Prisma.JsonNullableFilter<"Equipment">
   passes?: Prisma.JsonNullableFilter<"Equipment">
-  consumables?: Prisma.JsonNullableFilter<"Equipment">
   status?: Prisma.StringFilter<"Equipment"> | string
   location?: Prisma.StringNullableFilter<"Equipment"> | string | null
   serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null
@@ -1723,24 +1592,19 @@ export type EquipmentCreateWithoutCreatorInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1774,24 +1638,19 @@ export type EquipmentUncheckedCreateWithoutCreatorInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1835,24 +1694,19 @@ export type EquipmentCreateWithoutUpdaterInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1886,24 +1740,19 @@ export type EquipmentUncheckedCreateWithoutUpdaterInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -1979,24 +1828,19 @@ export type EquipmentCreateWithoutUsageLogInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2030,24 +1874,19 @@ export type EquipmentUncheckedCreateWithoutUsageLogInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2097,24 +1936,19 @@ export type EquipmentUpdateWithoutUsageLogInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2148,24 +1982,19 @@ export type EquipmentUncheckedUpdateWithoutUsageLogInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2199,24 +2028,19 @@ export type EquipmentCreateWithoutInstalledConsumablesInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2250,24 +2074,19 @@ export type EquipmentUncheckedCreateWithoutInstalledConsumablesInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2317,24 +2136,19 @@ export type EquipmentUpdateWithoutInstalledConsumablesInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2368,24 +2182,19 @@ export type EquipmentUncheckedUpdateWithoutInstalledConsumablesInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2419,24 +2228,19 @@ export type EquipmentCreateWithoutProductItemsInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2470,24 +2274,19 @@ export type EquipmentUncheckedCreateWithoutProductItemsInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2537,24 +2336,19 @@ export type EquipmentUpdateWithoutProductItemsInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2588,24 +2382,19 @@ export type EquipmentUncheckedUpdateWithoutProductItemsInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2639,24 +2428,19 @@ export type EquipmentCreateManyCompanyInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2687,24 +2471,19 @@ export type EquipmentUpdateWithoutCompanyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2738,24 +2517,19 @@ export type EquipmentUncheckedUpdateWithoutCompanyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2789,24 +2563,19 @@ export type EquipmentUncheckedUpdateManyWithoutCompanyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2837,24 +2606,19 @@ export type EquipmentCreateManyCreatorInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2885,24 +2649,19 @@ export type EquipmentCreateManyUpdaterInput = {
   type: string
   energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: string
   calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
-  accumulatedDepreciation?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: number | null
   maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: string
   location?: string | null
   serialNumber?: string | null
@@ -2933,24 +2692,19 @@ export type EquipmentUpdateWithoutCreatorInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2984,24 +2738,19 @@ export type EquipmentUncheckedUpdateWithoutCreatorInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3035,24 +2784,19 @@ export type EquipmentUncheckedUpdateManyWithoutCreatorInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3083,24 +2827,19 @@ export type EquipmentUpdateWithoutUpdaterInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3134,24 +2873,19 @@ export type EquipmentUncheckedUpdateWithoutUpdaterInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3185,24 +2919,19 @@ export type EquipmentUncheckedUpdateManyWithoutUpdaterInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  costUnit?: Prisma.StringFieldUpdateOperationsInput | string
   calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  accumulatedDepreciation?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  accumulatedHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  consumables?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3282,24 +3011,19 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   type?: boolean
   energyCostPerHour?: boolean
   maintenanceCostPerHour?: boolean
-  costUnit?: boolean
   calculatedCostPerM2?: boolean
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
-  residualValue?: boolean
-  depreciationMethod?: boolean
+  depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
-  accumulatedDepreciation?: boolean
-  accumulatedHours?: boolean
   maxWidth?: boolean
   maxHeight?: boolean
   maxThickness?: boolean
   printingConfig?: boolean
   machiningConfig?: boolean
   passes?: boolean
-  consumables?: boolean
   status?: boolean
   location?: boolean
   serialNumber?: boolean
@@ -3338,24 +3062,19 @@ export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   type?: boolean
   energyCostPerHour?: boolean
   maintenanceCostPerHour?: boolean
-  costUnit?: boolean
   calculatedCostPerM2?: boolean
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
-  residualValue?: boolean
-  depreciationMethod?: boolean
+  depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
-  accumulatedDepreciation?: boolean
-  accumulatedHours?: boolean
   maxWidth?: boolean
   maxHeight?: boolean
   maxThickness?: boolean
   printingConfig?: boolean
   machiningConfig?: boolean
   passes?: boolean
-  consumables?: boolean
   status?: boolean
   location?: boolean
   serialNumber?: boolean
@@ -3390,24 +3109,19 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   type?: boolean
   energyCostPerHour?: boolean
   maintenanceCostPerHour?: boolean
-  costUnit?: boolean
   calculatedCostPerM2?: boolean
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
-  residualValue?: boolean
-  depreciationMethod?: boolean
+  depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
-  accumulatedDepreciation?: boolean
-  accumulatedHours?: boolean
   maxWidth?: boolean
   maxHeight?: boolean
   maxThickness?: boolean
   printingConfig?: boolean
   machiningConfig?: boolean
   passes?: boolean
-  consumables?: boolean
   status?: boolean
   location?: boolean
   serialNumber?: boolean
@@ -3442,24 +3156,19 @@ export type EquipmentSelectScalar = {
   type?: boolean
   energyCostPerHour?: boolean
   maintenanceCostPerHour?: boolean
-  costUnit?: boolean
   calculatedCostPerM2?: boolean
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
-  residualValue?: boolean
-  depreciationMethod?: boolean
+  depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
-  accumulatedDepreciation?: boolean
-  accumulatedHours?: boolean
   maxWidth?: boolean
   maxHeight?: boolean
   maxThickness?: boolean
   printingConfig?: boolean
   machiningConfig?: boolean
   passes?: boolean
-  consumables?: boolean
   status?: boolean
   location?: boolean
   serialNumber?: boolean
@@ -3483,7 +3192,7 @@ export type EquipmentSelectScalar = {
   companyId?: boolean
 }
 
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "energyCostPerHour" | "maintenanceCostPerHour" | "costUnit" | "calculatedCostPerM2" | "calculatedCostPerHour" | "lastCostCalculation" | "acquisitionValue" | "residualValue" | "depreciationMethod" | "usefulLifeHours" | "usefulLifeYears" | "accumulatedDepreciation" | "accumulatedHours" | "maxWidth" | "maxHeight" | "maxThickness" | "printingConfig" | "machiningConfig" | "passes" | "consumables" | "status" | "location" | "serialNumber" | "manufacturer" | "model" | "year" | "lastMaintenance" | "nextMaintenance" | "maintenanceInterval" | "maintenanceNotes" | "manualUrl" | "images" | "documents" | "notes" | "tags" | "active" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["equipment"]>
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "energyCostPerHour" | "maintenanceCostPerHour" | "calculatedCostPerM2" | "calculatedCostPerHour" | "lastCostCalculation" | "acquisitionValue" | "depreciationPerHour" | "usefulLifeHours" | "usefulLifeYears" | "maxWidth" | "maxHeight" | "maxThickness" | "printingConfig" | "machiningConfig" | "passes" | "status" | "location" | "serialNumber" | "manufacturer" | "model" | "year" | "lastMaintenance" | "nextMaintenance" | "maintenanceInterval" | "maintenanceNotes" | "manualUrl" | "images" | "documents" | "notes" | "tags" | "active" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["equipment"]>
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
@@ -3522,24 +3231,19 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     type: string
     energyCostPerHour: runtime.Decimal | null
     maintenanceCostPerHour: runtime.Decimal | null
-    costUnit: string
     calculatedCostPerM2: runtime.Decimal | null
     calculatedCostPerHour: runtime.Decimal | null
     lastCostCalculation: Date | null
     acquisitionValue: runtime.Decimal | null
-    residualValue: runtime.Decimal | null
-    depreciationMethod: string | null
+    depreciationPerHour: runtime.Decimal | null
     usefulLifeHours: number | null
     usefulLifeYears: number | null
-    accumulatedDepreciation: runtime.Decimal | null
-    accumulatedHours: number | null
     maxWidth: runtime.Decimal | null
     maxHeight: runtime.Decimal | null
     maxThickness: runtime.Decimal | null
     printingConfig: runtime.JsonValue | null
     machiningConfig: runtime.JsonValue | null
     passes: runtime.JsonValue | null
-    consumables: runtime.JsonValue | null
     status: string
     location: string | null
     serialNumber: string | null
@@ -3997,24 +3701,19 @@ export interface EquipmentFieldRefs {
   readonly type: Prisma.FieldRef<"Equipment", 'String'>
   readonly energyCostPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly maintenanceCostPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
-  readonly costUnit: Prisma.FieldRef<"Equipment", 'String'>
   readonly calculatedCostPerM2: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly calculatedCostPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly lastCostCalculation: Prisma.FieldRef<"Equipment", 'DateTime'>
   readonly acquisitionValue: Prisma.FieldRef<"Equipment", 'Decimal'>
-  readonly residualValue: Prisma.FieldRef<"Equipment", 'Decimal'>
-  readonly depreciationMethod: Prisma.FieldRef<"Equipment", 'String'>
+  readonly depreciationPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly usefulLifeHours: Prisma.FieldRef<"Equipment", 'Int'>
   readonly usefulLifeYears: Prisma.FieldRef<"Equipment", 'Int'>
-  readonly accumulatedDepreciation: Prisma.FieldRef<"Equipment", 'Decimal'>
-  readonly accumulatedHours: Prisma.FieldRef<"Equipment", 'Int'>
   readonly maxWidth: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly maxHeight: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly maxThickness: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly printingConfig: Prisma.FieldRef<"Equipment", 'Json'>
   readonly machiningConfig: Prisma.FieldRef<"Equipment", 'Json'>
   readonly passes: Prisma.FieldRef<"Equipment", 'Json'>
-  readonly consumables: Prisma.FieldRef<"Equipment", 'Json'>
   readonly status: Prisma.FieldRef<"Equipment", 'String'>
   readonly location: Prisma.FieldRef<"Equipment", 'String'>
   readonly serialNumber: Prisma.FieldRef<"Equipment", 'String'>

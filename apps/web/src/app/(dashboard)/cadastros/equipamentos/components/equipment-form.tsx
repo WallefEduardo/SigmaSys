@@ -30,7 +30,7 @@ export function EquipmentForm({
 			name: equipment?.name || "",
 			code: equipment?.code || "",
 			type: equipment?.type || "printing",
-			costUnit: equipment?.costUnit || getDefaultCostUnit("printing"),
+			// Removido costUnit - impressoras sempre usam m²
 			description: equipment?.description || "",
 			manufacturer: equipment?.manufacturer || "",
 			model: equipment?.model || "",
@@ -59,18 +59,19 @@ export function EquipmentForm({
 	});
 
 	const handleSubmit = (values: EquipmentFormData) => {
-		console.log("🔍 Dados do formulário antes da conversão:", {
-			passes: values.passes,
-			consumables: values.consumables,
-			manualUrl: values.manualUrl
-		});
+		console.log("🔍 Dados do formulário antes da conversão:");
+		console.log("  📋 Passes:", values.passes);
+		console.log("  🔧 Consumables:", values.consumables);
+		console.log("  🖨️ Print Heads:", values.printHeads);
+		console.log("  📄 Manual URL:", values.manualUrl);
+		console.log("  📊 Dados completos:", JSON.stringify(values, null, 2));
 
 		// Converter para o formato esperado pela API com nova lógica
 		const formData: any = {
 			name: values.name,
 			code: values.code,
 			type: values.type,
-			costUnit: values.costUnit,
+			// Removido costUnit - impressoras sempre usam m²
 			description: values.description,
 			manufacturer: values.manufacturer,
 			model: values.model,
@@ -105,17 +106,34 @@ export function EquipmentForm({
 			formData.manualUrl = values.manualUrl;
 		}
 
-		// TEMPORARIAMENTE REMOVENDO PASSES PARA TESTAR
-		console.log("🚫 TEMPORARIAMENTE IGNORANDO PASSES PARA TESTE");
-		// if (values.passes && Object.keys(values.passes).length > 0) {
-		//   formData.passes = cleanedPasses;
-		// }
+		// Incluir passes se existirem
+		console.log("🔍 Verificando passes:", values.passes);
+		console.log("🔍 Número de passes:", values.passes ? Object.keys(values.passes).length : 0);
+		
+		if (values.passes && Object.keys(values.passes).length > 0) {
+			console.log("✅ Adicionando passes ao formData");
+			formData.passes = values.passes;
+		} else {
+			console.log("⚠️ Nenhuma passada encontrada para salvar");
+		}
+
+		// Incluir cabeças de impressão se existirem
+		console.log("🔍 Verificando print heads:", values.printHeads);
+		console.log("🔍 Número de print heads:", values.printHeads ? Object.keys(values.printHeads).length : 0);
+		
+		if (values.printHeads && Object.keys(values.printHeads).length > 0) {
+			console.log("✅ Adicionando print heads ao formData");
+			formData.printHeads = values.printHeads;
+		} else {
+			console.log("⚠️ Nenhuma cabeça encontrada para salvar");
+		}
 
 		console.log("📤 Dados sendo enviados para API:");
-		console.log("passes completo:", JSON.stringify(formData.passes, null, 2));
-		console.log("consumables:", JSON.stringify(formData.consumables, null, 2));
-		console.log("manualUrl:", JSON.stringify(formData.manualUrl, null, 2));
-		console.log("formData completo:", JSON.stringify(formData, null, 2));
+		console.log("  📋 Passes completo:", JSON.stringify(formData.passes, null, 2));
+		console.log("  🖨️ Print Heads completo:", JSON.stringify(formData.printHeads, null, 2));
+		console.log("  🔧 Consumables:", JSON.stringify(formData.consumables, null, 2));
+		console.log("  📄 Manual URL:", JSON.stringify(formData.manualUrl, null, 2));
+		console.log("  🚀 FormData COMPLETO:", JSON.stringify(formData, null, 2));
 
 		// Medida de segurança: se passes ainda tem problemas, removê-las
 		try {

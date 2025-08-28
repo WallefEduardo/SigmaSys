@@ -10,9 +10,7 @@ export const equipmentFormSchema = z.object({
   // === NOVA LÓGICA DE CUSTOS ===
   energyCostPerHour: z.number().min(0, "Custo de energia deve ser positivo").max(999999, "Custo muito alto (máx: R$ 999.999)").optional(),
   maintenanceCostPerHour: z.number().min(0, "Custo de manutenção deve ser positivo").max(999999, "Custo muito alto (máx: R$ 999.999)").optional(),
-  costUnit: z.enum(["PER_HOUR", "PER_M2"], {
-    required_error: "Unidade de cobrança é obrigatória",
-  }),
+  // Removido costUnit - impressoras sempre usam m²
   
   // Campos de depreciação
   acquisitionValue: z.number().min(0, "Valor de aquisição deve ser positivo").max(9999999, "Valor muito alto (máx: R$ 9.999.999)").optional(),
@@ -26,22 +24,23 @@ export const equipmentFormSchema = z.object({
   maxHeight: z.number().min(0, "Altura deve ser positiva").optional(),
   maxThickness: z.number().min(0, "Espessura deve ser positiva").optional(),
   
-  // Sistema de passadas (impressoras)
+  // Sistema de passadas integrado com insumos cadastrados
   passes: z.record(
     z.object({
       name: z.string().min(1, "Nome da passada é obrigatório"),
-      quality: z.string(),
-      speed: z.number().min(0, "Velocidade deve ser positiva"),
-      inkConsumption: z.number().min(0, "Consumo de tinta deve ser positivo"),
-      powerConsumption: z.number().min(0, "Consumo de energia deve ser positivo"),
-      printHeadWear: z.number().min(0, "Desgaste da cabeça deve ser positivo"),
       description: z.string().optional(),
-      inkConfiguration: z.record(
-        z.object({
-          consumptionRate: z.number().min(0, "Taxa de consumo deve ser positiva"),
-          required: z.boolean().default(true)
-        })
-      ).optional(),
+      speedM2PerHour: z.number().min(0, "Velocidade deve ser positiva"), // m²/h para conversão
+      
+      // Tintas: insumos cadastrados com consumo específico por m²
+      inkConsumables: z.array(z.object({
+        consumableId: z.string().min(1, "ID do insumo é obrigatório"),
+        consumptionMlPerM2: z.number().min(0, "Consumo deve ser positivo"), // ml por m²
+      })).default([]),
+      
+      // Cabeças: insumos cadastrados (desgaste vem da configuração do próprio insumo)
+      printHeadConsumables: z.array(z.object({
+        consumableId: z.string().min(1, "ID do insumo é obrigatório"),
+      })).default([]),
     })
   ).optional(),
 
@@ -84,22 +83,22 @@ export const equipmentFormSchema = z.object({
 
 export type EquipmentFormData = z.infer<typeof equipmentFormSchema>;
 
-// Tipos para configurações de passadas
+// NOVA INTERFACE: Configurações de passadas integradas com insumos
 export interface PassConfiguration {
   name: string; // Nome personalizado da passada
-  quality: 'draft' | 'normal' | 'high' | 'photo' | 'custom'; // Incluindo custom
-  speed: number; // m²/hora
-  inkConsumption: number; // multiplicador base
-  powerConsumption: number; // multiplicador
-  printHeadWear: number; // multiplicador de desgaste
-  description?: string;
-  // Tintas específicas consumidas por esta passada
-  inkConfiguration?: {
-    [inkId: string]: {
-      consumptionRate: number; // ml/m² ou multiplicador específico para esta tinta
-      required: boolean; // se é obrigatória para esta passada
-    };
-  };
+  description?: string; // Descrição opcional
+  speedM2PerHour: number; // Velocidade em m²/h para conversões
+  
+  // Tintas: insumos cadastrados com consumo específico
+  inkConsumables: Array<{
+    consumableId: string; // ID do insumo cadastrado tipo "ink"
+    consumptionMlPerM2: number; // Quantos ml por m² desta tinta
+  }>;
+  
+  // Cabeças: insumos cadastrados (desgaste vem da configuração do insumo)
+  printHeadConsumables: Array<{
+    consumableId: string; // ID do insumo cadastrado tipo "printHead"
+  }>;
 }
 
 // Tipos para consumíveis
@@ -114,11 +113,13 @@ export interface Consumable {
   color?: string;
   volumeMl?: number;
   
-  // Para cabeças e ferramentas
-  lifespan?: number;
-  currentUse?: number;
+  // Para cabeças de impressão - SIMPLIFICADO
+  lifespanM2?: number; // vida útil total em m²
+  model?: string; // modelo da cabeça (DX5, DX7, I3200, etc)
   
-  // Para ferramentas
+  // Para ferramentas de usinagem
+  lifespan?: number; // mantido apenas para ferramentas
+  currentUse?: number; // mantido apenas para ferramentas
   material?: string;
   diameter?: number;
   
@@ -152,43 +153,35 @@ export const validateDepreciation = (data: Partial<EquipmentFormData>) => {
   return errors;
 };
 
-// Configurações padrão para diferentes tipos de equipamento
+// Configurações padrão para equipamentos (sem insumos específicos - apenas templates)
 export const getDefaultPassConfigurations = (): Record<string, PassConfiguration> => ({
   draft: {
     name: 'Rascunho',
-    quality: 'draft',
-    speed: 100,
-    inkConsumption: 0.6,
-    powerConsumption: 0.8,
-    printHeadWear: 0.5,
-    description: 'Qualidade rascunho - alta velocidade, menor qualidade'
+    description: 'Qualidade rascunho - alta velocidade, menor qualidade',
+    speedM2PerHour: 100, // m²/h
+    inkConsumables: [], // Serão preenchidos após selecionar insumos cadastrados
+    printHeadConsumables: [],
   },
   normal: {
     name: 'Normal',
-    quality: 'normal', 
-    speed: 60,
-    inkConsumption: 1.0,
-    powerConsumption: 1.0,
-    printHeadWear: 1.0,
-    description: 'Qualidade normal - equilíbrio entre velocidade e qualidade'
+    description: 'Qualidade normal - equilíbrio entre velocidade e qualidade',
+    speedM2PerHour: 60, // m²/h
+    inkConsumables: [], // Usuário deve adicionar insumos específicos
+    printHeadConsumables: [],
   },
   high: {
     name: 'Alta Qualidade',
-    quality: 'high',
-    speed: 30,
-    inkConsumption: 1.4,
-    powerConsumption: 1.2,
-    printHeadWear: 1.8,
-    description: 'Alta qualidade - menor velocidade, maior precisão'
+    description: 'Alta qualidade - menor velocidade, maior precisão',
+    speedM2PerHour: 30, // m²/h
+    inkConsumables: [], // Consumo maior será definido pelo usuário
+    printHeadConsumables: [],
   },
   photo: {
     name: 'Fotográfica',
-    quality: 'photo',
-    speed: 15,
-    inkConsumption: 2.0,
-    powerConsumption: 1.5,
-    printHeadWear: 2.5,
-    description: 'Qualidade fotográfica - máxima qualidade, menor velocidade'
+    description: 'Qualidade fotográfica - máxima qualidade, menor velocidade',
+    speedM2PerHour: 15, // m²/h
+    inkConsumables: [], // Máximo consumo será definido pelo usuário
+    printHeadConsumables: [],
   }
 });
 
@@ -249,10 +242,10 @@ export const getDefaultConsumables = (type: string): Consumable[] => {
         id: 'printhead-dx5',
         name: 'Cabeça DX5',
         type: 'printHead',
-        cost: 500,
+        cost: 800,
         unit: 'pcs',
-        lifespan: 10000,
-        currentUse: 0,
+        lifespanM2: 150000, // 150.000 m² de vida útil
+        model: 'DX5',
         minStock: 1,
         maxStock: 3,
         currentStock: 2,

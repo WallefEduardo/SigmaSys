@@ -112,6 +112,16 @@ export const ConsumableCard = React.memo<ConsumableCardProps>(
 							</span>
 						</div>
 
+						{/* Custo por m² para cabeças de impressão */}
+						{consumable.type === 'printHead' && consumable.costPerM2 && (
+							<div className="flex items-center justify-between bg-blue-50 dark:bg-blue-950/20 -mx-3 -my-1 px-3 py-2 rounded">
+								<span className="text-blue-700 dark:text-blue-300 text-sm font-medium">Desgaste/m²:</span>
+								<span className="font-bold text-blue-600">
+									{formatCurrency(Number(consumable.costPerM2))}
+								</span>
+							</div>
+						)}
+
 						{consumable.supplier && (
 							<div className="flex items-center justify-between">
 								<span className="text-muted-foreground text-sm">

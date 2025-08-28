@@ -47,29 +47,39 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
   } = form;
 
   const watchedPasses = watch("passes") || {};
+  const watchedPrintHeads = watch("printHeads") || {};
   const [editingPassId, setEditingPassId] = React.useState<string | null>(null);
-  // Buscar insumos do tipo tinta da API
-  const { data: consumablesData, isLoading: loadingConsumables } = api.consumables.list.useQuery({
+  // Buscar insumos do tipo tinta e cabeça da API
+  const { data: inksData, isLoading: loadingInks } = api.consumables.list.useQuery({
     type: "ink",
     active: true,
     limit: 100
   });
-  const availableInks = consumablesData?.data || [];
+  const { data: headsData, isLoading: loadingHeads } = api.consumables.list.useQuery({
+    type: "printHead",
+    active: true,
+    limit: 100
+  });
+  const availableInks = inksData?.data || [];
+  const availableHeads = headsData?.data || [];
   const [showNewPassForm, setShowNewPassForm] = React.useState(false);
   
   // Inicializar todas as passadas como recolhidas por padrão
   const [collapsedPasses, setCollapsedPasses] = React.useState<Set<string>>(() => {
     return new Set(Object.keys(watchedPasses));
   });
+  // NOVA ESTRUTURA: Passada integrada com insumos cadastrados
   const [newPassData, setNewPassData] = React.useState({
     name: '',
-    quality: 'custom' as const,
-    speed: 60,
-    inkConsumption: 1.0,
-    powerConsumption: 1.0,
-    printHeadWear: 1.0,
     description: '',
-    inkConfiguration: {} as Record<string, { consumptionRate: number; required: boolean }>
+    speedM2PerHour: 60,
+    inkConsumables: [] as Array<{
+      consumableId: string;
+      consumptionMlPerM2: number;
+    }>,
+    printHeadConsumables: [] as Array<{
+      consumableId: string;
+    }>,
   });
   
   // Função para adicionar passadas padrão (opcional)
@@ -86,13 +96,10 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
       const newPassId = `custom_${Date.now()}`;
       const newPass: PassConfiguration = {
         name: newPassData.name.trim(),
-        quality: 'custom',
-        speed: newPassData.speed,
-        inkConsumption: newPassData.inkConsumption,
-        powerConsumption: newPassData.powerConsumption,
-        printHeadWear: newPassData.printHeadWear,
         description: newPassData.description,
-        inkConfiguration: newPassData.inkConfiguration
+        speedM2PerHour: newPassData.speedM2PerHour,
+        inkConsumables: newPassData.inkConsumables,
+        printHeadConsumables: newPassData.printHeadConsumables,
       };
       
       setValue("passes", {
@@ -103,13 +110,10 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
       // Reset form
       setNewPassData({
         name: '',
-        quality: 'custom',
-        speed: 60,
-        inkConsumption: 1.0,
-        powerConsumption: 1.0,
-        printHeadWear: 1.0,
         description: '',
-        inkConfiguration: {}
+        speedM2PerHour: 60,
+        inkConsumables: [],
+        printHeadConsumables: [],
       });
       setShowNewPassForm(false);
     }
@@ -118,13 +122,10 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
   const cancelNewPass = () => {
     setNewPassData({
       name: '',
-      quality: 'custom',
-      speed: 60,
-      inkConsumption: 1.0,
-      powerConsumption: 1.0,
-      printHeadWear: 1.0,
       description: '',
-      inkConfiguration: {}
+      speedM2PerHour: 60,
+      inkConsumables: [],
+      printHeadConsumables: [],
     });
     setShowNewPassForm(false);
   };
@@ -154,16 +155,14 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
   };
 
   // Funções para gerenciar tintas na nova passada
-  const updateNewPassInkConfiguration = (inkId: string, field: 'consumptionRate' | 'required', value: number | boolean) => {
+  const updateNewPassInkConsumption = (inkId: string, consumptionMlPerM2: number) => {
     setNewPassData(prev => ({
       ...prev,
-      inkConfiguration: {
-        ...prev.inkConfiguration,
-        [inkId]: {
-          ...prev.inkConfiguration[inkId],
-          [field]: value
-        }
-      }
+      inkConsumables: prev.inkConsumables.map(ic => 
+        ic.consumableId === inkId 
+          ? { ...ic, consumptionMlPerM2 }
+          : ic
+      )
     }));
   };
 
@@ -171,25 +170,19 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
     if (shouldUse) {
       setNewPassData(prev => ({
         ...prev,
-        inkConfiguration: {
-          ...prev.inkConfiguration,
-          [inkId]: {
-            consumptionRate: 1.0,
-            required: true
-          }
-        }
+        inkConsumables: [...prev.inkConsumables, {
+          consumableId: inkId,
+          consumptionMlPerM2: 1.0
+        }]
       }));
     } else {
-      setNewPassData(prev => {
-        const newInkConfig = { ...prev.inkConfiguration };
-        delete newInkConfig[inkId];
-        return {
-          ...prev,
-          inkConfiguration: newInkConfig
-        };
-      });
+      setNewPassData(prev => ({
+        ...prev,
+        inkConsumables: prev.inkConsumables.filter(ic => ic.consumableId !== inkId)
+      }));
     }
   };
+
 
   const resetToDefaults = () => {
     setValue("passes", getDefaultPassConfigurations());
@@ -228,73 +221,92 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
     });
   }, [Object.keys(watchedPasses).join(',')]);
 
-  const getQualityBadgeColor = (quality: string) => {
-    switch (quality) {
-      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
-      case 'normal': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-      case 'high': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-      case 'photo': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
-      default: return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
-    }
-  };
 
   const calculateEfficiency = (pass: PassConfiguration) => {
-    // Cálculo simples de eficiência baseado em velocidade vs qualidade
-    const speedFactor = pass.speed / 100; // Normalizado
-    const qualityFactor = pass.inkConsumption; // Maior consumo = maior qualidade
-    const efficiency = (speedFactor * qualityFactor) / (pass.powerConsumption * pass.printHeadWear);
+    // Cálculo simples de eficiência baseado na velocidade
+    const speedM2PerHour = pass.speedM2PerHour || 1;
+    const inkCount = pass.inkConsumables?.length || 0;
+    const headCount = pass.printHeadConsumables?.length || 0;
+    
+    // Eficiência baseada na velocidade e número de recursos utilizados
+    const efficiency = speedM2PerHour / (10 * Math.max(1, inkCount + headCount));
     return efficiency;
+  };
+
+  // Função para calcular custo real das cabeças de impressão cadastradas no equipamento
+  const calculatePrintHeadCost = () => {
+    let totalCost = 0;
+    
+    // Pegar TODAS as cabeças cadastradas na aba "Cabeças" do equipamento
+    Object.values(watchedPrintHeads).forEach((installedHead: any) => {
+      // Buscar o consumível (cabeça) para pegar o custo
+      const headData = availableHeads.find(h => h.id === installedHead.consumableId);
+      
+      if (headData) {
+        // Cálculo baseado no custo real da cabeça
+        const headCost = Number(headData.cost) || 500;
+        const lifespan = 5000000; // Disparos (pode vir de headData.volumeMl ou outro campo)
+        const shotsPerM2 = 50000; // Pode vir das configurações da cabeça
+        
+        const costPerM2 = (headCost / lifespan) * shotsPerM2;
+        totalCost += costPerM2;
+      }
+    });
+    
+    return totalCost;
   };
 
   // Funções para gerenciar configuração de tintas nas passadas
   const updateInkConfiguration = (passId: string, inkId: string, field: 'consumptionRate' | 'required', value: number | boolean) => {
-    const currentPass = watchedPasses[passId];
-    const currentInkConfig = currentPass.inkConfiguration || {};
-    
-    setValue("passes", {
-      ...watchedPasses,
-      [passId]: {
-        ...currentPass,
-        inkConfiguration: {
-          ...currentInkConfig,
-          [inkId]: {
-            ...currentInkConfig[inkId],
-            [field]: value
-          }
-        }
-      }
-    });
-  };
-
-  const toggleInkUsage = (passId: string, inkId: string, shouldUse: boolean) => {
-    const currentPass = watchedPasses[passId];
-    const currentInkConfig = currentPass.inkConfiguration || {};
-    
-    if (shouldUse) {
-      // Adicionar tinta com valores padrão
-      setValue("passes", {
-        ...watchedPasses,
-        [passId]: {
-          ...currentPass,
-          inkConfiguration: {
-            ...currentInkConfig,
-            [inkId]: {
-              consumptionRate: 1.0, // ml/m² padrão
-              required: true
-            }
-          }
-        }
-      });
-    } else {
-      // Remover tinta
-      const newInkConfig = { ...currentInkConfig };
-      delete newInkConfig[inkId];
+    if (field === 'consumptionRate' && typeof value === 'number') {
+      // Converter para nova estrutura: encontrar o consumable e atualizar
+      const currentPass = watchedPasses[passId];
+      const currentConsumables = currentPass.inkConsumables || [];
+      
+      const updatedConsumables = currentConsumables.map(consumable => 
+        consumable.consumableId === inkId 
+          ? { ...consumable, consumptionMlPerM2: value * 1000 } // Converter L para mL
+          : consumable
+      );
       
       setValue("passes", {
         ...watchedPasses,
         [passId]: {
           ...currentPass,
-          inkConfiguration: newInkConfig
+          inkConsumables: updatedConsumables
+        }
+      });
+    }
+  };
+
+  const toggleInkUsage = (passId: string, inkId: string, shouldUse: boolean) => {
+    const currentPass = watchedPasses[passId];
+    const currentConsumables = currentPass.inkConsumables || [];
+    
+    if (shouldUse) {
+      // Adicionar tinta se não existir
+      if (!currentConsumables.find(c => c.consumableId === inkId)) {
+        setValue("passes", {
+          ...watchedPasses,
+          [passId]: {
+            ...currentPass,
+            inkConsumables: [
+              ...currentConsumables,
+              {
+                consumableId: inkId,
+                consumptionMlPerM2: 10.0 // Valor padrão em ml/m²
+              }
+            ]
+          }
+        });
+      }
+    } else {
+      // Remover tinta
+      setValue("passes", {
+        ...watchedPasses,
+        [passId]: {
+          ...currentPass,
+          inkConsumables: currentConsumables.filter(c => c.consumableId !== inkId)
         }
       });
     }
@@ -332,11 +344,10 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-blue-700 dark:text-blue-400 space-y-2">
-          <p><strong>Velocidade:</strong> m²/hora que o equipamento processa nesta qualidade</p>
-          <p><strong>Consumo de Tinta (×):</strong> Multiplicador base aplicado a todas as tintas (0.6× = economia, 1.4× = alta qualidade)</p>
-          <p><strong>Consumo Específico:</strong> Consumo individual de cada tinta por m² (será multiplicado pelo base)</p>
-          <p><strong>Cálculo Final:</strong> Multiplicador Base × Consumo Específico × Preço da Tinta</p>
-          <p><strong>Desgaste da Cabeça:</strong> Multiplicador do desgaste por m² processado</p>
+          <p><strong>Velocidade:</strong> m²/hora que o equipamento processa nesta configuração</p>
+          <p><strong>Tintas:</strong> Selecione as tintas cadastradas e defina o consumo específico em ml/m²</p>
+          <p><strong>Cabeças:</strong> Selecione as cabeças de impressão que serão utilizadas</p>
+          <p><strong>Cálculo:</strong> Consumo em ml/m² × Preço por Litro da Tinta ÷ 1000</p>
         </CardContent>
       </Card>
 
@@ -368,30 +379,6 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
 
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  Categoria Base
-                </Label>
-                <Select 
-                  value={newPassData.quality} 
-                  onValueChange={(value) => updateNewPassData('quality', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Rascunho (Rápida)</SelectItem>
-                    <SelectItem value="normal">Normal (Equilibrada)</SelectItem>
-                    <SelectItem value="high">Alta (Detalhada)</SelectItem>
-                    <SelectItem value="photo">Fotográfica (Premium)</SelectItem>
-                    <SelectItem value="custom">Personalizada</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
                   <Zap className="h-4 w-4" />
                   Velocidade (m²/h)
                 </Label>
@@ -399,66 +386,8 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   type="number"
                   min="0.1"
                   step="0.1"
-                  value={newPassData.speed}
-                  onChange={(e) => updateNewPassData('speed', parseFloat(e.target.value) || 0)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Droplet className="h-4 w-4" />
-                  Consumo Tinta (×)
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="max-w-xs">
-                        <strong>Multiplicador base</strong> para todas as tintas desta passada.
-                        <br />• 0.6× = Economia (60% do consumo normal)
-                        <br />• 1.0× = Normal (100% do consumo)  
-                        <br />• 1.4× = Alta qualidade (140% do consumo)
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <Input
-                  type="number"
-                  min="0.1"
-                  max="5.0"
-                  step="0.1"
-                  value={newPassData.inkConsumption}
-                  onChange={(e) => updateNewPassData('inkConsumption', parseFloat(e.target.value) || 1)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Consumo Energia (×)
-                </Label>
-                <Input
-                  type="number"
-                  min="0.1"
-                  max="5.0"
-                  step="0.1"
-                  value={newPassData.powerConsumption}
-                  onChange={(e) => updateNewPassData('powerConsumption', parseFloat(e.target.value) || 1)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  Desgaste Cabeça (×)
-                </Label>
-                <Input
-                  type="number"
-                  min="0.1"
-                  max="5.0"
-                  step="0.1"
-                  value={newPassData.printHeadWear}
-                  onChange={(e) => updateNewPassData('printHeadWear', parseFloat(e.target.value) || 1)}
+                  value={newPassData.speedM2PerHour}
+                  onChange={(e) => updateNewPassData('speedM2PerHour', parseFloat(e.target.value) || 0)}
                 />
               </div>
             </div>
@@ -483,8 +412,8 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   </h5>
                   <div className="space-y-3 max-h-40 overflow-y-auto">
                     {availableInks.map((ink) => {
-                      const inkConfig = newPassData.inkConfiguration[ink.id];
-                      const isUsed = !!inkConfig;
+                      const inkConsumable = newPassData.inkConsumables.find(ic => ic.consumableId === ink.id);
+                      const isUsed = !!inkConsumable;
                       
                       return (
                         <div key={ink.id} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
@@ -509,16 +438,16 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                             {isUsed && (
                               <div className="flex items-center gap-2">
                                 <Label className="text-xs flex items-center gap-1">
-                                  Consumo ({formatUnit(ink.unit as ConsumableUnit)}/m²):
+                                  Consumo (ml/m²):
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent>
                                       <p className="max-w-xs">
-                                        <strong>Consumo específico</strong> desta tinta por m².
-                                        <br />• Será multiplicado pelo "Consumo Tinta (×)"
-                                        <br />• Cálculo final: {newPassData.inkConsumption}× × [este valor] × preço da tinta
+                                        <strong>Consumo direto</strong> desta tinta por m².
+                                        <br />• Valor em ml de tinta por metro quadrado
+                                        <br />• Cálculo: [este valor] × preço da tinta por litro
                                       </p>
                                     </TooltipContent>
                                   </Tooltip>
@@ -527,16 +456,16 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                                   type="number"
                                   min="0"
                                   max="100"
-                                  step={ink.unit === ConsumableUnit.ML_M2 || ink.unit === ConsumableUnit.L_M2 ? "0.1" : "0.01"}
-                                  value={inkConfig?.consumptionRate || 0}
+                                  step="0.1"
+                                  value={inkConsumable?.consumptionMlPerM2 || 0}
                                   onChange={(e) => {
                                     const value = parseFloat(e.target.value) || 0;
                                     if (value >= 0 && value <= 100) {
-                                      updateNewPassInkConfiguration(ink.id, 'consumptionRate', value);
+                                      updateNewPassInkConsumption(ink.id, value);
                                     }
                                   }}
                                   className="w-20 h-7 text-xs"
-                                  placeholder="0.0"
+                                  placeholder="0.0 ml/m²"
                                 />
                               </div>
                             )}
@@ -565,7 +494,7 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                     })}
                   </div>
                   
-                  {Object.keys(newPassData.inkConfiguration).length === 0 && (
+                  {newPassData.inkConsumables.length === 0 && (
                     <div className="text-center py-3 text-muted-foreground border-2 border-dashed border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20 rounded-lg">
                       <Info className="h-6 w-6 mx-auto mb-1 text-orange-500" />
                       <p className="text-xs font-medium text-orange-800 dark:text-orange-300">Nenhuma tinta selecionada</p>
@@ -645,12 +574,12 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                           </Button>
                         </div>
                       )}
-                      <Badge className={getQualityBadgeColor(passConfig.quality)}>
-                        {passConfig.quality}
+                      <Badge variant="outline">
+                        {passConfig.name}
                       </Badge>
                     </CardTitle>
                     <CardDescription>
-                      Velocidade: {passConfig.speed} m²/h • 
+                      Velocidade: {passConfig.speedM2PerHour || 0} m²/h • 
                       Eficiência: {calculateEfficiency(passConfig).toFixed(2)}
                     </CardDescription>
                   </div>
@@ -684,30 +613,9 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Categoria
-                  </Label>
-                  <Select 
-                    value={passConfig.quality} 
-                    onValueChange={(value) => updatePass(passId, 'quality', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">Rascunho</SelectItem>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="high">Alta</SelectItem>
-                      <SelectItem value="photo">Fotográfica</SelectItem>
-                      <SelectItem value="custom">Personalizada</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-1">
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <Zap className="h-4 w-4" />
@@ -716,81 +624,11 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   <Input
                     type="number"
                     min="0.1"
+                    max="1000"
                     step="0.1"
-                    value={passConfig.speed}
-                    onChange={(e) => updatePass(passId, 'speed', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Droplet className="h-4 w-4" />
-                    Consumo Tinta (×)
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="max-w-xs">
-                          <strong>Multiplicador base</strong> para todas as tintas desta passada.
-                          <br />• 0.6× = Economia (60% do consumo normal)
-                          <br />• 1.0× = Normal (100% do consumo)  
-                          <br />• 1.4× = Alta qualidade (140% do consumo)
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <Input
-                    type="number"
-                    min="0.1"
-                    max="5.0"
-                    step="0.1"
-                    value={passConfig.inkConsumption}
-                    onChange={(e) => updatePass(passId, 'inkConsumption', parseFloat(e.target.value) || 1)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Zap className="h-4 w-4" />
-                    Consumo Energia (×)
-                  </Label>
-                  <Input
-                    type="number"
-                    min="0.1"
-                    max="5.0"
-                    step="0.1"
-                    value={passConfig.powerConsumption}
-                    onChange={(e) => updatePass(passId, 'powerConsumption', parseFloat(e.target.value) || 1)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Desgaste Cabeça (×)
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="max-w-xs">
-                          <strong>Multiplicador de desgaste</strong> das cabeças instaladas.
-                          <br />• 0.5× = Baixo desgaste (rascunho)
-                          <br />• 1.0× = Desgaste normal
-                          <br />• 2.5× = Alto desgaste (fotográfica)
-                          <br />• Impacta o custo baseado na vida útil das cabeças
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <Input
-                    type="number"
-                    min="0.1"
-                    max="5.0"
-                    step="0.1"
-                    value={passConfig.printHeadWear}
-                    onChange={(e) => updatePass(passId, 'printHeadWear', parseFloat(e.target.value) || 1)}
+                    value={passConfig.speedM2PerHour || 0}
+                    onChange={(e) => updatePass(passId, 'speedM2PerHour', parseFloat(e.target.value) || 1)}
+                    placeholder="Ex: 25.5"
                   />
                 </div>
               </div>
@@ -816,8 +654,8 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                     </h5>
                     <div className="space-y-3">
                       {availableInks.map((ink) => {
-                        const inkConfig = passConfig.inkConfiguration?.[ink.id];
-                        const isUsed = !!inkConfig;
+                        const inkConsumable = passConfig.inkConsumables?.find(c => c.consumableId === ink.id);
+                        const isUsed = !!inkConsumable;
                         
                         return (
                           <div key={ink.id} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
@@ -842,16 +680,16 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                               {isUsed && (
                                 <div className="flex items-center gap-2">
                                   <Label className="text-sm flex items-center gap-1">
-                                    Consumo ({formatUnit(ink.unit as ConsumableUnit)}/m²):
+                                    Consumo (ml/m²):
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
                                       </TooltipTrigger>
                                       <TooltipContent>
                                         <p className="max-w-xs">
-                                          <strong>Consumo específico</strong> desta tinta por m².
-                                          <br />• Será multiplicado pelo "Consumo Tinta (×)" = {passConfig.inkConsumption}×
-                                          <br />• Cálculo final: {passConfig.inkConsumption}× × [este valor] × preço da tinta
+                                          <strong>Consumo específico</strong> desta tinta por m² (em mililitros).
+                                          <br />• Consumo direto por m² em mililitros
+                                          <br />• Cálculo final: [este valor ÷ 1000] × preço da tinta por litro
                                         </p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -860,19 +698,19 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                                     type="number"
                                     min="0"
                                     max="100"
-                                    step={ink.unit === ConsumableUnit.ML_M2 || ink.unit === ConsumableUnit.L_M2 ? "0.1" : "0.01"}
-                                    value={inkConfig?.consumptionRate || 0}
+                                    step="0.1"
+                                    value={inkConsumable?.consumptionMlPerM2?.toFixed(1) || '0'}
                                     onChange={(e) => {
-                                      const value = parseFloat(e.target.value) || 0;
-                                      if (value >= 0 && value <= 100) {
-                                        updateInkConfiguration(passId, ink.id, 'consumptionRate', value);
+                                      const valueInMl = parseFloat(e.target.value) || 0;
+                                      if (valueInMl >= 0 && valueInMl <= 100000) {
+                                        updateInkConfiguration(passId, ink.id, 'consumptionRate', valueInMl / 1000);
                                       }
                                     }}
                                     className={`w-24 ${
-                                      inkConfig?.consumptionRate && inkConfig.consumptionRate > 50 ? 
+                                      inkConsumable?.consumptionMlPerM2 && inkConsumable.consumptionMlPerM2 > 50 ? 
                                       'border-yellow-500 focus:border-yellow-500' : ''
                                     }`}
-                                    placeholder={`0.0`}
+                                    placeholder="0.0 ml/m²"
                                   />
                                 </div>
                               )}
@@ -900,7 +738,7 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                       })}
                     </div>
                     
-                    {availableInks.filter(ink => passConfig.inkConfiguration?.[ink.id]).length === 0 && (
+                    {(!passConfig.inkConsumables || passConfig.inkConsumables.length === 0) && (
                       <div className="text-center py-4 text-muted-foreground border-2 border-dashed border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20 rounded-lg">
                         <Info className="h-8 w-8 mx-auto mb-2 text-orange-500" />
                         <p className="text-sm font-medium text-orange-800 dark:text-orange-300">Nenhuma tinta selecionada para esta passada</p>
@@ -912,16 +750,16 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
               )}
 
               {/* Mostrar status das tintas */}
-              {loadingConsumables && (
+              {(loadingInks || loadingHeads) && (
                 <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 rounded-lg">
                   <div className="flex items-center gap-2 text-blue-800 dark:text-blue-300">
                     <Info className="h-4 w-4" />
-                    <span className="text-sm font-medium">Carregando tintas...</span>
+                    <span className="text-sm font-medium">Carregando consumíveis...</span>
                   </div>
                 </div>
               )}
               
-              {!loadingConsumables && availableInks.length === 0 && (
+              {!(loadingInks || loadingHeads) && availableInks.length === 0 && (
                 <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 rounded-lg">
                   <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
                     <Info className="h-4 w-4" />
@@ -941,7 +779,7 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                 </h5>
                 <div className="grid gap-2 text-sm md:grid-cols-2 lg:grid-cols-6">
                   <div>
-                    <span className="font-medium">Tempo:</span> {(1/passConfig.speed * 60).toFixed(1)} min
+                    <span className="font-medium">Tempo:</span> {(passConfig.speedM2PerHour ? (1/(passConfig.speedM2PerHour) * 60).toFixed(1) : 'N/A')} min
                   </div>
                   <div>
                     <span className="font-medium">Eficiência:</span> 
@@ -950,35 +788,18 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                     </Badge>
                   </div>
                   <div>
-                    <span className="font-medium">Desgaste Relativo:</span> {(passConfig.printHeadWear * 100).toFixed(0)}%
+                    <span className="font-medium">Cabeças:</span> {Object.keys(watchedPrintHeads).length}
                   </div>
                   <div>
                     <span className="font-medium">Custo Tintas:</span> R$ {
                       (() => {
-                        if (!passConfig.inkConfiguration) return '0,00';
-                        const totalCost = Object.entries(passConfig.inkConfiguration).reduce((sum, [inkId, config]) => {
-                          const ink = availableInks.find(i => i.id === inkId);
+                        if (!passConfig.inkConsumables || passConfig.inkConsumables.length === 0) return '0,00';
+                        const totalCost = passConfig.inkConsumables.reduce((sum, inkConsumable) => {
+                          const ink = availableInks.find(i => i.id === inkConsumable.consumableId);
                           if (!ink) return sum;
                           
-                          // Calcular custo baseado na unidade da tinta
-                          let costPerM2 = 0;
-                          
-                          // Aplicar a fórmula: Multiplicador Base × Consumo Específico × Preço
-                          const baseMultiplier = passConfig.inkConsumption || 1.0;
-                          const specificConsumption = config.consumptionRate;
-                          
-                          // Se a tinta já está em unidade por m², usar direto
-                          if (ink.unit === ConsumableUnit.ML_M2 || ink.unit === ConsumableUnit.L_M2 || ink.unit === ConsumableUnit.G_M2) {
-                            costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                          } 
-                          // Se é por passada, multiplicar pela quantidade de passes necessárias
-                          else if (ink.unit === ConsumableUnit.ML_PASS) {
-                            costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                          }
-                          // Para unidades tradicionais (ML, L, G), usar consumo direto
-                          else {
-                            costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                          }
+                          // Cálculo simples: consumo em ml/m² × preço por litro ÷ 1000
+                          const costPerM2 = (inkConsumable.consumptionMlPerM2 / 1000) * Number(ink.cost);
                           
                           return sum + costPerM2;
                         }, 0);
@@ -988,54 +809,30 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   </div>
                   <div>
                     <span className="font-medium">Custo Cabeças:</span> R$ {
-                      (() => {
-                        // Simulação do cálculo de desgaste das cabeças
-                        // Em produção, isso virá das cabeças realmente instaladas
-                        const averagePrintHeadCost = 500; // Custo médio de uma cabeça
-                        const averageLifespan = 5000000; // Vida útil média em disparos
-                        const shotsPerM2 = 50000; // Disparos por m² (isso virá das configurações das cabeças)
-                        const wearMultiplier = passConfig.printHeadWear || 1.0;
-                        
-                        // Custo por m² = (Custo da Cabeça / Vida Útil) × Disparos por m² × Multiplicador de Desgaste
-                        const costPerM2 = (averagePrintHeadCost / averageLifespan) * shotsPerM2 * wearMultiplier;
-                        
-                        return costPerM2.toFixed(2).replace('.', ',');
-                      })()
+                      calculatePrintHeadCost().toFixed(2).replace('.', ',')
                     }/m²
                   </div>
                   <div>
                     <span className="font-medium">Custo Total:</span> R$ {
                       (() => {
                         // Custo do equipamento baseado no tempo
-                        const timeInHours = 1 / passConfig.speed; // tempo para processar 1m²
+                        const speedM2PerHour = passConfig.speedM2PerHour || 1;
+                        const timeInHours = 1 / speedM2PerHour; // tempo para processar 1m²
                         const equipmentCostPerM2 = timeInHours * (watch("costPerHour") || 0);
                         
-                        // Custo das tintas
-                        const inksCost = passConfig.inkConfiguration ? 
-                          Object.entries(passConfig.inkConfiguration).reduce((sum, [inkId, config]) => {
-                            const ink = availableInks.find(i => i.id === inkId);
+                        // Custo das tintas usando nova estrutura
+                        const inksCost = passConfig.inkConsumables ? 
+                          passConfig.inkConsumables.reduce((sum, inkConsumable) => {
+                            const ink = availableInks.find(i => i.id === inkConsumable.consumableId);
                             if (!ink) return sum;
                             
-                            let costPerM2 = 0;
-                            const baseMultiplier = passConfig.inkConsumption || 1.0;
-                            const specificConsumption = config.consumptionRate;
-                            
-                            if (ink.unit === ConsumableUnit.ML_M2 || ink.unit === ConsumableUnit.L_M2 || ink.unit === ConsumableUnit.G_M2) {
-                              costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                            } else if (ink.unit === ConsumableUnit.ML_PASS) {
-                              costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                            } else {
-                              costPerM2 = baseMultiplier * specificConsumption * Number(ink.cost);
-                            }
+                            // Cálculo: consumo em ml/m² × preço por litro ÷ 1000
+                            const costPerM2 = (inkConsumable.consumptionMlPerM2 / 1000) * Number(ink.cost);
                             return sum + costPerM2;
                           }, 0) : 0;
                           
-                        // Custo de desgaste das cabeças
-                        const averagePrintHeadCost = 500;
-                        const averageLifespan = 5000000;
-                        const shotsPerM2 = 50000;
-                        const wearMultiplier = passConfig.printHeadWear || 1.0;
-                        const printHeadCost = (averagePrintHeadCost / averageLifespan) * shotsPerM2 * wearMultiplier;
+                        // Custo das cabeças usando dados reais das cabeças cadastradas
+                        const printHeadCost = calculatePrintHeadCost();
                           
                         const totalCost = equipmentCostPerM2 + inksCost + printHeadCost;
                         return totalCost.toFixed(2).replace('.', ',');
@@ -1081,11 +878,11 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                 <h5 className="font-medium mb-2">Velocidades Configuradas:</h5>
                 <div className="space-y-1 text-sm">
                   {Object.entries(watchedPasses)
-                    .sort(([,a], [,b]) => b.speed - a.speed)
+                    .sort(([,a], [,b]) => (b.speedM2PerHour || 0) - (a.speedM2PerHour || 0))
                     .map(([passId, pass]) => (
                       <div key={passId} className="flex justify-between">
                         <span>{pass.name}:</span>
-                        <span className="font-mono">{pass.speed} m²/h</span>
+                        <span className="font-mono">{pass.speedM2PerHour || 0} m²/h</span>
                       </div>
                     ))
                   }

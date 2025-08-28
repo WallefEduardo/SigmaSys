@@ -15,19 +15,12 @@ const consumableSchema = z.object({
   supplier: z.string().optional(),
   color: z.string().optional(),
   volumeMl: z.number().int().positive().optional(),
-  lifespan: z.number().int().positive().optional(),
-  currentUse: z.number().int().min(0).optional(),
   material: z.string().optional(),
   diameter: z.number().positive().optional(),
-  // Campos específicos para cabeças de impressão
+  // Campos específicos para cabeças de impressão - SIMPLIFICADO
   model: z.string().optional(),
-  durationMonths: z.number().int().positive().optional(),
-  installationDate: z.preprocess((val) => {
-    if (val === "" || val === null || val === undefined) return undefined;
-    return val instanceof Date ? val : new Date(val as string);
-  }, z.date().optional()),
-  optimalSpeedRange: z.string().optional(),
-  shotsPerM2: z.number().int().positive().optional(),
+  lifespanM2: z.number().int().positive().optional(), // vida útil total em m²
+  costPerM2: z.number().optional(), // calculado automaticamente, não enviado pelo frontend
   minStock: z.number().int().min(0).default(0),
   maxStock: z.number().int().min(0).default(0),
   currentStock: z.number().int().min(0).default(0),
@@ -177,12 +170,19 @@ export const consumablesRouter = router({
           }
         }
 
-        // Para tintas, sempre forçar unidade como L (litros)
-        const consumableData = {
+        // Preparar dados do consumível
+        let consumableData = {
           ...input,
           companyId,
-          ...(input.type === 'ink' && { unit: 'L' })
+          ...(input.type === 'ink' && { unit: 'L' }),
+          ...(input.type === 'printHead' && { unit: 'PCS' }) // Sempre PCS para cabeças
         };
+
+        // Para cabeças de impressão, calcular automaticamente o costPerM2
+        if (input.type === 'printHead' && input.lifespanM2 && input.cost) {
+          const costPerM2 = Number(input.cost) / input.lifespanM2;
+          consumableData.costPerM2 = costPerM2;
+        }
 
         const consumable = await ctx.db.consumable.create({
           data: consumableData,
@@ -250,11 +250,23 @@ export const consumablesRouter = router({
           }
         }
 
-        // Para tintas, sempre forçar unidade como L (litros)
-        const updateData = {
+        // Preparar dados de atualização
+        let updateData = {
           ...input.data,
-          ...(input.data.type === 'ink' && { unit: 'L' })
+          ...(input.data.type === 'ink' && { unit: 'L' }),
+          ...(input.data.type === 'printHead' && { unit: 'PCS' })
         };
+
+        // Para cabeças de impressão, recalcular costPerM2 se necessário
+        if ((input.data.type === 'printHead' || existing.type === 'printHead') && 
+            (input.data.lifespanM2 || input.data.cost)) {
+          const newCost = input.data.cost ?? Number(existing.cost);
+          const newLifespanM2 = input.data.lifespanM2 ?? existing.lifespanM2;
+          
+          if (newLifespanM2 && newCost) {
+            updateData.costPerM2 = newCost / newLifespanM2;
+          }
+        }
 
         const consumable = await ctx.db.consumable.update({
           where: { id: input.id },
@@ -443,6 +455,146 @@ export const consumablesRouter = router({
           error: error instanceof Error ? error.message : 'Unknown error',
           consumableId: input.id,
           companyId,
+          duration,
+        });
+        
+        throw error;
+      }
+    }),
+
+  // Buscar cabeças de impressão para equipamento
+  getPrintHeadsForEquipment: protectedProcedure
+    .input(z.object({
+      equipmentId: z.string().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const companyId = ensureCompanyAccess()(ctx);
+      const startTime = Date.now();
+      try {
+        const printHeads = await ctx.db.consumable.findMany({
+          where: {
+            companyId,
+            type: 'printHead',
+            active: true,
+          },
+          orderBy: { name: 'asc' },
+        });
+        
+        // Temporariamente, se não houver cabeças no banco, retornar mock data
+        if (printHeads.length === 0) {
+          const mockHeads = [
+            {
+              id: 'head_dx5_1',
+              companyId,
+              name: 'Cabeça DX5',
+              description: 'Cabeça de impressão Epson DX5',
+              code: 'HD-DX5-001',
+              type: 'printHead',
+              cost: 800,
+              unit: 'PCS',
+              model: 'DX5',
+              lifespanM2: 150000, // 150.000 m² de vida útil
+              costPerM2: 800 / 150000, // R$ 0,005333 por m²
+              active: true,
+              tags: ['dx5', 'epson', 'printhead'],
+              supplier: null,
+              color: null,
+              volumeMl: null,
+              material: null,
+              diameter: null,
+              minStock: 0,
+              maxStock: 0,
+              currentStock: 0,
+              alertThreshold: 0,
+              autoReorder: false,
+              notes: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+            {
+              id: 'head_dx7_1',
+              companyId,
+              name: 'Cabeça DX7',
+              description: 'Cabeça de impressão Epson DX7',
+              code: 'HD-DX7-001',
+              type: 'printHead',
+              cost: 1200,
+              unit: 'PCS',
+              model: 'DX7',
+              lifespanM2: 300000, // 300.000 m² de vida útil
+              costPerM2: 1200 / 300000, // R$ 0,004000 por m²
+              active: true,
+              tags: ['dx7', 'epson', 'printhead'],
+              supplier: null,
+              color: null,
+              volumeMl: null,
+              material: null,
+              diameter: null,
+              minStock: 0,
+              maxStock: 0,
+              currentStock: 0,
+              alertThreshold: 0,
+              autoReorder: false,
+              notes: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+            {
+              id: 'head_i3200_1',
+              companyId,
+              name: 'Cabeça I3200',
+              description: 'Cabeça de impressão Epson I3200',
+              code: 'HD-I3200-001',
+              type: 'printHead',
+              cost: 2500,
+              unit: 'PCS',
+              model: 'I3200',
+              lifespanM2: 500000, // 500.000 m² de vida útil
+              costPerM2: 2500 / 500000, // R$ 0,005000 por m²
+              active: true,
+              tags: ['i3200', 'epson', 'printhead', 'premium'],
+              supplier: null,
+              color: null,
+              volumeMl: null,
+              material: null,
+              diameter: null,
+              minStock: 0,
+              maxStock: 0,
+              currentStock: 0,
+              alertThreshold: 0,
+              autoReorder: false,
+              notes: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ];
+          
+          apiLogger.info('Returning mock print heads (no data in DB)', {
+            companyId,
+            count: mockHeads.length,
+            equipmentId: input.equipmentId,
+            duration: Date.now() - startTime,
+          });
+          
+          return mockHeads as any;
+        }
+        
+        const duration = Date.now() - startTime;
+        
+        apiLogger.info('Print heads retrieved successfully', {
+          companyId,
+          count: printHeads.length,
+          equipmentId: input.equipmentId,
+          duration,
+        });
+        return printHeads;
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        
+        apiLogger.error('Failed to retrieve print heads', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          companyId,
+          equipmentId: input.equipmentId,
           duration,
         });
         

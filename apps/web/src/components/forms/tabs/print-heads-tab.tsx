@@ -38,6 +38,13 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
   // Buscar cabeças de impressão disponíveis na empresa (para o dropdown)
   const { data: availablePrintHeads = [], isLoading: loadingPrintHeads } = api.consumables.getPrintHeadsForEquipment.useQuery({});
   
+  // Log para debug
+  React.useEffect(() => {
+    console.log("🔍 Estado das cabeças:");
+    console.log("  📋 Cabeças disponíveis da API:", availablePrintHeads);
+    console.log("  📦 Loading:", loadingPrintHeads);
+  }, [availablePrintHeads, loadingPrintHeads]);
+  
   // Usar estado local do formulário em vez de depender do backend
   const watchedPrintHeads = watch("printHeads") || {};
   
@@ -51,13 +58,24 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
 
   // Funções para gerenciar estado local
   const addNewPrintHead = () => {
+    console.log("🔍 Tentando adicionar cabeça:");
+    console.log("  📋 Dados do formulário:", newHeadData);
+    console.log("  🔧 Cabeças disponíveis:", availablePrintHeads);
+    console.log("  📦 Cabeças já instaladas:", watchedPrintHeads);
+
     if (!newHeadData.consumableId || !newHeadData.position) {
+      console.log("❌ Campos obrigatórios faltando:");
+      console.log("  - consumableId:", newHeadData.consumableId || "VAZIO");
+      console.log("  - position:", newHeadData.position || "VAZIO");
       toast.error("Selecione o insumo e a posição");
       return;
     }
 
     const selectedConsumable = availablePrintHeads.find(h => h.id === newHeadData.consumableId);
+    console.log("  ✅ Consumível selecionado:", selectedConsumable);
+    
     if (!selectedConsumable) {
+      console.error("❌ Consumível não encontrado no array");
       toast.error("Cabeça selecionada não encontrada");
       return;
     }
@@ -71,10 +89,15 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
       notes: newHeadData.notes || undefined,
     };
     
-    setValue("printHeads", {
+    console.log("  🆕 Nova cabeça criada:", newHead);
+    
+    const updatedHeads = {
       ...watchedPrintHeads,
       [newHeadId]: newHead
-    });
+    };
+    
+    console.log("  📝 Atualizando cabeças para:", updatedHeads);
+    setValue("printHeads", updatedHeads);
     
     // Reset form
     setNewHeadData({
@@ -84,6 +107,7 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
     });
     setShowNewHeadForm(false);
     toast.success("Cabeça adicionada com sucesso!");
+    console.log("✅ Cabeça adicionada com sucesso!");
   };
 
   const removePrintHead = (headId: string) => {
@@ -103,15 +127,19 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
     });
   };
 
-  const getLifePercentage = (currentUse: number, lifespan: number): number => {
-    return Math.min((currentUse / lifespan) * 100, 100);
+  const getLifePercentage = (currentUse: number, lifespanM2: number): number => {
+    return Math.min((currentUse / lifespanM2) * 100, 100);
   };
 
-  const getStatusFromUsage = (currentUse: number, lifespan: number): "active" | "warning" | "critical" => {
-    const percentage = getLifePercentage(currentUse, lifespan);
+  const getStatusFromUsage = (currentUse: number, lifespanM2: number): "active" | "warning" | "critical" => {
+    const percentage = getLifePercentage(currentUse, lifespanM2);
     if (percentage >= 95) return "critical";
     if (percentage >= 80) return "warning";
     return "active";
+  };
+
+  const calculateCostPerM2 = (cost: number, lifespanM2: number): number => {
+    return cost / lifespanM2;
   };
 
   const getStatusInfo = (status: "active" | "warning" | "critical") => {
@@ -128,17 +156,20 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
   // Criar lista de cabeças instaladas com dados dos consumíveis
   const installedHeads = Object.entries(watchedPrintHeads).map(([headId, headConfig]) => {
     const consumable = availablePrintHeads.find(c => c.id === headConfig.consumableId);
-    const lifespan = consumable?.lifespan || 5000000;
-    const currentUse = consumable?.currentUse || 0; // Usar o currentUse do consumível
-    const status = getStatusFromUsage(currentUse, lifespan);
+    const lifespanM2 = consumable?.lifespanM2 || 300000; // 300k m² padrão
+    const currentUse = 0; // Para simplificar, sempre começar em 0 - usuário atualiza depois
+    const status = getStatusFromUsage(currentUse, lifespanM2);
+    const costPerM2 = calculateCostPerM2(Number(consumable?.cost || 1000), lifespanM2);
     
     return {
       ...headConfig,
       name: consumable?.name || 'Cabeça não encontrada',
       model: consumable?.model || 'N/A',
-      lifespan,
-      currentUse, // Usar dados do consumível
+      lifespanM2,
+      currentUse,
       status,
+      cost: Number(consumable?.cost || 1000),
+      costPerM2,
     };
   });
 
@@ -173,8 +204,8 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-blue-700 dark:text-blue-400 space-y-2">
-          <p><strong>Vida Útil:</strong> Número máximo de disparos/impressões da cabeça</p>
-          <p><strong>Uso Atual:</strong> Quantidade já utilizada (disparos realizados)</p>
+          <p><strong>Vida Útil:</strong> Total de metros quadrados que a cabeça imprime antes da troca</p>
+          <p><strong>Custo por m²:</strong> Custo da cabeça ÷ Vida útil em m² = Desgaste por metro quadrado</p>
           <p><strong>Status:</strong> Verde (saudável), Amarelo (atenção), Vermelho (crítico)</p>
           <p><strong>Posição:</strong> Localização da cabeça no equipamento (ex: A1, B2, etc.)</p>
         </CardContent>
@@ -238,12 +269,15 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <Label>Consumível (Cabeça de Impressão)</Label>
+                <Label>Consumível (Cabeça de Impressão) <span className="text-red-500">*</span></Label>
                 <Select
                   value={newHeadData.consumableId}
-                  onValueChange={(value) => setNewHeadData(prev => ({ ...prev, consumableId: value }))}
+                  onValueChange={(value) => {
+                    console.log("📋 Cabeça selecionada:", value);
+                    setNewHeadData(prev => ({ ...prev, consumableId: value }));
+                  }}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className={`mt-1 ${!newHeadData.consumableId ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Selecione a cabeça" />
                   </SelectTrigger>
                   <SelectContent>
@@ -255,7 +289,7 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
                       availablePrintHeads.map((head) => (
                         <SelectItem key={head.id} value={head.id}>
                           {head.name} - {head.model || "N/A"}
-                          {head.lifespan && ` (${(head.lifespan / 1000000).toFixed(1)}M disparos)`}
+                          {head.lifespanM2 && ` (${(head.lifespanM2 / 1000).toFixed(0)}K m² • R$ ${(Number(head.cost) / head.lifespanM2).toFixed(4)}/m²)`}
                         </SelectItem>
                       ))
                     )}
@@ -269,10 +303,9 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
                       const selectedHead = availablePrintHeads.find(h => h.id === newHeadData.consumableId);
                       if (!selectedHead) return null;
                       
-                      const currentUse = selectedHead.currentUse || 0;
-                      const lifespan = selectedHead.lifespan || 5000000;
-                      const percentage = Math.min((currentUse / lifespan) * 100, 100);
-                      const remaining = lifespan - currentUse;
+                      const lifespanM2 = selectedHead.lifespanM2 || 300000;
+                      const cost = Number(selectedHead.cost || 1000);
+                      const costPerM2 = calculateCostPerM2(cost, lifespanM2);
                       
                       return (
                         <div className="space-y-2">
@@ -284,27 +317,24 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
                               <span className="font-medium">Modelo:</span> {selectedHead.model || 'N/A'}
                             </div>
                             <div>
-                              <span className="font-medium">Uso atual:</span> {currentUse.toLocaleString()} disparos
+                              <span className="font-medium">Custo:</span> R$ {cost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                             </div>
                             <div>
-                              <span className="font-medium">Vida útil:</span> {lifespan.toLocaleString()} disparos
+                              <span className="font-medium">Vida útil:</span> {(lifespanM2 / 1000).toFixed(0)}K m²
                             </div>
                             <div>
-                              <span className="font-medium">Restante:</span> {remaining.toLocaleString()} disparos
+                              <span className="font-medium">Custo por m²:</span> R$ {costPerM2.toFixed(4)}
                             </div>
                           </div>
-                          <div className="mt-2">
-                            <div className="flex justify-between text-xs mb-1">
-                              <span>Condição da cabeça:</span>
-                              <span className={
-                                percentage >= 95 ? 'text-red-600 font-semibold' : 
-                                percentage >= 80 ? 'text-yellow-600 font-semibold' : 
-                                'text-green-600 font-semibold'
-                              }>
-                                {percentage >= 95 ? 'Crítica' : percentage >= 80 ? 'Atenção' : 'Boa'}
+                          <div className="mt-2 p-2 bg-green-100 dark:bg-green-900/20 rounded border border-green-200">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-medium text-green-800 dark:text-green-300">
+                                💡 Desgaste por m² impressos:
+                              </span>
+                              <span className="text-sm font-bold text-green-900 dark:text-green-200">
+                                R$ {costPerM2.toFixed(4)}
                               </span>
                             </div>
-                            <Progress value={percentage} className="h-2" />
                           </div>
                         </div>
                       );
@@ -314,12 +344,15 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
               </div>
 
               <div>
-                <Label>Posição no Equipamento</Label>
+                <Label>Posição no Equipamento <span className="text-red-500">*</span></Label>
                 <Input
                   placeholder="Ex: A1, B2, Frontal, etc."
                   value={newHeadData.position}
-                  onChange={(e) => setNewHeadData(prev => ({ ...prev, position: e.target.value }))}
-                  className="mt-1"
+                  onChange={(e) => {
+                    console.log("📍 Posição digitada:", e.target.value);
+                    setNewHeadData(prev => ({ ...prev, position: e.target.value }));
+                  }}
+                  className={`mt-1 ${!newHeadData.position ? 'border-red-500' : ''}`}
                 />
               </div>
             </div>
@@ -337,7 +370,11 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={addNewPrintHead}>
+              <Button 
+                onClick={addNewPrintHead}
+                disabled={!newHeadData.consumableId || !newHeadData.position}
+                title={!newHeadData.consumableId ? "Selecione uma cabeça" : !newHeadData.position ? "Informe a posição" : ""}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
@@ -374,41 +411,39 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
                   <Card key={head.id} className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 space-y-3">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${statusInfo.color}`} />
-                          <div>
-                            <h4 className="font-medium">{head.name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {head.model} • Posição: {head.position}
-                            </p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${statusInfo.color}`} />
+                            <div>
+                              <h4 className="font-medium">{head.name}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {head.model} • Posição: {head.position}
+                              </p>
+                            </div>
+                            <Badge variant={head.status === "critical" ? "destructive" : head.status === "warning" ? "secondary" : "default"}>
+                              {statusInfo.label}
+                            </Badge>
                           </div>
-                          <Badge variant={head.status === "critical" ? "destructive" : head.status === "warning" ? "secondary" : "default"}>
-                            {statusInfo.label}
-                          </Badge>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-green-600">
+                              R$ {head.costPerM2.toFixed(4)}
+                            </div>
+                            <div className="text-xs text-muted-foreground">por m²</div>
+                          </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <Label className="text-xs">Uso Atual (do consumível)</Label>
-                            <Input
-                              type="number"
-                              value={head.currentUse}
-                              disabled
-                              className="mt-1 bg-muted"
-                              title="Este valor vem do cadastro do consumível"
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Valor do cadastro de insumos
-                            </p>
-                          </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <Label className="text-xs">Vida Útil Total</Label>
                             <Input
-                              type="number"
-                              value={head.lifespan}
+                              type="text"
+                              value={`${(head.lifespanM2 / 1000).toFixed(0)}K m²`}
                               disabled
                               className="mt-1 bg-muted"
                             />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {head.lifespanM2.toLocaleString()} metros quadrados
+                            </p>
                           </div>
                           <div>
                             <Label className="text-xs">Posição no Equipamento</Label>
@@ -416,34 +451,25 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
                               value={head.position}
                               onChange={(e) => updatePrintHead(head.id, 'position', e.target.value)}
                               className="mt-1"
+                              placeholder="Ex: A1, B2, Central..."
                             />
                           </div>
                         </div>
 
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Vida Útil</span>
-                            <div className="flex items-center gap-2">
-                              <span>{lifePercentage.toFixed(1)}%</span>
-                              {lifePercentage >= 95 && (
-                                <AlertTriangle className="h-4 w-4 text-red-500" />
-                              )}
-                              {lifePercentage >= 80 && lifePercentage < 95 && (
-                                <Clock className="h-4 w-4 text-yellow-500" />
-                              )}
+                        <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-sm font-medium">Resumo da Cabeça</div>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                Custo: R$ {head.cost.toFixed(2)} • Vida útil: {(head.lifespanM2 / 1000).toFixed(0)}K m²
+                              </div>
                             </div>
-                          </div>
-                          <Progress 
-                            value={lifePercentage} 
-                            className={`h-3 ${
-                              lifePercentage >= 95 ? 'text-red-500' : 
-                              lifePercentage >= 80 ? 'text-yellow-500' : 
-                              'text-green-500'
-                            }`}
-                          />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                            <span>0 disparos</span>
-                            <span>{head.lifespan.toLocaleString()} disparos</span>
+                            <div className="text-right">
+                              <div className="text-sm font-bold text-blue-600">
+                                R$ {head.costPerM2.toFixed(4)} /m²
+                              </div>
+                              <div className="text-xs text-muted-foreground">Desgaste</div>
+                            </div>
                           </div>
                         </div>
 
@@ -477,47 +503,38 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
         </CardContent>
       </Card>
 
-      {/* Resumo se houver cabeças críticas */}
-      {installedHeads.filter(h => h.status === "critical" || h.status === "warning").length > 0 && (
-        <Card className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20">
+      {/* Resumo de custos */}
+      {installedHeads.length > 0 && (
+        <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-orange-800 dark:text-orange-300">
-              <AlertTriangle className="h-5 w-5" />
-              Cabeças que Precisam de Atenção
+            <CardTitle className="flex items-center gap-2 text-green-800 dark:text-green-300">
+              <Info className="h-5 w-5" />
+              Resumo de Custos das Cabeças
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {installedHeads
-                .filter(h => h.status === "critical" || h.status === "warning")
-                .map(head => {
-                  const lifePercentage = getLifePercentage(head.currentUse, head.lifespan);
-                  return (
-                    <div key={head.id} className="flex items-center justify-between p-3 border border-orange-200 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${
-                          head.status === "critical" ? "bg-red-500" : "bg-yellow-500"
-                        }`} />
-                        <div>
-                          <p className="font-medium">{head.name} - {head.position}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {head.status === "critical" 
-                              ? "Substituição urgente necessária" 
-                              : "Planeje substituição em breve"
-                            }
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium">{lifePercentage.toFixed(1)}%</div>
-                        <div className="text-sm text-muted-foreground">
-                          {(head.lifespan - head.currentUse).toLocaleString()} disparos restantes
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              }
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <div className="text-sm font-medium">Total de Cabeças</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {installedHeads.length}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-medium">Custo Médio por m²</div>
+                <div className="text-2xl font-bold text-green-600">
+                  R$ {installedHeads.length > 0 
+                    ? (installedHeads.reduce((sum, head) => sum + head.costPerM2, 0) / installedHeads.length).toFixed(4)
+                    : '0.0000'
+                  }
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-medium">Investimento Total</div>
+                <div className="text-2xl font-bold text-green-600">
+                  R$ {installedHeads.reduce((sum, head) => sum + head.cost, 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

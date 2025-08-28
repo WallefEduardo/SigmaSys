@@ -25,7 +25,8 @@
       "mcp__browser__puppeteer_fill",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(pnpm db:push:*)"
+      "Bash(pnpm db:push:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

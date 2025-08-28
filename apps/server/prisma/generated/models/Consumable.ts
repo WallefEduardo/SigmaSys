@@ -28,10 +28,8 @@ export type AggregateConsumable = {
 export type ConsumableAvgAggregateOutputType = {
   cost: runtime.Decimal | null
   volumeMl: number | null
-  lifespan: number | null
-  currentUse: number | null
-  durationMonths: number | null
-  shotsPerM2: number | null
+  lifespanM2: number | null
+  costPerM2: runtime.Decimal | null
   diameter: runtime.Decimal | null
   minStock: number | null
   maxStock: number | null
@@ -42,10 +40,8 @@ export type ConsumableAvgAggregateOutputType = {
 export type ConsumableSumAggregateOutputType = {
   cost: runtime.Decimal | null
   volumeMl: number | null
-  lifespan: number | null
-  currentUse: number | null
-  durationMonths: number | null
-  shotsPerM2: number | null
+  lifespanM2: number | null
+  costPerM2: runtime.Decimal | null
   diameter: runtime.Decimal | null
   minStock: number | null
   maxStock: number | null
@@ -64,13 +60,9 @@ export type ConsumableMinAggregateOutputType = {
   supplier: string | null
   color: string | null
   volumeMl: number | null
-  lifespan: number | null
-  currentUse: number | null
+  lifespanM2: number | null
   model: string | null
-  durationMonths: number | null
-  installationDate: Date | null
-  optimalSpeedRange: string | null
-  shotsPerM2: number | null
+  costPerM2: runtime.Decimal | null
   material: string | null
   diameter: runtime.Decimal | null
   minStock: number | null
@@ -96,13 +88,9 @@ export type ConsumableMaxAggregateOutputType = {
   supplier: string | null
   color: string | null
   volumeMl: number | null
-  lifespan: number | null
-  currentUse: number | null
+  lifespanM2: number | null
   model: string | null
-  durationMonths: number | null
-  installationDate: Date | null
-  optimalSpeedRange: string | null
-  shotsPerM2: number | null
+  costPerM2: runtime.Decimal | null
   material: string | null
   diameter: runtime.Decimal | null
   minStock: number | null
@@ -128,13 +116,9 @@ export type ConsumableCountAggregateOutputType = {
   supplier: number
   color: number
   volumeMl: number
-  lifespan: number
-  currentUse: number
+  lifespanM2: number
   model: number
-  durationMonths: number
-  installationDate: number
-  optimalSpeedRange: number
-  shotsPerM2: number
+  costPerM2: number
   material: number
   diameter: number
   minStock: number
@@ -155,10 +139,8 @@ export type ConsumableCountAggregateOutputType = {
 export type ConsumableAvgAggregateInputType = {
   cost?: true
   volumeMl?: true
-  lifespan?: true
-  currentUse?: true
-  durationMonths?: true
-  shotsPerM2?: true
+  lifespanM2?: true
+  costPerM2?: true
   diameter?: true
   minStock?: true
   maxStock?: true
@@ -169,10 +151,8 @@ export type ConsumableAvgAggregateInputType = {
 export type ConsumableSumAggregateInputType = {
   cost?: true
   volumeMl?: true
-  lifespan?: true
-  currentUse?: true
-  durationMonths?: true
-  shotsPerM2?: true
+  lifespanM2?: true
+  costPerM2?: true
   diameter?: true
   minStock?: true
   maxStock?: true
@@ -191,13 +171,9 @@ export type ConsumableMinAggregateInputType = {
   supplier?: true
   color?: true
   volumeMl?: true
-  lifespan?: true
-  currentUse?: true
+  lifespanM2?: true
   model?: true
-  durationMonths?: true
-  installationDate?: true
-  optimalSpeedRange?: true
-  shotsPerM2?: true
+  costPerM2?: true
   material?: true
   diameter?: true
   minStock?: true
@@ -223,13 +199,9 @@ export type ConsumableMaxAggregateInputType = {
   supplier?: true
   color?: true
   volumeMl?: true
-  lifespan?: true
-  currentUse?: true
+  lifespanM2?: true
   model?: true
-  durationMonths?: true
-  installationDate?: true
-  optimalSpeedRange?: true
-  shotsPerM2?: true
+  costPerM2?: true
   material?: true
   diameter?: true
   minStock?: true
@@ -255,13 +227,9 @@ export type ConsumableCountAggregateInputType = {
   supplier?: true
   color?: true
   volumeMl?: true
-  lifespan?: true
-  currentUse?: true
+  lifespanM2?: true
   model?: true
-  durationMonths?: true
-  installationDate?: true
-  optimalSpeedRange?: true
-  shotsPerM2?: true
+  costPerM2?: true
   material?: true
   diameter?: true
   minStock?: true
@@ -375,13 +343,9 @@ export type ConsumableGroupByOutputType = {
   supplier: string | null
   color: string | null
   volumeMl: number | null
-  lifespan: number | null
-  currentUse: number | null
+  lifespanM2: number | null
   model: string | null
-  durationMonths: number | null
-  installationDate: Date | null
-  optimalSpeedRange: string | null
-  shotsPerM2: number | null
+  costPerM2: runtime.Decimal | null
   material: string | null
   diameter: runtime.Decimal | null
   minStock: number
@@ -431,13 +395,9 @@ export type ConsumableWhereInput = {
   supplier?: Prisma.StringNullableFilter<"Consumable"> | string | null
   color?: Prisma.StringNullableFilter<"Consumable"> | string | null
   volumeMl?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  lifespan?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  currentUse?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  lifespanM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
   model?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  durationMonths?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  installationDate?: Prisma.DateTimeNullableFilter<"Consumable"> | Date | string | null
-  optimalSpeedRange?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  shotsPerM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  costPerM2?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.StringNullableFilter<"Consumable"> | string | null
   diameter?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFilter<"Consumable"> | number
@@ -466,13 +426,9 @@ export type ConsumableOrderByWithRelationInput = {
   supplier?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   volumeMl?: Prisma.SortOrderInput | Prisma.SortOrder
-  lifespan?: Prisma.SortOrderInput | Prisma.SortOrder
-  currentUse?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrderInput | Prisma.SortOrder
   model?: Prisma.SortOrderInput | Prisma.SortOrder
-  durationMonths?: Prisma.SortOrderInput | Prisma.SortOrder
-  installationDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  optimalSpeedRange?: Prisma.SortOrderInput | Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
   material?: Prisma.SortOrderInput | Prisma.SortOrder
   diameter?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrder
@@ -505,13 +461,9 @@ export type ConsumableWhereUniqueInput = Prisma.AtLeast<{
   supplier?: Prisma.StringNullableFilter<"Consumable"> | string | null
   color?: Prisma.StringNullableFilter<"Consumable"> | string | null
   volumeMl?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  lifespan?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  currentUse?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  lifespanM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
   model?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  durationMonths?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  installationDate?: Prisma.DateTimeNullableFilter<"Consumable"> | Date | string | null
-  optimalSpeedRange?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  shotsPerM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  costPerM2?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.StringNullableFilter<"Consumable"> | string | null
   diameter?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFilter<"Consumable"> | number
@@ -540,13 +492,9 @@ export type ConsumableOrderByWithAggregationInput = {
   supplier?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   volumeMl?: Prisma.SortOrderInput | Prisma.SortOrder
-  lifespan?: Prisma.SortOrderInput | Prisma.SortOrder
-  currentUse?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrderInput | Prisma.SortOrder
   model?: Prisma.SortOrderInput | Prisma.SortOrder
-  durationMonths?: Prisma.SortOrderInput | Prisma.SortOrder
-  installationDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  optimalSpeedRange?: Prisma.SortOrderInput | Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
+  costPerM2?: Prisma.SortOrderInput | Prisma.SortOrder
   material?: Prisma.SortOrderInput | Prisma.SortOrder
   diameter?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrder
@@ -581,13 +529,9 @@ export type ConsumableScalarWhereWithAggregatesInput = {
   supplier?: Prisma.StringNullableWithAggregatesFilter<"Consumable"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"Consumable"> | string | null
   volumeMl?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
-  lifespan?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
-  currentUse?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
+  lifespanM2?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
   model?: Prisma.StringNullableWithAggregatesFilter<"Consumable"> | string | null
-  durationMonths?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
-  installationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Consumable"> | Date | string | null
-  optimalSpeedRange?: Prisma.StringNullableWithAggregatesFilter<"Consumable"> | string | null
-  shotsPerM2?: Prisma.IntNullableWithAggregatesFilter<"Consumable"> | number | null
+  costPerM2?: Prisma.DecimalNullableWithAggregatesFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.StringNullableWithAggregatesFilter<"Consumable"> | string | null
   diameter?: Prisma.DecimalNullableWithAggregatesFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntWithAggregatesFilter<"Consumable"> | number
@@ -614,13 +558,9 @@ export type ConsumableCreateInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -648,13 +588,9 @@ export type ConsumableUncheckedCreateInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -682,13 +618,9 @@ export type ConsumableUpdateInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -716,13 +648,9 @@ export type ConsumableUncheckedUpdateInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -750,13 +678,9 @@ export type ConsumableCreateManyInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -783,13 +707,9 @@ export type ConsumableUpdateManyMutationInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -815,13 +735,9 @@ export type ConsumableUncheckedUpdateManyInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -863,13 +779,9 @@ export type ConsumableCountOrderByAggregateInput = {
   supplier?: Prisma.SortOrder
   color?: Prisma.SortOrder
   volumeMl?: Prisma.SortOrder
-  lifespan?: Prisma.SortOrder
-  currentUse?: Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrder
   model?: Prisma.SortOrder
-  durationMonths?: Prisma.SortOrder
-  installationDate?: Prisma.SortOrder
-  optimalSpeedRange?: Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrder
+  costPerM2?: Prisma.SortOrder
   material?: Prisma.SortOrder
   diameter?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
@@ -888,10 +800,8 @@ export type ConsumableCountOrderByAggregateInput = {
 export type ConsumableAvgOrderByAggregateInput = {
   cost?: Prisma.SortOrder
   volumeMl?: Prisma.SortOrder
-  lifespan?: Prisma.SortOrder
-  currentUse?: Prisma.SortOrder
-  durationMonths?: Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrder
+  costPerM2?: Prisma.SortOrder
   diameter?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
   maxStock?: Prisma.SortOrder
@@ -910,13 +820,9 @@ export type ConsumableMaxOrderByAggregateInput = {
   supplier?: Prisma.SortOrder
   color?: Prisma.SortOrder
   volumeMl?: Prisma.SortOrder
-  lifespan?: Prisma.SortOrder
-  currentUse?: Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrder
   model?: Prisma.SortOrder
-  durationMonths?: Prisma.SortOrder
-  installationDate?: Prisma.SortOrder
-  optimalSpeedRange?: Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrder
+  costPerM2?: Prisma.SortOrder
   material?: Prisma.SortOrder
   diameter?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
@@ -942,13 +848,9 @@ export type ConsumableMinOrderByAggregateInput = {
   supplier?: Prisma.SortOrder
   color?: Prisma.SortOrder
   volumeMl?: Prisma.SortOrder
-  lifespan?: Prisma.SortOrder
-  currentUse?: Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrder
   model?: Prisma.SortOrder
-  durationMonths?: Prisma.SortOrder
-  installationDate?: Prisma.SortOrder
-  optimalSpeedRange?: Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrder
+  costPerM2?: Prisma.SortOrder
   material?: Prisma.SortOrder
   diameter?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
@@ -966,10 +868,8 @@ export type ConsumableMinOrderByAggregateInput = {
 export type ConsumableSumOrderByAggregateInput = {
   cost?: Prisma.SortOrder
   volumeMl?: Prisma.SortOrder
-  lifespan?: Prisma.SortOrder
-  currentUse?: Prisma.SortOrder
-  durationMonths?: Prisma.SortOrder
-  shotsPerM2?: Prisma.SortOrder
+  lifespanM2?: Prisma.SortOrder
+  costPerM2?: Prisma.SortOrder
   diameter?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
   maxStock?: Prisma.SortOrder
@@ -1062,13 +962,9 @@ export type ConsumableCreateWithoutCompanyInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -1095,13 +991,9 @@ export type ConsumableUncheckedCreateWithoutCompanyInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -1157,13 +1049,9 @@ export type ConsumableScalarWhereInput = {
   supplier?: Prisma.StringNullableFilter<"Consumable"> | string | null
   color?: Prisma.StringNullableFilter<"Consumable"> | string | null
   volumeMl?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  lifespan?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  currentUse?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  lifespanM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
   model?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  durationMonths?: Prisma.IntNullableFilter<"Consumable"> | number | null
-  installationDate?: Prisma.DateTimeNullableFilter<"Consumable"> | Date | string | null
-  optimalSpeedRange?: Prisma.StringNullableFilter<"Consumable"> | string | null
-  shotsPerM2?: Prisma.IntNullableFilter<"Consumable"> | number | null
+  costPerM2?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.StringNullableFilter<"Consumable"> | string | null
   diameter?: Prisma.DecimalNullableFilter<"Consumable"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFilter<"Consumable"> | number
@@ -1190,13 +1078,9 @@ export type ConsumableCreateWithoutEquipmentInstallationsInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -1223,13 +1107,9 @@ export type ConsumableUncheckedCreateWithoutEquipmentInstallationsInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -1272,13 +1152,9 @@ export type ConsumableUpdateWithoutEquipmentInstallationsInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1305,13 +1181,9 @@ export type ConsumableUncheckedUpdateWithoutEquipmentInstallationsInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1338,13 +1210,9 @@ export type ConsumableCreateManyCompanyInput = {
   supplier?: string | null
   color?: string | null
   volumeMl?: number | null
-  lifespan?: number | null
-  currentUse?: number | null
+  lifespanM2?: number | null
   model?: string | null
-  durationMonths?: number | null
-  installationDate?: Date | string | null
-  optimalSpeedRange?: string | null
-  shotsPerM2?: number | null
+  costPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: string | null
   diameter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: number
@@ -1370,13 +1238,9 @@ export type ConsumableUpdateWithoutCompanyInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1403,13 +1267,9 @@ export type ConsumableUncheckedUpdateWithoutCompanyInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1436,13 +1296,9 @@ export type ConsumableUncheckedUpdateManyWithoutCompanyInput = {
   supplier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   volumeMl?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  lifespan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  currentUse?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lifespanM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  durationMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  optimalSpeedRange?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  shotsPerM2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  costPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   material?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   diameter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   minStock?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1499,13 +1355,9 @@ export type ConsumableSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   supplier?: boolean
   color?: boolean
   volumeMl?: boolean
-  lifespan?: boolean
-  currentUse?: boolean
+  lifespanM2?: boolean
   model?: boolean
-  durationMonths?: boolean
-  installationDate?: boolean
-  optimalSpeedRange?: boolean
-  shotsPerM2?: boolean
+  costPerM2?: boolean
   material?: boolean
   diameter?: boolean
   minStock?: boolean
@@ -1535,13 +1387,9 @@ export type ConsumableSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   supplier?: boolean
   color?: boolean
   volumeMl?: boolean
-  lifespan?: boolean
-  currentUse?: boolean
+  lifespanM2?: boolean
   model?: boolean
-  durationMonths?: boolean
-  installationDate?: boolean
-  optimalSpeedRange?: boolean
-  shotsPerM2?: boolean
+  costPerM2?: boolean
   material?: boolean
   diameter?: boolean
   minStock?: boolean
@@ -1569,13 +1417,9 @@ export type ConsumableSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   supplier?: boolean
   color?: boolean
   volumeMl?: boolean
-  lifespan?: boolean
-  currentUse?: boolean
+  lifespanM2?: boolean
   model?: boolean
-  durationMonths?: boolean
-  installationDate?: boolean
-  optimalSpeedRange?: boolean
-  shotsPerM2?: boolean
+  costPerM2?: boolean
   material?: boolean
   diameter?: boolean
   minStock?: boolean
@@ -1603,13 +1447,9 @@ export type ConsumableSelectScalar = {
   supplier?: boolean
   color?: boolean
   volumeMl?: boolean
-  lifespan?: boolean
-  currentUse?: boolean
+  lifespanM2?: boolean
   model?: boolean
-  durationMonths?: boolean
-  installationDate?: boolean
-  optimalSpeedRange?: boolean
-  shotsPerM2?: boolean
+  costPerM2?: boolean
   material?: boolean
   diameter?: boolean
   minStock?: boolean
@@ -1625,7 +1465,7 @@ export type ConsumableSelectScalar = {
   companyId?: boolean
 }
 
-export type ConsumableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "cost" | "unit" | "supplier" | "color" | "volumeMl" | "lifespan" | "currentUse" | "model" | "durationMonths" | "installationDate" | "optimalSpeedRange" | "shotsPerM2" | "material" | "diameter" | "minStock" | "maxStock" | "currentStock" | "alertThreshold" | "autoReorder" | "active" | "tags" | "notes" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["consumable"]>
+export type ConsumableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "cost" | "unit" | "supplier" | "color" | "volumeMl" | "lifespanM2" | "model" | "costPerM2" | "material" | "diameter" | "minStock" | "maxStock" | "currentStock" | "alertThreshold" | "autoReorder" | "active" | "tags" | "notes" | "createdAt" | "updatedAt" | "companyId", ExtArgs["result"]["consumable"]>
 export type ConsumableInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   equipmentInstallations?: boolean | Prisma.Consumable$equipmentInstallationsArgs<ExtArgs>
@@ -1655,13 +1495,9 @@ export type $ConsumablePayload<ExtArgs extends runtime.Types.Extensions.Internal
     supplier: string | null
     color: string | null
     volumeMl: number | null
-    lifespan: number | null
-    currentUse: number | null
+    lifespanM2: number | null
     model: string | null
-    durationMonths: number | null
-    installationDate: Date | null
-    optimalSpeedRange: string | null
-    shotsPerM2: number | null
+    costPerM2: runtime.Decimal | null
     material: string | null
     diameter: runtime.Decimal | null
     minStock: number
@@ -2110,13 +1946,9 @@ export interface ConsumableFieldRefs {
   readonly supplier: Prisma.FieldRef<"Consumable", 'String'>
   readonly color: Prisma.FieldRef<"Consumable", 'String'>
   readonly volumeMl: Prisma.FieldRef<"Consumable", 'Int'>
-  readonly lifespan: Prisma.FieldRef<"Consumable", 'Int'>
-  readonly currentUse: Prisma.FieldRef<"Consumable", 'Int'>
+  readonly lifespanM2: Prisma.FieldRef<"Consumable", 'Int'>
   readonly model: Prisma.FieldRef<"Consumable", 'String'>
-  readonly durationMonths: Prisma.FieldRef<"Consumable", 'Int'>
-  readonly installationDate: Prisma.FieldRef<"Consumable", 'DateTime'>
-  readonly optimalSpeedRange: Prisma.FieldRef<"Consumable", 'String'>
-  readonly shotsPerM2: Prisma.FieldRef<"Consumable", 'Int'>
+  readonly costPerM2: Prisma.FieldRef<"Consumable", 'Decimal'>
   readonly material: Prisma.FieldRef<"Consumable", 'String'>
   readonly diameter: Prisma.FieldRef<"Consumable", 'Decimal'>
   readonly minStock: Prisma.FieldRef<"Consumable", 'Int'>

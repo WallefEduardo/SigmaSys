@@ -350,22 +350,19 @@ model Equipment {
   energyCostPerHour      Decimal? @db.Decimal(10, 4) // custo de energia por hora
   maintenanceCostPerHour Decimal? @db.Decimal(10, 4) // custo de manutenção por hora
   
-  // === UNIDADE DE COBRANÇA ===
-  costUnit              String   @default("PER_M2") // "PER_HOUR" | "PER_M2"
+  // === SEMPRE M² PARA IMPRESSORAS ===
+  // Impressoras sempre calculam custo em m² - sem campo costUnit
   
   // === CUSTOS CALCULADOS AUTOMATICAMENTE ===
   calculatedCostPerM2   Decimal? @db.Decimal(10, 4) // custo calculado por m²
   calculatedCostPerHour Decimal? @db.Decimal(10, 4) // custo calculado por hora
   lastCostCalculation   DateTime? // quando foi calculado pela última vez
   
-  // === DEPRECIAÇÃO E VIDA ÚTIL ===
-  acquisitionValue  Decimal? @db.Decimal(15, 2) // valor de aquisição
-  residualValue     Decimal? @db.Decimal(15, 2) // valor residual
-  depreciationMethod String? @default("linear") // linear, accelerated
-  usefulLifeHours   Int?     // vida útil em horas
-  usefulLifeYears   Int?     // vida útil em anos
-  accumulatedDepreciation Decimal? @db.Decimal(15, 2) @default(0)
-  accumulatedHours  Int?     @default(0) // horas acumuladas de uso
+  // === DEPRECIAÇÃO E VIDA ÚTIL (SIMPLIFICADO) ===
+  acquisitionValue     Decimal? @db.Decimal(15, 2) // valor de aquisição
+  depreciationPerHour  Decimal? @db.Decimal(10, 4) // custo de depreciação por hora (calculado automaticamente)
+  usefulLifeHours      Int?     // vida útil em horas
+  usefulLifeYears      Int?     // vida útil em anos
   
   // Capacidade geral
   maxWidth      Decimal? @db.Decimal(10, 4) // largura máxima
@@ -376,65 +373,52 @@ model Equipment {
   printingConfig Json?   // config para impressoras + sistema de passadas
   machiningConfig Json?  // config para usinagem + ferramentas
   
-  // === SISTEMA DE PASSADAS (IMPRESSÃO) ===
-  passes        Json?    // configuração de passadas por qualidade
+  // === SISTEMA DE PASSADAS INTEGRADO COM INSUMOS ===
+  passes        Json?    // configuração de passadas integradas com insumos cadastrados
   /*
-  Estrutura das passadas com nomes personalizados:
+  NOVA ESTRUTURA - Integrada com insumos reais cadastrados:
   {
     "draft": { 
       name: "Rascunho",
-      quality: "draft", 
-      speed: 100, 
-      inkConsumption: 0.6, 
-      powerConsumption: 0.8,
-      printHeadWear: 0.5,
-      description: "Qualidade rascunho - alta velocidade" 
+      description: "Qualidade rascunho - alta velocidade",
+      speedM2PerHour: 100, // m²/h - BASE PARA CONVERSÃO HORA → M²
+      inkConsumables: [
+        {
+          consumableId: "cuid_tinta_cyan", // ID do insumo cadastrado tipo "ink"
+          consumptionMlPerM2: 8 // quantos ml desta tinta por m²
+        },
+        {
+          consumableId: "cuid_tinta_magenta",
+          consumptionMlPerM2: 5
+        }
+      ],
+      printHeadConsumables: [
+        {
+          consumableId: "cuid_cabeca_dx5", // ID do insumo cadastrado tipo "printHead"
+          // Consumo vem da configuração do próprio insumo (shotsPerM2, lifespan, etc)
+        }
+      ]
     },
     "normal": { 
-      name: "Normal",
-      quality: "normal", 
-      speed: 60, 
-      inkConsumption: 1.0, 
-      powerConsumption: 1.0,
-      printHeadWear: 1.0,
-      description: "Equilíbrio entre velocidade e qualidade"
-    },
-    "custom_12345": { 
-      name: "Impressão Econômica",
-      quality: "custom", 
-      speed: 80, 
-      inkConsumption: 0.7, 
-      powerConsumption: 0.9,
-      printHeadWear: 0.6,
-      description: "Configuração econômica personalizada",
-      inkConfiguration: {
-        "ink_id_1": {
-          consumptionRate: 1.5, // ml/m² específico para esta tinta
-          required: true
-        },
-        "ink_id_2": {
-          consumptionRate: 0.8,
-          required: false
+      name: "Normal", 
+      description: "Qualidade normal - balanceada",
+      speedM2PerHour: 60,
+      inkConsumables: [
+        {
+          consumableId: "cuid_tinta_cyan",
+          consumptionMlPerM2: 15 // mais tinta = melhor qualidade
         }
-      }
+      ],
+      printHeadConsumables: [
+        {
+          consumableId: "cuid_cabeca_dx5"
+        }
+      ]
     }
   }
-  */
-  
-  // === INSUMOS E CONSUMÍVEIS AVANÇADOS ===
-  consumables   Json?    // consumíveis detalhados por operação
-  /*
-  Estrutura dos consumíveis:
-  {
-    "printHeads": { cost: 500, lifespan: 1000, currentUse: 250, alertThreshold: 100 },
-    "inks": [
-      { color: "cyan", costPerMl: 0.05, consumptionRate: 1.2 },
-      { color: "magenta", costPerMl: 0.05, consumptionRate: 1.1 }
-    ],
-    "tools": [
-      { name: "fresa_6mm", cost: 25, lifespan: 50, material: "aluminum" }
-    ]
-  }
+  // O custo é calculado automaticamente:
+  // - Tintas: consumptionMlPerM2 * (custo_insumo_por_litro / 1000)
+  // - Cabeças: (custo_insumo / lifespan_disparos) * disparos_por_m2
   */
   
   // Status operacional
@@ -560,14 +544,10 @@ model Consumable {
   color       String?  // cor da tinta
   volumeMl    Int?     // volume em ml
   
-  // Para cabeças de impressão
-  lifespan    Int?     // vida útil em disparos (para printHead)
-  currentUse  Int?     @default(0) // disparos já utilizados
-  model       String?  // modelo específico da cabeça (DX5, DX7, etc)
-  durationMonths Int?  // duração em meses para cálculo de custo fixo (PCS)
-  installationDate DateTime? // data de instalação
-  optimalSpeedRange String? // faixa de velocidade ideal (ex: "30-60 m²/h")
-  shotsPerM2  Int?     // disparos estimados por m² (densidade)
+  // Para cabeças de impressão - SIMPLIFICADO
+  lifespanM2  Int?     // vida útil total em m² (para printHead)
+  model       String?  // modelo específico da cabeça (DX5, DX7, I3200, etc)
+  costPerM2   Decimal? @db.Decimal(10, 6) // custo por m² calculado automaticamente (para printHead)
   
   // Para ferramentas de usinagem
   material    String?  // material da ferramenta

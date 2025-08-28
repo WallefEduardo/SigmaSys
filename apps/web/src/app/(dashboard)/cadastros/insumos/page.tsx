@@ -156,6 +156,24 @@ export default function ConsumablesPage() {
 			),
 		},
 		{
+			key: "costPerM2",
+			label: "Desgaste/m²",
+			render: (value: number, item: any) => {
+				// Só mostrar para cabeças de impressão
+				if (item.type !== 'printHead' || !value) {
+					return <span className="text-muted-foreground text-sm">-</span>;
+				}
+				return (
+					<div className="text-center">
+						<div className="font-medium text-blue-600">
+							{formatCurrency(Number(value))}
+						</div>
+						<div className="text-xs text-muted-foreground">por m²</div>
+					</div>
+				);
+			},
+		},
+		{
 			key: "supplier",
 			label: "Fornecedor",
 			render: (value: string) => value || "-",
