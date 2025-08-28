@@ -227,26 +227,27 @@ export const calculateFinishCost = (finish: Finish, quantity = 1) => {
 // Função para buscar acabamentos
 export function searchFinishes(searchTerm: string): Finish[] {
 	const term = searchTerm.toLowerCase();
-	return mockFinishes.filter(finish => 
-		finish.name.toLowerCase().includes(term) ||
-		finish.description?.toLowerCase().includes(term) ||
-		finish.tags.some(tag => tag.toLowerCase().includes(term))
+	return mockFinishes.filter(
+		(finish) =>
+			finish.name.toLowerCase().includes(term) ||
+			finish.description?.toLowerCase().includes(term) ||
+			finish.tags.some((tag) => tag.toLowerCase().includes(term)),
 	);
 }
 
 // Obter tipos únicos
 export function getFinishTypes(): string[] {
-	return [...new Set(mockFinishes.map(finish => finish.type))];
+	return [...new Set(mockFinishes.map((finish) => finish.type))];
 }
 
 // Cores para tipos
 export const finishTypeColors = {
-	'simple': 'default',
-	'composed': 'secondary'
+	simple: "default",
+	composed: "secondary",
 } as const;
 
 // Labels para tipos
 export const finishTypeLabels = {
-	'simple': 'Simples',
-	'composed': 'Composto'
+	simple: "Simples",
+	composed: "Composto",
 } as const;

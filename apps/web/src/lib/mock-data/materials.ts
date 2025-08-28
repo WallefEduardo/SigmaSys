@@ -186,38 +186,41 @@ export const getMaterialCategories = () => {
 // Função para buscar materiais
 export function searchMaterials(searchTerm: string): Material[] {
 	const term = searchTerm.toLowerCase();
-	return mockMaterials.filter(material => 
-		material.name.toLowerCase().includes(term) ||
-		material.code?.toLowerCase().includes(term) ||
-		material.category?.toLowerCase().includes(term) ||
-		material.tags.some(tag => tag.toLowerCase().includes(term))
+	return mockMaterials.filter(
+		(material) =>
+			material.name.toLowerCase().includes(term) ||
+			material.code?.toLowerCase().includes(term) ||
+			material.category?.toLowerCase().includes(term) ||
+			material.tags.some((tag) => tag.toLowerCase().includes(term)),
 	);
 }
 
 // Status de estoque
-export function getStockStatus(material: Material): 'low' | 'normal' | 'high' | 'out' {
+export function getStockStatus(
+	material: Material,
+): "low" | "normal" | "high" | "out" {
 	const current = material.currentStock || 0;
 	const min = material.minStock || 0;
 	const max = material.maxStock || 0;
-	
-	if (current === 0) return 'out';
-	if (current <= min) return 'low';
-	if (current >= max) return 'high';
-	return 'normal';
+
+	if (current === 0) return "out";
+	if (current <= min) return "low";
+	if (current >= max) return "high";
+	return "normal";
 }
 
 // Cores para status de estoque
 export const stockStatusColors = {
-	low: 'destructive',
-	normal: 'default',
-	high: 'secondary',
-	out: 'destructive'
+	low: "destructive",
+	normal: "default",
+	high: "secondary",
+	out: "destructive",
 } as const;
 
 // Labels para status de estoque
 export const stockStatusLabels = {
-	low: 'Estoque Baixo',
-	normal: 'Estoque Normal',
-	high: 'Estoque Alto',
-	out: 'Sem Estoque'
+	low: "Estoque Baixo",
+	normal: "Estoque Normal",
+	high: "Estoque Alto",
+	out: "Sem Estoque",
 } as const;

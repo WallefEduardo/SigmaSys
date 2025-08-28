@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { logger } from "../lib/logger";
-import { TelemetryService } from "../lib/telemetry";
+import { TelemetryService } from "../lib/telemetry-mock";
 
 /**
  * Middleware para instrumentar requisições HTTP com telemetria

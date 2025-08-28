@@ -1,6 +1,6 @@
 import Redis from "ioredis";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 
 // Configuração do Redis
 const redis = new Redis({

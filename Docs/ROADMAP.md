@@ -372,24 +372,75 @@ pnpm add -D @types/mathjs
 - [ ] Unidades diversas implementadas
 - [ ] Controle de preços ativo
 
-#### **Etapa 3.3: Cadastro de Equipamentos**
-**Objetivo**: Gestão de máquinas e equipamentos
+#### **Etapa 3.3: Cadastro de Equipamentos Avançado**
+**Objetivo**: Sistema completo de custeio industrial para equipamentos
 
 **Tarefas**:
-1. Dois tipos de equipamentos (impressão/usinagem)
-2. Cálculo de custos por tempo/m²
-3. Gestão de insumos por equipamento
-4. Capacidade e disponibilidade
+1. **Equipamentos Base**
+   - Dois tipos principais (impressão/usinagem)
+   - Dados técnicos e especificações
+   - Localização e disponibilidade
+
+2. **Sistema de Passadas (Impressão)**
+   - Configuração de passadas por qualidade (draft, normal, high)
+   - Velocidade diferenciada por passada
+   - Consumo de tinta/material por passada
+   - Cálculo automático tempo/custo por passada
+
+3. **Depreciação e Vida Útil**
+   - Valor de aquisição e valor residual
+   - Método de depreciação (linear, acelerada)
+   - Vida útil em horas/anos
+   - Impacto da depreciação no custo/hora
+   - Alertas de renovação de equipamento
+
+4. **Desgaste de Componentes Críticos**
+   - **Cabeças de Impressão**: Ciclo de vida, custo de substituição
+   - **Ferramentas de Usinagem**: Desgaste por material trabalhado
+   - **Consumíveis**: Estoque mínimo e reposição automática
+   - Agenda de manutenção preventiva
+
+5. **Gestão Avançada de Insumos**
+   - Consumíveis por tipo de operação
+   - Cálculo de consumo por m²/passada/tempo
+   - Estoque integrado de consumíveis
+   - Custos variáveis por configuração
+
+6. **Interface com Tabs**
+   - Tab "Dados Gerais": Informações básicas
+   - Tab "Passadas": Configuração de passadas (impressão)
+   - Tab "Depreciação": Cálculos de depreciação
+   - Tab "Insumos": Gestão de consumíveis
+   - Tab "Manutenção": Histórico e agenda
+   - Tab "Relatórios": Performance e custos
+
+**Comandos**:
+```bash
+# Dependências para cálculos financeiros avançados
+pnpm add decimal.js date-fns
+pnpm add -D @types/decimal.js
+```
 
 **Artefatos**:
-- `apps/web/src/app/(dashboard)/cadastros/equipamentos/`
-- `apps/server/src/routers/equipments.ts`
-- `apps/server/src/lib/equipment-costing.ts`
+- `apps/web/src/app/(dashboard)/cadastros/equipamentos/` (interface com tabs)
+- `apps/server/src/routers/equipments.ts` (CRUD completo)
+- `apps/server/src/lib/equipment-costing.ts` (engine de custeio)
+- `apps/server/src/lib/equipment-depreciation.ts` (cálculos de depreciação)
+- `apps/server/src/lib/equipment-passes.ts` (sistema de passadas)
+- `apps/server/src/lib/equipment-consumables.ts` (gestão de insumos)
+- `apps/web/src/components/forms/equipment-tabs.tsx` (interface por tabs)
+- `apps/web/src/components/forms/passes-config.tsx` (configuração de passadas)
+- `apps/web/src/components/charts/depreciation-chart.tsx` (gráficos de depreciação)
 
 **Critérios de Aceite**:
-- [ ] Dois tipos de equipamentos funcionais
-- [ ] Cálculo de custos implementado
-- [ ] Gestão de insumos ativa
+- [ ] Sistema de passadas funcional para impressoras
+- [ ] Cálculo automático de depreciação implementado
+- [ ] Gestão de desgaste de componentes ativa
+- [ ] Interface com tabs organizada e funcional
+- [ ] Integração com estoque de consumíveis
+- [ ] Relatórios de performance e custos precisos
+- [ ] Alertas de manutenção automáticos
+- [ ] Cálculo de custo real por operação
 
 #### **Etapa 3.4: Processos e Setores**
 **Objetivo**: Gestão de mão de obra e processos

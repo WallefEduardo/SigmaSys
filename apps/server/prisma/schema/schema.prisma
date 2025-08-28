@@ -78,6 +78,7 @@ model Company {
   quotes      Quote[]
   orders      Order[]
   roles       Role[]
+  consumables Consumable[]
 
   @@map("companies")
 }
@@ -345,22 +346,96 @@ model Equipment {
   code          String?  // código interno
   type          String   // "printing" ou "machining"
   
-  // Custos
-  costPerHour   Decimal  @db.Decimal(10, 4)
-  maintenanceCost Decimal? @db.Decimal(10, 4) // custo de manutenção por hora
-  energyCost    Decimal? @db.Decimal(10, 4) // custo de energia por hora
+  // === CUSTOS BASE (INPUTS DO USUÁRIO) ===
+  energyCostPerHour      Decimal? @db.Decimal(10, 4) // custo de energia por hora
+  maintenanceCostPerHour Decimal? @db.Decimal(10, 4) // custo de manutenção por hora
+  
+  // === UNIDADE DE COBRANÇA ===
+  costUnit              String   @default("PER_M2") // "PER_HOUR" | "PER_M2"
+  
+  // === CUSTOS CALCULADOS AUTOMATICAMENTE ===
+  calculatedCostPerM2   Decimal? @db.Decimal(10, 4) // custo calculado por m²
+  calculatedCostPerHour Decimal? @db.Decimal(10, 4) // custo calculado por hora
+  lastCostCalculation   DateTime? // quando foi calculado pela última vez
+  
+  // === DEPRECIAÇÃO E VIDA ÚTIL ===
+  acquisitionValue  Decimal? @db.Decimal(15, 2) // valor de aquisição
+  residualValue     Decimal? @db.Decimal(15, 2) // valor residual
+  depreciationMethod String? @default("linear") // linear, accelerated
+  usefulLifeHours   Int?     // vida útil em horas
+  usefulLifeYears   Int?     // vida útil em anos
+  accumulatedDepreciation Decimal? @db.Decimal(15, 2) @default(0)
+  accumulatedHours  Int?     @default(0) // horas acumuladas de uso
   
   // Capacidade geral
   maxWidth      Decimal? @db.Decimal(10, 4) // largura máxima
   maxHeight     Decimal? @db.Decimal(10, 4) // altura máxima
   maxThickness  Decimal? @db.Decimal(10, 4) // espessura máxima
   
-  // Configurações específicas por tipo
-  printingConfig Json?   // config para impressoras
-  machiningConfig Json?  // config para usinagem
+  // === CONFIGURAÇÕES ESPECÍFICAS POR TIPO ===
+  printingConfig Json?   // config para impressoras + sistema de passadas
+  machiningConfig Json?  // config para usinagem + ferramentas
   
-  // Insumos do equipamento
-  consumables   Json?    // tintas, cabeças, brocas, etc
+  // === SISTEMA DE PASSADAS (IMPRESSÃO) ===
+  passes        Json?    // configuração de passadas por qualidade
+  /*
+  Estrutura das passadas com nomes personalizados:
+  {
+    "draft": { 
+      name: "Rascunho",
+      quality: "draft", 
+      speed: 100, 
+      inkConsumption: 0.6, 
+      powerConsumption: 0.8,
+      printHeadWear: 0.5,
+      description: "Qualidade rascunho - alta velocidade" 
+    },
+    "normal": { 
+      name: "Normal",
+      quality: "normal", 
+      speed: 60, 
+      inkConsumption: 1.0, 
+      powerConsumption: 1.0,
+      printHeadWear: 1.0,
+      description: "Equilíbrio entre velocidade e qualidade"
+    },
+    "custom_12345": { 
+      name: "Impressão Econômica",
+      quality: "custom", 
+      speed: 80, 
+      inkConsumption: 0.7, 
+      powerConsumption: 0.9,
+      printHeadWear: 0.6,
+      description: "Configuração econômica personalizada",
+      inkConfiguration: {
+        "ink_id_1": {
+          consumptionRate: 1.5, // ml/m² específico para esta tinta
+          required: true
+        },
+        "ink_id_2": {
+          consumptionRate: 0.8,
+          required: false
+        }
+      }
+    }
+  }
+  */
+  
+  // === INSUMOS E CONSUMÍVEIS AVANÇADOS ===
+  consumables   Json?    // consumíveis detalhados por operação
+  /*
+  Estrutura dos consumíveis:
+  {
+    "printHeads": { cost: 500, lifespan: 1000, currentUse: 250, alertThreshold: 100 },
+    "inks": [
+      { color: "cyan", costPerMl: 0.05, consumptionRate: 1.2 },
+      { color: "magenta", costPerMl: 0.05, consumptionRate: 1.1 }
+    ],
+    "tools": [
+      { name: "fresa_6mm", cost: 25, lifespan: 50, material: "aluminum" }
+    ]
+  }
+  */
   
   // Status operacional
   status        String   @default("available") // available, busy, maintenance, broken
@@ -401,6 +476,7 @@ model Equipment {
   updater       User?    @relation("EquipmentUpdater", fields: [updatedBy], references: [id])
   productItems  ProductEquipment[]
   usageLog      EquipmentUsage[]
+  installedConsumables EquipmentConsumable[]
 
   @@unique([companyId, code])
   @@index([companyId, type])
@@ -434,6 +510,119 @@ model EquipmentUsage {
   operator    User?     @relation("EquipmentOperator", fields: [operatorId], references: [id])
 
   @@map("equipment_usage")
+}
+
+// ==========================================
+// CONSUMABLES - Sistema de Insumos
+// ==========================================
+
+// Enum para unidades de medida padronizadas
+enum ConsumableUnit {
+  // Unidades por área (tintas)
+  ML_M2      // ml/m² - mililitros por metro quadrado (PRINCIPAL para tintas)
+  L_M2       // L/m² - litros por metro quadrado
+  G_M2       // g/m² - gramas por metro quadrado (tintas sólidas)
+  
+  // Unidades volumétricas 
+  ML         // ml - mililitros
+  L          // L - litros
+  
+  // Unidades de peso
+  G          // g - gramas
+  KG         // kg - quilogramas
+  
+  // Unidades de quantidade
+  PCS        // pcs - peças/unidades
+  
+  // Unidades por passada (específicas)
+  ML_PASS    // ml/passada - para configurações específicas
+  
+  // Unidades para cabeças de impressão
+  SHOTS      // disparos - vida útil em disparos totais
+  SHOTS_M2   // disparos/m² - desgaste por área
+  
+  @@map("consumable_units")
+}
+
+model Consumable {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  code        String?  // código interno
+  type        String   // ink, printHead, tool, material, other
+  
+  // Informações de custo
+  cost        Decimal        @db.Decimal(10, 4) // custo por unidade
+  unit        ConsumableUnit // unidade padronizada
+  supplier    String?        // fornecedor
+  
+  // Para tintas
+  color       String?  // cor da tinta
+  volumeMl    Int?     // volume em ml
+  
+  // Para cabeças de impressão
+  lifespan    Int?     // vida útil em disparos (para printHead)
+  currentUse  Int?     @default(0) // disparos já utilizados
+  model       String?  // modelo específico da cabeça (DX5, DX7, etc)
+  durationMonths Int?  // duração em meses para cálculo de custo fixo (PCS)
+  installationDate DateTime? // data de instalação
+  optimalSpeedRange String? // faixa de velocidade ideal (ex: "30-60 m²/h")
+  shotsPerM2  Int?     // disparos estimados por m² (densidade)
+  
+  // Para ferramentas de usinagem
+  material    String?  // material da ferramenta
+  diameter    Decimal? @db.Decimal(10, 2) // diâmetro
+  
+  // Controle de estoque
+  minStock         Int     @default(0)
+  maxStock         Int     @default(0)
+  currentStock     Int     @default(0)
+  alertThreshold   Int     @default(0) // nível de alerta
+  autoReorder      Boolean @default(false)
+  
+  // Status e metadados
+  active      Boolean  @default(true)
+  tags        String[] @default([])
+  notes       String?
+  
+  // Auditoria
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  equipmentInstallations EquipmentConsumable[]
+  
+  @@unique([companyId, code])
+  @@index([companyId, type])
+  @@index([companyId, active])
+  @@map("consumables")
+}
+
+// Tabela de relacionamento entre Equipment e Consumable (cabeças instaladas)
+model EquipmentConsumable {
+  id               String   @id @default(cuid())
+  position         String   // posição no equipamento (A1, B2, etc)
+  installationDate DateTime @default(now())
+  currentUse       Int      @default(0) // uso atual específico desta instalação
+  notes            String?
+  active           Boolean  @default(true)
+  
+  // Auditoria
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Relations
+  equipmentId      String
+  consumableId     String
+  equipment        Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  consumable       Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  
+  @@unique([equipmentId, consumableId, position])
+  @@index([equipmentId])
+  @@index([consumableId])
+  @@map("equipment_consumables")
 }
 
 model Process {

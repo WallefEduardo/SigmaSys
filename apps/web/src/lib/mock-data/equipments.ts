@@ -205,54 +205,59 @@ export const getEquipmentTypes = () => {
 // Função para buscar equipamentos
 export function searchEquipments(searchTerm: string): Equipment[] {
 	const term = searchTerm.toLowerCase();
-	return mockEquipments.filter(equipment => 
-		equipment.name.toLowerCase().includes(term) ||
-		equipment.code?.toLowerCase().includes(term) ||
-		equipment.manufacturer?.toLowerCase().includes(term) ||
-		equipment.model?.toLowerCase().includes(term) ||
-		equipment.tags.some(tag => tag.toLowerCase().includes(term))
+	return mockEquipments.filter(
+		(equipment) =>
+			equipment.name.toLowerCase().includes(term) ||
+			equipment.code?.toLowerCase().includes(term) ||
+			equipment.manufacturer?.toLowerCase().includes(term) ||
+			equipment.model?.toLowerCase().includes(term) ||
+			equipment.tags.some((tag) => tag.toLowerCase().includes(term)),
 	);
 }
 
 // Status de manutenção
-export function getMaintenanceStatus(equipment: Equipment): 'overdue' | 'due_soon' | 'ok' {
-	if (!equipment.nextMaintenance) return 'ok';
-	
+export function getMaintenanceStatus(
+	equipment: Equipment,
+): "overdue" | "due_soon" | "ok" {
+	if (!equipment.nextMaintenance) return "ok";
+
 	const nextMaintenance = new Date(equipment.nextMaintenance);
 	const today = new Date();
-	const diffDays = Math.ceil((nextMaintenance.getTime() - today.getTime()) / (1000 * 3600 * 24));
-	
-	if (diffDays < 0) return 'overdue';
-	if (diffDays <= 7) return 'due_soon';
-	return 'ok';
+	const diffDays = Math.ceil(
+		(nextMaintenance.getTime() - today.getTime()) / (1000 * 3600 * 24),
+	);
+
+	if (diffDays < 0) return "overdue";
+	if (diffDays <= 7) return "due_soon";
+	return "ok";
 }
 
 // Cores para status de equipamento
 export const equipmentStatusColors = {
-	available: 'default',
-	maintenance: 'warning',
-	in_use: 'secondary',
-	broken: 'destructive'
+	available: "default",
+	maintenance: "warning",
+	in_use: "secondary",
+	broken: "destructive",
 } as const;
 
 // Labels para status de equipamento
 export const equipmentStatusLabels = {
-	available: 'Disponível',
-	maintenance: 'Em Manutenção',
-	in_use: 'Em Uso',
-	broken: 'Quebrado'
+	available: "Disponível",
+	maintenance: "Em Manutenção",
+	in_use: "Em Uso",
+	broken: "Quebrado",
 } as const;
 
 // Cores para status de manutenção
 export const maintenanceStatusColors = {
-	overdue: 'destructive',
-	due_soon: 'warning',
-	ok: 'default'
+	overdue: "destructive",
+	due_soon: "warning",
+	ok: "default",
 } as const;
 
 // Labels para status de manutenção
 export const maintenanceStatusLabels = {
-	overdue: 'Manutenção Atrasada',
-	due_soon: 'Manutenção Próxima',
-	ok: 'Em Dia'
+	overdue: "Manutenção Atrasada",
+	due_soon: "Manutenção Próxima",
+	ok: "Em Dia",
 } as const;

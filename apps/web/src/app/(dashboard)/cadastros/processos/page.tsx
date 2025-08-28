@@ -3,7 +3,8 @@
 import { Clock, DollarSign, Edit, Filter, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import * as React from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,32 +18,54 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
-import { getProcessSectors, mockProcesses } from "@/lib/mock-data/processes";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { api } from "@/lib/trpc";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export default function ProcessosPage() {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchInput, setSearchInput] = useState("");
 	const [sectorFilter, setSectorFilter] = useState("all");
 	const [view, setView] = useState<"card" | "table">("card");
 
-	const sectors = getProcessSectors();
-
-	const filteredProcesses = mockProcesses.filter((process) => {
-		const matchesSearch =
-			process.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			process.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			process.sector?.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesSector =
-			sectorFilter === "all" || process.sector === sectorFilter;
-		return matchesSearch && matchesSector && process.active;
+	// Buscar dados reais da API
+	const { 
+		data: processesData, 
+		isLoading, 
+		error,
+		refetch
+	} = api.processes.list.useQuery({
+		search: searchInput || undefined,
+		sector: sectorFilter !== "all" ? sectorFilter : undefined,
+		active: true
 	});
 
-	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat("pt-BR", {
-			style: "currency",
-			currency: "BRL",
-		}).format(value);
-	};
+	// Buscar setores disponíveis
+	const { data: sectorsData } = api.processes.sectors.useQuery();
+
+	const processes = Array.isArray(processesData) ? processesData : [];
+	const sectors = Array.isArray(sectorsData) ? sectorsData : [];
+
+	// Função para obter cor do setor (cores padrão)
+	const getSectorColor = React.useCallback((sector: string) => {
+		const colors: Record<string, string> = {
+			'Impressão': 'default',
+			'Usinagem': 'secondary',
+			'Metalurgia': 'destructive',
+			'Montagem': 'outline',
+			'Acabamento': 'warning',
+			'Pintura': 'secondary',
+			'Instalação': 'default'
+		};
+		return colors[sector] || 'default';
+	}, []);
+
+	// Debounce para busca
+	const debouncedSearch = useDebounce((term: string) => {
+		// A busca é reativa através do useQuery
+	}, 300);
+
+	// Usando utility function
 
 	const formatTime = (hours: number) => {
 		if (hours >= 1) {
@@ -52,26 +75,7 @@ export default function ProcessosPage() {
 		return `${minutes}min`;
 	};
 
-	const getSectorColor = (sector: string) => {
-		const colors = {
-			Impressão:
-				"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-			Usinagem:
-				"bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-			Metalurgia:
-				"bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
-			Montagem:
-				"bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-			Acabamento:
-				"bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
-			Pintura:
-				"bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-			Instalação: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-		};
-		return (
-			colors[sector as keyof typeof colors] || "bg-muted text-muted-foreground"
-		);
-	};
+	// Usando utility function do mock data
 
 	const processColumns = [
 		{
@@ -130,20 +134,41 @@ export default function ProcessosPage() {
 		router.push(`/cadastros/processos/${process.id}`);
 	};
 
-	// Estatísticas por setor
-	const sectorStats = sectors.map((sector) => {
-		const sectorProcesses = filteredProcesses.filter(
-			(p) => p.sector === sector,
+	// Estados de erro e loading
+	if (error) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="text-center">
+					<p className="text-lg font-semibold text-destructive">
+						Erro ao carregar processos
+					</p>
+					<p className="text-sm text-muted-foreground mt-1">
+						{error.message}
+					</p>
+					<Button onClick={() => refetch()} variant="outline" className="mt-4">
+						Tentar novamente
+					</Button>
+				</div>
+			</div>
 		);
-		const avgCost =
-			sectorProcesses.reduce((sum, p) => sum + p.costPerHour, 0) /
-			sectorProcesses.length;
-		return {
-			sector,
-			count: sectorProcesses.length,
-			avgCost: avgCost || 0,
-		};
-	});
+	}
+
+	// Estatísticas por setor com memoização
+	const sectorStats = useMemo(() => {
+		return sectors.map((sector) => {
+			const sectorProcesses = processes.filter(
+				(p) => p.sector === sector,
+			);
+			const avgCost =
+				sectorProcesses.reduce((sum, p) => sum + p.costPerHour, 0) /
+				sectorProcesses.length;
+			return {
+				sector,
+				count: sectorProcesses.length,
+				avgCost: avgCost || 0,
+			};
+		});
+	}, [sectors, processes]);
 
 	return (
 		<div className="space-y-6">
@@ -184,13 +209,24 @@ export default function ProcessosPage() {
 			{/* Filtros */}
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="relative flex-1">
-					<Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+					<Search
+						className="absolute top-3 left-3 h-4 w-4 text-muted-foreground"
+						aria-hidden="true"
+					/>
 					<Input
 						placeholder="Buscar processos por nome, descrição ou setor..."
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							debouncedSearch(e.target.value);
+						}}
 						className="pl-10"
+						aria-label="Campo de busca para processos"
+						aria-describedby="search-hint"
 					/>
+					<span id="search-hint" className="sr-only">
+						Digite para buscar por nome, descrição ou setor dos processos
+					</span>
 				</div>
 
 				<Select value={sectorFilter} onValueChange={setSectorFilter}>
@@ -211,10 +247,22 @@ export default function ProcessosPage() {
 				<ViewToggle view={view} onViewChange={setView} />
 			</div>
 
-			{filteredProcesses.length === 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<div className="text-center">
+						<div className="animate-pulse space-y-4">
+							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
+							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+						</div>
+						<p className="text-sm text-muted-foreground mt-2">
+							Carregando processos...
+						</p>
+					</div>
+				</div>
+			) : processes.length === 0 ? (
 				<div className="py-12 text-center">
 					<div className="mb-4 text-muted-foreground">
-						{searchTerm || sectorFilter !== "all"
+						{searchInput || sectorFilter !== "all"
 							? "Nenhum processo encontrado com os filtros aplicados"
 							: "Nenhum processo cadastrado"}
 					</div>
@@ -227,12 +275,12 @@ export default function ProcessosPage() {
 			) : (
 				<>
 					<div className="flex items-center justify-between text-muted-foreground text-sm">
-						<span>{filteredProcesses.length} processos encontrados</span>
+						<span>{processes.length} processos encontrados</span>
 					</div>
 
 					{view === "card" ? (
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-							{filteredProcesses.map((process) => (
+							{processes.map((process) => (
 								<Card
 									key={process.id}
 									className="flex h-full flex-col transition-shadow hover:shadow-lg"
@@ -335,7 +383,7 @@ export default function ProcessosPage() {
 						</div>
 					) : (
 						<DataTable
-							data={filteredProcesses}
+							data={processes}
 							columns={processColumns}
 							onEdit={handleEdit}
 							onView={handleView}

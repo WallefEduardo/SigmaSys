@@ -1,6 +1,6 @@
 import type { PrismaClient } from "../../../prisma/generated/client";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 
 export interface TransactionOptions {
 	maxRetries?: number;

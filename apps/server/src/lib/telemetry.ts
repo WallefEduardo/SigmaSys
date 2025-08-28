@@ -628,5 +628,4 @@ process.on("SIGINT", async () => {
 	await TelemetryService.shutdown();
 });
 
-export { TelemetryService };
 export default TelemetryService;

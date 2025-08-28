@@ -23,7 +23,9 @@
       "mcp__browser__puppeteer_click",
       "mcp__browser__puppeteer_navigate",
       "mcp__browser__puppeteer_fill",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm db:push:*)"
     ],
     "deny": [],
     "ask": []

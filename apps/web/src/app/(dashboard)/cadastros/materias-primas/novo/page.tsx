@@ -1,12 +1,26 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { MaterialForm } from "../components/material-form";
 
-export default function NovoMaterialPage() {
-	const handleSubmit = (data: any) => {
-		console.log("Material data:", data);
-		// TODO: Integrar com API real
-		alert("Material cadastrado com sucesso! (Mock)");
+export default function NewMaterialPage() {
+	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleSubmit = async (data: any) => {
+		setIsLoading(true);
+		try {
+			// Simulação de API call
+			console.log("Criando material:", data);
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+
+			router.push("/cadastros/materias-primas");
+		} catch (error) {
+			console.error("Erro ao criar material:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -18,7 +32,7 @@ export default function NovoMaterialPage() {
 				</p>
 			</div>
 
-			<MaterialForm onSubmit={handleSubmit} />
+			<MaterialForm onSubmit={handleSubmit} isLoading={isLoading} />
 		</div>
 	);
 }

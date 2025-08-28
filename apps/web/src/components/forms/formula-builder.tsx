@@ -1,7 +1,8 @@
 "use client";
 
 import { Calculator, Check, Info, Plus, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,7 +105,7 @@ const availableOperators = [
 	{ symbol: "()", description: "Parênteses para agrupamento" },
 ];
 
-export function FormulaBuilder({
+export const FormulaBuilder = React.memo(function FormulaBuilder({
 	value,
 	onChange,
 	targetUnit,
@@ -120,78 +121,92 @@ export function FormulaBuilder({
 		espessura: 3,
 	});
 
-	// Calcular variáveis derivadas
-	const calculatedContext = {
-		...previewContext,
-		perimetro: 2 * (previewContext.largura + previewContext.altura),
-		area: previewContext.largura * previewContext.altura,
-		volume:
-			previewContext.largura *
-			previewContext.altura *
-			(previewContext.espessura / 1000), // espessura em metros
-	};
+	// Calcular variáveis derivadas com memoização
+	const calculatedContext = useMemo(
+		() => ({
+			...previewContext,
+			perimetro: 2 * (previewContext.largura + previewContext.altura),
+			area: previewContext.largura * previewContext.altura,
+			volume:
+				previewContext.largura *
+				previewContext.altura *
+				(previewContext.espessura / 1000), // espessura em metros
+		}),
+		[previewContext],
+	);
 
-	// Simular validação de fórmula (em produção seria via API)
-	const validateFormula = (
-		formula: string,
-		context: Record<string, number>,
-	): ValidationResult => {
-		if (!formula.trim()) {
-			return { valid: true, preview: "Digite uma fórmula..." };
-		}
-
-		try {
-			// Substituir variáveis pelos valores do contexto
-			let processedFormula = formula;
-
-			Object.entries(context).forEach(([variable, value]) => {
-				const regex = new RegExp(`\\b${variable}\\b`, "g");
-				processedFormula = processedFormula.replace(regex, value.toString());
-			});
-
-			// Simular cálculo (em produção usaria mathjs no backend)
-			// Para demonstração, apenas avalia expressões simples
-			try {
-				const result = Function(`"use strict"; return (${processedFormula})`)();
-
-				if (typeof result !== "number" || isNaN(result)) {
-					return { valid: false, error: "Resultado não é um número válido" };
-				}
-
-				const unit = targetUnit ? getUnitById(targetUnit) : null;
-				const preview = `${result.toFixed(4)}${unit ? ` ${unit.symbol}` : ""}`;
-
-				return { valid: true, result, preview };
-			} catch (evalError) {
-				return { valid: false, error: "Expressão matemática inválida" };
+	// Simular validação de fórmula (em produção seria via API) - memoizada
+	const validateFormula = useCallback(
+		(formula: string, context: Record<string, number>): ValidationResult => {
+			if (!formula.trim()) {
+				return { valid: true, preview: "Digite uma fórmula..." };
 			}
-		} catch (error) {
-			return { valid: false, error: "Erro na fórmula" };
-		}
-	};
+
+			try {
+				// Substituir variáveis pelos valores do contexto
+				let processedFormula = formula;
+
+				Object.entries(context).forEach(([variable, value]) => {
+					const regex = new RegExp(`\\b${variable}\\b`, "g");
+					processedFormula = processedFormula.replace(regex, value.toString());
+				});
+
+				// Simular cálculo (em produção usaria mathjs no backend)
+				// Para demonstração, apenas avalia expressões simples
+				try {
+					const result = Function(
+						`"use strict"; return (${processedFormula})`,
+					)();
+
+					if (typeof result !== "number" || isNaN(result)) {
+						return { valid: false, error: "Resultado não é um número válido" };
+					}
+
+					const unit = targetUnit ? getUnitById(targetUnit) : null;
+					const preview = `${result.toFixed(4)}${unit ? ` ${unit.symbol}` : ""}`;
+
+					return { valid: true, result, preview };
+				} catch (evalError) {
+					return { valid: false, error: "Expressão matemática inválida" };
+				}
+			} catch (error) {
+				return { valid: false, error: "Erro na fórmula" };
+			}
+		},
+		[targetUnit],
+	);
 
 	useEffect(() => {
 		const result = validateFormula(value, calculatedContext);
 		setValidation(result);
-	}, [value, calculatedContext, targetUnit]);
+	}, [value, calculatedContext, targetUnit, validateFormula]);
 
-	const insertVariable = (variable: string) => {
-		const newFormula = value + (value ? " + " : "") + variable;
-		onChange(newFormula);
-	};
+	const insertVariable = useCallback(
+		(variable: string) => {
+			const newFormula = value + (value ? " + " : "") + variable;
+			onChange(newFormula);
+		},
+		[value, onChange],
+	);
 
-	const insertFunction = (func: string) => {
-		const newFormula = value + (value ? " + " : "") + func + "()";
-		onChange(newFormula);
-	};
+	const insertFunction = useCallback(
+		(func: string) => {
+			const newFormula = value + (value ? " + " : "") + func + "()";
+			onChange(newFormula);
+		},
+		[value, onChange],
+	);
 
-	const insertOperator = (operator: string) => {
-		if (operator === "()") {
-			onChange(value + "()");
-		} else {
-			onChange(value + ` ${operator} `);
-		}
-	};
+	const insertOperator = useCallback(
+		(operator: string) => {
+			if (operator === "()") {
+				onChange(value + "()");
+			} else {
+				onChange(value + ` ${operator} `);
+			}
+		},
+		[value, onChange],
+	);
 
 	return (
 		<div className="space-y-6">
@@ -417,4 +432,4 @@ export function FormulaBuilder({
 			</Card>
 		</div>
 	);
-}
+});

@@ -1,7 +1,7 @@
 import Bull, { type Job, type Queue } from "bull";
 import { redis } from "./cache";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const isTest = process.env.NODE_ENV === "test";
@@ -660,5 +660,4 @@ process.on("SIGINT", async () => {
 	await QueueManager.shutdown();
 });
 
-export { QueueManager };
 export default QueueManager;

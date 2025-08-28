@@ -53,11 +53,18 @@
 	* {
 		@apply border-border;
 	}
+	html {
+		@apply overflow-x-hidden;
+		height: 100%;
+	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground overflow-hidden;
 		font-feature-settings:
 			"rlig" 1,
 			"calt" 1;
+		height: 100%;
+		margin: 0;
+		padding: 0;
 	}
 }
 

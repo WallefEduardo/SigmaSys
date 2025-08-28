@@ -18,6 +18,7 @@ import {
 	Truck,
 	Users,
 	Wrench,
+	Droplets,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,6 +27,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 interface MenuItem {
 	id: string;
@@ -70,6 +72,12 @@ const menuItems: MenuItem[] = [
 				label: "Equipamentos",
 				icon: Wrench,
 				href: "/cadastros/equipamentos",
+			},
+			{
+				id: "insumos",
+				label: "Insumos",
+				icon: Droplets,
+				href: "/cadastros/insumos",
 			},
 			{
 				id: "processos",
@@ -213,7 +221,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
-	const [isCollapsed, setIsCollapsed] = useState(false);
+	const { isCollapsed, toggleSidebar } = useSidebar();
 	const [expandedItems, setExpandedItems] = useState<string[]>([]);
 	const pathname = usePathname();
 	const { user } = useAuth();
@@ -247,7 +255,7 @@ export function Sidebar({ className }: SidebarProps) {
 				<Button
 					variant="ghost"
 					size="icon"
-					onClick={() => setIsCollapsed(!isCollapsed)}
+					onClick={toggleSidebar}
 					className="hidden lg:flex"
 				>
 					{isCollapsed ? (
@@ -341,8 +349,8 @@ export function Sidebar({ className }: SidebarProps) {
 	return (
 		<div
 			className={cn(
+				"h-full w-full",
 				"hidden flex-col border-r bg-background lg:flex",
-				isCollapsed ? "w-16" : "w-64",
 				"transition-all duration-300",
 				className,
 			)}

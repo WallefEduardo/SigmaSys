@@ -123,76 +123,8 @@ export async function seedPhase3() {
 
 	console.log("⚙️ Criando equipamentos...");
 
-	// Criar equipamentos
-	const equipments = await prisma.$transaction(async (tx) => {
-		const equipmentData = [
-			{
-				name: "Impressora Roland VersaCAMM VS-640",
-				description: "Impressora e recortadora digital eco-solvente",
-				code: "IMP-001",
-				type: "printing",
-				costPerHour: 25.0,
-				maintenanceCost: 2.5,
-				energyCost: 1.2,
-				maxWidth: 1.61,
-				maxHeight: 50.0,
-				printingConfig: {
-					resolution: 1440,
-					colorModes: ["CMYK", "CMYK+W"],
-					supportedMaterials: ["vinil", "banner", "papel"],
-					printSpeed: 6.2,
-				},
-				status: "available",
-				location: "Produção - Área 1",
-				serialNumber: "RVS640-2023-001",
-				manufacturer: "Roland",
-				model: "VersaCAMM VS-640",
-				year: 2023,
-				maintenanceInterval: 30,
-				tags: ["impressora", "recorte", "eco-solvente"],
-				active: true,
-				companyId: company.id,
-				createdBy: admin.id,
-			},
-			{
-				name: "Router CNC 1325",
-				description: "Router CNC para usinagem de acrílico e madeira",
-				code: "CNC-001",
-				type: "machining",
-				costPerHour: 35.0,
-				maintenanceCost: 5.0,
-				energyCost: 3.5,
-				maxWidth: 1.3,
-				maxHeight: 2.5,
-				maxThickness: 0.05,
-				machiningConfig: {
-					toolTypes: ["fresa", "broca", "gravação"],
-					spindleSpeed: 24000,
-					feedRate: 3000,
-					precision: 0.1,
-				},
-				status: "available",
-				location: "Produção - Área 2",
-				serialNumber: "CNC1325-2024-001",
-				manufacturer: "China CNC",
-				model: "1325 Professional",
-				year: 2024,
-				maintenanceInterval: 15,
-				tags: ["cnc", "usinagem", "router"],
-				active: true,
-				companyId: company.id,
-				createdBy: admin.id,
-			},
-		];
-
-		const createdEquipments = [];
-		for (const equipment of equipmentData) {
-			const created = await tx.equipment.create({ data: equipment });
-			createdEquipments.push(created);
-		}
-
-		return createdEquipments;
-	});
+	// Criar equipamentos - Removido dados de exemplo
+	const equipments = [];
 
 	console.log("🔧 Criando processos...");
 
@@ -400,14 +332,14 @@ export async function seedPhase3() {
 			},
 		});
 
-		await tx.productEquipment.create({
-			data: {
-				productId: products[0].id,
-				equipmentId: equipments[0].id, // Impressora Roland
-				timeNeeded: 0.5,
-				formula: "(largura * altura) / 6.2",
-			},
-		});
+		// await tx.productEquipment.create({
+		//	data: {
+		//		productId: products[0].id,
+		//		equipmentId: equipments[0].id, // Impressora Roland
+		//		timeNeeded: 0.5,
+		//		formula: "(largura * altura) / 6.2",
+		//	},
+		// });
 
 		// Produto 2: Placa de Acrílico
 		await tx.productMaterial.create({
@@ -428,14 +360,14 @@ export async function seedPhase3() {
 			},
 		});
 
-		await tx.productEquipment.create({
-			data: {
-				productId: products[1].id,
-				equipmentId: equipments[1].id, // Router CNC
-				timeNeeded: 1,
-				formula: "(largura * altura) / 0.5",
-			},
-		});
+		// await tx.productEquipment.create({
+		//	data: {
+		//		productId: products[1].id,
+		//		equipmentId: equipments[1].id, // Router CNC
+		//		timeNeeded: 1,
+		//		formula: "(largura * altura) / 0.5",
+		//	},
+		// });
 
 		await tx.productFinish.create({
 			data: {
@@ -466,7 +398,7 @@ export async function seedPhase3() {
 
 	console.log("✅ FASE 3 seedada com sucesso!");
 	console.log(`   📦 ${materials.length} materiais criados`);
-	console.log(`   ⚙️ ${equipments.length} equipamentos criados`);
+	console.log(`   ⚙️ 0 equipamentos criados (removido dados de exemplo)`);
 	console.log(`   🔧 ${processes.length} processos criados`);
 	console.log(`   ✨ ${finishes.length} acabamentos criados`);
 	console.log(`   🛍️ ${products.length} produtos criados`);

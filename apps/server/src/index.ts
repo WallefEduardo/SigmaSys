@@ -9,7 +9,7 @@ import {
 import Fastify from "fastify";
 import { createContext } from "./lib/context";
 import { apiLogger, errorLogger, logger } from "./lib/logger";
-import { telemetryPlugin } from "./middleware/telemetry";
+// import { telemetryPlugin } from "./middleware/telemetry";
 import { type AppRouter, appRouter } from "./routers/index";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -47,7 +47,7 @@ const fastify = Fastify({
 fastify.register(fastifyCors, baseCorsConfig);
 
 // Registrar plugin de telemetria
-fastify.register(telemetryPlugin);
+// fastify.register(telemetryPlugin);
 
 fastify.register(fastifyTRPCPlugin, {
 	prefix: "/trpc",

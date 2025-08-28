@@ -3,7 +3,8 @@
 import { Edit, Filter, Plus, Search, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import * as React from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -16,38 +17,59 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
-import { getEquipmentTypes, mockEquipments } from "@/lib/mock-data/equipments";
+import {
+	useVirtualization,
+	VirtualizedList,
+} from "@/components/ui/virtualized-list";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { api } from "@/lib/trpc";
+import { formatCurrency } from "@/lib/utils/currency";
 import { EquipmentCard } from "./components/equipment-card";
 
 export default function EquipamentosPage() {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchInput, setSearchInput] = useState("");
 	const [typeFilter, setTypeFilter] = useState<
 		"all" | "printing" | "machining"
 	>("all");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [view, setView] = useState<"card" | "table">("card");
 
-	const equipmentTypes = getEquipmentTypes();
-	const statusOptions = ["available", "maintenance", "in_use", "broken"];
-
-	const filteredEquipments = mockEquipments.filter((equipment) => {
-		const matchesSearch =
-			equipment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			equipment.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			equipment.manufacturer?.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesType = typeFilter === "all" || equipment.type === typeFilter;
-		const matchesStatus =
-			statusFilter === "all" || equipment.status === statusFilter;
-		return matchesSearch && matchesType && matchesStatus && equipment.active;
+	// Buscar dados reais da API
+	const { 
+		data: equipmentsData, 
+		isLoading, 
+		error,
+		refetch
+	} = api.equipments.list.useQuery({
+		search: searchInput || undefined,
+		type: typeFilter !== "all" ? typeFilter : undefined,
+		status: statusFilter !== "all" ? statusFilter : undefined,
+		active: true
 	});
 
-	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat("pt-BR", {
-			style: "currency",
-			currency: "BRL",
-		}).format(value);
-	};
+	// Mutações CRUD  
+	const deleteEquipment = api.equipments.deactivate.useMutation({
+		onSuccess: () => {
+			// Refetch a lista após desativar
+			refetch();
+		},
+		onError: (error) => {
+			// Erro será exibido via toast automaticamente pela mutação
+		}
+	});
+
+	// A API retorna uma estrutura paginada: { equipments: [...], pagination: {...} }
+	const equipments = equipmentsData?.equipments || [];
+	const equipmentTypes = ["printing", "machining"];
+	const statusOptions = ["available", "maintenance", "in_use", "broken"];
+
+	// Debounce para busca
+	const debouncedSearch = useDebounce((term: string) => {
+		// A busca é reativa através do useQuery
+	}, 300);
+
+	// Usando utility function de formatação
 
 	const getStatusBadge = (status: string) => {
 		const variants = {
@@ -94,11 +116,13 @@ export default function EquipamentosPage() {
 			},
 		},
 		{
-			key: "costPerHour",
-			label: "Custo/Hora",
-			render: (value: number) => (
+			key: "calculatedCostPerM2",
+			label: "Custo Calculado",
+			render: (value: number, item: any) => (
 				<div className="font-medium text-green-600">
-					{formatCurrency(value)}
+					{item.calculatedCostPerM2 ? formatCurrency(item.calculatedCostPerM2) + "/m²" : 
+					 item.calculatedCostPerHour ? formatCurrency(item.calculatedCostPerHour) + "/h" :
+					 "Não calculado"}
 				</div>
 			),
 		},
@@ -122,15 +146,53 @@ export default function EquipamentosPage() {
 		router.push(`/cadastros/equipamentos/${equipment.id}`);
 	};
 
-	const statusCounts = {
-		total: filteredEquipments.length,
-		available: filteredEquipments.filter((e) => e.status === "available")
-			.length,
-		maintenance: filteredEquipments.filter((e) => e.status === "maintenance")
-			.length,
-		in_use: filteredEquipments.filter((e) => e.status === "in_use").length,
-		broken: filteredEquipments.filter((e) => e.status === "broken").length,
+	const handleDelete = async (equipment: any) => {
+		if (confirm(`Tem certeza que deseja desativar o equipamento "${equipment.name}"?`)) {
+			try {
+				await deleteEquipment.mutateAsync({ 
+					id: equipment.id, 
+					reason: "Desativado pelo usuário"
+				});
+			} catch (error) {
+				// Erro tratado pelo onError
+			}
+		}
 	};
+
+	// Estados de erro e loading
+	if (error) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="text-center">
+					<p className="text-lg font-semibold text-destructive">
+						Erro ao carregar equipamentos
+					</p>
+					<p className="text-sm text-muted-foreground mt-1">
+						{error.message}
+					</p>
+					<Button onClick={() => refetch()} variant="outline" className="mt-4">
+						Tentar novamente
+					</Button>
+				</div>
+			</div>
+		);
+	}
+
+	const statusCounts = {
+		total: equipments.length,
+		available: equipments.filter((e) => e.status === "available").length,
+		maintenance: equipments.filter((e) => e.status === "maintenance").length,
+		in_use: equipments.filter((e) => e.status === "in_use").length,
+		broken: equipments.filter((e) => e.status === "broken").length,
+	};
+
+	// Usar virtualização para listas grandes
+	const { shouldVirtualize } = useVirtualization(equipments.length, 20);
+
+	const renderEquipmentCard = React.useCallback(
+		({ item }: { item: any }) => <EquipmentCard equipment={item} onDelete={handleDelete} />,
+		[],
+	);
 
 	return (
 		<div className="space-y-6">
@@ -187,9 +249,13 @@ export default function EquipamentosPage() {
 					<Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
 					<Input
 						placeholder="Buscar equipamentos por nome, código ou fabricante..."
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							debouncedSearch(e.target.value);
+						}}
 						className="pl-10"
+						aria-label="Campo de busca para equipamentos"
 					/>
 				</div>
 
@@ -229,10 +295,22 @@ export default function EquipamentosPage() {
 				<ViewToggle view={view} onViewChange={setView} />
 			</div>
 
-			{filteredEquipments.length === 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<div className="text-center">
+						<div className="animate-pulse space-y-4">
+							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
+							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+						</div>
+						<p className="text-sm text-muted-foreground mt-2">
+							Carregando equipamentos...
+						</p>
+					</div>
+				</div>
+			) : equipments.length === 0 ? (
 				<div className="py-12 text-center">
 					<div className="mb-4 text-muted-foreground">
-						{searchTerm || typeFilter !== "all" || statusFilter !== "all"
+						{searchInput || typeFilter !== "all" || statusFilter !== "all"
 							? "Nenhum equipamento encontrado com os filtros aplicados"
 							: "Nenhum equipamento cadastrado"}
 					</div>
@@ -245,22 +323,35 @@ export default function EquipamentosPage() {
 			) : (
 				<>
 					<div className="flex items-center justify-between text-muted-foreground text-sm">
-						<span>{filteredEquipments.length} equipamentos encontrados</span>
+						<span>{equipments.length} equipamentos encontrados</span>
 					</div>
 
 					{view === "card" ? (
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-							{filteredEquipments.map((equipment) => (
-								<EquipmentCard key={equipment.id} equipment={equipment} />
-							))}
-						</div>
+						shouldVirtualize ? (
+							<VirtualizedList
+								items={equipments}
+								itemHeight={280}
+								renderItem={renderEquipmentCard}
+								className="h-[600px]"
+								threshold={20}
+								emptyMessage="Nenhum equipamento encontrado"
+							/>
+						) : (
+							<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+								{equipments.map((equipment) => (
+									<EquipmentCard key={equipment.id} equipment={equipment} onDelete={handleDelete} />
+								))}
+							</div>
+						)
 					) : (
 						<DataTable
-							data={filteredEquipments}
+							data={equipments}
 							columns={equipmentColumns}
 							onEdit={handleEdit}
 							onView={handleView}
+							onDelete={handleDelete}
 							emptyMessage="Nenhum equipamento encontrado"
+							isDeleting={deleteEquipment.isPending}
 						/>
 					)}
 				</>

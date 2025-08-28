@@ -9,6 +9,7 @@ import * as z from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CurrencyInput } from "@/components/ui/currency-input";
 import {
 	Form,
 	FormControl,
@@ -19,7 +20,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CurrencyInput } from "@/components/ui/currency-input";
 import {
 	Select,
 	SelectContent,
@@ -316,11 +316,14 @@ export function MaterialForm({
 										<FormItem>
 											<FormLabel>Custo *</FormLabel>
 											<FormControl>
-												<Input
-													type="number"
-													step="0.01"
-													placeholder="0,00"
-													{...field}
+												<CurrencyInput
+													value={
+														field.value ? Number.parseFloat(field.value) : 0
+													}
+													onValueChange={(value) =>
+														field.onChange(value.toString())
+													}
+													placeholder="R$ 0,00"
 												/>
 											</FormControl>
 											<FormDescription>

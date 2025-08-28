@@ -4,22 +4,59 @@ import type React from "react";
 import { cn } from "@/lib/utils";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
+import { SidebarProvider, useSidebar } from "@/contexts/sidebar-context";
 
 interface MainLayoutProps {
 	children: React.ReactNode;
 	className?: string;
 }
 
+function MainLayoutContent({ children, className }: MainLayoutProps) {
+	const { sidebarWidth } = useSidebar();
+
+	return (
+		<div className="relative h-screen w-screen overflow-hidden bg-background">
+			{/* Sidebar - posicionamento fixo à esquerda */}
+			<div 
+				className="fixed left-0 top-0 h-screen z-40 transition-all duration-300"
+				style={{ width: sidebarWidth }}
+			>
+				<Sidebar />
+			</div>
+			
+			{/* Header - posicionamento fixo no topo direito */}
+			<div 
+				className="fixed top-0 z-30 h-16 transition-all duration-300"
+				style={{ 
+					left: sidebarWidth,
+					right: 0,
+				}}
+			>
+				<Header />
+			</div>
+			
+			{/* Main - área de conteúdo com scroll isolado */}
+			<main 
+				className={cn("fixed overflow-y-auto overflow-x-hidden p-6 transition-all duration-300", className)}
+				style={{
+					top: '64px', // altura do header (h-16 = 64px)
+					left: sidebarWidth,
+					right: 0,
+					bottom: 0,
+				}}
+			>
+				{children}
+			</main>
+		</div>
+	);
+}
+
 export function MainLayout({ children, className }: MainLayoutProps) {
 	return (
-		<div className="flex h-screen bg-background">
-			<Sidebar />
-			<div className="flex flex-1 flex-col overflow-hidden">
-				<Header />
-				<main className={cn("flex-1 overflow-y-auto p-6", className)}>
-					{children}
-				</main>
-			</div>
-		</div>
+		<SidebarProvider>
+			<MainLayoutContent className={className}>
+				{children}
+			</MainLayoutContent>
+		</SidebarProvider>
 	);
 }

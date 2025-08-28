@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,9 @@ interface DataTableProps<T> {
 	columns: Column<T>[];
 	onEdit?: (item: T) => void;
 	onView?: (item: T) => void;
+	onDelete?: (item: T) => void;
 	emptyMessage?: string;
+	isDeleting?: boolean;
 }
 
 export function DataTable<T extends { id: string }>({
@@ -31,7 +34,9 @@ export function DataTable<T extends { id: string }>({
 	columns,
 	onEdit,
 	onView,
+	onDelete,
 	emptyMessage = "Nenhum item encontrado",
+	isDeleting = false,
 }: DataTableProps<T>) {
 	const getValue = (item: T, key: string) => {
 		return key.split(".").reduce((obj, k) => obj?.[k], item as any);
@@ -53,7 +58,7 @@ export function DataTable<T extends { id: string }>({
 						{columns.map((column) => (
 							<TableHead key={column.key as string}>{column.label}</TableHead>
 						))}
-						{(onEdit || onView) && <TableHead>Ações</TableHead>}
+						{(onEdit || onView || onDelete) && <TableHead>Ações</TableHead>}
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -66,7 +71,7 @@ export function DataTable<T extends { id: string }>({
 										: getValue(item, column.key as string)}
 								</TableCell>
 							))}
-							{(onEdit || onView) && (
+							{(onEdit || onView || onDelete) && (
 								<TableCell>
 									<div className="flex gap-2">
 										{onView && (
@@ -85,6 +90,17 @@ export function DataTable<T extends { id: string }>({
 												onClick={() => onEdit(item)}
 											>
 												Editar
+											</Button>
+										)}
+										{onDelete && (
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => onDelete(item)}
+												disabled={isDeleting}
+												className="text-destructive hover:text-destructive hover:bg-destructive/10"
+											>
+												<Trash2 className="h-4 w-4" />
 											</Button>
 										)}
 									</div>

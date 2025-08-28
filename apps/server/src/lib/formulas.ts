@@ -2,7 +2,7 @@ import type { MathNode } from "mathjs";
 import { evaluate, parse } from "mathjs";
 import { CacheKeys, CacheService, CacheTTL } from "./cache";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 import { UnitsService } from "./units";
 
 export interface FormulaVariable {

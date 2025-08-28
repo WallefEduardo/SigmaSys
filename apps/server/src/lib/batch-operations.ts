@@ -2,7 +2,7 @@ import type { PrismaClient } from "../../../prisma/generated/client";
 import { CacheService } from "./cache";
 import { logger } from "./logger";
 import { QueueHelpers } from "./queue";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 import { TransactionManager, withTransaction } from "./transactions";
 
 interface BatchResult<T> {
@@ -958,5 +958,4 @@ export const BatchHelpers = {
 	},
 };
 
-export { BatchOperations };
 export default BatchOperations;

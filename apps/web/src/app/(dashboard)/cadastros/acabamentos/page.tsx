@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import * as React from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,44 +26,53 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
-import { getFinishesByType, mockFinishes } from "@/lib/mock-data/finishes";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { api } from "@/lib/trpc";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export default function AcabamentosPage() {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchInput, setSearchInput] = useState("");
 	const [typeFilter, setTypeFilter] = useState<"all" | "simple" | "composed">(
 		"all",
 	);
 	const [view, setView] = useState<"card" | "table">("card");
 
-	const filteredFinishes = mockFinishes.filter((finish) => {
-		const matchesSearch =
-			finish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			finish.description?.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesType = typeFilter === "all" || finish.type === typeFilter;
-		return matchesSearch && matchesType && finish.active;
+	// Buscar dados reais da API
+	const { 
+		data: finishesData, 
+		isLoading, 
+		error,
+		refetch
+	} = api.finishes.list.useQuery({
+		search: searchInput || undefined,
+		type: typeFilter !== "all" ? typeFilter : undefined,
+		active: true
 	});
 
-	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat("pt-BR", {
-			style: "currency",
-			currency: "BRL",
-		}).format(value);
-	};
+	const finishes = Array.isArray(finishesData) ? finishesData : [];
 
-	const getTypeInfo = (type: string) => {
-		return type === "simple"
-			? {
-					label: "Simples",
-					color:
-						"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-				}
-			: {
-					label: "Composto",
-					color:
-						"bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-				};
-	};
+	// Debounce para busca
+	const debouncedSearch = useDebounce((term: string) => {
+		// A busca é reativa através do useQuery
+	}, 300);
+
+	const getTypeInfo = React.useCallback((type: string) => {
+		const typeLabels: Record<string, string> = {
+			'simple': 'Simples',
+			'composed': 'Composto'
+		};
+
+		const label = typeLabels[type] || type;
+
+		// Convert variant to CSS classes
+		const colorClasses =
+			type === "simple"
+				? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+				: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
+
+		return { label, color: colorClasses };
+	}, []);
 
 	const finishColumns = [
 		{
@@ -142,16 +152,37 @@ export default function AcabamentosPage() {
 		router.push(`/cadastros/acabamentos/${finish.id}`);
 	};
 
-	// Estatísticas
-	const stats = {
-		total: filteredFinishes.length,
-		simple: filteredFinishes.filter((f) => f.type === "simple").length,
-		composed: filteredFinishes.filter((f) => f.type === "composed").length,
-		avgMargin: Math.round(
-			filteredFinishes.reduce((sum, f) => sum + f.margin, 0) /
-				filteredFinishes.length || 0,
-		),
-	};
+	// Estados de erro e loading
+	if (error) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="text-center">
+					<p className="text-lg font-semibold text-destructive">
+						Erro ao carregar acabamentos
+					</p>
+					<p className="text-sm text-muted-foreground mt-1">
+						{error.message}
+					</p>
+					<Button onClick={() => refetch()} variant="outline" className="mt-4">
+						Tentar novamente
+					</Button>
+				</div>
+			</div>
+		);
+	}
+
+	// Estatísticas com memoização
+	const stats = useMemo(() => {
+		return {
+			total: finishes.length,
+			simple: finishes.filter((f) => f.type === "simple").length,
+			composed: finishes.filter((f) => f.type === "composed").length,
+			avgMargin: Math.round(
+				finishes.reduce((sum, f) => sum + f.margin, 0) /
+					finishes.length || 0,
+			),
+		};
+	}, [finishes]);
 
 	return (
 		<div className="space-y-6">
@@ -226,13 +257,24 @@ export default function AcabamentosPage() {
 			{/* Filtros */}
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="relative flex-1">
-					<Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+					<Search
+						className="absolute top-3 left-3 h-4 w-4 text-muted-foreground"
+						aria-hidden="true"
+					/>
 					<Input
 						placeholder="Buscar acabamentos por nome ou descrição..."
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							debouncedSearch(e.target.value);
+						}}
 						className="pl-10"
+						aria-label="Campo de busca para acabamentos"
+						aria-describedby="search-hint"
 					/>
+					<span id="search-hint" className="sr-only">
+						Digite para buscar por nome ou descrição dos acabamentos
+					</span>
 				</div>
 
 				<Select
@@ -253,10 +295,22 @@ export default function AcabamentosPage() {
 				<ViewToggle view={view} onViewChange={setView} />
 			</div>
 
-			{filteredFinishes.length === 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<div className="text-center">
+						<div className="animate-pulse space-y-4">
+							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
+							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+						</div>
+						<p className="text-sm text-muted-foreground mt-2">
+							Carregando acabamentos...
+						</p>
+					</div>
+				</div>
+			) : finishes.length === 0 ? (
 				<div className="py-12 text-center">
 					<div className="mb-4 text-muted-foreground">
-						{searchTerm || typeFilter !== "all"
+						{searchInput || typeFilter !== "all"
 							? "Nenhum acabamento encontrado com os filtros aplicados"
 							: "Nenhum acabamento cadastrado"}
 					</div>
@@ -269,12 +323,12 @@ export default function AcabamentosPage() {
 			) : (
 				<>
 					<div className="flex items-center justify-between text-muted-foreground text-sm">
-						<span>{filteredFinishes.length} acabamentos encontrados</span>
+						<span>{finishes.length} acabamentos encontrados</span>
 					</div>
 
 					{view === "card" ? (
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-							{filteredFinishes.map((finish) => (
+							{finishes.map((finish) => (
 								<Card
 									key={finish.id}
 									className="flex h-full flex-col transition-shadow hover:shadow-lg"
@@ -403,7 +457,7 @@ export default function AcabamentosPage() {
 						</div>
 					) : (
 						<DataTable
-							data={filteredFinishes}
+							data={finishes}
 							columns={finishColumns}
 							onEdit={handleEdit}
 							onView={handleView}

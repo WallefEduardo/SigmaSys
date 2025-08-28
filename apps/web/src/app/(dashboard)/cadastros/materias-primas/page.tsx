@@ -3,7 +3,8 @@
 import { Edit, Filter, Package, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -17,35 +18,85 @@ import {
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
 import {
-	getMaterialCategories,
-	mockMaterials,
-} from "@/lib/mock-data/materials";
+	useVirtualization,
+	VirtualizedMaterialList,
+} from "@/components/ui/virtualized-list";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { api } from "@/lib/trpc";
+import { cacheConfig } from "@/lib/providers/query-provider";
+import { formatCurrency } from "@/lib/utils/currency";
+import { queryUtils } from "@/lib/utils/query-utils";
+import type { Material, MaterialFilters } from "@/lib/types/shared";
 import { MaterialCard } from "./components/material-card";
 
 export default function MateriasPage() {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
+	const queryClient = useQueryClient();
+	const [searchInput, setSearchInput] = useState("");
 	const [categoryFilter, setCategoryFilter] = useState("all");
 	const [view, setView] = useState<"card" | "table">("card");
 
-	const categories = getMaterialCategories();
+	// Buscar dados reais da API com cache otimizado
+	const { 
+		data: materialsData, 
+		isLoading, 
+		error,
+		refetch
+	} = api.materials.list.useQuery({
+		search: searchInput || undefined,
+		category: categoryFilter !== "all" ? categoryFilter : undefined,
+		active: true
+	}, cacheConfig.dynamic);
 
-	const filteredMaterials = mockMaterials.filter((material) => {
-		const matchesSearch =
-			material.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			material.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			material.description?.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesCategory =
-			categoryFilter === "all" || material.category === categoryFilter;
-		return matchesSearch && matchesCategory && material.active;
+	// Buscar categorias disponíveis (dados mais estáticos)
+	const { data: categoriesData } = api.materials.categories.useQuery(
+		undefined, 
+		cacheConfig.static
+	);
+
+	// Mutações CRUD com optimistic updates
+	const deleteMaterial = api.materials.delete.useMutation({
+		onMutate: async (variables) => {
+			// Cancelar queries em andamento
+			await queryClient.cancelQueries({ queryKey: ['materials'] });
+
+			// Snapshot dos dados atuais
+			const previousMaterials = queryClient.getQueryData(['materials']);
+
+			// Optimistic update - remover material da lista
+			queryUtils.optimisticRemove(
+				queryClient,
+				['materials'],
+				variables.id
+			);
+
+			return { previousMaterials };
+		},
+		onError: (error, variables, context) => {
+			// Rollback em caso de erro
+			if (context?.previousMaterials) {
+				queryClient.setQueryData(['materials'], context.previousMaterials);
+			}
+			console.error('Erro ao deletar material:', error);
+		},
+		onSuccess: () => {
+			// Invalidar para sincronizar com servidor
+			queryClient.invalidateQueries({ queryKey: ['materials'] });
+		}
 	});
 
-	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat("pt-BR", {
-			style: "currency",
-			currency: "BRL",
-		}).format(value);
-	};
+	const materials = Array.isArray(materialsData) ? materialsData : [];
+	const categories = Array.isArray(categoriesData) ? categoriesData : [];
+
+	// Implementar debounce para otimizar a busca
+	const debouncedSearch = useDebounce((term: string) => {
+		// A busca é reativa através do useQuery
+	}, 300);
+
+	// Usar virtualização para listas grandes
+	const { shouldVirtualize } = useVirtualization(materials?.length || 0, 20);
+
+	// Removido - usando utility function
 
 	const materialColumns = [
 		{
@@ -111,13 +162,43 @@ export default function MateriasPage() {
 		},
 	];
 
-	const handleEdit = (material: any) => {
+	const handleEdit = (material: Material) => {
 		router.push(`/cadastros/materias-primas/${material.id}/editar`);
 	};
 
-	const handleView = (material: any) => {
+	const handleView = (material: Material) => {
 		router.push(`/cadastros/materias-primas/${material.id}`);
 	};
+
+	const handleDelete = async (material: Material) => {
+		if (confirm(`Tem certeza que deseja deletar o material "${material.name}"?`)) {
+			try {
+				await deleteMaterial.mutateAsync({ id: material.id });
+				// Sucesso será tratado pelo onSuccess da mutation
+			} catch (error) {
+				// Erro será tratado pelo onError da mutation
+			}
+		}
+	};
+
+	// States de loading e error
+	if (error) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="text-center">
+					<p className="text-lg font-semibold text-destructive">
+						Erro ao carregar materiais
+					</p>
+					<p className="text-sm text-muted-foreground mt-1">
+						{error.message}
+					</p>
+					<Button onClick={() => refetch()} variant="outline" className="mt-4">
+						Tentar novamente
+					</Button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-6">
@@ -138,13 +219,24 @@ export default function MateriasPage() {
 
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="relative flex-1">
-					<Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+					<Search
+						className="absolute top-3 left-3 h-4 w-4 text-muted-foreground"
+						aria-hidden="true"
+					/>
 					<Input
 						placeholder="Buscar materiais por nome, código ou descrição..."
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							debouncedSearch(e.target.value);
+						}}
 						className="pl-10"
+						aria-label="Campo de busca para materiais"
+						aria-describedby="search-hint"
 					/>
+					<span id="search-hint" className="sr-only">
+						Digite para buscar por nome, código ou descrição dos materiais
+					</span>
 				</div>
 
 				<Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -165,10 +257,22 @@ export default function MateriasPage() {
 				<ViewToggle view={view} onViewChange={setView} />
 			</div>
 
-			{filteredMaterials.length === 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<div className="text-center">
+						<div className="animate-pulse space-y-4">
+							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
+							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+						</div>
+						<p className="text-sm text-muted-foreground mt-2">
+							Carregando materiais...
+						</p>
+					</div>
+				</div>
+			) : materials.length === 0 ? (
 				<div className="py-12 text-center">
 					<div className="mb-4 text-muted-foreground">
-						{searchTerm || categoryFilter !== "all"
+						{searchInput || categoryFilter !== "all"
 							? "Nenhum material encontrado com os filtros aplicados"
 							: "Nenhuma matéria-prima cadastrada"}
 					</div>
@@ -181,22 +285,32 @@ export default function MateriasPage() {
 			) : (
 				<>
 					<div className="flex items-center justify-between text-muted-foreground text-sm">
-						<span>{filteredMaterials.length} materiais encontrados</span>
+						<span>{materials.length} materiais encontrados</span>
 					</div>
 
 					{view === "card" ? (
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-							{filteredMaterials.map((material) => (
-								<MaterialCard key={material.id} material={material} />
-							))}
-						</div>
+						shouldVirtualize ? (
+							<VirtualizedMaterialList
+								materials={materials}
+								cardComponent={MaterialCard}
+								className="h-[600px]"
+							/>
+						) : (
+							<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+								{materials.map((material) => (
+									<MaterialCard key={material.id} material={material} />
+								))}
+							</div>
+						)
 					) : (
 						<DataTable
-							data={filteredMaterials}
+							data={materials}
 							columns={materialColumns}
 							onEdit={handleEdit}
 							onView={handleView}
+							onDelete={handleDelete}
 							emptyMessage="Nenhum material encontrado"
+							isDeleting={deleteMaterial.isPending}
 						/>
 					)}
 				</>

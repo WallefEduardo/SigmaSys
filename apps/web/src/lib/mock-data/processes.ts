@@ -132,20 +132,21 @@ export const getProcessSectors = () => {
 // Função para buscar processos
 export function searchProcesses(searchTerm: string): Process[] {
 	const term = searchTerm.toLowerCase();
-	return mockProcesses.filter(process => 
-		process.name.toLowerCase().includes(term) ||
-		process.description?.toLowerCase().includes(term) ||
-		process.sector?.toLowerCase().includes(term)
+	return mockProcesses.filter(
+		(process) =>
+			process.name.toLowerCase().includes(term) ||
+			process.description?.toLowerCase().includes(term) ||
+			process.sector?.toLowerCase().includes(term),
 	);
 }
 
 // Cores para setores (para badges)
 export const sectorColors = {
-	'Impressão': 'default',
-	'Usinagem': 'secondary',
-	'Metalurgia': 'destructive',
-	'Montagem': 'outline',
-	'Acabamento': 'warning',
-	'Pintura': 'secondary',
-	'Instalação': 'default'
+	Impressão: "default",
+	Usinagem: "secondary",
+	Metalurgia: "destructive",
+	Montagem: "outline",
+	Acabamento: "warning",
+	Pintura: "secondary",
+	Instalação: "default",
 } as const;

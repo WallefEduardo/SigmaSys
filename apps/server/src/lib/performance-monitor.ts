@@ -1,7 +1,7 @@
 import { performance } from "perf_hooks";
 import { CacheService } from "./cache";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 
 export interface PerformanceMetric {
 	name: string;
@@ -665,5 +665,4 @@ if (process.env.NODE_ENV !== "test") {
 	PerformanceMonitor.initialize();
 }
 
-export { PerformanceMonitor };
 export default PerformanceMonitor;

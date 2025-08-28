@@ -1,6 +1,6 @@
 import { CacheService } from "./cache";
 import { logger } from "./logger";
-import { TelemetryService } from "./telemetry";
+import { TelemetryService } from "./telemetry-mock";
 
 export enum CircuitState {
 	CLOSED = "CLOSED", // Normal operation
@@ -559,5 +559,4 @@ export class PersistentCircuitBreaker extends CircuitBreaker {
 	}
 }
 
-export { CircuitBreaker };
 export default CircuitBreaker;

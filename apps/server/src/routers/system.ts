@@ -4,7 +4,7 @@ import { CircuitBreakerManager } from "../lib/circuit-breaker";
 import { logger } from "../lib/logger";
 import { PerformanceMonitor } from "../lib/performance-monitor";
 import { QueueManager } from "../lib/queue";
-import { TelemetryService } from "../lib/telemetry";
+import { TelemetryService } from "../lib/telemetry-mock";
 import { TransactionManager } from "../lib/transactions";
 import { protectedProcedure, publicProcedure, router } from "../lib/trpc";
 
