@@ -31,6 +31,7 @@ export type EquipmentAvgAggregateOutputType = {
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   acquisitionValue: runtime.Decimal | null
+  residualValue: runtime.Decimal | null
   depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
@@ -47,6 +48,7 @@ export type EquipmentSumAggregateOutputType = {
   calculatedCostPerM2: runtime.Decimal | null
   calculatedCostPerHour: runtime.Decimal | null
   acquisitionValue: runtime.Decimal | null
+  residualValue: runtime.Decimal | null
   depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
@@ -69,6 +71,8 @@ export type EquipmentMinAggregateOutputType = {
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
+  residualValue: runtime.Decimal | null
+  depreciationMethod: string | null
   depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
@@ -107,6 +111,8 @@ export type EquipmentMaxAggregateOutputType = {
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
+  residualValue: runtime.Decimal | null
+  depreciationMethod: string | null
   depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
@@ -145,6 +151,8 @@ export type EquipmentCountAggregateOutputType = {
   calculatedCostPerHour: number
   lastCostCalculation: number
   acquisitionValue: number
+  residualValue: number
+  depreciationMethod: number
   depreciationPerHour: number
   usefulLifeHours: number
   usefulLifeYears: number
@@ -185,6 +193,7 @@ export type EquipmentAvgAggregateInputType = {
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   acquisitionValue?: true
+  residualValue?: true
   depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
@@ -201,6 +210,7 @@ export type EquipmentSumAggregateInputType = {
   calculatedCostPerM2?: true
   calculatedCostPerHour?: true
   acquisitionValue?: true
+  residualValue?: true
   depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
@@ -223,6 +233,8 @@ export type EquipmentMinAggregateInputType = {
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
+  residualValue?: true
+  depreciationMethod?: true
   depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
@@ -261,6 +273,8 @@ export type EquipmentMaxAggregateInputType = {
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
+  residualValue?: true
+  depreciationMethod?: true
   depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
@@ -299,6 +313,8 @@ export type EquipmentCountAggregateInputType = {
   calculatedCostPerHour?: true
   lastCostCalculation?: true
   acquisitionValue?: true
+  residualValue?: true
+  depreciationMethod?: true
   depreciationPerHour?: true
   usefulLifeHours?: true
   usefulLifeYears?: true
@@ -430,6 +446,8 @@ export type EquipmentGroupByOutputType = {
   calculatedCostPerHour: runtime.Decimal | null
   lastCostCalculation: Date | null
   acquisitionValue: runtime.Decimal | null
+  residualValue: runtime.Decimal | null
+  depreciationMethod: string | null
   depreciationPerHour: runtime.Decimal | null
   usefulLifeHours: number | null
   usefulLifeYears: number | null
@@ -497,6 +515,8 @@ export type EquipmentWhereInput = {
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
   depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
@@ -533,6 +553,7 @@ export type EquipmentWhereInput = {
   productItems?: Prisma.ProductEquipmentListRelationFilter
   usageLog?: Prisma.EquipmentUsageListRelationFilter
   installedConsumables?: Prisma.EquipmentConsumableListRelationFilter
+  costBreakdowns?: Prisma.EquipmentCostBreakdownListRelationFilter
 }
 
 export type EquipmentOrderByWithRelationInput = {
@@ -547,6 +568,8 @@ export type EquipmentOrderByWithRelationInput = {
   calculatedCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrderInput | Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  residualValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  depreciationMethod?: Prisma.SortOrderInput | Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -583,6 +606,7 @@ export type EquipmentOrderByWithRelationInput = {
   productItems?: Prisma.ProductEquipmentOrderByRelationAggregateInput
   usageLog?: Prisma.EquipmentUsageOrderByRelationAggregateInput
   installedConsumables?: Prisma.EquipmentConsumableOrderByRelationAggregateInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownOrderByRelationAggregateInput
 }
 
 export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
@@ -601,6 +625,8 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
   depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
@@ -637,6 +663,7 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
   productItems?: Prisma.ProductEquipmentListRelationFilter
   usageLog?: Prisma.EquipmentUsageListRelationFilter
   installedConsumables?: Prisma.EquipmentConsumableListRelationFilter
+  costBreakdowns?: Prisma.EquipmentCostBreakdownListRelationFilter
 }, "id" | "companyId_code">
 
 export type EquipmentOrderByWithAggregationInput = {
@@ -651,6 +678,8 @@ export type EquipmentOrderByWithAggregationInput = {
   calculatedCostPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrderInput | Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  residualValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  depreciationMethod?: Prisma.SortOrderInput | Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrderInput | Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -703,6 +732,8 @@ export type EquipmentScalarWhereWithAggregatesInput = {
   calculatedCostPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null
   depreciationPerHour?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableWithAggregatesFilter<"Equipment"> | number | null
@@ -747,6 +778,8 @@ export type EquipmentCreateInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -780,6 +813,7 @@ export type EquipmentCreateInput = {
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateInput = {
@@ -794,6 +828,8 @@ export type EquipmentUncheckedCreateInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -827,6 +863,7 @@ export type EquipmentUncheckedCreateInput = {
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUpdateInput = {
@@ -841,6 +878,8 @@ export type EquipmentUpdateInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -874,6 +913,7 @@ export type EquipmentUpdateInput = {
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateInput = {
@@ -888,6 +928,8 @@ export type EquipmentUncheckedUpdateInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -921,6 +963,7 @@ export type EquipmentUncheckedUpdateInput = {
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateManyInput = {
@@ -935,6 +978,8 @@ export type EquipmentCreateManyInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -979,6 +1024,8 @@ export type EquipmentUpdateManyMutationInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1020,6 +1067,8 @@ export type EquipmentUncheckedUpdateManyInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1079,6 +1128,8 @@ export type EquipmentCountOrderByAggregateInput = {
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
+  residualValue?: Prisma.SortOrder
+  depreciationMethod?: Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
@@ -1117,6 +1168,7 @@ export type EquipmentAvgOrderByAggregateInput = {
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
+  residualValue?: Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
@@ -1139,6 +1191,8 @@ export type EquipmentMaxOrderByAggregateInput = {
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
+  residualValue?: Prisma.SortOrder
+  depreciationMethod?: Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
@@ -1177,6 +1231,8 @@ export type EquipmentMinOrderByAggregateInput = {
   calculatedCostPerHour?: Prisma.SortOrder
   lastCostCalculation?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
+  residualValue?: Prisma.SortOrder
+  depreciationMethod?: Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
@@ -1209,6 +1265,7 @@ export type EquipmentSumOrderByAggregateInput = {
   calculatedCostPerM2?: Prisma.SortOrder
   calculatedCostPerHour?: Prisma.SortOrder
   acquisitionValue?: Prisma.SortOrder
+  residualValue?: Prisma.SortOrder
   depreciationPerHour?: Prisma.SortOrder
   usefulLifeHours?: Prisma.SortOrder
   usefulLifeYears?: Prisma.SortOrder
@@ -1377,6 +1434,20 @@ export type EquipmentUpdatetagsInput = {
   push?: string | string[]
 }
 
+export type EquipmentCreateNestedOneWithoutCostBreakdownsInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedCreateWithoutCostBreakdownsInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCostBreakdownsInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+}
+
+export type EquipmentUpdateOneRequiredWithoutCostBreakdownsNestedInput = {
+  create?: Prisma.XOR<Prisma.EquipmentCreateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedCreateWithoutCostBreakdownsInput>
+  connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutCostBreakdownsInput
+  upsert?: Prisma.EquipmentUpsertWithoutCostBreakdownsInput
+  connect?: Prisma.EquipmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutCostBreakdownsInput, Prisma.EquipmentUpdateWithoutCostBreakdownsInput>, Prisma.EquipmentUncheckedUpdateWithoutCostBreakdownsInput>
+}
+
 export type EquipmentCreateNestedOneWithoutUsageLogInput = {
   create?: Prisma.XOR<Prisma.EquipmentCreateWithoutUsageLogInput, Prisma.EquipmentUncheckedCreateWithoutUsageLogInput>
   connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutUsageLogInput
@@ -1431,6 +1502,8 @@ export type EquipmentCreateWithoutCompanyInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1463,6 +1536,7 @@ export type EquipmentCreateWithoutCompanyInput = {
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutCompanyInput = {
@@ -1477,6 +1551,8 @@ export type EquipmentUncheckedCreateWithoutCompanyInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1509,6 +1585,7 @@ export type EquipmentUncheckedCreateWithoutCompanyInput = {
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutCompanyInput = {
@@ -1552,6 +1629,8 @@ export type EquipmentScalarWhereInput = {
   calculatedCostPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null
   acquisitionValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.StringNullableFilter<"Equipment"> | string | null
   depreciationPerHour?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.IntNullableFilter<"Equipment"> | number | null
   usefulLifeYears?: Prisma.IntNullableFilter<"Equipment"> | number | null
@@ -1596,6 +1675,8 @@ export type EquipmentCreateWithoutCreatorInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1628,6 +1709,7 @@ export type EquipmentCreateWithoutCreatorInput = {
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutCreatorInput = {
@@ -1642,6 +1724,8 @@ export type EquipmentUncheckedCreateWithoutCreatorInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1674,6 +1758,7 @@ export type EquipmentUncheckedCreateWithoutCreatorInput = {
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutCreatorInput = {
@@ -1698,6 +1783,8 @@ export type EquipmentCreateWithoutUpdaterInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1730,6 +1817,7 @@ export type EquipmentCreateWithoutUpdaterInput = {
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutUpdaterInput = {
@@ -1744,6 +1832,8 @@ export type EquipmentUncheckedCreateWithoutUpdaterInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1776,6 +1866,7 @@ export type EquipmentUncheckedCreateWithoutUpdaterInput = {
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutUpdaterInput = {
@@ -1820,6 +1911,218 @@ export type EquipmentUpdateManyWithWhereWithoutUpdaterInput = {
   data: Prisma.XOR<Prisma.EquipmentUpdateManyMutationInput, Prisma.EquipmentUncheckedUpdateManyWithoutUpdaterInput>
 }
 
+export type EquipmentCreateWithoutCostBreakdownsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  lastCostCalculation?: Date | string | null
+  acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  usefulLifeHours?: number | null
+  usefulLifeYears?: number | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutEquipmentsInput
+  creator?: Prisma.UserCreateNestedOneWithoutCreatedEquipmentsInput
+  updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
+  productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
+  installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentUncheckedCreateWithoutCostBreakdownsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  code?: string | null
+  type: string
+  energyCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerM2?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  lastCostCalculation?: Date | string | null
+  acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
+  depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  usefulLifeHours?: number | null
+  usefulLifeYears?: number | null
+  maxWidth?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string
+  location?: string | null
+  serialNumber?: string | null
+  manufacturer?: string | null
+  model?: string | null
+  year?: number | null
+  lastMaintenance?: Date | string | null
+  nextMaintenance?: Date | string | null
+  maintenanceInterval?: number | null
+  maintenanceNotes?: string | null
+  manualUrl?: string | null
+  images?: Prisma.EquipmentCreateimagesInput | string[]
+  documents?: Prisma.EquipmentCreatedocumentsInput | string[]
+  notes?: string | null
+  tags?: Prisma.EquipmentCreatetagsInput | string[]
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: string | null
+  updatedBy?: string | null
+  companyId: string
+  productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
+  installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+}
+
+export type EquipmentCreateOrConnectWithoutCostBreakdownsInput = {
+  where: Prisma.EquipmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedCreateWithoutCostBreakdownsInput>
+}
+
+export type EquipmentUpsertWithoutCostBreakdownsInput = {
+  update: Prisma.XOR<Prisma.EquipmentUpdateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedUpdateWithoutCostBreakdownsInput>
+  create: Prisma.XOR<Prisma.EquipmentCreateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedCreateWithoutCostBreakdownsInput>
+  where?: Prisma.EquipmentWhereInput
+}
+
+export type EquipmentUpdateToOneWithWhereWithoutCostBreakdownsInput = {
+  where?: Prisma.EquipmentWhereInput
+  data: Prisma.XOR<Prisma.EquipmentUpdateWithoutCostBreakdownsInput, Prisma.EquipmentUncheckedUpdateWithoutCostBreakdownsInput>
+}
+
+export type EquipmentUpdateWithoutCostBreakdownsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutEquipmentsNestedInput
+  creator?: Prisma.UserUpdateOneWithoutCreatedEquipmentsNestedInput
+  updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
+  productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
+  installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+}
+
+export type EquipmentUncheckedUpdateWithoutCostBreakdownsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  energyCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerM2?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maxWidth?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxHeight?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxThickness?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  printingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  machiningConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  passes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextMaintenance?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  maintenanceInterval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  maintenanceNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manualUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.EquipmentUpdateimagesInput | string[]
+  documents?: Prisma.EquipmentUpdatedocumentsInput | string[]
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.EquipmentUpdatetagsInput | string[]
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
+  installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+}
+
 export type EquipmentCreateWithoutUsageLogInput = {
   id?: string
   name: string
@@ -1832,6 +2135,8 @@ export type EquipmentCreateWithoutUsageLogInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1864,6 +2169,7 @@ export type EquipmentCreateWithoutUsageLogInput = {
   updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutUsageLogInput = {
@@ -1878,6 +2184,8 @@ export type EquipmentUncheckedCreateWithoutUsageLogInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -1910,6 +2218,7 @@ export type EquipmentUncheckedCreateWithoutUsageLogInput = {
   companyId: string
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutUsageLogInput = {
@@ -1940,6 +2249,8 @@ export type EquipmentUpdateWithoutUsageLogInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1972,6 +2283,7 @@ export type EquipmentUpdateWithoutUsageLogInput = {
   updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutUsageLogInput = {
@@ -1986,6 +2298,8 @@ export type EquipmentUncheckedUpdateWithoutUsageLogInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2018,6 +2332,7 @@ export type EquipmentUncheckedUpdateWithoutUsageLogInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateWithoutInstalledConsumablesInput = {
@@ -2032,6 +2347,8 @@ export type EquipmentCreateWithoutInstalledConsumablesInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2064,6 +2381,7 @@ export type EquipmentCreateWithoutInstalledConsumablesInput = {
   updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
   productItems?: Prisma.ProductEquipmentCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutInstalledConsumablesInput = {
@@ -2078,6 +2396,8 @@ export type EquipmentUncheckedCreateWithoutInstalledConsumablesInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2110,6 +2430,7 @@ export type EquipmentUncheckedCreateWithoutInstalledConsumablesInput = {
   companyId: string
   productItems?: Prisma.ProductEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutInstalledConsumablesInput = {
@@ -2140,6 +2461,8 @@ export type EquipmentUpdateWithoutInstalledConsumablesInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2172,6 +2495,7 @@ export type EquipmentUpdateWithoutInstalledConsumablesInput = {
   updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutInstalledConsumablesInput = {
@@ -2186,6 +2510,8 @@ export type EquipmentUncheckedUpdateWithoutInstalledConsumablesInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2218,6 +2544,7 @@ export type EquipmentUncheckedUpdateWithoutInstalledConsumablesInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateWithoutProductItemsInput = {
@@ -2232,6 +2559,8 @@ export type EquipmentCreateWithoutProductItemsInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2264,6 +2593,7 @@ export type EquipmentCreateWithoutProductItemsInput = {
   updater?: Prisma.UserCreateNestedOneWithoutUpdatedEquipmentsInput
   usageLog?: Prisma.EquipmentUsageCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentUncheckedCreateWithoutProductItemsInput = {
@@ -2278,6 +2608,8 @@ export type EquipmentUncheckedCreateWithoutProductItemsInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2310,6 +2642,7 @@ export type EquipmentUncheckedCreateWithoutProductItemsInput = {
   companyId: string
   usageLog?: Prisma.EquipmentUsageUncheckedCreateNestedManyWithoutEquipmentInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedCreateNestedManyWithoutEquipmentInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedCreateNestedManyWithoutEquipmentInput
 }
 
 export type EquipmentCreateOrConnectWithoutProductItemsInput = {
@@ -2340,6 +2673,8 @@ export type EquipmentUpdateWithoutProductItemsInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2372,6 +2707,7 @@ export type EquipmentUpdateWithoutProductItemsInput = {
   updater?: Prisma.UserUpdateOneWithoutUpdatedEquipmentsNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutProductItemsInput = {
@@ -2386,6 +2722,8 @@ export type EquipmentUncheckedUpdateWithoutProductItemsInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2418,6 +2756,7 @@ export type EquipmentUncheckedUpdateWithoutProductItemsInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentCreateManyCompanyInput = {
@@ -2432,6 +2771,8 @@ export type EquipmentCreateManyCompanyInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2475,6 +2816,8 @@ export type EquipmentUpdateWithoutCompanyInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2507,6 +2850,7 @@ export type EquipmentUpdateWithoutCompanyInput = {
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutCompanyInput = {
@@ -2521,6 +2865,8 @@ export type EquipmentUncheckedUpdateWithoutCompanyInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2553,6 +2899,7 @@ export type EquipmentUncheckedUpdateWithoutCompanyInput = {
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateManyWithoutCompanyInput = {
@@ -2567,6 +2914,8 @@ export type EquipmentUncheckedUpdateManyWithoutCompanyInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2610,6 +2959,8 @@ export type EquipmentCreateManyCreatorInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2653,6 +3004,8 @@ export type EquipmentCreateManyUpdaterInput = {
   calculatedCostPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Date | string | null
   acquisitionValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: string | null
   depreciationPerHour?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: number | null
   usefulLifeYears?: number | null
@@ -2696,6 +3049,8 @@ export type EquipmentUpdateWithoutCreatorInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2728,6 +3083,7 @@ export type EquipmentUpdateWithoutCreatorInput = {
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutCreatorInput = {
@@ -2742,6 +3098,8 @@ export type EquipmentUncheckedUpdateWithoutCreatorInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2774,6 +3132,7 @@ export type EquipmentUncheckedUpdateWithoutCreatorInput = {
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateManyWithoutCreatorInput = {
@@ -2788,6 +3147,8 @@ export type EquipmentUncheckedUpdateManyWithoutCreatorInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2831,6 +3192,8 @@ export type EquipmentUpdateWithoutUpdaterInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2863,6 +3226,7 @@ export type EquipmentUpdateWithoutUpdaterInput = {
   productItems?: Prisma.ProductEquipmentUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateWithoutUpdaterInput = {
@@ -2877,6 +3241,8 @@ export type EquipmentUncheckedUpdateWithoutUpdaterInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2909,6 +3275,7 @@ export type EquipmentUncheckedUpdateWithoutUpdaterInput = {
   productItems?: Prisma.ProductEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
   usageLog?: Prisma.EquipmentUsageUncheckedUpdateManyWithoutEquipmentNestedInput
   installedConsumables?: Prisma.EquipmentConsumableUncheckedUpdateManyWithoutEquipmentNestedInput
+  costBreakdowns?: Prisma.EquipmentCostBreakdownUncheckedUpdateManyWithoutEquipmentNestedInput
 }
 
 export type EquipmentUncheckedUpdateManyWithoutUpdaterInput = {
@@ -2923,6 +3290,8 @@ export type EquipmentUncheckedUpdateManyWithoutUpdaterInput = {
   calculatedCostPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   lastCostCalculation?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   acquisitionValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  residualValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  depreciationMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depreciationPerHour?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   usefulLifeHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usefulLifeYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2963,12 +3332,14 @@ export type EquipmentCountOutputType = {
   productItems: number
   usageLog: number
   installedConsumables: number
+  costBreakdowns: number
 }
 
 export type EquipmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productItems?: boolean | EquipmentCountOutputTypeCountProductItemsArgs
   usageLog?: boolean | EquipmentCountOutputTypeCountUsageLogArgs
   installedConsumables?: boolean | EquipmentCountOutputTypeCountInstalledConsumablesArgs
+  costBreakdowns?: boolean | EquipmentCountOutputTypeCountCostBreakdownsArgs
 }
 
 /**
@@ -3002,6 +3373,13 @@ export type EquipmentCountOutputTypeCountInstalledConsumablesArgs<ExtArgs extend
   where?: Prisma.EquipmentConsumableWhereInput
 }
 
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountCostBreakdownsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EquipmentCostBreakdownWhereInput
+}
+
 
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3015,6 +3393,8 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
+  residualValue?: boolean
+  depreciationMethod?: boolean
   depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
@@ -3051,6 +3431,7 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   productItems?: boolean | Prisma.Equipment$productItemsArgs<ExtArgs>
   usageLog?: boolean | Prisma.Equipment$usageLogArgs<ExtArgs>
   installedConsumables?: boolean | Prisma.Equipment$installedConsumablesArgs<ExtArgs>
+  costBreakdowns?: boolean | Prisma.Equipment$costBreakdownsArgs<ExtArgs>
   _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["equipment"]>
 
@@ -3066,6 +3447,8 @@ export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
+  residualValue?: boolean
+  depreciationMethod?: boolean
   depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
@@ -3113,6 +3496,8 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
+  residualValue?: boolean
+  depreciationMethod?: boolean
   depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
@@ -3160,6 +3545,8 @@ export type EquipmentSelectScalar = {
   calculatedCostPerHour?: boolean
   lastCostCalculation?: boolean
   acquisitionValue?: boolean
+  residualValue?: boolean
+  depreciationMethod?: boolean
   depreciationPerHour?: boolean
   usefulLifeHours?: boolean
   usefulLifeYears?: boolean
@@ -3192,7 +3579,7 @@ export type EquipmentSelectScalar = {
   companyId?: boolean
 }
 
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "energyCostPerHour" | "maintenanceCostPerHour" | "calculatedCostPerM2" | "calculatedCostPerHour" | "lastCostCalculation" | "acquisitionValue" | "depreciationPerHour" | "usefulLifeHours" | "usefulLifeYears" | "maxWidth" | "maxHeight" | "maxThickness" | "printingConfig" | "machiningConfig" | "passes" | "status" | "location" | "serialNumber" | "manufacturer" | "model" | "year" | "lastMaintenance" | "nextMaintenance" | "maintenanceInterval" | "maintenanceNotes" | "manualUrl" | "images" | "documents" | "notes" | "tags" | "active" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["equipment"]>
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "code" | "type" | "energyCostPerHour" | "maintenanceCostPerHour" | "calculatedCostPerM2" | "calculatedCostPerHour" | "lastCostCalculation" | "acquisitionValue" | "residualValue" | "depreciationMethod" | "depreciationPerHour" | "usefulLifeHours" | "usefulLifeYears" | "maxWidth" | "maxHeight" | "maxThickness" | "printingConfig" | "machiningConfig" | "passes" | "status" | "location" | "serialNumber" | "manufacturer" | "model" | "year" | "lastMaintenance" | "nextMaintenance" | "maintenanceInterval" | "maintenanceNotes" | "manualUrl" | "images" | "documents" | "notes" | "tags" | "active" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "companyId", ExtArgs["result"]["equipment"]>
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.Equipment$creatorArgs<ExtArgs>
@@ -3200,6 +3587,7 @@ export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   productItems?: boolean | Prisma.Equipment$productItemsArgs<ExtArgs>
   usageLog?: boolean | Prisma.Equipment$usageLogArgs<ExtArgs>
   installedConsumables?: boolean | Prisma.Equipment$installedConsumablesArgs<ExtArgs>
+  costBreakdowns?: boolean | Prisma.Equipment$costBreakdownsArgs<ExtArgs>
   _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3222,6 +3610,7 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     productItems: Prisma.$ProductEquipmentPayload<ExtArgs>[]
     usageLog: Prisma.$EquipmentUsagePayload<ExtArgs>[]
     installedConsumables: Prisma.$EquipmentConsumablePayload<ExtArgs>[]
+    costBreakdowns: Prisma.$EquipmentCostBreakdownPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3235,6 +3624,8 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     calculatedCostPerHour: runtime.Decimal | null
     lastCostCalculation: Date | null
     acquisitionValue: runtime.Decimal | null
+    residualValue: runtime.Decimal | null
+    depreciationMethod: string | null
     depreciationPerHour: runtime.Decimal | null
     usefulLifeHours: number | null
     usefulLifeYears: number | null
@@ -3665,6 +4056,7 @@ export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtim
   productItems<T extends Prisma.Equipment$productItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$productItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usageLog<T extends Prisma.Equipment$usageLogArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$usageLogArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   installedConsumables<T extends Prisma.Equipment$installedConsumablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$installedConsumablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentConsumablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  costBreakdowns<T extends Prisma.Equipment$costBreakdownsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$costBreakdownsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentCostBreakdownPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3705,6 +4097,8 @@ export interface EquipmentFieldRefs {
   readonly calculatedCostPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly lastCostCalculation: Prisma.FieldRef<"Equipment", 'DateTime'>
   readonly acquisitionValue: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly residualValue: Prisma.FieldRef<"Equipment", 'Decimal'>
+  readonly depreciationMethod: Prisma.FieldRef<"Equipment", 'String'>
   readonly depreciationPerHour: Prisma.FieldRef<"Equipment", 'Decimal'>
   readonly usefulLifeHours: Prisma.FieldRef<"Equipment", 'Int'>
   readonly usefulLifeYears: Prisma.FieldRef<"Equipment", 'Int'>
@@ -4238,6 +4632,30 @@ export type Equipment$installedConsumablesArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.EquipmentConsumableScalarFieldEnum | Prisma.EquipmentConsumableScalarFieldEnum[]
+}
+
+/**
+ * Equipment.costBreakdowns
+ */
+export type Equipment$costBreakdownsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EquipmentCostBreakdown
+   */
+  select?: Prisma.EquipmentCostBreakdownSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EquipmentCostBreakdown
+   */
+  omit?: Prisma.EquipmentCostBreakdownOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EquipmentCostBreakdownInclude<ExtArgs> | null
+  where?: Prisma.EquipmentCostBreakdownWhereInput
+  orderBy?: Prisma.EquipmentCostBreakdownOrderByWithRelationInput | Prisma.EquipmentCostBreakdownOrderByWithRelationInput[]
+  cursor?: Prisma.EquipmentCostBreakdownWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EquipmentCostBreakdownScalarFieldEnum | Prisma.EquipmentCostBreakdownScalarFieldEnum[]
 }
 
 /**

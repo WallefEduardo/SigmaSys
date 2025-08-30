@@ -29,38 +29,36 @@ export function EquipmentCostPreviewModal({
 	isOpen,
 	onClose,
 }: EquipmentCostPreviewModalProps) {
-	// Buscar custos detalhados usando nova API
-	const { data: costBreakdown, isLoading, error } = api.equipments.calculateCosts.useQuery(
+	// Buscar custos organizados da nova tabela
+	const { data: costBreakdown, isLoading, error } = api.equipments.getOrganizedCosts.useQuery(
 		{ equipmentId },
 		{ enabled: isOpen } // Só busca quando o modal está aberto
 	);
 
 	const renderFixedCosts = () => {
-		if (!costBreakdown?.fixedCosts) return null;
-
-		const { fixedCosts } = costBreakdown;
+		if (!costBreakdown) return null;
 
 		return (
 			<div className="space-y-3">
 				<div className="flex items-center justify-between">
 					<h4 className="font-medium text-sm">Custos Fixos (por m²)</h4>
 					<Badge variant="secondary">
-						Total: {formatCurrency(fixedCosts.totalFixedPerM2)}/m²
+						Total: {formatCurrency(Number(costBreakdown.totalFixedPerM2))}/m²
 					</Badge>
 				</div>
 
 				<div className="space-y-2 rounded bg-muted/50 p-3 text-sm">
 					<div className="flex justify-between">
 						<span>Depreciação:</span>
-						<span>{formatCurrency(fixedCosts.depreciationPerM2)}/m²</span>
+						<span>{formatCurrency(Number(costBreakdown.depreciationPerM2))}/m²</span>
 					</div>
 					<div className="flex justify-between">
 						<span>Energia:</span>
-						<span>{formatCurrency(fixedCosts.energyPerM2)}/m²</span>
+						<span>{formatCurrency(Number(costBreakdown.energyPerM2))}/m²</span>
 					</div>
 					<div className="flex justify-between">
 						<span>Manutenção:</span>
-						<span>{formatCurrency(fixedCosts.maintenancePerM2)}/m²</span>
+						<span>{formatCurrency(Number(costBreakdown.maintenancePerM2))}/m²</span>
 					</div>
 				</div>
 
@@ -72,7 +70,9 @@ export function EquipmentCostPreviewModal({
 	};
 
 	const renderPassCosts = () => {
-		if (!costBreakdown?.passCosts || costBreakdown.passCosts.length === 0) {
+		const passBreakdowns = costBreakdown?.passBreakdowns as any[] | undefined;
+		
+		if (!passBreakdowns || passBreakdowns.length === 0) {
 			return (
 				<div className="rounded bg-yellow-50 p-3 text-yellow-800 text-sm dark:bg-yellow-950/20 dark:text-yellow-300">
 					<strong>Nenhuma passada configurada</strong>
@@ -86,10 +86,10 @@ export function EquipmentCostPreviewModal({
 			<div className="space-y-4">
 				<div className="flex items-center justify-between">
 					<h4 className="font-medium text-sm">Custos Variáveis por Passada</h4>
-					<Badge variant="outline">{costBreakdown.passCosts.length} passadas</Badge>
+					<Badge variant="outline">{passBreakdowns.length} passadas</Badge>
 				</div>
 
-				{costBreakdown.passCosts.map((passData) => (
+				{passBreakdowns.map((passData) => (
 					<div key={passData.passKey} className="rounded border p-3 space-y-3">
 						<div className="flex items-center justify-between">
 							<div>
@@ -104,11 +104,11 @@ export function EquipmentCostPreviewModal({
 						</div>
 
 						{/* Custos de tintas */}
-						{passData.inkCosts.length > 0 && (
+						{passData.inkDetails && passData.inkDetails.length > 0 && (
 							<div className="space-y-2">
 								<h6 className="font-medium text-sm">Tintas:</h6>
 								<div className="space-y-1 rounded bg-muted/30 p-2 text-sm">
-									{passData.inkCosts.map((ink, idx) => (
+									{passData.inkDetails.map((ink: any, idx: number) => (
 										<div key={idx} className="flex justify-between">
 											<span>{ink.consumableName}</span>
 											<span>
@@ -129,17 +129,17 @@ export function EquipmentCostPreviewModal({
 						)}
 
 						{/* Custos de cabeças */}
-						{passData.printHeadCosts.length > 0 && (
+						{passData.headDetails && passData.headDetails.length > 0 && (
 							<div className="space-y-2">
 								<h6 className="font-medium text-sm">Cabeças de Impressão:</h6>
 								<div className="space-y-1 rounded bg-muted/30 p-2 text-sm">
-									{passData.printHeadCosts.map((head, idx) => (
+									{passData.headDetails.map((head: any, idx: number) => (
 										<div key={idx} className="flex justify-between">
 											<span>{head.consumableName}</span>
 											<span>
 												{formatCurrency(head.costPerM2)}/m²
 												<span className="text-muted-foreground text-xs ml-1">
-													({head.shotsPerM2} disparos/m²)
+													(desgaste calculado)
 												</span>
 											</span>
 										</div>
@@ -147,7 +147,7 @@ export function EquipmentCostPreviewModal({
 									<Separator />
 									<div className="flex justify-between font-medium">
 										<span>Total Cabeças:</span>
-										<span>{formatCurrency(passData.totalPrintHeadCostPerM2)}/m²</span>
+										<span>{formatCurrency(passData.totalHeadCostPerM2)}/m²</span>
 									</div>
 								</div>
 							</div>

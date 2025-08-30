@@ -97,6 +97,11 @@ export type MaterialPriceHistory = Prisma.MaterialPriceHistoryModel
  */
 export type Equipment = Prisma.EquipmentModel
 /**
+ * Model EquipmentCostBreakdown
+ * 
+ */
+export type EquipmentCostBreakdown = Prisma.EquipmentCostBreakdownModel
+/**
  * Model EquipmentUsage
  * 
  */

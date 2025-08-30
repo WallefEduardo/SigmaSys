@@ -360,6 +360,8 @@ model Equipment {
   
   // === DEPRECIAÇÃO E VIDA ÚTIL (SIMPLIFICADO) ===
   acquisitionValue     Decimal? @db.Decimal(15, 2) // valor de aquisição
+  residualValue        Decimal? @db.Decimal(15, 2) // valor residual
+  depreciationMethod   String?  // "linear" ou "accelerated"
   depreciationPerHour  Decimal? @db.Decimal(10, 4) // custo de depreciação por hora (calculado automaticamente)
   usefulLifeHours      Int?     // vida útil em horas
   usefulLifeYears      Int?     // vida útil em anos
@@ -461,11 +463,54 @@ model Equipment {
   productItems  ProductEquipment[]
   usageLog      EquipmentUsage[]
   installedConsumables EquipmentConsumable[]
+  costBreakdowns EquipmentCostBreakdown[] // custos organizados
 
   @@unique([companyId, code])
   @@index([companyId, type])
   @@index([companyId, status])
   @@map("equipments")
+}
+
+// ==========================================
+// EQUIPMENT COST BREAKDOWN - Sistema de Custos Organizados
+// ==========================================
+
+model EquipmentCostBreakdown {
+  id                String   @id @default(cuid())
+  equipmentId       String
+  calculatedAt      DateTime @default(now())
+  
+  // === CUSTOS FIXOS DETALHADOS (por m²) ===
+  depreciationPerM2 Decimal  @db.Decimal(12, 8) // custo de depreciação por m²
+  energyPerM2       Decimal  @db.Decimal(12, 8) // custo de energia por m²
+  maintenancePerM2  Decimal  @db.Decimal(12, 8) // custo de manutenção por m²
+  totalFixedPerM2   Decimal  @db.Decimal(12, 8) // total custos fixos por m²
+  
+  // === CUSTOS VARIÁVEIS POR PASSADA ===
+  passBreakdowns    Json     // Array detalhado: [{ passKey, passName, speedM2PerHour, totalInkCost, totalHeadCost, totalPassCost, details }]
+  
+  // === METADADOS ===
+  equipmentType     String   // "printing" ou "machining" 
+  averageSpeed      Decimal  @db.Decimal(8, 2) // velocidade média das passadas em m²/h
+  totalPasses       Int      // número total de passadas configuradas
+  
+  // === PERFORMANCE/CACHE ===
+  isActive          Boolean  @default(true)  // se é o breakdown mais atual
+  version           Int      @default(1)     // versão do cálculo
+  
+  // === AUDITORIA ===
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  equipment         Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  
+  // Índices para performance
+  @@index([equipmentId, isActive])  // busca rápida do breakdown ativo
+  @@index([equipmentId, calculatedAt]) // histórico ordenado
+  @@index([isActive, equipmentType]) // relatórios por tipo
+  @@unique([equipmentId, version]) // controle de versão
+  @@map("equipment_cost_breakdowns")
 }
 
 model EquipmentUsage {

@@ -317,7 +317,15 @@ export const equipmentsRouter = router({
 					if (existingEquipment) {
 						throw new TRPCError({
 							code: "CONFLICT",
-							message: "Equipment code already exists",
+							message: `O código "${equipmentData.code}" já está sendo usado pelo equipamento "${existingEquipment.name}". Escolha um código diferente.`,
+							cause: {
+								field: "code",
+								value: equipmentData.code,
+								conflictWith: {
+									id: existingEquipment.id,
+									name: existingEquipment.name
+								}
+							}
 						});
 					}
 				}
@@ -336,8 +344,13 @@ export const equipmentsRouter = router({
 					createdBy: ctx.user!.id,
 				};
 				
-				// Remover printHeads se existir (veio no equipmentData mas não existe no schema)
+				// Remover campos que não existem no schema
 				delete dataToSave.printHeads;
+				delete dataToSave.consumables;
+				
+				// Debug: log dos campos que estão sendo salvos
+				console.log('🔍 dataToSave keys:', Object.keys(dataToSave));
+				console.log('🔍 Has consumables?', 'consumables' in dataToSave);
 				
 				if (passes && Object.keys(passes).length > 0) {
 					dataToSave.passes = passes;
@@ -511,7 +524,15 @@ export const equipmentsRouter = router({
 					if (codeExists) {
 						throw new TRPCError({
 							code: "CONFLICT",
-							message: "Equipment code already exists",
+							message: `O código "${data.code}" já está sendo usado pelo equipamento "${codeExists.name}". Escolha um código diferente.`,
+							cause: {
+								field: "code",
+								value: data.code,
+								conflictWith: {
+									id: codeExists.id,
+									name: codeExists.name
+								}
+							}
 						});
 					}
 				}
@@ -551,6 +572,25 @@ export const equipmentsRouter = router({
 				});
 
 				const duration = performance.now() - startTime;
+
+				// Recalcular custos automaticamente após atualização
+				try {
+					const calculator = new EquipmentCostCalculator(ctx.db);
+					await calculator.recalculateAndSaveEquipmentCost(equipment.id);
+					apiLogger.info('Equipment costs auto-recalculated after update', {
+						companyId,
+						userId: ctx.user!.id,
+						equipmentId: equipment.id,
+					});
+				} catch (costError) {
+					// Não falhar a atualização se o cálculo de custo der erro
+					apiLogger.warn('Failed to auto-recalculate costs after equipment update', {
+						companyId,
+						userId: ctx.user!.id,
+						equipmentId: equipment.id,
+						error: costError instanceof Error ? costError.message : String(costError),
+					});
+				}
 
 				// Logs estruturados seguindo padrão do ROADMAP
 				apiLogger.info('Equipment updated successfully', {
@@ -1577,5 +1617,73 @@ export const equipmentsRouter = router({
 
 				throw error;
 			}
+		}),
+
+	// === NOVOS ENDPOINTS OTIMIZADOS PARA PRODUTOS ===
+	
+	// Buscar custos organizados de um equipamento (para produtos)
+	getOrganizedCosts: protectedProcedure
+		.input(z.object({
+			equipmentId: z.string(),
+		}))
+		.query(async ({ ctx, input }) => {
+			const companyId = ensureCompanyAccess()(ctx);
+			
+			// Verificar se equipamento pertence à empresa
+			const equipment = await ctx.db.equipment.findFirst({
+				where: {
+					id: input.equipmentId,
+					companyId,
+				},
+			});
+			if (!equipment) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Equipment not found",
+				});
+			}
+			
+			const calculator = new EquipmentCostCalculator(ctx.db);
+			return await calculator.getOrganizedCosts(input.equipmentId);
+		}),
+
+	// Buscar custo para cálculo de produto (super otimizado)
+	getCostForProduct: protectedProcedure
+		.input(z.object({
+			equipmentId: z.string(),
+			passKey: z.string().optional(),
+		}))
+		.query(async ({ ctx, input }) => {
+			const companyId = ensureCompanyAccess()(ctx);
+			
+			// Verificar se equipamento pertence à empresa
+			const equipment = await ctx.db.equipment.findFirst({
+				where: {
+					id: input.equipmentId,
+					companyId,
+				},
+			});
+			if (!equipment) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Equipment not found",
+				});
+			}
+			
+			const calculator = new EquipmentCostCalculator(ctx.db);
+			return await calculator.getCostForProductCalculation(input.equipmentId, input.passKey);
+		}),
+
+	// Listar equipamentos com custos (para seleção em produtos)
+	listWithCosts: protectedProcedure
+		.input(z.object({
+			type: z.string().optional(), // "printing" ou "machining"
+			limit: z.number().default(50),
+		}))
+		.query(async ({ ctx, input }) => {
+			const companyId = ensureCompanyAccess()(ctx);
+			
+			const calculator = new EquipmentCostCalculator(ctx.db);
+			return await calculator.listEquipmentCosts(companyId, input.type);
 		}),
 });

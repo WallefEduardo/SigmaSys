@@ -105,45 +105,8 @@ export class RateLimiter {
 	private static instances = new Map<string, any>();
 
 	static create(name: string, config: any = {}) {
-		if (RateLimiter.instances.has(name)) {
-			return RateLimiter.instances.get(name);
-		}
-
-		const limiter = rateLimit({
-			store: new RedisStore(`rl:${name}:`),
-			keyGenerator: (req: any) => {
-				// Combinar IP + User ID quando disponível para melhor controle
-				const ip = req.ip || req.socket?.remoteAddress || "unknown";
-				const userId = req.user?.id || "anonymous";
-				return `${ip}:${userId}`;
-			},
-			handler: (req: any, res: any) => {
-				logger.warn("Rate limit exceeded", {
-					limiter: name,
-					ip: req.ip,
-					userId: req.user?.id,
-					path: req.url,
-					userAgent: req.headers["user-agent"],
-				});
-
-				res.status(429).send({
-					error: "Rate limit exceeded",
-					message: config.message || "Too many requests",
-					retryAfter: Math.ceil(config.windowMs / 1000),
-				});
-			},
-			onLimitReached: (req: any) => {
-				logger.warn("Rate limit reached", {
-					limiter: name,
-					ip: req.ip,
-					userId: req.user?.id,
-				});
-			},
-			...config,
-		});
-
-		RateLimiter.instances.set(name, limiter);
-		return limiter;
+		// TEMPORARY: Disabled rate limiting for debugging
+		return (req: any, res: any, next: any) => next();
 	}
 
 	// Rate limiter específico para empresas (baseado no plano)

@@ -405,6 +405,7 @@ export const ModelName = {
   Material: 'Material',
   MaterialPriceHistory: 'MaterialPriceHistory',
   Equipment: 'Equipment',
+  EquipmentCostBreakdown: 'EquipmentCostBreakdown',
   EquipmentUsage: 'EquipmentUsage',
   Consumable: 'Consumable',
   EquipmentConsumable: 'EquipmentConsumable',
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plan" | "company" | "user" | "permission" | "role" | "client" | "clientInteraction" | "product" | "material" | "materialPriceHistory" | "equipment" | "equipmentUsage" | "consumable" | "equipmentConsumable" | "process" | "productMaterial" | "productEquipment" | "productProcess" | "productFinish" | "finish" | "inventoryItem" | "inventoryMovement" | "quote" | "quoteItem" | "order" | "orderItem"
+    modelProps: "plan" | "company" | "user" | "permission" | "role" | "client" | "clientInteraction" | "product" | "material" | "materialPriceHistory" | "equipment" | "equipmentCostBreakdown" | "equipmentUsage" | "consumable" | "equipmentConsumable" | "process" | "productMaterial" | "productEquipment" | "productProcess" | "productFinish" | "finish" | "inventoryItem" | "inventoryMovement" | "quote" | "quoteItem" | "order" | "orderItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1250,6 +1251,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EquipmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EquipmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    EquipmentCostBreakdown: {
+      payload: Prisma.$EquipmentCostBreakdownPayload<ExtArgs>
+      fields: Prisma.EquipmentCostBreakdownFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EquipmentCostBreakdownFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EquipmentCostBreakdownFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        findFirst: {
+          args: Prisma.EquipmentCostBreakdownFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EquipmentCostBreakdownFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        findMany: {
+          args: Prisma.EquipmentCostBreakdownFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>[]
+        }
+        create: {
+          args: Prisma.EquipmentCostBreakdownCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        createMany: {
+          args: Prisma.EquipmentCostBreakdownCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EquipmentCostBreakdownCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>[]
+        }
+        delete: {
+          args: Prisma.EquipmentCostBreakdownDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        update: {
+          args: Prisma.EquipmentCostBreakdownUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        deleteMany: {
+          args: Prisma.EquipmentCostBreakdownDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EquipmentCostBreakdownUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EquipmentCostBreakdownUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>[]
+        }
+        upsert: {
+          args: Prisma.EquipmentCostBreakdownUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentCostBreakdownPayload>
+        }
+        aggregate: {
+          args: Prisma.EquipmentCostBreakdownAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEquipmentCostBreakdown>
+        }
+        groupBy: {
+          args: Prisma.EquipmentCostBreakdownGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentCostBreakdownGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EquipmentCostBreakdownCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EquipmentCostBreakdownCountAggregateOutputType> | number
         }
       }
     }
@@ -2634,6 +2709,8 @@ export const EquipmentScalarFieldEnum = {
   calculatedCostPerHour: 'calculatedCostPerHour',
   lastCostCalculation: 'lastCostCalculation',
   acquisitionValue: 'acquisitionValue',
+  residualValue: 'residualValue',
+  depreciationMethod: 'depreciationMethod',
   depreciationPerHour: 'depreciationPerHour',
   usefulLifeHours: 'usefulLifeHours',
   usefulLifeYears: 'usefulLifeYears',
@@ -2667,6 +2744,27 @@ export const EquipmentScalarFieldEnum = {
 } as const
 
 export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum]
+
+
+export const EquipmentCostBreakdownScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  calculatedAt: 'calculatedAt',
+  depreciationPerM2: 'depreciationPerM2',
+  energyPerM2: 'energyPerM2',
+  maintenancePerM2: 'maintenancePerM2',
+  totalFixedPerM2: 'totalFixedPerM2',
+  passBreakdowns: 'passBreakdowns',
+  equipmentType: 'equipmentType',
+  averageSpeed: 'averageSpeed',
+  totalPasses: 'totalPasses',
+  isActive: 'isActive',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EquipmentCostBreakdownScalarFieldEnum = (typeof EquipmentCostBreakdownScalarFieldEnum)[keyof typeof EquipmentCostBreakdownScalarFieldEnum]
 
 
 export const EquipmentUsageScalarFieldEnum = {
@@ -3169,6 +3267,7 @@ export type GlobalOmitConfig = {
   material?: Prisma.MaterialOmit
   materialPriceHistory?: Prisma.MaterialPriceHistoryOmit
   equipment?: Prisma.EquipmentOmit
+  equipmentCostBreakdown?: Prisma.EquipmentCostBreakdownOmit
   equipmentUsage?: Prisma.EquipmentUsageOmit
   consumable?: Prisma.ConsumableOmit
   equipmentConsumable?: Prisma.EquipmentConsumableOmit

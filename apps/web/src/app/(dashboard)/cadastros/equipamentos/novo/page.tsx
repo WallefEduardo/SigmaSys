@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { EquipmentForm } from "../components/equipment-form";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { api } from "@/lib/trpc";
 
 export default function NovoEquipamentoPage() {
@@ -17,12 +17,30 @@ export default function NovoEquipamentoPage() {
       });
       router.push("/cadastros/equipamentos");
     },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: error.message || "Erro ao criar equipamento",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      console.log("Error details:", error);
+      
+      // Verificar se é um erro de conflito com informações detalhadas
+      if (error.data?.code === "CONFLICT" && error.cause?.field) {
+        const { field, value, conflictWith } = error.cause;
+        
+        toast({
+          title: "Conflito Detectado",
+          description: error.message,
+          variant: "destructive",
+        });
+        
+        // TODO: Destacar o campo problemático no formulário
+        console.log(`Campo com problema: ${field} = "${value}"`);
+        console.log(`Conflita com: ${conflictWith?.name} (ID: ${conflictWith?.id})`);
+      } else {
+        // Erro genérico
+        toast({
+          title: "Erro",
+          description: error.message || "Erro ao criar equipamento",
+          variant: "destructive",
+        });
+      }
     },
   });
 

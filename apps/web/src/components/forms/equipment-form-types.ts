@@ -10,7 +10,7 @@ export const equipmentFormSchema = z.object({
   // === NOVA LÓGICA DE CUSTOS ===
   energyCostPerHour: z.number().min(0, "Custo de energia deve ser positivo").max(999999, "Custo muito alto (máx: R$ 999.999)").optional(),
   maintenanceCostPerHour: z.number().min(0, "Custo de manutenção deve ser positivo").max(999999, "Custo muito alto (máx: R$ 999.999)").optional(),
-  // Removido costUnit - impressoras sempre usam m²
+  // Removido costUnit - impressoras sempre usam m², usinagem sempre usa hora
   
   // Campos de depreciação
   acquisitionValue: z.number().min(0, "Valor de aquisição deve ser positivo").max(9999999, "Valor muito alto (máx: R$ 9.999.999)").optional(),
@@ -113,8 +113,9 @@ export interface Consumable {
   color?: string;
   volumeMl?: number;
   
-  // Para cabeças de impressão - SIMPLIFICADO
+  // Para cabeças de impressão - NOVA LÓGICA SIMPLIFICADA
   lifespanM2?: number; // vida útil total em m²
+  costPerM2?: number; // custo por m² calculado automaticamente
   model?: string; // modelo da cabeça (DX5, DX7, I3200, etc)
   
   // Para ferramentas de usinagem
@@ -185,26 +186,19 @@ export const getDefaultPassConfigurations = (): Record<string, PassConfiguration
   }
 });
 
-// Função para sugerir unidade baseada no tipo de equipamento
-export const getDefaultCostUnit = (equipmentType: string): "PER_HOUR" | "PER_M2" => {
-  switch (equipmentType) {
-    case "printing":
-      return "PER_M2"; // Impressão sempre em m²
-    case "machining":
-      return "PER_HOUR"; // Usinagem padrão em hora
-    default:
-      return "PER_HOUR";
-  }
+// Função para obter unidade baseada no tipo de equipamento (automática)
+export const getCostUnit = (equipmentType: string): "PER_HOUR" | "PER_M2" => {
+  return equipmentType === "printing" ? "PER_M2" : "PER_HOUR";
 };
 
-export const getCostUnitLabel = (unit: "PER_HOUR" | "PER_M2"): string => {
-  return unit === "PER_HOUR" ? "Por Hora" : "Por m²";
+export const getCostUnitLabel = (equipmentType: string): string => {
+  return equipmentType === "printing" ? "Por m²" : "Por Hora";
 };
 
-export const getCostUnitDescription = (unit: "PER_HOUR" | "PER_M2"): string => {
-  return unit === "PER_HOUR" 
-    ? "Custo calculado por hora de operação - ideal para usinagem" 
-    : "Custo calculado por metro quadrado processado - ideal para impressão";
+export const getCostUnitDescription = (equipmentType: string): string => {
+  return equipmentType === "printing"
+    ? "Custo calculado por metro quadrado processado - ideal para impressão"
+    : "Custo calculado por hora de operação - ideal para usinagem";
 };
 
 export const getDefaultConsumables = (type: string): Consumable[] => {
@@ -245,6 +239,7 @@ export const getDefaultConsumables = (type: string): Consumable[] => {
         cost: 800,
         unit: 'pcs',
         lifespanM2: 150000, // 150.000 m² de vida útil
+        costPerM2: 800 / 150000, // R$ 0,00533 por m² calculado automaticamente
         model: 'DX5',
         minStock: 1,
         maxStock: 3,

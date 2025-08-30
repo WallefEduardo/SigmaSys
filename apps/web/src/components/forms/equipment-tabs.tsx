@@ -39,7 +39,7 @@ export function EquipmentTabs({ form, isEditing = false, equipmentId }: Equipmen
   const tabOrder = [
     "basic",
     "depreciation", 
-    ...(watchedType === "printing" ? ["passes", "printheads"] : []),
+    ...(watchedType === "printing" ? ["printheads", "passes"] : []),
     "maintenance",
     "reports"
   ];
@@ -119,15 +119,15 @@ export function EquipmentTabs({ form, isEditing = false, equipmentId }: Equipmen
             {watchedType === "printing" && (
               <>
                 <TabTriggerWithBadge
-                  value="passes"
-                  icon={Layers}
-                  label="Passadas"
-                />
-                
-                <TabTriggerWithBadge
                   value="printheads"
                   icon={Cpu}
                   label="Cabeças"
+                />
+                
+                <TabTriggerWithBadge
+                  value="passes"
+                  icon={Layers}
+                  label="Passadas"
                 />
               </>
             )}
@@ -190,25 +190,6 @@ export function EquipmentTabs({ form, isEditing = false, equipmentId }: Equipmen
 
           {watchedType === "printing" && (
             <>
-              <TabsContent value="passes" className="mt-0">
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <Layers className="h-5 w-5" />
-                      <div>
-                        <CardTitle>Configuração de Passadas</CardTitle>
-                        <CardDescription>
-                          Configure as diferentes qualidades de impressão e seus custos
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <PassesConfigTab form={form} />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
               <TabsContent value="printheads" className="mt-0">
                 <Card>
                   <CardHeader>
@@ -224,6 +205,25 @@ export function EquipmentTabs({ form, isEditing = false, equipmentId }: Equipmen
                   </CardHeader>
                   <CardContent>
                     <PrintHeadsTab form={form} equipmentId={equipmentId} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="passes" className="mt-0">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Layers className="h-5 w-5" />
+                      <div>
+                        <CardTitle>Configuração de Passadas</CardTitle>
+                        <CardDescription>
+                          Configure as diferentes qualidades de impressão e seus custos
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <PassesConfigTab form={form} />
                   </CardContent>
                 </Card>
               </TabsContent>

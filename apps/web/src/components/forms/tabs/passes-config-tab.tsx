@@ -24,7 +24,8 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  HelpCircle
+  HelpCircle,
+  Cpu
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EquipmentFormData, getDefaultPassConfigurations, PassConfiguration } from "../equipment-form-types";
@@ -49,6 +50,48 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
   const watchedPasses = watch("passes") || {};
   const watchedPrintHeads = watch("printHeads") || {};
   const [editingPassId, setEditingPassId] = React.useState<string | null>(null);
+
+  // 🎯 AUTO-ASSOCIAÇÃO: Conecta automaticamente cabeças instaladas às passadas
+  React.useEffect(() => {
+    const installedHeadIds = Object.values(watchedPrintHeads).map((head: any) => ({
+      consumableId: head.consumableId
+    }));
+
+    // Se não há cabeças instaladas, não fazer nada
+    if (installedHeadIds.length === 0) return;
+
+    let hasChanges = false;
+    const updatedPasses = { ...watchedPasses };
+
+    // Para cada passada, verificar se tem todas as cabeças instaladas associadas
+    Object.keys(watchedPasses).forEach(passId => {
+      const currentPass = watchedPasses[passId];
+      const currentHeads = currentPass.printHeadConsumables || [];
+      
+      // Verificar se alguma cabeça instalada não está associada a esta passada
+      const needsUpdate = installedHeadIds.some(installedHead => 
+        !currentHeads.find(head => head.consumableId === installedHead.consumableId)
+      );
+
+      if (needsUpdate) {
+        // Auto-associar TODAS as cabeças instaladas a esta passada
+        updatedPasses[passId] = {
+          ...currentPass,
+          printHeadConsumables: installedHeadIds
+        };
+        hasChanges = true;
+      }
+    });
+
+    // Aplicar mudanças se necessário
+    if (hasChanges) {
+      console.log('🔄 Auto-associando cabeças instaladas às passadas:', {
+        installedHeads: installedHeadIds.length,
+        updatedPasses: Object.keys(updatedPasses).length
+      });
+      setValue("passes", updatedPasses);
+    }
+  }, [watchedPrintHeads, watchedPasses, setValue]);
   // Buscar insumos do tipo tinta e cabeça da API
   const { data: inksData, isLoading: loadingInks } = api.consumables.list.useQuery({
     type: "ink",
@@ -94,13 +137,25 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
   const addNewPass = () => {
     if (newPassData.name.trim()) {
       const newPassId = `custom_${Date.now()}`;
+      
+      // 🎯 AUTO-ASSOCIAÇÃO: Incluir automaticamente todas as cabeças instaladas
+      const installedHeadConsumables = Object.values(watchedPrintHeads).map((head: any) => ({
+        consumableId: head.consumableId
+      }));
+      
       const newPass: PassConfiguration = {
         name: newPassData.name.trim(),
         description: newPassData.description,
         speedM2PerHour: newPassData.speedM2PerHour,
         inkConsumables: newPassData.inkConsumables,
-        printHeadConsumables: newPassData.printHeadConsumables,
+        printHeadConsumables: installedHeadConsumables, // Auto-associar cabeças instaladas
       };
+      
+      console.log('✅ Nova passada criada com cabeças auto-associadas:', {
+        passName: newPass.name,
+        headsCount: installedHeadConsumables.length,
+        heads: installedHeadConsumables
+      });
       
       setValue("passes", {
         ...watchedPasses,
@@ -243,12 +298,14 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
       const headData = availableHeads.find(h => h.id === installedHead.consumableId);
       
       if (headData) {
-        // Cálculo baseado no custo real da cabeça
-        const headCost = Number(headData.cost) || 500;
-        const lifespan = 5000000; // Disparos (pode vir de headData.volumeMl ou outro campo)
-        const shotsPerM2 = 50000; // Pode vir das configurações da cabeça
+        // NOVA LÓGICA: Usar costPerM2 diretamente se disponível
+        let costPerM2 = Number(headData.costPerM2) || 0;
         
-        const costPerM2 = (headCost / lifespan) * shotsPerM2;
+        // Se não tem costPerM2 calculado, calcular baseado na lifespanM2
+        if (costPerM2 === 0 && headData.lifespanM2) {
+          costPerM2 = Number(headData.cost) / Number(headData.lifespanM2);
+        }
+        
         totalCost += costPerM2;
       }
     });
@@ -749,6 +806,57 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                 </div>
               )}
 
+              {/* 🖨️ SEÇÃO DE CABEÇAS DE IMPRESSÃO AUTO-ASSOCIADAS */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-muted-foreground" />
+                  <Label className="text-sm font-medium">Cabeças de Impressão</Label>
+                  <Badge variant="secondary" className="text-xs">
+                    Auto-associadas
+                  </Badge>
+                </div>
+
+                {Object.keys(watchedPrintHeads).length > 0 ? (
+                  <div className="space-y-2 rounded border bg-muted/30 p-3">
+                    {Object.values(watchedPrintHeads).map((installedHead: any, idx: number) => {
+                      const headData = availableHeads.find(h => h.id === installedHead.consumableId);
+                      return (
+                        <div key={idx} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2">
+                            <Cpu className="h-3 w-3 text-green-600" />
+                            <span className="font-medium">
+                              {headData?.name || 'Cabeça não encontrada'}
+                            </span>
+                            <Badge variant="outline" className="text-xs">
+                              {installedHead.position}
+                            </Badge>
+                          </div>
+                          <span className="text-muted-foreground text-xs">
+                            {headData ? `R$ ${(Number(headData.costPerM2) || (Number(headData.cost) / Number(headData.lifespanM2 || 1))).toFixed(4)}/m²` : 'N/A'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                    <div className="pt-2 border-t border-muted-foreground/20">
+                      <div className="flex justify-between text-sm font-medium">
+                        <span>Total Cabeças:</span>
+                        <span>R$ {calculatePrintHeadCost().toFixed(4)}/m²</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-muted-foreground border-2 border-dashed border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950/20 rounded-lg">
+                    <Cpu className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Nenhuma cabeça instalada</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-500">Configure cabeças na aba "Cabeças de Impressão"</p>
+                  </div>
+                )}
+
+                <div className="rounded bg-blue-50 p-2 text-blue-800 text-xs dark:bg-blue-950/20 dark:text-blue-300">
+                  <strong>Auto-associação:</strong> Todas as cabeças instaladas no equipamento são automaticamente usadas em todas as passadas.
+                </div>
+              </div>
+
               {/* Mostrar status das tintas */}
               {(loadingInks || loadingHeads) && (
                 <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 rounded-lg">
@@ -815,10 +923,14 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                   <div>
                     <span className="font-medium">Custo Total:</span> R$ {
                       (() => {
-                        // Custo do equipamento baseado no tempo
+                        // NOVA LÓGICA: Custos fixos (energia + manutenção + depreciação) convertidos para m²
                         const speedM2PerHour = passConfig.speedM2PerHour || 1;
                         const timeInHours = 1 / speedM2PerHour; // tempo para processar 1m²
-                        const equipmentCostPerM2 = timeInHours * (watch("costPerHour") || 0);
+                        
+                        // Custos fixos convertidos para m² baseados na velocidade desta passada
+                        const energyCostPerM2 = ((watch("energyCostPerHour") || 0) * timeInHours);
+                        const maintenanceCostPerM2 = ((watch("maintenanceCostPerHour") || 0) * timeInHours);
+                        const fixedCosts = energyCostPerM2 + maintenanceCostPerM2;
                         
                         // Custo das tintas usando nova estrutura
                         const inksCost = passConfig.inkConsumables ? 
@@ -834,7 +946,7 @@ export function PassesConfigTab({ form }: PassesConfigTabProps) {
                         // Custo das cabeças usando dados reais das cabeças cadastradas
                         const printHeadCost = calculatePrintHeadCost();
                           
-                        const totalCost = equipmentCostPerM2 + inksCost + printHeadCost;
+                        const totalCost = fixedCosts + inksCost + printHeadCost;
                         return totalCost.toFixed(2).replace('.', ',');
                       })()
                     }/m²

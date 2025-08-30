@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { HelpCircle } from "lucide-react";
-import { EquipmentFormData, getDefaultCostUnit, getCostUnitLabel, getCostUnitDescription } from "../equipment-form-types";
+import { Button } from "@/components/ui/button";
+import { HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { EquipmentFormData, getCostUnit, getCostUnitLabel, getCostUnitDescription } from "../equipment-form-types";
 
 interface BasicDataTabProps {
   form: UseFormReturn<EquipmentFormData>;
@@ -53,6 +54,9 @@ export const BasicDataTab = React.memo(function BasicDataTab({ form }: BasicData
   } = form;
   
   const watchedType = watch("type");
+
+  // Estado para controlar seções colapsáveis
+  const [technicalDetailsExpanded, setTechnicalDetailsExpanded] = React.useState(false);
 
   const typeOptions = [
     { value: "printing", label: "Impressão" },
@@ -128,38 +132,18 @@ export const BasicDataTab = React.memo(function BasicDataTab({ form }: BasicData
           <div className="space-y-2">
             <LabelWithTooltip 
               htmlFor="costUnit"
-              tooltip="Unidade para cobrança e cálculo de custos. Impressão geralmente usa m² (área processada), enquanto usinagem usa horas (tempo de operação)"
+              tooltip="Unidade de cobrança automática: Impressão sempre usa m² (área processada), Usinagem usa horas (tempo de operação)"
             >
-              Unidade de Cobrança *
+              Unidade de Cobrança
             </LabelWithTooltip>
-            <Select 
-              value={watch("costUnit") || getDefaultCostUnit(watchedType)} 
-              onValueChange={(value) => setValue("costUnit", value as "PER_HOUR" | "PER_M2", { shouldValidate: true, shouldDirty: true })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a unidade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PER_M2">
-                  <div>
-                    <div className="font-medium">{getCostUnitLabel("PER_M2")}</div>
-                    <div className="text-xs text-muted-foreground">Ideal para impressão</div>
-                  </div>
-                </SelectItem>
-                <SelectItem value="PER_HOUR">
-                  <div>
-                    <div className="font-medium">{getCostUnitLabel("PER_HOUR")}</div>
-                    <div className="text-xs text-muted-foreground">Ideal para usinagem</div>
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.costUnit && (
-              <p className="text-sm text-destructive">{errors.costUnit.message}</p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              {getCostUnitDescription(watch("costUnit") || getDefaultCostUnit(watchedType))}
-            </p>
+            <div className="flex items-center gap-2 p-3 rounded-lg border bg-muted/50">
+              <div className="font-medium text-sm">
+                {getCostUnitLabel(watchedType)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {getCostUnitDescription(watchedType)}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -168,7 +152,7 @@ export const BasicDataTab = React.memo(function BasicDataTab({ form }: BasicData
           <div className="space-y-2">
             <h4 className="font-medium">Custos Base</h4>
             <p className="text-sm text-muted-foreground">
-              Estes custos são usados para <strong>calcular automaticamente</strong> o custo final por {watch("costUnit") === "PER_HOUR" ? "hora" : "m²"}
+              Estes custos são usados para <strong>calcular automaticamente</strong> o custo final por {watchedType === "printing" ? "m²" : "hora"}
             </p>
           </div>
           
@@ -211,23 +195,31 @@ export const BasicDataTab = React.memo(function BasicDataTab({ form }: BasicData
           </div>
         </div>
 
-        {/* Informação sobre Custos Automáticos */}
-        <div className="rounded-lg bg-green-50 border border-green-200 p-4 dark:bg-green-950/20 dark:border-green-800">
-          <h5 className="font-medium text-green-800 dark:text-green-300 mb-2">
-            ✅ Custo Final Calculado Automaticamente
-          </h5>
-          <div className="text-sm text-green-700 dark:text-green-400 space-y-1">
-            <p>• <strong>Depreciação:</strong> Baseada nos valores de aquisição e vida útil</p>
-            <p>• <strong>Energia & Manutenção:</strong> Convertidos da base horária para {watch("costUnit") === "PER_HOUR" ? "hora" : "m²"}</p>
-            <p>• <strong>Consumíveis:</strong> Tintas, cabeças e ferramentas por {watch("costUnit") === "PER_HOUR" ? "hora" : "m²"}</p>
-            <p>• <strong>Total:</strong> Soma de todos os componentes = <strong>Custo real por {watch("costUnit") === "PER_HOUR" ? "hora" : "m²"}</strong></p>
-          </div>
-        </div>
 
-        {/* Detalhes Técnicos */}
+        {/* Detalhes Técnicos - Seção Colapsável */}
         <div className="space-y-4">
-          <h4 className="font-medium">Detalhes Técnicos</h4>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium">Detalhes Técnicos</h4>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setTechnicalDetailsExpanded(!technicalDetailsExpanded)}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <span className="text-xs">
+                {technicalDetailsExpanded ? 'Ocultar' : 'Mostrar'}
+              </span>
+              {technicalDetailsExpanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          
+          {technicalDetailsExpanded && (
+            <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <LabelWithTooltip 
                 htmlFor="manufacturer"
@@ -303,7 +295,8 @@ export const BasicDataTab = React.memo(function BasicDataTab({ form }: BasicData
                 {...register("location")}
               />
             </div>
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Capacidade Física */}
