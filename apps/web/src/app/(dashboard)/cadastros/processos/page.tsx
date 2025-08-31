@@ -41,9 +41,9 @@ export default function ProcessosPage() {
 	});
 
 	// Buscar setores disponíveis
-	const { data: sectorsData } = api.processes.sectors.useQuery();
+	const { data: sectorsData } = api.processes.getSectors.useQuery();
 
-	const processes = Array.isArray(processesData) ? processesData : [];
+	const processes = processesData?.processes || [];
 	const sectors = Array.isArray(sectorsData) ? sectorsData : [];
 
 	// Função para obter cor do setor (cores padrão)
