@@ -28,11 +28,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-	getMaterialCategories,
-	type Material,
-} from "@/lib/mock-data/materials";
-import { getUnitsByCategory, mockUnits } from "@/lib/mock-data/units";
+import { api } from "@/lib/trpc";
+import type { Material } from "@/lib/types/shared";
 
 const formSchema = z.object({
 	name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -69,7 +66,9 @@ export function MaterialForm({
 	const [tags, setTags] = useState<string[]>(material?.tags || []);
 	const [newTag, setNewTag] = useState("");
 
-	const categories = getMaterialCategories();
+	// Buscar categorias e unidades da API
+	const { data: categories = [] } = api.materials.categories.useQuery();
+	const { data: units = [] } = api.materials.getUnits.useQuery();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -199,11 +198,6 @@ export function MaterialForm({
 																{category}
 															</SelectItem>
 														))}
-														<SelectItem value="Vinil">Vinil</SelectItem>
-														<SelectItem value="Acrílico">Acrílico</SelectItem>
-														<SelectItem value="Tinta">Tinta</SelectItem>
-														<SelectItem value="Fixação">Fixação</SelectItem>
-														<SelectItem value="Lona">Lona</SelectItem>
 													</SelectContent>
 												</Select>
 												<FormMessage />
@@ -297,11 +291,34 @@ export function MaterialForm({
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{mockUnits.map((unit) => (
-														<SelectItem key={unit.id} value={unit.id}>
-															{unit.name} ({unit.symbol})
-														</SelectItem>
-													))}
+													{units.map((unit) => {
+														const getUnitDescription = (unitId: string) => {
+															switch(unitId) {
+																case "m2": return "Para materiais em chapas/bobinas (vinil, lona, acrílico)";
+																case "m": return "Para materiais lineares (perfis, molduras, cabos)";
+																case "L": return "Para líquidos (tintas, solventes, vernizes)";
+																case "kg": return "Para materiais pesados (quando necessário)";
+																case "un": return "Para componentes discretos (parafusos, LEDs)";
+																default: return "";
+															}
+														};
+
+														return (
+															<SelectItem key={unit.id} value={unit.id}>
+																<div className="flex flex-col gap-1 w-full">
+																	<div className="flex items-center justify-between">
+																		<span className="font-medium">{unit.name}</span>
+																		<span className="text-muted-foreground font-mono text-sm">
+																			{unit.symbol}
+																		</span>
+																	</div>
+																	<div className="text-xs text-muted-foreground">
+																		{getUnitDescription(unit.id)}
+																	</div>
+																</div>
+															</SelectItem>
+														);
+													})}
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -320,14 +337,18 @@ export function MaterialForm({
 													value={
 														field.value ? Number.parseFloat(field.value) : 0
 													}
-													onValueChange={(value) =>
-														field.onChange(value.toString())
+													onChange={(value) =>
+														field.onChange(value?.toString() || "")
 													}
 													placeholder="R$ 0,00"
 												/>
 											</FormControl>
 											<FormDescription>
-												Custo por unidade de medida
+												Custo por {form.watch("unit") === "m2" ? "metro quadrado" :
+													form.watch("unit") === "m" ? "metro linear" :
+													form.watch("unit") === "L" ? "litro" :
+													form.watch("unit") === "kg" ? "quilograma" :
+													form.watch("unit") === "un" ? "unidade" : "unidade de medida"}
 											</FormDescription>
 											<FormMessage />
 										</FormItem>

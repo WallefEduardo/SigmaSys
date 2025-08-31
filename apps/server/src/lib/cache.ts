@@ -46,8 +46,11 @@ export const CacheKeys = {
 		`formula:validation:${Buffer.from(formula).toString("base64")}`,
 	UNITS_BY_CATEGORY: (category: string) => `units:category:${category}`,
 	UNITS_ALL: () => "units:all",
+	UNITS_VISUAL_COMMUNICATION: () => "units:visual_communication",
+	UNITS_ALL_LEGACY: () => "units:all_legacy",
 	MATERIAL_LIST: (companyId: string, filters: string) =>
 		`materials:list:${companyId}:${Buffer.from(filters).toString("base64")}`,
+	MATERIAL_CATEGORIES: (companyId: string) => `materials:categories:${companyId}`,
 	MATERIAL_STATS: (companyId: string) => `materials:stats:${companyId}`,
 	EQUIPMENT_LIST: (companyId: string, filters: string) =>
 		`equipments:list:${companyId}:${Buffer.from(filters).toString("base64")}`,

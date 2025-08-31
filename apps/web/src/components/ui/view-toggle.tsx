@@ -1,7 +1,7 @@
 "use client";
 
 import { Grid, List } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 interface ViewToggleProps {
@@ -17,7 +17,8 @@ export function ViewToggle({ view, onViewChange, className }: ViewToggleProps) {
 				variant={view === "card" ? "default" : "ghost"}
 				size="sm"
 				onClick={() => onViewChange("card")}
-				className="rounded-r-none"
+				className="rounded-r-none border-0"
+				aria-label="Visualização em cards"
 			>
 				<Grid className="h-4 w-4" />
 			</Button>
@@ -25,7 +26,8 @@ export function ViewToggle({ view, onViewChange, className }: ViewToggleProps) {
 				variant={view === "table" ? "default" : "ghost"}
 				size="sm"
 				onClick={() => onViewChange("table")}
-				className="rounded-l-none border-l"
+				className="rounded-l-none border-0"
+				aria-label="Visualização em tabela"
 			>
 				<List className="h-4 w-4" />
 			</Button>

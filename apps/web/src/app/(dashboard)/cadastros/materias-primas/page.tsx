@@ -84,7 +84,8 @@ export default function MateriasPage() {
 		},
 	});
 
-	const materials = Array.isArray(materialsData) ? materialsData : [];
+	const materials = materialsData?.materials || [];
+	const pagination = materialsData?.pagination;
 	const categories = Array.isArray(categoriesData) ? categoriesData : [];
 
 	// Implementar debounce para otimizar a busca
@@ -124,17 +125,22 @@ export default function MateriasPage() {
 			),
 		},
 		{
-			key: "stock",
+			key: "inventory",
 			label: "Estoque",
-			render: (value: number, item: any) => {
-				if (!value && value !== 0) return "-";
-				const status = !item.minStock
+			render: (inventory: any[], item: any) => {
+				if (!inventory || inventory.length === 0) return "-";
+				
+				const totalStock = inventory.reduce((sum, inv) => sum + Number(inv.quantity || 0), 0);
+				const minStock = item.minStock ? Number(item.minStock) : 0;
+				
+				const status = !minStock
 					? "normal"
-					: value <= item.minStock
+					: totalStock <= minStock
 						? "low"
-						: item.maxStock && value >= item.maxStock
+						: item.maxStock && totalStock >= Number(item.maxStock)
 							? "high"
 							: "normal";
+							
 				const badgeVariant =
 					status === "low"
 						? "destructive"
@@ -145,11 +151,13 @@ export default function MateriasPage() {
 				return (
 					<div className="flex items-center gap-2">
 						<span>
-							{value} {item.unit}
+							{totalStock} {item.unit}
 						</span>
-						<Badge variant={badgeVariant} className="text-xs">
-							{status === "low" ? "Baixo" : status === "high" ? "Alto" : "OK"}
-						</Badge>
+						{minStock > 0 && (
+							<Badge variant={badgeVariant} className="text-xs">
+								{status === "low" ? "Baixo" : status === "high" ? "Alto" : "OK"}
+							</Badge>
+						)}
 					</div>
 				);
 			},

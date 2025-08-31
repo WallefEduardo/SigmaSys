@@ -15,6 +15,8 @@ export interface CurrencyInputProps
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 	({ className, currency = "BRL", value, onChange, ...props }, ref) => {
+		// Filtrar propriedades que não devem ir para o input HTML
+		const { onValueChange, ...inputProps } = props as any;
 		const [displayValue, setDisplayValue] = React.useState("");
 
 		// Função para formatar valor para exibição
@@ -95,7 +97,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 				onChange={handleChange}
 				onKeyDown={handleKeyDown}
 				placeholder="R$ 0,00"
-				{...props}
+				{...inputProps}
 			/>
 		);
 	},

@@ -629,12 +629,102 @@ export const materialsRouter = router({
 			return material;
 		}),
 
-	// Obter unidades disponíveis
-	getUnits: protectedProcedure.query(() => {
-		return UnitsService.getUnitsByCategory("area")
-			.concat(UnitsService.getUnitsByCategory("length"))
-			.concat(UnitsService.getUnitsByCategory("volume"))
-			.concat(UnitsService.getUnitsByCategory("weight"))
-			.concat(UnitsService.getUnitsByCategory("quantity"));
+	// Obter unidades disponíveis (simplificadas para comunicação visual)
+	getUnits: protectedProcedure.query(async () => {
+		return await UnitsService.getVisualCommunicationUnits();
 	}),
+
+	// Obter categorias disponíveis
+	categories: protectedProcedure.query(async ({ ctx }) => {
+		const companyId = ensureCompanyAccess()(ctx);
+		
+		const cacheKey = CacheKeys.MATERIAL_CATEGORIES(companyId);
+		
+		return await CacheService.getOrSet(
+			cacheKey,
+			async () => {
+				const categories = await ctx.db.material.findMany({
+					where: { 
+						companyId,
+						category: { not: null },
+						active: true
+					},
+					select: { category: true },
+					distinct: ['category'],
+					orderBy: { category: 'asc' }
+				});
+				
+				return categories
+					.map(item => item.category)
+					.filter((category): category is string => category !== null);
+			},
+			CacheTTL.MATERIALS
+		);
+	}),
+
+	// Excluir material (soft delete)
+	delete: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const companyId = ensureCompanyAccess()(ctx);
+
+			// Verificar se material existe
+			const material = await ctx.db.material.findFirst({
+				where: { 
+					id: input.id, 
+					companyId 
+				}
+			});
+
+			if (!material) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Material not found",
+				});
+			}
+
+			// Verificar se material está sendo usado em produtos
+			const usage = await ctx.db.productMaterial.count({
+				where: {
+					materialId: input.id,
+					product: { companyId },
+				},
+			});
+
+			if (usage > 0) {
+				throw new TRPCError({
+					code: "CONFLICT",
+					message: `Cannot delete material. It is being used in ${usage} products.`,
+				});
+			}
+
+			// Soft delete
+			const deletedMaterial = await ctx.db.material.update({
+				where: {
+					id: input.id,
+					companyId,
+				},
+				data: {
+					active: false,
+					updatedBy: ctx.user!.id,
+				},
+			});
+
+			// Invalidar cache
+			await CacheService.invalidateCompanyCache(companyId);
+
+			// Log de auditoria
+			auditLogger.info("Material deleted", {
+				materialId: input.id,
+				materialName: material.name,
+				companyId,
+				userId: ctx.user!.id,
+			});
+
+			return deletedMaterial;
+		}),
 });

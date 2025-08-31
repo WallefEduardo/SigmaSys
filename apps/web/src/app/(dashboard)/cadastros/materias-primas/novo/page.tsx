@@ -2,19 +2,19 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { api } from "@/lib/trpc";
 import { MaterialForm } from "../components/material-form";
 
 export default function NewMaterialPage() {
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 
+	const { mutateAsync: createMaterial } = api.materials.create.useMutation();
+
 	const handleSubmit = async (data: any) => {
 		setIsLoading(true);
 		try {
-			// Simulação de API call
-			console.log("Criando material:", data);
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
+			await createMaterial(data);
 			router.push("/cadastros/materias-primas");
 		} catch (error) {
 			console.error("Erro ao criar material:", error);

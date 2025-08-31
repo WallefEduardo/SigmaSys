@@ -77,7 +77,7 @@ export async function seedPhase3() {
 				name: "Tinta Eco-Solvente Preta",
 				description: "Tinta eco-solvente preta para impressora Roland",
 				code: "TNT-001",
-				unit: "litro",
+				unit: "L",
 				cost: 89.9,
 				category: "Tinta",
 				brand: "Roland",
