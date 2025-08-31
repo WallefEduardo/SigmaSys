@@ -1,1030 +1,1368 @@
 "use client";
 
+import {
+	Calculator,
+	ChevronDown,
+	ChevronUp,
+	Cpu,
+	Droplet,
+	Edit3,
+	HelpCircle,
+	Info,
+	Layers,
+	Plus,
+	Save,
+	Settings,
+	Trash2,
+	X,
+	Zap,
+} from "lucide-react";
 import * as React from "react";
-import { UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { 
-  Plus, 
-  Trash2, 
-  Layers, 
-  Zap, 
-  Droplet, 
-  Settings,
-  Info,
-  Calculator,
-  Edit3,
-  Save,
-  X,
-  ChevronDown,
-  ChevronUp,
-  HelpCircle,
-  Cpu
-} from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { EquipmentFormData, getDefaultPassConfigurations, PassConfiguration } from "../equipment-form-types";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { api } from "@/lib/trpc";
-import { 
-  ConsumableUnit, 
-  formatUnit, 
-  getUnitDescription 
+import {
+	type ConsumableUnit,
+	formatUnit,
+	getUnitDescription,
 } from "@/lib/utils/consumable-units";
+import {
+	type EquipmentFormData,
+	getDefaultPassConfigurations,
+	type PassConfiguration,
+} from "../equipment-form-types";
 
 interface PassesConfigTabProps {
-  form: UseFormReturn<EquipmentFormData>;
+	form: UseFormReturn<EquipmentFormData>;
 }
 
 export function PassesConfigTab({ form }: PassesConfigTabProps) {
-  const {
-    setValue,
-    watch,
-    formState: { errors },
-  } = form;
+	const {
+		setValue,
+		watch,
+		formState: { errors },
+	} = form;
 
-  const watchedPasses = watch("passes") || {};
-  const watchedPrintHeads = watch("printHeads") || {};
-  const [editingPassId, setEditingPassId] = React.useState<string | null>(null);
+	const watchedPasses = watch("passes") || {};
+	const watchedPrintHeads = watch("printHeads") || {};
+	const watchedDefaultPassKey = watch("defaultPassKey");
+	const [editingPassId, setEditingPassId] = React.useState<string | null>(null);
 
-  // 🎯 AUTO-ASSOCIAÇÃO: Conecta automaticamente cabeças instaladas às passadas
-  React.useEffect(() => {
-    const installedHeadIds = Object.values(watchedPrintHeads).map((head: any) => ({
-      consumableId: head.consumableId
-    }));
+	// 🎯 AUTO-ASSOCIAÇÃO: Conecta automaticamente cabeças instaladas às passadas
+	React.useEffect(() => {
+		const installedHeadIds = Object.values(watchedPrintHeads).map(
+			(head: any) => ({
+				consumableId: head.consumableId,
+			}),
+		);
 
-    // Se não há cabeças instaladas, não fazer nada
-    if (installedHeadIds.length === 0) return;
+		// Se não há cabeças instaladas, não fazer nada
+		if (installedHeadIds.length === 0) return;
 
-    let hasChanges = false;
-    const updatedPasses = { ...watchedPasses };
+		let hasChanges = false;
+		const updatedPasses = { ...watchedPasses };
 
-    // Para cada passada, verificar se tem todas as cabeças instaladas associadas
-    Object.keys(watchedPasses).forEach(passId => {
-      const currentPass = watchedPasses[passId];
-      const currentHeads = currentPass.printHeadConsumables || [];
-      
-      // Verificar se alguma cabeça instalada não está associada a esta passada
-      const needsUpdate = installedHeadIds.some(installedHead => 
-        !currentHeads.find(head => head.consumableId === installedHead.consumableId)
-      );
+		// Para cada passada, verificar se tem todas as cabeças instaladas associadas
+		Object.keys(watchedPasses).forEach((passId) => {
+			const currentPass = watchedPasses[passId];
+			const currentHeads = currentPass.printHeadConsumables || [];
 
-      if (needsUpdate) {
-        // Auto-associar TODAS as cabeças instaladas a esta passada
-        updatedPasses[passId] = {
-          ...currentPass,
-          printHeadConsumables: installedHeadIds
-        };
-        hasChanges = true;
-      }
-    });
+			// Verificar se alguma cabeça instalada não está associada a esta passada
+			const needsUpdate = installedHeadIds.some(
+				(installedHead) =>
+					!currentHeads.find(
+						(head) => head.consumableId === installedHead.consumableId,
+					),
+			);
 
-    // Aplicar mudanças se necessário
-    if (hasChanges) {
-      console.log('🔄 Auto-associando cabeças instaladas às passadas:', {
-        installedHeads: installedHeadIds.length,
-        updatedPasses: Object.keys(updatedPasses).length
-      });
-      setValue("passes", updatedPasses);
-    }
-  }, [watchedPrintHeads, watchedPasses, setValue]);
-  // Buscar insumos do tipo tinta e cabeça da API
-  const { data: inksData, isLoading: loadingInks } = api.consumables.list.useQuery({
-    type: "ink",
-    active: true,
-    limit: 100
-  });
-  const { data: headsData, isLoading: loadingHeads } = api.consumables.list.useQuery({
-    type: "printHead",
-    active: true,
-    limit: 100
-  });
-  const availableInks = inksData?.data || [];
-  const availableHeads = headsData?.data || [];
-  const [showNewPassForm, setShowNewPassForm] = React.useState(false);
-  
-  // Inicializar todas as passadas como recolhidas por padrão
-  const [collapsedPasses, setCollapsedPasses] = React.useState<Set<string>>(() => {
-    return new Set(Object.keys(watchedPasses));
-  });
-  // NOVA ESTRUTURA: Passada integrada com insumos cadastrados
-  const [newPassData, setNewPassData] = React.useState({
-    name: '',
-    description: '',
-    speedM2PerHour: 60,
-    inkConsumables: [] as Array<{
-      consumableId: string;
-      consumptionMlPerM2: number;
-    }>,
-    printHeadConsumables: [] as Array<{
-      consumableId: string;
-    }>,
-  });
-  
-  // Função para adicionar passadas padrão (opcional)
-  const addDefaultPasses = () => {
-    const defaults = getDefaultPassConfigurations();
-    setValue("passes", {
-      ...watchedPasses,
-      ...defaults
-    });
-  };
+			if (needsUpdate) {
+				// Auto-associar TODAS as cabeças instaladas a esta passada
+				updatedPasses[passId] = {
+					...currentPass,
+					printHeadConsumables: installedHeadIds,
+				};
+				hasChanges = true;
+			}
+		});
 
-  const addNewPass = () => {
-    if (newPassData.name.trim()) {
-      const newPassId = `custom_${Date.now()}`;
-      
-      // 🎯 AUTO-ASSOCIAÇÃO: Incluir automaticamente todas as cabeças instaladas
-      const installedHeadConsumables = Object.values(watchedPrintHeads).map((head: any) => ({
-        consumableId: head.consumableId
-      }));
-      
-      const newPass: PassConfiguration = {
-        name: newPassData.name.trim(),
-        description: newPassData.description,
-        speedM2PerHour: newPassData.speedM2PerHour,
-        inkConsumables: newPassData.inkConsumables,
-        printHeadConsumables: installedHeadConsumables, // Auto-associar cabeças instaladas
-      };
-      
-      console.log('✅ Nova passada criada com cabeças auto-associadas:', {
-        passName: newPass.name,
-        headsCount: installedHeadConsumables.length,
-        heads: installedHeadConsumables
-      });
-      
-      setValue("passes", {
-        ...watchedPasses,
-        [newPassId]: newPass
-      });
-      
-      // Reset form
-      setNewPassData({
-        name: '',
-        description: '',
-        speedM2PerHour: 60,
-        inkConsumables: [],
-        printHeadConsumables: [],
-      });
-      setShowNewPassForm(false);
-    }
-  };
+		// Aplicar mudanças se necessário
+		if (hasChanges) {
+			console.log("🔄 Auto-associando cabeças instaladas às passadas:", {
+				installedHeads: installedHeadIds.length,
+				updatedPasses: Object.keys(updatedPasses).length,
+			});
+			setValue("passes", updatedPasses);
+		}
+	}, [watchedPrintHeads, watchedPasses, setValue]);
 
-  const cancelNewPass = () => {
-    setNewPassData({
-      name: '',
-      description: '',
-      speedM2PerHour: 60,
-      inkConsumables: [],
-      printHeadConsumables: [],
-    });
-    setShowNewPassForm(false);
-  };
+	// Auto-definir primeira passada como padrão se não houver nenhuma selecionada
+	React.useEffect(() => {
+		const passKeys = Object.keys(watchedPasses);
 
-  const deletePass = (passId: string) => {
-    const updatedPasses = { ...watchedPasses };
-    delete updatedPasses[passId];
-    setValue("passes", updatedPasses);
-  };
+		// Se há passadas mas nenhuma está definida como padrão, definir a primeira
+		if (passKeys.length > 0 && !watchedDefaultPassKey) {
+			setValue("defaultPassKey", passKeys[0]);
+			console.log(
+				"🎯 Auto-definindo primeira passada como padrão:",
+				passKeys[0],
+			);
+		}
 
+		// Se a passada padrão selecionada não existe mais, limpar ou redefinir
+		if (watchedDefaultPassKey && !watchedPasses[watchedDefaultPassKey]) {
+			if (passKeys.length > 0) {
+				setValue("defaultPassKey", passKeys[0]);
+				console.log(
+					"🔄 Passada padrão não existe mais, redefinindo para:",
+					passKeys[0],
+				);
+			} else {
+				setValue("defaultPassKey", undefined);
+				console.log("🗑️ Nenhuma passada disponível, removendo padrão");
+			}
+		}
+	}, [watchedPasses, watchedDefaultPassKey, setValue]);
+	// Buscar insumos do tipo tinta e cabeça da API
+	const { data: inksData, isLoading: loadingInks } =
+		api.consumables.list.useQuery({
+			type: "ink",
+			active: true,
+			limit: 100,
+		});
+	const { data: headsData, isLoading: loadingHeads } =
+		api.consumables.list.useQuery({
+			type: "printHead",
+			active: true,
+			limit: 100,
+		});
+	const availableInks = inksData?.data || [];
+	const availableHeads = headsData?.data || [];
+	const [showNewPassForm, setShowNewPassForm] = React.useState(false);
 
-  const updatePass = (passId: string, field: keyof PassConfiguration, value: any) => {
-    setValue("passes", {
-      ...watchedPasses,
-      [passId]: {
-        ...watchedPasses[passId],
-        [field]: value
-      }
-    });
-  };
+	// Inicializar todas as passadas como recolhidas por padrão
+	const [collapsedPasses, setCollapsedPasses] = React.useState<Set<string>>(
+		() => {
+			return new Set(Object.keys(watchedPasses));
+		},
+	);
+	// NOVA ESTRUTURA: Passada integrada com insumos cadastrados
+	const [newPassData, setNewPassData] = React.useState({
+		name: "",
+		description: "",
+		speedM2PerHour: 60,
+		inkConsumables: [] as Array<{
+			consumableId: string;
+			consumptionMlPerM2: number;
+		}>,
+		printHeadConsumables: [] as Array<{
+			consumableId: string;
+		}>,
+	});
 
-  const updateNewPassData = (field: keyof typeof newPassData, value: any) => {
-    setNewPassData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+	// Função para adicionar passadas padrão (opcional)
+	const addDefaultPasses = () => {
+		const defaults = getDefaultPassConfigurations();
+		setValue("passes", {
+			...watchedPasses,
+			...defaults,
+		});
+	};
 
-  // Funções para gerenciar tintas na nova passada
-  const updateNewPassInkConsumption = (inkId: string, consumptionMlPerM2: number) => {
-    setNewPassData(prev => ({
-      ...prev,
-      inkConsumables: prev.inkConsumables.map(ic => 
-        ic.consumableId === inkId 
-          ? { ...ic, consumptionMlPerM2 }
-          : ic
-      )
-    }));
-  };
+	const addNewPass = () => {
+		if (newPassData.name.trim()) {
+			const newPassId = `custom_${Date.now()}`;
 
-  const toggleNewPassInkUsage = (inkId: string, shouldUse: boolean) => {
-    if (shouldUse) {
-      setNewPassData(prev => ({
-        ...prev,
-        inkConsumables: [...prev.inkConsumables, {
-          consumableId: inkId,
-          consumptionMlPerM2: 1.0
-        }]
-      }));
-    } else {
-      setNewPassData(prev => ({
-        ...prev,
-        inkConsumables: prev.inkConsumables.filter(ic => ic.consumableId !== inkId)
-      }));
-    }
-  };
+			// 🎯 AUTO-ASSOCIAÇÃO: Incluir automaticamente todas as cabeças instaladas
+			const installedHeadConsumables = Object.values(watchedPrintHeads).map(
+				(head: any) => ({
+					consumableId: head.consumableId,
+				}),
+			);
 
+			const newPass: PassConfiguration = {
+				name: newPassData.name.trim(),
+				description: newPassData.description,
+				speedM2PerHour: newPassData.speedM2PerHour,
+				inkConsumables: newPassData.inkConsumables,
+				printHeadConsumables: installedHeadConsumables, // Auto-associar cabeças instaladas
+			};
 
-  const resetToDefaults = () => {
-    setValue("passes", getDefaultPassConfigurations());
-  };
+			console.log("✅ Nova passada criada com cabeças auto-associadas:", {
+				passName: newPass.name,
+				headsCount: installedHeadConsumables.length,
+				heads: installedHeadConsumables,
+			});
 
-  // Funções para gerenciar colapso
-  const togglePassCollapse = (passId: string) => {
-    console.log('Toggling collapse for passId:', passId);
-    console.log('Current collapsed passes:', Array.from(collapsedPasses));
-    const newCollapsed = new Set(collapsedPasses);
-    if (newCollapsed.has(passId)) {
-      console.log('Expanding pass');
-      newCollapsed.delete(passId);
-    } else {
-      console.log('Collapsing pass');
-      newCollapsed.add(passId);
-    }
-    console.log('New collapsed passes:', Array.from(newCollapsed));
-    setCollapsedPasses(newCollapsed);
-  };
+			setValue("passes", {
+				...watchedPasses,
+				[newPassId]: newPass,
+			});
 
-  const isPassCollapsed = (passId: string) => collapsedPasses.has(passId);
+			// Reset form
+			setNewPassData({
+				name: "",
+				description: "",
+				speedM2PerHour: 60,
+				inkConsumables: [],
+				printHeadConsumables: [],
+			});
+			setShowNewPassForm(false);
+		}
+	};
 
-  // Sincronizar passadas novas com o estado de colapso
-  React.useEffect(() => {
-    const passIds = Object.keys(watchedPasses);
-    setCollapsedPasses(prev => {
-      const newCollapsed = new Set(prev);
-      // Adicionar novas passadas como recolhidas
-      passIds.forEach(passId => {
-        if (!prev.has(passId)) {
-          newCollapsed.add(passId);
-        }
-      });
-      return newCollapsed;
-    });
-  }, [Object.keys(watchedPasses).join(',')]);
+	const cancelNewPass = () => {
+		setNewPassData({
+			name: "",
+			description: "",
+			speedM2PerHour: 60,
+			inkConsumables: [],
+			printHeadConsumables: [],
+		});
+		setShowNewPassForm(false);
+	};
 
+	const deletePass = (passId: string) => {
+		const updatedPasses = { ...watchedPasses };
+		delete updatedPasses[passId];
+		setValue("passes", updatedPasses);
+	};
 
-  const calculateEfficiency = (pass: PassConfiguration) => {
-    // Cálculo simples de eficiência baseado na velocidade
-    const speedM2PerHour = pass.speedM2PerHour || 1;
-    const inkCount = pass.inkConsumables?.length || 0;
-    const headCount = pass.printHeadConsumables?.length || 0;
-    
-    // Eficiência baseada na velocidade e número de recursos utilizados
-    const efficiency = speedM2PerHour / (10 * Math.max(1, inkCount + headCount));
-    return efficiency;
-  };
+	const updatePass = (
+		passId: string,
+		field: keyof PassConfiguration,
+		value: any,
+	) => {
+		setValue("passes", {
+			...watchedPasses,
+			[passId]: {
+				...watchedPasses[passId],
+				[field]: value,
+			},
+		});
+	};
 
-  // Função para calcular custo real das cabeças de impressão cadastradas no equipamento
-  const calculatePrintHeadCost = () => {
-    let totalCost = 0;
-    
-    // Pegar TODAS as cabeças cadastradas na aba "Cabeças" do equipamento
-    Object.values(watchedPrintHeads).forEach((installedHead: any) => {
-      // Buscar o consumível (cabeça) para pegar o custo
-      const headData = availableHeads.find(h => h.id === installedHead.consumableId);
-      
-      if (headData) {
-        // NOVA LÓGICA: Usar costPerM2 diretamente se disponível
-        let costPerM2 = Number(headData.costPerM2) || 0;
-        
-        // Se não tem costPerM2 calculado, calcular baseado na lifespanM2
-        if (costPerM2 === 0 && headData.lifespanM2) {
-          costPerM2 = Number(headData.cost) / Number(headData.lifespanM2);
-        }
-        
-        totalCost += costPerM2;
-      }
-    });
-    
-    return totalCost;
-  };
+	const updateNewPassData = (field: keyof typeof newPassData, value: any) => {
+		setNewPassData((prev) => ({
+			...prev,
+			[field]: value,
+		}));
+	};
 
-  // Funções para gerenciar configuração de tintas nas passadas
-  const updateInkConfiguration = (passId: string, inkId: string, field: 'consumptionRate' | 'required', value: number | boolean) => {
-    if (field === 'consumptionRate' && typeof value === 'number') {
-      // Converter para nova estrutura: encontrar o consumable e atualizar
-      const currentPass = watchedPasses[passId];
-      const currentConsumables = currentPass.inkConsumables || [];
-      
-      const updatedConsumables = currentConsumables.map(consumable => 
-        consumable.consumableId === inkId 
-          ? { ...consumable, consumptionMlPerM2: value * 1000 } // Converter L para mL
-          : consumable
-      );
-      
-      setValue("passes", {
-        ...watchedPasses,
-        [passId]: {
-          ...currentPass,
-          inkConsumables: updatedConsumables
-        }
-      });
-    }
-  };
+	// Funções para gerenciar tintas na nova passada
+	const updateNewPassInkConsumption = (
+		inkId: string,
+		consumptionMlPerM2: number,
+	) => {
+		setNewPassData((prev) => ({
+			...prev,
+			inkConsumables: prev.inkConsumables.map((ic) =>
+				ic.consumableId === inkId ? { ...ic, consumptionMlPerM2 } : ic,
+			),
+		}));
+	};
 
-  const toggleInkUsage = (passId: string, inkId: string, shouldUse: boolean) => {
-    const currentPass = watchedPasses[passId];
-    const currentConsumables = currentPass.inkConsumables || [];
-    
-    if (shouldUse) {
-      // Adicionar tinta se não existir
-      if (!currentConsumables.find(c => c.consumableId === inkId)) {
-        setValue("passes", {
-          ...watchedPasses,
-          [passId]: {
-            ...currentPass,
-            inkConsumables: [
-              ...currentConsumables,
-              {
-                consumableId: inkId,
-                consumptionMlPerM2: 10.0 // Valor padrão em ml/m²
-              }
-            ]
-          }
-        });
-      }
-    } else {
-      // Remover tinta
-      setValue("passes", {
-        ...watchedPasses,
-        [passId]: {
-          ...currentPass,
-          inkConsumables: currentConsumables.filter(c => c.consumableId !== inkId)
-        }
-      });
-    }
-  };
+	const toggleNewPassInkUsage = (inkId: string, shouldUse: boolean) => {
+		if (shouldUse) {
+			setNewPassData((prev) => ({
+				...prev,
+				inkConsumables: [
+					...prev.inkConsumables,
+					{
+						consumableId: inkId,
+						consumptionMlPerM2: 1.0,
+					},
+				],
+			}));
+		} else {
+			setNewPassData((prev) => ({
+				...prev,
+				inkConsumables: prev.inkConsumables.filter(
+					(ic) => ic.consumableId !== inkId,
+				),
+			}));
+		}
+	};
 
-  return (
-    <TooltipProvider>
-      <div className="space-y-6">
-      {/* Header com ações */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">Configurações de Passada</h3>
-          <p className="text-sm text-muted-foreground">
-            Configure diferentes qualidades de impressão com multiplicador base + consumo específico por tinta
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={resetToDefaults}>
-            <Settings className="mr-2 h-4 w-4" />
-            Padrões
-          </Button>
-          <Button size="sm" onClick={() => setShowNewPassForm(true)} disabled={showNewPassForm}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Passada
-          </Button>
-        </div>
-      </div>
+	const resetToDefaults = () => {
+		setValue("passes", getDefaultPassConfigurations());
+	};
 
-      {/* Informações sobre passadas */}
-      <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base text-blue-800 dark:text-blue-300">
-            <Info className="h-4 w-4" />
-            Sobre Configuração de Passadas
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-blue-700 dark:text-blue-400 space-y-2">
-          <p><strong>Velocidade:</strong> m²/hora que o equipamento processa nesta configuração</p>
-          <p><strong>Tintas:</strong> Selecione as tintas cadastradas e defina o consumo específico em ml/m²</p>
-          <p><strong>Cabeças:</strong> Selecione as cabeças de impressão que serão utilizadas</p>
-          <p><strong>Cálculo:</strong> Consumo em ml/m² × Preço por Litro da Tinta ÷ 1000</p>
-        </CardContent>
-      </Card>
+	// Funções para gerenciar colapso
+	const togglePassCollapse = (passId: string) => {
+		console.log("Toggling collapse for passId:", passId);
+		console.log("Current collapsed passes:", Array.from(collapsedPasses));
+		const newCollapsed = new Set(collapsedPasses);
+		if (newCollapsed.has(passId)) {
+			console.log("Expanding pass");
+			newCollapsed.delete(passId);
+		} else {
+			console.log("Collapsing pass");
+			newCollapsed.add(passId);
+		}
+		console.log("New collapsed passes:", Array.from(newCollapsed));
+		setCollapsedPasses(newCollapsed);
+	};
 
-      {/* Formulário de Nova Passada */}
-      {showNewPassForm && (
-        <Card className="border-green-200 bg-green-50 dark:bg-green-950/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base text-green-800 dark:text-green-300">
-              <Plus className="h-4 w-4" />
-              Criar Nova Passada Personalizada
-            </CardTitle>
-            <CardDescription className="text-green-600 dark:text-green-400">
-              Defina uma nova configuração de passada com nome e parâmetros customizados
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Edit3 className="h-4 w-4" />
-                  Nome da Passada *
-                </Label>
-                <Input
-                  placeholder="Ex: Impressão Econômica, Qualidade Premium..."
-                  value={newPassData.name}
-                  onChange={(e) => updateNewPassData('name', e.target.value)}
-                />
-              </div>
+	const isPassCollapsed = (passId: string) => collapsedPasses.has(passId);
 
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Velocidade (m²/h)
-                </Label>
-                <Input
-                  type="number"
-                  min="0.1"
-                  step="0.1"
-                  value={newPassData.speedM2PerHour}
-                  onChange={(e) => updateNewPassData('speedM2PerHour', parseFloat(e.target.value) || 0)}
-                />
-              </div>
-            </div>
+	// Sincronizar passadas novas com o estado de colapso
+	React.useEffect(() => {
+		const passIds = Object.keys(watchedPasses);
+		setCollapsedPasses((prev) => {
+			const newCollapsed = new Set(prev);
+			// Adicionar novas passadas como recolhidas
+			passIds.forEach((passId) => {
+				if (!prev.has(passId)) {
+					newCollapsed.add(passId);
+				}
+			});
+			return newCollapsed;
+		});
+	}, [Object.keys(watchedPasses).join(",")]);
 
-            <div className="space-y-2">
-              <Label>Descrição</Label>
-              <Textarea
-                rows={2}
-                value={newPassData.description}
-                placeholder="Descreva quando usar esta configuração..."
-                onChange={(e) => updateNewPassData('description', e.target.value)}
-              />
-            </div>
+	const calculateEfficiency = (pass: PassConfiguration) => {
+		// Cálculo simples de eficiência baseado na velocidade
+		const speedM2PerHour = pass.speedM2PerHour || 1;
+		const inkCount = pass.inkConsumables?.length || 0;
+		const headCount = pass.printHeadConsumables?.length || 0;
 
-            {/* Seleção de Tintas */}
-            {availableInks.length > 0 && (
-              <div className="space-y-4">
-                <div className="border-t pt-4">
-                  <h5 className="text-sm font-medium mb-3 flex items-center gap-2">
-                    <Droplet className="h-4 w-4" />
-                    Tintas para esta Passada
-                  </h5>
-                  <div className="space-y-3 max-h-40 overflow-y-auto">
-                    {availableInks.map((ink) => {
-                      const inkConsumable = newPassData.inkConsumables.find(ic => ic.consumableId === ink.id);
-                      const isUsed = !!inkConsumable;
-                      
-                      return (
-                        <div key={ink.id} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
-                          isUsed ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20' : 
-                          'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
-                        }`}>
-                          <div className="flex items-center gap-3">
-                            <div 
-                              className="w-4 h-4 rounded-full border"
-                              style={{ backgroundColor: ink.color || '#999' }}
-                            />
-                            <div>
-                              <div className="font-medium text-sm">{ink.name}</div>
-                              <div className="text-xs text-muted-foreground">
-                                R$ {Number(ink.cost).toFixed(2)}/{formatUnit(ink.unit as ConsumableUnit)}
-                                {ink.code && <span className="ml-1">({ink.code})</span>}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-2">
-                            {isUsed && (
-                              <div className="flex items-center gap-2">
-                                <Label className="text-xs flex items-center gap-1">
-                                  Consumo (ml/m²):
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p className="max-w-xs">
-                                        <strong>Consumo direto</strong> desta tinta por m².
-                                        <br />• Valor em ml de tinta por metro quadrado
-                                        <br />• Cálculo: [este valor] × preço da tinta por litro
-                                      </p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </Label>
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  step="0.1"
-                                  value={inkConsumable?.consumptionMlPerM2 || 0}
-                                  onChange={(e) => {
-                                    const value = parseFloat(e.target.value) || 0;
-                                    if (value >= 0 && value <= 100) {
-                                      updateNewPassInkConsumption(ink.id, value);
-                                    }
-                                  }}
-                                  className="w-20 h-7 text-xs"
-                                  placeholder="0.0 ml/m²"
-                                />
-                              </div>
-                            )}
-                            
-                            <Button
-                              variant={isUsed ? "destructive" : "outline"}
-                              size="sm"
-                              className="h-7 text-xs"
-                              onClick={() => toggleNewPassInkUsage(ink.id, !isUsed)}
-                            >
-                              {isUsed ? (
-                                <>
-                                  <Trash2 className="h-3 w-3 mr-1" />
-                                  Remover
-                                </>
-                              ) : (
-                                <>
-                                  <Plus className="h-3 w-3 mr-1" />
-                                  Usar
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  
-                  {newPassData.inkConsumables.length === 0 && (
-                    <div className="text-center py-3 text-muted-foreground border-2 border-dashed border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20 rounded-lg">
-                      <Info className="h-6 w-6 mx-auto mb-1 text-orange-500" />
-                      <p className="text-xs font-medium text-orange-800 dark:text-orange-300">Nenhuma tinta selecionada</p>
-                      <p className="text-xs text-orange-600 dark:text-orange-400">Adicione tintas para calcular custos precisos</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+		// Eficiência baseada na velocidade e número de recursos utilizados
+		const efficiency =
+			speedM2PerHour / (10 * Math.max(1, inkCount + headCount));
+		return efficiency;
+	};
 
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={cancelNewPass}>
-                <X className="mr-2 h-4 w-4" />
-                Cancelar
-              </Button>
-              <Button 
-                size="sm" 
-                onClick={addNewPass}
-                disabled={!newPassData.name.trim()}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                Criar Passada
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+	// Função para calcular custo real das cabeças de impressão cadastradas no equipamento
+	const calculatePrintHeadCost = () => {
+		let totalCost = 0;
 
-      {/* Lista de configurações */}
-      <div className="space-y-4">
-        {Object.entries(watchedPasses).map(([passId, passConfig]) => (
-          <Card key={passId} className={`relative transition-all ${
-            isPassCollapsed(passId) 
-              ? 'border-dashed border-muted-foreground/30' 
-              : 'border-solid'
-          }`}>
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => togglePassCollapse(passId)}
-                    className="h-8 w-8 p-0 hover:bg-muted"
-                    title={isPassCollapsed(passId) ? "Expandir passada" : "Recolher passada"}
-                  >
-                    {isPassCollapsed(passId) ? (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </Button>
-                  <Layers className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <CardTitle className="text-base flex items-center gap-2">
-                      {editingPassId === passId ? (
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={passConfig.name}
-                            onChange={(e) => updatePass(passId, 'name', e.target.value)}
-                            className="h-7 text-base font-semibold"
-                            onBlur={() => setEditingPassId(null)}
-                            onKeyPress={(e) => e.key === 'Enter' && setEditingPassId(null)}
-                            autoFocus
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span>{passConfig.name}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setEditingPassId(passId)}
-                            className="h-6 w-6 p-0"
-                          >
-                            <Edit3 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      )}
-                      <Badge variant="outline">
-                        {passConfig.name}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      Velocidade: {passConfig.speedM2PerHour || 0} m²/h • 
-                      Eficiência: {calculateEfficiency(passConfig).toFixed(2)}
-                    </CardDescription>
-                  </div>
-                </div>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => deletePass(passId)}
-                  className="text-destructive hover:text-destructive"
-                  title="Deletar passada"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            
-            {!isPassCollapsed(passId) && (
-              <CardContent className="space-y-4">
-              {/* Nome e categoria da passada */}
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Edit3 className="h-4 w-4" />
-                    Nome da Passada
-                  </Label>
-                  <Input
-                    value={passConfig.name}
-                    onChange={(e) => updatePass(passId, 'name', e.target.value)}
-                    placeholder="Nome da configuração"
-                  />
-                </div>
+		// Pegar TODAS as cabeças cadastradas na aba "Cabeças" do equipamento
+		Object.values(watchedPrintHeads).forEach((installedHead: any) => {
+			// Buscar o consumível (cabeça) para pegar o custo
+			const headData = availableHeads.find(
+				(h) => h.id === installedHead.consumableId,
+			);
 
-              </div>
+			if (headData) {
+				// NOVA LÓGICA: Usar costPerM2 diretamente se disponível
+				let costPerM2 = Number(headData.costPerM2) || 0;
 
-              <div className="grid gap-4 md:grid-cols-1">
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Zap className="h-4 w-4" />
-                    Velocidade (m²/h)
-                  </Label>
-                  <Input
-                    type="number"
-                    min="0.1"
-                    max="1000"
-                    step="0.1"
-                    value={passConfig.speedM2PerHour || 0}
-                    onChange={(e) => updatePass(passId, 'speedM2PerHour', parseFloat(e.target.value) || 1)}
-                    placeholder="Ex: 25.5"
-                  />
-                </div>
-              </div>
+				// Se não tem costPerM2 calculado, calcular baseado na lifespanM2
+				if (costPerM2 === 0 && headData.lifespanM2) {
+					costPerM2 = Number(headData.cost) / Number(headData.lifespanM2);
+				}
 
-              <div className="space-y-2">
-                <Label>Descrição</Label>
-                <Textarea
-                  rows={2}
-                  value={passConfig.description || ''}
-                  placeholder="Descreva quando usar esta configuração..."
-                  onChange={(e) => updatePass(passId, 'description', e.target.value)}
-                />
-              </div>
+				totalCost += costPerM2;
+			}
+		});
 
-              {/* Configuração de Tintas Específicas */}
-              {availableInks.length > 0 && (
-                <div className="space-y-4">
-                  <Separator />
-                  <div>
-                    <h5 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Droplet className="h-4 w-4" />
-                      Tintas Utilizadas nesta Passada
-                    </h5>
-                    <div className="space-y-3">
-                      {availableInks.map((ink) => {
-                        const inkConsumable = passConfig.inkConsumables?.find(c => c.consumableId === ink.id);
-                        const isUsed = !!inkConsumable;
-                        
-                        return (
-                          <div key={ink.id} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
-                            isUsed ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20' : 
-                            'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
-                          }`}>
-                            <div className="flex items-center gap-3">
-                              <div 
-                                className="w-4 h-4 rounded-full border"
-                                style={{ backgroundColor: ink.color || '#999' }}
-                              />
-                              <div>
-                                <div className="font-medium">{ink.name}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  R$ {Number(ink.cost).toFixed(2)}/{formatUnit(ink.unit as ConsumableUnit)}
-                                  {ink.code && <span className="ml-1 text-xs">({ink.code})</span>}
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-3">
-                              {isUsed && (
-                                <div className="flex items-center gap-2">
-                                  <Label className="text-sm flex items-center gap-1">
-                                    Consumo (ml/m²):
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p className="max-w-xs">
-                                          <strong>Consumo específico</strong> desta tinta por m² (em mililitros).
-                                          <br />• Consumo direto por m² em mililitros
-                                          <br />• Cálculo final: [este valor ÷ 1000] × preço da tinta por litro
-                                        </p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </Label>
-                                  <Input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="0.1"
-                                    value={inkConsumable?.consumptionMlPerM2?.toFixed(1) || '0'}
-                                    onChange={(e) => {
-                                      const valueInMl = parseFloat(e.target.value) || 0;
-                                      if (valueInMl >= 0 && valueInMl <= 100000) {
-                                        updateInkConfiguration(passId, ink.id, 'consumptionRate', valueInMl / 1000);
-                                      }
-                                    }}
-                                    className={`w-24 ${
-                                      inkConsumable?.consumptionMlPerM2 && inkConsumable.consumptionMlPerM2 > 50 ? 
-                                      'border-yellow-500 focus:border-yellow-500' : ''
-                                    }`}
-                                    placeholder="0.0 ml/m²"
-                                  />
-                                </div>
-                              )}
-                              
-                              <Button
-                                variant={isUsed ? "destructive" : "outline"}
-                                size="sm"
-                                onClick={() => toggleInkUsage(passId, ink.id, !isUsed)}
-                              >
-                                {isUsed ? (
-                                  <>
-                                    <Trash2 className="h-4 w-4 mr-1" />
-                                    Remover
-                                  </>
-                                ) : (
-                                  <>
-                                    <Plus className="h-4 w-4 mr-1" />
-                                    Usar
-                                  </>
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    
-                    {(!passConfig.inkConsumables || passConfig.inkConsumables.length === 0) && (
-                      <div className="text-center py-4 text-muted-foreground border-2 border-dashed border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20 rounded-lg">
-                        <Info className="h-8 w-8 mx-auto mb-2 text-orange-500" />
-                        <p className="text-sm font-medium text-orange-800 dark:text-orange-300">Nenhuma tinta selecionada para esta passada</p>
-                        <p className="text-xs text-orange-600 dark:text-orange-400">Adicione tintas para calcular custos precisos</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+		return totalCost;
+	};
 
-              {/* 🖨️ SEÇÃO DE CABEÇAS DE IMPRESSÃO AUTO-ASSOCIADAS */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Cpu className="h-4 w-4 text-muted-foreground" />
-                  <Label className="text-sm font-medium">Cabeças de Impressão</Label>
-                  <Badge variant="secondary" className="text-xs">
-                    Auto-associadas
-                  </Badge>
-                </div>
+	// Funções para gerenciar configuração de tintas nas passadas
+	const updateInkConfiguration = (
+		passId: string,
+		inkId: string,
+		field: "consumptionRate" | "required",
+		value: number | boolean,
+	) => {
+		if (field === "consumptionRate" && typeof value === "number") {
+			// Converter para nova estrutura: encontrar o consumable e atualizar
+			const currentPass = watchedPasses[passId];
+			const currentConsumables = currentPass.inkConsumables || [];
 
-                {Object.keys(watchedPrintHeads).length > 0 ? (
-                  <div className="space-y-2 rounded border bg-muted/30 p-3">
-                    {Object.values(watchedPrintHeads).map((installedHead: any, idx: number) => {
-                      const headData = availableHeads.find(h => h.id === installedHead.consumableId);
-                      return (
-                        <div key={idx} className="flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-2">
-                            <Cpu className="h-3 w-3 text-green-600" />
-                            <span className="font-medium">
-                              {headData?.name || 'Cabeça não encontrada'}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              {installedHead.position}
-                            </Badge>
-                          </div>
-                          <span className="text-muted-foreground text-xs">
-                            {headData ? `R$ ${(Number(headData.costPerM2) || (Number(headData.cost) / Number(headData.lifespanM2 || 1))).toFixed(4)}/m²` : 'N/A'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    <div className="pt-2 border-t border-muted-foreground/20">
-                      <div className="flex justify-between text-sm font-medium">
-                        <span>Total Cabeças:</span>
-                        <span>R$ {calculatePrintHeadCost().toFixed(4)}/m²</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground border-2 border-dashed border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950/20 rounded-lg">
-                    <Cpu className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Nenhuma cabeça instalada</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">Configure cabeças na aba "Cabeças de Impressão"</p>
-                  </div>
-                )}
+			const updatedConsumables = currentConsumables.map((consumable) =>
+				consumable.consumableId === inkId
+					? { ...consumable, consumptionMlPerM2: value * 1000 } // Converter L para mL
+					: consumable,
+			);
 
-                <div className="rounded bg-blue-50 p-2 text-blue-800 text-xs dark:bg-blue-950/20 dark:text-blue-300">
-                  <strong>Auto-associação:</strong> Todas as cabeças instaladas no equipamento são automaticamente usadas em todas as passadas.
-                </div>
-              </div>
+			setValue("passes", {
+				...watchedPasses,
+				[passId]: {
+					...currentPass,
+					inkConsumables: updatedConsumables,
+				},
+			});
+		}
+	};
 
-              {/* Mostrar status das tintas */}
-              {(loadingInks || loadingHeads) && (
-                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-800 dark:text-blue-300">
-                    <Info className="h-4 w-4" />
-                    <span className="text-sm font-medium">Carregando consumíveis...</span>
-                  </div>
-                </div>
-              )}
-              
-              {!(loadingInks || loadingHeads) && availableInks.length === 0 && (
-                <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
-                    <Info className="h-4 w-4" />
-                    <span className="text-sm font-medium">Nenhuma tinta cadastrada</span>
-                  </div>
-                  <p className="text-xs text-yellow-700 dark:text-yellow-400 mt-1">
-                    Cadastre tintas na seção de insumos para configurar o consumo específico por passada
-                  </p>
-                </div>
-              )}
+	const toggleInkUsage = (
+		passId: string,
+		inkId: string,
+		shouldUse: boolean,
+	) => {
+		const currentPass = watchedPasses[passId];
+		const currentConsumables = currentPass.inkConsumables || [];
 
-              {/* Métricas calculadas */}
-              <div className="mt-4 p-3 bg-muted rounded-lg">
-                <h5 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <Calculator className="h-4 w-4" />
-                  Métricas Calculadas (para 1 m²)
-                </h5>
-                <div className="grid gap-2 text-sm md:grid-cols-2 lg:grid-cols-6">
-                  <div>
-                    <span className="font-medium">Tempo:</span> {(passConfig.speedM2PerHour ? (1/(passConfig.speedM2PerHour) * 60).toFixed(1) : 'N/A')} min
-                  </div>
-                  <div>
-                    <span className="font-medium">Eficiência:</span> 
-                    <Badge variant={calculateEfficiency(passConfig) > 1 ? "default" : "secondary"} className="ml-1 text-xs">
-                      {calculateEfficiency(passConfig) > 1 ? "Alta" : "Média"}
-                    </Badge>
-                  </div>
-                  <div>
-                    <span className="font-medium">Cabeças:</span> {Object.keys(watchedPrintHeads).length}
-                  </div>
-                  <div>
-                    <span className="font-medium">Custo Tintas:</span> R$ {
-                      (() => {
-                        if (!passConfig.inkConsumables || passConfig.inkConsumables.length === 0) return '0,00';
-                        const totalCost = passConfig.inkConsumables.reduce((sum, inkConsumable) => {
-                          const ink = availableInks.find(i => i.id === inkConsumable.consumableId);
-                          if (!ink) return sum;
-                          
-                          // Cálculo simples: consumo em ml/m² × preço por litro ÷ 1000
-                          const costPerM2 = (inkConsumable.consumptionMlPerM2 / 1000) * Number(ink.cost);
-                          
-                          return sum + costPerM2;
-                        }, 0);
-                        return totalCost.toFixed(2).replace('.', ',');
-                      })()
-                    }/m²
-                  </div>
-                  <div>
-                    <span className="font-medium">Custo Cabeças:</span> R$ {
-                      calculatePrintHeadCost().toFixed(2).replace('.', ',')
-                    }/m²
-                  </div>
-                  <div>
-                    <span className="font-medium">Custo Total:</span> R$ {
-                      (() => {
-                        // NOVA LÓGICA: Custos fixos (energia + manutenção + depreciação) convertidos para m²
-                        const speedM2PerHour = passConfig.speedM2PerHour || 1;
-                        const timeInHours = 1 / speedM2PerHour; // tempo para processar 1m²
-                        
-                        // Custos fixos convertidos para m² baseados na velocidade desta passada
-                        const energyCostPerM2 = ((watch("energyCostPerHour") || 0) * timeInHours);
-                        const maintenanceCostPerM2 = ((watch("maintenanceCostPerHour") || 0) * timeInHours);
-                        const fixedCosts = energyCostPerM2 + maintenanceCostPerM2;
-                        
-                        // Custo das tintas usando nova estrutura
-                        const inksCost = passConfig.inkConsumables ? 
-                          passConfig.inkConsumables.reduce((sum, inkConsumable) => {
-                            const ink = availableInks.find(i => i.id === inkConsumable.consumableId);
-                            if (!ink) return sum;
-                            
-                            // Cálculo: consumo em ml/m² × preço por litro ÷ 1000
-                            const costPerM2 = (inkConsumable.consumptionMlPerM2 / 1000) * Number(ink.cost);
-                            return sum + costPerM2;
-                          }, 0) : 0;
-                          
-                        // Custo das cabeças usando dados reais das cabeças cadastradas
-                        const printHeadCost = calculatePrintHeadCost();
-                          
-                        const totalCost = fixedCosts + inksCost + printHeadCost;
-                        return totalCost.toFixed(2).replace('.', ',');
-                      })()
-                    }/m²
-                  </div>
-                </div>
-              </div>
-              </CardContent>
-            )}
-          </Card>
-        ))}
-      </div>
+		if (shouldUse) {
+			// Adicionar tinta se não existir
+			if (!currentConsumables.find((c) => c.consumableId === inkId)) {
+				setValue("passes", {
+					...watchedPasses,
+					[passId]: {
+						...currentPass,
+						inkConsumables: [
+							...currentConsumables,
+							{
+								consumableId: inkId,
+								consumptionMlPerM2: 10.0, // Valor padrão em ml/m²
+							},
+						],
+					},
+				});
+			}
+		} else {
+			// Remover tinta
+			setValue("passes", {
+				...watchedPasses,
+				[passId]: {
+					...currentPass,
+					inkConsumables: currentConsumables.filter(
+						(c) => c.consumableId !== inkId,
+					),
+				},
+			});
+		}
+	};
 
-      {Object.keys(watchedPasses).length === 0 && (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <Layers className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Nenhuma Configuração de Passada</h3>
-            <p className="text-sm text-muted-foreground mb-4 text-center">
-              Configure diferentes qualidades de impressão para otimizar custos e tempo
-            </p>
-            <Button onClick={() => setValue("passes", getDefaultPassConfigurations())}>
-              <Plus className="mr-2 h-4 w-4" />
-              Adicionar Configurações Padrão
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+	return (
+		<TooltipProvider>
+			<div className="space-y-6">
+				{/* Header com ações */}
+				<div className="flex items-center justify-between">
+					<div>
+						<h3 className="font-semibold text-lg">Configurações de Passada</h3>
+						<p className="text-muted-foreground text-sm">
+							Configure diferentes qualidades de impressão com multiplicador
+							base + consumo específico por tinta
+						</p>
+					</div>
+					<div className="flex gap-2">
+						<Button variant="outline" size="sm" onClick={resetToDefaults}>
+							<Settings className="mr-2 h-4 w-4" />
+							Padrões
+						</Button>
+						<Button
+							size="sm"
+							onClick={() => setShowNewPassForm(true)}
+							disabled={showNewPassForm}
+						>
+							<Plus className="mr-2 h-4 w-4" />
+							Nova Passada
+						</Button>
+					</div>
+				</div>
 
-      {/* Resumo das configurações */}
-      {Object.keys(watchedPasses).length > 0 && (
-        <Card className="border-green-200 bg-green-50 dark:bg-green-950/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base text-green-800 dark:text-green-300">
-              <Calculator className="h-4 w-4" />
-              Resumo das Configurações
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <h5 className="font-medium mb-2">Velocidades Configuradas:</h5>
-                <div className="space-y-1 text-sm">
-                  {Object.entries(watchedPasses)
-                    .sort(([,a], [,b]) => (b.speedM2PerHour || 0) - (a.speedM2PerHour || 0))
-                    .map(([passId, pass]) => (
-                      <div key={passId} className="flex justify-between">
-                        <span>{pass.name}:</span>
-                        <span className="font-mono">{pass.speedM2PerHour || 0} m²/h</span>
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
-              <div>
-                <h5 className="font-medium mb-2">Eficiência por Configuração:</h5>
-                <div className="space-y-1 text-sm">
-                  {Object.entries(watchedPasses)
-                    .sort(([,a], [,b]) => calculateEfficiency(b) - calculateEfficiency(a))
-                    .map(([passId, pass]) => (
-                      <div key={passId} className="flex justify-between">
-                        <span>{pass.name}:</span>
-                        <Badge variant={calculateEfficiency(pass) > 1 ? "default" : "secondary"} className="text-xs">
-                          {calculateEfficiency(pass).toFixed(2)}
-                        </Badge>
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+				{/* Informações sobre passadas */}
+				<Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20">
+					<CardHeader className="pb-3">
+						<CardTitle className="flex items-center gap-2 text-base text-blue-800 dark:text-blue-300">
+							<Info className="h-4 w-4" />
+							Sobre Configuração de Passadas
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-2 text-blue-700 text-sm dark:text-blue-400">
+						<p>
+							<strong>Velocidade:</strong> m²/hora que o equipamento processa
+							nesta configuração
+						</p>
+						<p>
+							<strong>Tintas:</strong> Selecione as tintas cadastradas e defina
+							o consumo específico em ml/m²
+						</p>
+						<p>
+							<strong>Cabeças:</strong> Selecione as cabeças de impressão que
+							serão utilizadas
+						</p>
+						<p>
+							<strong>Cálculo:</strong> Consumo em ml/m² × Preço por Litro da
+							Tinta ÷ 1000
+						</p>
+					</CardContent>
+				</Card>
 
-      {errors.passes && (
-        <p className="text-sm text-destructive">{errors.passes.message}</p>
-      )}
-      </div>
-    </TooltipProvider>
-  );
+				{/* Seleção da Passada Padrão */}
+				{Object.keys(watchedPasses).length > 0 && (
+					<Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20">
+						<CardHeader className="pb-3">
+							<CardTitle className="flex items-center gap-2 text-base text-purple-800 dark:text-purple-300">
+								<Settings className="h-4 w-4" />
+								Passada Padrão do Equipamento
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-2">
+								<Label className="text-purple-700 text-sm dark:text-purple-400">
+									Selecione qual passada será usada como padrão quando este
+									equipamento for usado em produtos:
+								</Label>
+								<Select
+									value={watchedDefaultPassKey || ""}
+									onValueChange={(value) =>
+										setValue("defaultPassKey", value || undefined)
+									}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Selecione a passada padrão..." />
+									</SelectTrigger>
+									<SelectContent>
+										{Object.entries(watchedPasses).map(
+											([passKey, passData]) => (
+												<SelectItem key={passKey} value={passKey}>
+													<div className="flex items-center gap-2">
+														<Layers className="h-4 w-4" />
+														<span className="font-medium">{passData.name}</span>
+														<Badge
+															variant="secondary"
+															className="ml-auto text-xs"
+														>
+															{passData.speedM2PerHour}m²/h
+														</Badge>
+													</div>
+												</SelectItem>
+											),
+										)}
+									</SelectContent>
+								</Select>
+								{watchedDefaultPassKey && (
+									<div className="flex items-center gap-2 text-green-600 text-sm dark:text-green-400">
+										<Info className="h-4 w-4" />
+										<span>
+											Passada "{watchedPasses[watchedDefaultPassKey]?.name}"
+											definida como padrão
+										</span>
+									</div>
+								)}
+							</div>
+						</CardContent>
+					</Card>
+				)}
+
+				{/* Formulário de Nova Passada */}
+				{showNewPassForm && (
+					<Card className="border-green-200 bg-green-50 dark:bg-green-950/20">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-base text-green-800 dark:text-green-300">
+								<Plus className="h-4 w-4" />
+								Criar Nova Passada Personalizada
+							</CardTitle>
+							<CardDescription className="text-green-600 dark:text-green-400">
+								Defina uma nova configuração de passada com nome e parâmetros
+								customizados
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							<div className="grid gap-4 md:grid-cols-2">
+								<div className="space-y-2">
+									<Label className="flex items-center gap-2">
+										<Edit3 className="h-4 w-4" />
+										Nome da Passada *
+									</Label>
+									<Input
+										placeholder="Ex: Impressão Econômica, Qualidade Premium..."
+										value={newPassData.name}
+										onChange={(e) => updateNewPassData("name", e.target.value)}
+									/>
+								</div>
+
+								<div className="space-y-2">
+									<Label className="flex items-center gap-2">
+										<Zap className="h-4 w-4" />
+										Velocidade (m²/h)
+									</Label>
+									<Input
+										type="number"
+										min="0.1"
+										step="0.1"
+										value={newPassData.speedM2PerHour}
+										onChange={(e) =>
+											updateNewPassData(
+												"speedM2PerHour",
+												Number.parseFloat(e.target.value) || 0,
+											)
+										}
+									/>
+								</div>
+							</div>
+
+							<div className="space-y-2">
+								<Label>Descrição</Label>
+								<Textarea
+									rows={2}
+									value={newPassData.description}
+									placeholder="Descreva quando usar esta configuração..."
+									onChange={(e) =>
+										updateNewPassData("description", e.target.value)
+									}
+								/>
+							</div>
+
+							{/* Seleção de Tintas */}
+							{availableInks.length > 0 && (
+								<div className="space-y-4">
+									<div className="border-t pt-4">
+										<h5 className="mb-3 flex items-center gap-2 font-medium text-sm">
+											<Droplet className="h-4 w-4" />
+											Tintas para esta Passada
+										</h5>
+										<div className="max-h-40 space-y-3 overflow-y-auto">
+											{availableInks.map((ink) => {
+												const inkConsumable = newPassData.inkConsumables.find(
+													(ic) => ic.consumableId === ink.id,
+												);
+												const isUsed = !!inkConsumable;
+
+												return (
+													<div
+														key={ink.id}
+														className={`flex items-center justify-between rounded-lg border p-3 transition-colors ${
+															isUsed
+																? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20"
+																: "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
+														}`}
+													>
+														<div className="flex items-center gap-3">
+															<div
+																className="h-4 w-4 rounded-full border"
+																style={{ backgroundColor: ink.color || "#999" }}
+															/>
+															<div>
+																<div className="font-medium text-sm">
+																	{ink.name}
+																</div>
+																<div className="text-muted-foreground text-xs">
+																	R$ {Number(ink.cost).toFixed(2)}/
+																	{formatUnit(ink.unit as ConsumableUnit)}
+																	{ink.code && (
+																		<span className="ml-1">({ink.code})</span>
+																	)}
+																</div>
+															</div>
+														</div>
+
+														<div className="flex items-center gap-2">
+															{isUsed && (
+																<div className="flex items-center gap-2">
+																	<Label className="flex items-center gap-1 text-xs">
+																		Consumo (ml/m²):
+																		<Tooltip>
+																			<TooltipTrigger asChild>
+																				<HelpCircle className="h-3 w-3 cursor-help text-muted-foreground" />
+																			</TooltipTrigger>
+																			<TooltipContent>
+																				<p className="max-w-xs">
+																					<strong>Consumo direto</strong> desta
+																					tinta por m².
+																					<br />• Valor em ml de tinta por metro
+																					quadrado
+																					<br />• Cálculo: [este valor] × preço
+																					da tinta por litro
+																				</p>
+																			</TooltipContent>
+																		</Tooltip>
+																	</Label>
+																	<Input
+																		type="number"
+																		min="0"
+																		max="100"
+																		step="0.1"
+																		value={
+																			inkConsumable?.consumptionMlPerM2 || 0
+																		}
+																		onChange={(e) => {
+																			const value =
+																				Number.parseFloat(e.target.value) || 0;
+																			if (value >= 0 && value <= 100) {
+																				updateNewPassInkConsumption(
+																					ink.id,
+																					value,
+																				);
+																			}
+																		}}
+																		className="h-7 w-20 text-xs"
+																		placeholder="0.0 ml/m²"
+																	/>
+																</div>
+															)}
+
+															<Button
+																variant={isUsed ? "destructive" : "outline"}
+																size="sm"
+																className="h-7 text-xs"
+																onClick={() =>
+																	toggleNewPassInkUsage(ink.id, !isUsed)
+																}
+															>
+																{isUsed ? (
+																	<>
+																		<Trash2 className="mr-1 h-3 w-3" />
+																		Remover
+																	</>
+																) : (
+																	<>
+																		<Plus className="mr-1 h-3 w-3" />
+																		Usar
+																	</>
+																)}
+															</Button>
+														</div>
+													</div>
+												);
+											})}
+										</div>
+
+										{newPassData.inkConsumables.length === 0 && (
+											<div className="rounded-lg border-2 border-orange-200 border-dashed bg-orange-50 py-3 text-center text-muted-foreground dark:border-orange-800 dark:bg-orange-950/20">
+												<Info className="mx-auto mb-1 h-6 w-6 text-orange-500" />
+												<p className="font-medium text-orange-800 text-xs dark:text-orange-300">
+													Nenhuma tinta selecionada
+												</p>
+												<p className="text-orange-600 text-xs dark:text-orange-400">
+													Adicione tintas para calcular custos precisos
+												</p>
+											</div>
+										)}
+									</div>
+								</div>
+							)}
+
+							<div className="flex justify-end gap-2">
+								<Button variant="outline" size="sm" onClick={cancelNewPass}>
+									<X className="mr-2 h-4 w-4" />
+									Cancelar
+								</Button>
+								<Button
+									size="sm"
+									onClick={addNewPass}
+									disabled={!newPassData.name.trim()}
+								>
+									<Save className="mr-2 h-4 w-4" />
+									Criar Passada
+								</Button>
+							</div>
+						</CardContent>
+					</Card>
+				)}
+
+				{/* Lista de configurações */}
+				<div className="space-y-4">
+					{Object.entries(watchedPasses).map(([passId, passConfig]) => (
+						<Card
+							key={passId}
+							className={`relative transition-all ${
+								isPassCollapsed(passId)
+									? "border-muted-foreground/30 border-dashed"
+									: "border-solid"
+							}`}
+						>
+							<CardHeader className="pb-4">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-3">
+										<Button
+											variant="ghost"
+											size="sm"
+											onClick={() => togglePassCollapse(passId)}
+											className="h-8 w-8 p-0 hover:bg-muted"
+											title={
+												isPassCollapsed(passId)
+													? "Expandir passada"
+													: "Recolher passada"
+											}
+										>
+											{isPassCollapsed(passId) ? (
+												<ChevronDown className="h-4 w-4 text-muted-foreground" />
+											) : (
+												<ChevronUp className="h-4 w-4 text-muted-foreground" />
+											)}
+										</Button>
+										<Layers className="h-5 w-5 text-muted-foreground" />
+										<div>
+											<CardTitle className="flex items-center gap-2 text-base">
+												{editingPassId === passId ? (
+													<div className="flex items-center gap-2">
+														<Input
+															value={passConfig.name}
+															onChange={(e) =>
+																updatePass(passId, "name", e.target.value)
+															}
+															className="h-7 font-semibold text-base"
+															onBlur={() => setEditingPassId(null)}
+															onKeyPress={(e) =>
+																e.key === "Enter" && setEditingPassId(null)
+															}
+															autoFocus
+														/>
+													</div>
+												) : (
+													<div className="flex items-center gap-2">
+														<span>{passConfig.name}</span>
+														<Button
+															variant="ghost"
+															size="sm"
+															onClick={() => setEditingPassId(passId)}
+															className="h-6 w-6 p-0"
+														>
+															<Edit3 className="h-3 w-3" />
+														</Button>
+													</div>
+												)}
+												<Badge variant="outline">{passConfig.name}</Badge>
+											</CardTitle>
+											<CardDescription>
+												Velocidade: {passConfig.speedM2PerHour || 0} m²/h •
+												Eficiência: {calculateEfficiency(passConfig).toFixed(2)}
+											</CardDescription>
+										</div>
+									</div>
+
+									<Button
+										variant="ghost"
+										size="sm"
+										onClick={() => deletePass(passId)}
+										className="text-destructive hover:text-destructive"
+										title="Deletar passada"
+									>
+										<Trash2 className="h-4 w-4" />
+									</Button>
+								</div>
+							</CardHeader>
+
+							{!isPassCollapsed(passId) && (
+								<CardContent className="space-y-4">
+									{/* Nome e categoria da passada */}
+									<div className="grid gap-4 md:grid-cols-2">
+										<div className="space-y-2">
+											<Label className="flex items-center gap-2">
+												<Edit3 className="h-4 w-4" />
+												Nome da Passada
+											</Label>
+											<Input
+												value={passConfig.name}
+												onChange={(e) =>
+													updatePass(passId, "name", e.target.value)
+												}
+												placeholder="Nome da configuração"
+											/>
+										</div>
+									</div>
+
+									<div className="grid gap-4 md:grid-cols-1">
+										<div className="space-y-2">
+											<Label className="flex items-center gap-2">
+												<Zap className="h-4 w-4" />
+												Velocidade (m²/h)
+											</Label>
+											<Input
+												type="number"
+												min="0.1"
+												max="1000"
+												step="0.1"
+												value={passConfig.speedM2PerHour || 0}
+												onChange={(e) =>
+													updatePass(
+														passId,
+														"speedM2PerHour",
+														Number.parseFloat(e.target.value) || 1,
+													)
+												}
+												placeholder="Ex: 25.5"
+											/>
+										</div>
+									</div>
+
+									<div className="space-y-2">
+										<Label>Descrição</Label>
+										<Textarea
+											rows={2}
+											value={passConfig.description || ""}
+											placeholder="Descreva quando usar esta configuração..."
+											onChange={(e) =>
+												updatePass(passId, "description", e.target.value)
+											}
+										/>
+									</div>
+
+									{/* Configuração de Tintas Específicas */}
+									{availableInks.length > 0 && (
+										<div className="space-y-4">
+											<Separator />
+											<div>
+												<h5 className="mb-3 flex items-center gap-2 font-medium text-sm">
+													<Droplet className="h-4 w-4" />
+													Tintas Utilizadas nesta Passada
+												</h5>
+												<div className="space-y-3">
+													{availableInks.map((ink) => {
+														const inkConsumable =
+															passConfig.inkConsumables?.find(
+																(c) => c.consumableId === ink.id,
+															);
+														const isUsed = !!inkConsumable;
+
+														return (
+															<div
+																key={ink.id}
+																className={`flex items-center justify-between rounded-lg border p-3 transition-colors ${
+																	isUsed
+																		? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20"
+																		: "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
+																}`}
+															>
+																<div className="flex items-center gap-3">
+																	<div
+																		className="h-4 w-4 rounded-full border"
+																		style={{
+																			backgroundColor: ink.color || "#999",
+																		}}
+																	/>
+																	<div>
+																		<div className="font-medium">
+																			{ink.name}
+																		</div>
+																		<div className="text-muted-foreground text-sm">
+																			R$ {Number(ink.cost).toFixed(2)}/
+																			{formatUnit(ink.unit as ConsumableUnit)}
+																			{ink.code && (
+																				<span className="ml-1 text-xs">
+																					({ink.code})
+																				</span>
+																			)}
+																		</div>
+																	</div>
+																</div>
+
+																<div className="flex items-center gap-3">
+																	{isUsed && (
+																		<div className="flex items-center gap-2">
+																			<Label className="flex items-center gap-1 text-sm">
+																				Consumo (ml/m²):
+																				<Tooltip>
+																					<TooltipTrigger asChild>
+																						<HelpCircle className="h-3 w-3 cursor-help text-muted-foreground" />
+																					</TooltipTrigger>
+																					<TooltipContent>
+																						<p className="max-w-xs">
+																							<strong>
+																								Consumo específico
+																							</strong>{" "}
+																							desta tinta por m² (em
+																							mililitros).
+																							<br />• Consumo direto por m² em
+																							mililitros
+																							<br />• Cálculo final: [este valor
+																							÷ 1000] × preço da tinta por litro
+																						</p>
+																					</TooltipContent>
+																				</Tooltip>
+																			</Label>
+																			<Input
+																				type="number"
+																				min="0"
+																				max="100"
+																				step="0.1"
+																				value={
+																					inkConsumable?.consumptionMlPerM2?.toFixed(
+																						1,
+																					) || "0"
+																				}
+																				onChange={(e) => {
+																					const valueInMl =
+																						Number.parseFloat(e.target.value) ||
+																						0;
+																					if (
+																						valueInMl >= 0 &&
+																						valueInMl <= 100000
+																					) {
+																						updateInkConfiguration(
+																							passId,
+																							ink.id,
+																							"consumptionRate",
+																							valueInMl / 1000,
+																						);
+																					}
+																				}}
+																				className={`w-24 ${
+																					inkConsumable?.consumptionMlPerM2 &&
+																					inkConsumable.consumptionMlPerM2 > 50
+																						? "border-yellow-500 focus:border-yellow-500"
+																						: ""
+																				}`}
+																				placeholder="0.0 ml/m²"
+																			/>
+																		</div>
+																	)}
+
+																	<Button
+																		variant={isUsed ? "destructive" : "outline"}
+																		size="sm"
+																		onClick={() =>
+																			toggleInkUsage(passId, ink.id, !isUsed)
+																		}
+																	>
+																		{isUsed ? (
+																			<>
+																				<Trash2 className="mr-1 h-4 w-4" />
+																				Remover
+																			</>
+																		) : (
+																			<>
+																				<Plus className="mr-1 h-4 w-4" />
+																				Usar
+																			</>
+																		)}
+																	</Button>
+																</div>
+															</div>
+														);
+													})}
+												</div>
+
+												{(!passConfig.inkConsumables ||
+													passConfig.inkConsumables.length === 0) && (
+													<div className="rounded-lg border-2 border-orange-200 border-dashed bg-orange-50 py-4 text-center text-muted-foreground dark:border-orange-800 dark:bg-orange-950/20">
+														<Info className="mx-auto mb-2 h-8 w-8 text-orange-500" />
+														<p className="font-medium text-orange-800 text-sm dark:text-orange-300">
+															Nenhuma tinta selecionada para esta passada
+														</p>
+														<p className="text-orange-600 text-xs dark:text-orange-400">
+															Adicione tintas para calcular custos precisos
+														</p>
+													</div>
+												)}
+											</div>
+										</div>
+									)}
+
+									{/* 🖨️ SEÇÃO DE CABEÇAS DE IMPRESSÃO AUTO-ASSOCIADAS */}
+									<div className="space-y-3">
+										<div className="flex items-center gap-2">
+											<Cpu className="h-4 w-4 text-muted-foreground" />
+											<Label className="font-medium text-sm">
+												Cabeças de Impressão
+											</Label>
+											<Badge variant="secondary" className="text-xs">
+												Auto-associadas
+											</Badge>
+										</div>
+
+										{Object.keys(watchedPrintHeads).length > 0 ? (
+											<div className="space-y-2 rounded border bg-muted/30 p-3">
+												{Object.values(watchedPrintHeads).map(
+													(installedHead: any, idx: number) => {
+														const headData = availableHeads.find(
+															(h) => h.id === installedHead.consumableId,
+														);
+														return (
+															<div
+																key={idx}
+																className="flex items-center justify-between text-sm"
+															>
+																<div className="flex items-center gap-2">
+																	<Cpu className="h-3 w-3 text-green-600" />
+																	<span className="font-medium">
+																		{headData?.name || "Cabeça não encontrada"}
+																	</span>
+																	<Badge variant="outline" className="text-xs">
+																		{installedHead.position}
+																	</Badge>
+																</div>
+																<span className="text-muted-foreground text-xs">
+																	{headData
+																		? `R$ ${(Number(headData.costPerM2) || Number(headData.cost) / Number(headData.lifespanM2 || 1)).toFixed(4)}/m²`
+																		: "N/A"}
+																</span>
+															</div>
+														);
+													},
+												)}
+												<div className="border-muted-foreground/20 border-t pt-2">
+													<div className="flex justify-between font-medium text-sm">
+														<span>Total Cabeças:</span>
+														<span>
+															R$ {calculatePrintHeadCost().toFixed(4)}/m²
+														</span>
+													</div>
+												</div>
+											</div>
+										) : (
+											<div className="rounded-lg border-2 border-gray-200 border-dashed bg-gray-50 py-4 text-center text-muted-foreground dark:border-gray-800 dark:bg-gray-950/20">
+												<Cpu className="mx-auto mb-2 h-8 w-8 text-gray-400" />
+												<p className="font-medium text-gray-600 text-sm dark:text-gray-400">
+													Nenhuma cabeça instalada
+												</p>
+												<p className="text-gray-500 text-xs dark:text-gray-500">
+													Configure cabeças na aba "Cabeças de Impressão"
+												</p>
+											</div>
+										)}
+
+										<div className="rounded bg-blue-50 p-2 text-blue-800 text-xs dark:bg-blue-950/20 dark:text-blue-300">
+											<strong>Auto-associação:</strong> Todas as cabeças
+											instaladas no equipamento são automaticamente usadas em
+											todas as passadas.
+										</div>
+									</div>
+
+									{/* Mostrar status das tintas */}
+									{(loadingInks || loadingHeads) && (
+										<div className="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:bg-blue-950/20">
+											<div className="flex items-center gap-2 text-blue-800 dark:text-blue-300">
+												<Info className="h-4 w-4" />
+												<span className="font-medium text-sm">
+													Carregando consumíveis...
+												</span>
+											</div>
+										</div>
+									)}
+
+									{!(loadingInks || loadingHeads) &&
+										availableInks.length === 0 && (
+											<div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 dark:bg-yellow-950/20">
+												<div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
+													<Info className="h-4 w-4" />
+													<span className="font-medium text-sm">
+														Nenhuma tinta cadastrada
+													</span>
+												</div>
+												<p className="mt-1 text-xs text-yellow-700 dark:text-yellow-400">
+													Cadastre tintas na seção de insumos para configurar o
+													consumo específico por passada
+												</p>
+											</div>
+										)}
+
+									{/* Métricas calculadas */}
+									<div className="mt-4 rounded-lg bg-muted p-3">
+										<h5 className="mb-2 flex items-center gap-2 font-medium text-sm">
+											<Calculator className="h-4 w-4" />
+											Métricas Calculadas (para 1 m²)
+										</h5>
+										<div className="grid gap-2 text-sm md:grid-cols-2 lg:grid-cols-6">
+											<div>
+												<span className="font-medium">Tempo:</span>{" "}
+												{passConfig.speedM2PerHour
+													? ((1 / passConfig.speedM2PerHour) * 60).toFixed(1)
+													: "N/A"}{" "}
+												min
+											</div>
+											<div>
+												<span className="font-medium">Eficiência:</span>
+												<Badge
+													variant={
+														calculateEfficiency(passConfig) > 1
+															? "default"
+															: "secondary"
+													}
+													className="ml-1 text-xs"
+												>
+													{calculateEfficiency(passConfig) > 1
+														? "Alta"
+														: "Média"}
+												</Badge>
+											</div>
+											<div>
+												<span className="font-medium">Cabeças:</span>{" "}
+												{Object.keys(watchedPrintHeads).length}
+											</div>
+											<div>
+												<span className="font-medium">Custo Tintas:</span> R${" "}
+												{(() => {
+													if (
+														!passConfig.inkConsumables ||
+														passConfig.inkConsumables.length === 0
+													)
+														return "0,00";
+													const totalCost = passConfig.inkConsumables.reduce(
+														(sum, inkConsumable) => {
+															const ink = availableInks.find(
+																(i) => i.id === inkConsumable.consumableId,
+															);
+															if (!ink) return sum;
+
+															// Cálculo simples: consumo em ml/m² × preço por litro ÷ 1000
+															const costPerM2 =
+																(inkConsumable.consumptionMlPerM2 / 1000) *
+																Number(ink.cost);
+
+															return sum + costPerM2;
+														},
+														0,
+													);
+													return totalCost.toFixed(2).replace(".", ",");
+												})()}/m²
+											</div>
+											<div>
+												<span className="font-medium">Custo Cabeças:</span> R${" "}
+												{calculatePrintHeadCost().toFixed(2).replace(".", ",")}
+												/m²
+											</div>
+											<div>
+												<span className="font-medium">Custo Total:</span> R${" "}
+												{(() => {
+													// NOVA LÓGICA: Custos fixos (energia + manutenção + depreciação) convertidos para m²
+													const speedM2PerHour = passConfig.speedM2PerHour || 1;
+													const timeInHours = 1 / speedM2PerHour; // tempo para processar 1m²
+
+													// Custos fixos convertidos para m² baseados na velocidade desta passada
+													const energyCostPerM2 =
+														(watch("energyCostPerHour") || 0) * timeInHours;
+													const maintenanceCostPerM2 =
+														(watch("maintenanceCostPerHour") || 0) *
+														timeInHours;
+													const fixedCosts =
+														energyCostPerM2 + maintenanceCostPerM2;
+
+													// Custo das tintas usando nova estrutura
+													const inksCost = passConfig.inkConsumables
+														? passConfig.inkConsumables.reduce(
+																(sum, inkConsumable) => {
+																	const ink = availableInks.find(
+																		(i) => i.id === inkConsumable.consumableId,
+																	);
+																	if (!ink) return sum;
+
+																	// Cálculo: consumo em ml/m² × preço por litro ÷ 1000
+																	const costPerM2 =
+																		(inkConsumable.consumptionMlPerM2 / 1000) *
+																		Number(ink.cost);
+																	return sum + costPerM2;
+																},
+																0,
+															)
+														: 0;
+
+													// Custo das cabeças usando dados reais das cabeças cadastradas
+													const printHeadCost = calculatePrintHeadCost();
+
+													const totalCost =
+														fixedCosts + inksCost + printHeadCost;
+													return totalCost.toFixed(2).replace(".", ",");
+												})()}/m²
+											</div>
+										</div>
+									</div>
+								</CardContent>
+							)}
+						</Card>
+					))}
+				</div>
+
+				{Object.keys(watchedPasses).length === 0 && (
+					<Card className="border-dashed">
+						<CardContent className="flex flex-col items-center justify-center py-8">
+							<Layers className="mb-4 h-12 w-12 text-muted-foreground" />
+							<h3 className="mb-2 font-semibold text-lg">
+								Nenhuma Configuração de Passada
+							</h3>
+							<p className="mb-4 text-center text-muted-foreground text-sm">
+								Configure diferentes qualidades de impressão para otimizar
+								custos e tempo
+							</p>
+							<Button
+								onClick={() =>
+									setValue("passes", getDefaultPassConfigurations())
+								}
+							>
+								<Plus className="mr-2 h-4 w-4" />
+								Adicionar Configurações Padrão
+							</Button>
+						</CardContent>
+					</Card>
+				)}
+
+				{/* Resumo das configurações */}
+				{Object.keys(watchedPasses).length > 0 && (
+					<Card className="border-green-200 bg-green-50 dark:bg-green-950/20">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-base text-green-800 dark:text-green-300">
+								<Calculator className="h-4 w-4" />
+								Resumo das Configurações
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid gap-4 md:grid-cols-2">
+								<div>
+									<h5 className="mb-2 font-medium">
+										Velocidades Configuradas:
+									</h5>
+									<div className="space-y-1 text-sm">
+										{Object.entries(watchedPasses)
+											.sort(
+												([, a], [, b]) =>
+													(b.speedM2PerHour || 0) - (a.speedM2PerHour || 0),
+											)
+											.map(([passId, pass]) => (
+												<div key={passId} className="flex justify-between">
+													<span>{pass.name}:</span>
+													<span className="font-mono">
+														{pass.speedM2PerHour || 0} m²/h
+													</span>
+												</div>
+											))}
+									</div>
+								</div>
+								<div>
+									<h5 className="mb-2 font-medium">
+										Eficiência por Configuração:
+									</h5>
+									<div className="space-y-1 text-sm">
+										{Object.entries(watchedPasses)
+											.sort(
+												([, a], [, b]) =>
+													calculateEfficiency(b) - calculateEfficiency(a),
+											)
+											.map(([passId, pass]) => (
+												<div key={passId} className="flex justify-between">
+													<span>{pass.name}:</span>
+													<Badge
+														variant={
+															calculateEfficiency(pass) > 1
+																? "default"
+																: "secondary"
+														}
+														className="text-xs"
+													>
+														{calculateEfficiency(pass).toFixed(2)}
+													</Badge>
+												</div>
+											))}
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				)}
+
+				{errors.passes && (
+					<p className="text-destructive text-sm">{errors.passes.message}</p>
+				)}
+			</div>
+		</TooltipProvider>
+	);
 }

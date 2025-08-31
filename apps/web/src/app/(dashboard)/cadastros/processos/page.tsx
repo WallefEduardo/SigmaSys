@@ -29,15 +29,15 @@ export default function ProcessosPage() {
 	const [view, setView] = useState<"card" | "table">("card");
 
 	// Buscar dados reais da API
-	const { 
-		data: processesData, 
-		isLoading, 
+	const {
+		data: processesData,
+		isLoading,
 		error,
-		refetch
+		refetch,
 	} = api.processes.list.useQuery({
 		search: searchInput || undefined,
 		sector: sectorFilter !== "all" ? sectorFilter : undefined,
-		active: true
+		active: true,
 	});
 
 	// Buscar setores disponíveis
@@ -49,15 +49,15 @@ export default function ProcessosPage() {
 	// Função para obter cor do setor (cores padrão)
 	const getSectorColor = React.useCallback((sector: string) => {
 		const colors: Record<string, string> = {
-			'Impressão': 'default',
-			'Usinagem': 'secondary',
-			'Metalurgia': 'destructive',
-			'Montagem': 'outline',
-			'Acabamento': 'warning',
-			'Pintura': 'secondary',
-			'Instalação': 'default'
+			Impressão: "default",
+			Usinagem: "secondary",
+			Metalurgia: "destructive",
+			Montagem: "outline",
+			Acabamento: "warning",
+			Pintura: "secondary",
+			Instalação: "default",
 		};
-		return colors[sector] || 'default';
+		return colors[sector] || "default";
 	}, []);
 
 	// Debounce para busca
@@ -139,12 +139,10 @@ export default function ProcessosPage() {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
 				<div className="text-center">
-					<p className="text-lg font-semibold text-destructive">
+					<p className="font-semibold text-destructive text-lg">
 						Erro ao carregar processos
 					</p>
-					<p className="text-sm text-muted-foreground mt-1">
-						{error.message}
-					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
 					<Button onClick={() => refetch()} variant="outline" className="mt-4">
 						Tentar novamente
 					</Button>
@@ -156,9 +154,7 @@ export default function ProcessosPage() {
 	// Estatísticas por setor com memoização
 	const sectorStats = useMemo(() => {
 		return sectors.map((sector) => {
-			const sectorProcesses = processes.filter(
-				(p) => p.sector === sector,
-			);
+			const sectorProcesses = processes.filter((p) => p.sector === sector);
 			const avgCost =
 				sectorProcesses.reduce((sum, p) => sum + p.costPerHour, 0) /
 				sectorProcesses.length;
@@ -251,10 +247,10 @@ export default function ProcessosPage() {
 				<div className="flex items-center justify-center py-12">
 					<div className="text-center">
 						<div className="animate-pulse space-y-4">
-							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+							<div className="mx-auto h-4 w-32 rounded bg-muted" />
+							<div className="mx-auto h-4 w-48 rounded bg-muted" />
 						</div>
-						<p className="text-sm text-muted-foreground mt-2">
+						<p className="mt-2 text-muted-foreground text-sm">
 							Carregando processos...
 						</p>
 					</div>

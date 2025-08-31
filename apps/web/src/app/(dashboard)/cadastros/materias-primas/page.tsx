@@ -1,10 +1,10 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { Edit, Filter, Package, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -22,11 +22,11 @@ import {
 	VirtualizedMaterialList,
 } from "@/components/ui/virtualized-list";
 import { useDebounce } from "@/lib/hooks/useDebounce";
-import { api } from "@/lib/trpc";
 import { cacheConfig } from "@/lib/providers/query-provider";
+import { api } from "@/lib/trpc";
+import type { Material, MaterialFilters } from "@/lib/types/shared";
 import { formatCurrency } from "@/lib/utils/currency";
 import { queryUtils } from "@/lib/utils/query-utils";
-import type { Material, MaterialFilters } from "@/lib/types/shared";
 import { MaterialCard } from "./components/material-card";
 
 export default function MateriasPage() {
@@ -37,52 +37,51 @@ export default function MateriasPage() {
 	const [view, setView] = useState<"card" | "table">("card");
 
 	// Buscar dados reais da API com cache otimizado
-	const { 
-		data: materialsData, 
-		isLoading, 
+	const {
+		data: materialsData,
+		isLoading,
 		error,
-		refetch
-	} = api.materials.list.useQuery({
-		search: searchInput || undefined,
-		category: categoryFilter !== "all" ? categoryFilter : undefined,
-		active: true
-	}, cacheConfig.dynamic);
+		refetch,
+	} = api.materials.list.useQuery(
+		{
+			search: searchInput || undefined,
+			category: categoryFilter !== "all" ? categoryFilter : undefined,
+			active: true,
+		},
+		cacheConfig.dynamic,
+	);
 
 	// Buscar categorias disponíveis (dados mais estáticos)
 	const { data: categoriesData } = api.materials.categories.useQuery(
-		undefined, 
-		cacheConfig.static
+		undefined,
+		cacheConfig.static,
 	);
 
 	// Mutações CRUD com optimistic updates
 	const deleteMaterial = api.materials.delete.useMutation({
 		onMutate: async (variables) => {
 			// Cancelar queries em andamento
-			await queryClient.cancelQueries({ queryKey: ['materials'] });
+			await queryClient.cancelQueries({ queryKey: ["materials"] });
 
 			// Snapshot dos dados atuais
-			const previousMaterials = queryClient.getQueryData(['materials']);
+			const previousMaterials = queryClient.getQueryData(["materials"]);
 
 			// Optimistic update - remover material da lista
-			queryUtils.optimisticRemove(
-				queryClient,
-				['materials'],
-				variables.id
-			);
+			queryUtils.optimisticRemove(queryClient, ["materials"], variables.id);
 
 			return { previousMaterials };
 		},
 		onError: (error, variables, context) => {
 			// Rollback em caso de erro
 			if (context?.previousMaterials) {
-				queryClient.setQueryData(['materials'], context.previousMaterials);
+				queryClient.setQueryData(["materials"], context.previousMaterials);
 			}
-			console.error('Erro ao deletar material:', error);
+			console.error("Erro ao deletar material:", error);
 		},
 		onSuccess: () => {
 			// Invalidar para sincronizar com servidor
-			queryClient.invalidateQueries({ queryKey: ['materials'] });
-		}
+			queryClient.invalidateQueries({ queryKey: ["materials"] });
+		},
 	});
 
 	const materials = Array.isArray(materialsData) ? materialsData : [];
@@ -171,7 +170,9 @@ export default function MateriasPage() {
 	};
 
 	const handleDelete = async (material: Material) => {
-		if (confirm(`Tem certeza que deseja deletar o material "${material.name}"?`)) {
+		if (
+			confirm(`Tem certeza que deseja deletar o material "${material.name}"?`)
+		) {
 			try {
 				await deleteMaterial.mutateAsync({ id: material.id });
 				// Sucesso será tratado pelo onSuccess da mutation
@@ -186,12 +187,10 @@ export default function MateriasPage() {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
 				<div className="text-center">
-					<p className="text-lg font-semibold text-destructive">
+					<p className="font-semibold text-destructive text-lg">
 						Erro ao carregar materiais
 					</p>
-					<p className="text-sm text-muted-foreground mt-1">
-						{error.message}
-					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
 					<Button onClick={() => refetch()} variant="outline" className="mt-4">
 						Tentar novamente
 					</Button>
@@ -261,10 +260,10 @@ export default function MateriasPage() {
 				<div className="flex items-center justify-center py-12">
 					<div className="text-center">
 						<div className="animate-pulse space-y-4">
-							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+							<div className="mx-auto h-4 w-32 rounded bg-muted" />
+							<div className="mx-auto h-4 w-48 rounded bg-muted" />
 						</div>
-						<p className="text-sm text-muted-foreground mt-2">
+						<p className="mt-2 text-muted-foreground text-sm">
 							Carregando materiais...
 						</p>
 					</div>

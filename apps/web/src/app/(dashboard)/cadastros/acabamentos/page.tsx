@@ -39,15 +39,15 @@ export default function AcabamentosPage() {
 	const [view, setView] = useState<"card" | "table">("card");
 
 	// Buscar dados reais da API
-	const { 
-		data: finishesData, 
-		isLoading, 
+	const {
+		data: finishesData,
+		isLoading,
 		error,
-		refetch
+		refetch,
 	} = api.finishes.list.useQuery({
 		search: searchInput || undefined,
 		type: typeFilter !== "all" ? typeFilter : undefined,
-		active: true
+		active: true,
 	});
 
 	const finishes = Array.isArray(finishesData) ? finishesData : [];
@@ -59,8 +59,8 @@ export default function AcabamentosPage() {
 
 	const getTypeInfo = React.useCallback((type: string) => {
 		const typeLabels: Record<string, string> = {
-			'simple': 'Simples',
-			'composed': 'Composto'
+			simple: "Simples",
+			composed: "Composto",
 		};
 
 		const label = typeLabels[type] || type;
@@ -157,12 +157,10 @@ export default function AcabamentosPage() {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
 				<div className="text-center">
-					<p className="text-lg font-semibold text-destructive">
+					<p className="font-semibold text-destructive text-lg">
 						Erro ao carregar acabamentos
 					</p>
-					<p className="text-sm text-muted-foreground mt-1">
-						{error.message}
-					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
 					<Button onClick={() => refetch()} variant="outline" className="mt-4">
 						Tentar novamente
 					</Button>
@@ -178,8 +176,7 @@ export default function AcabamentosPage() {
 			simple: finishes.filter((f) => f.type === "simple").length,
 			composed: finishes.filter((f) => f.type === "composed").length,
 			avgMargin: Math.round(
-				finishes.reduce((sum, f) => sum + f.margin, 0) /
-					finishes.length || 0,
+				finishes.reduce((sum, f) => sum + f.margin, 0) / finishes.length || 0,
 			),
 		};
 	}, [finishes]);
@@ -299,10 +296,10 @@ export default function AcabamentosPage() {
 				<div className="flex items-center justify-center py-12">
 					<div className="text-center">
 						<div className="animate-pulse space-y-4">
-							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+							<div className="mx-auto h-4 w-32 rounded bg-muted" />
+							<div className="mx-auto h-4 w-48 rounded bg-muted" />
 						</div>
-						<p className="text-sm text-muted-foreground mt-2">
+						<p className="mt-2 text-muted-foreground text-sm">
 							Carregando acabamentos...
 						</p>
 					</div>

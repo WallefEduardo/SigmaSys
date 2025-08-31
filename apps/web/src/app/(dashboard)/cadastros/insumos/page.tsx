@@ -1,6 +1,14 @@
 "use client";
 
-import { Edit, Filter, Plus, Search, Settings, Loader2, AlertTriangle } from "lucide-react";
+import {
+	AlertTriangle,
+	Edit,
+	Filter,
+	Loader2,
+	Plus,
+	Search,
+	Settings,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -36,27 +44,32 @@ export default function ConsumablesPage() {
 	const [view, setView] = useState<"card" | "table">("card");
 
 	// Buscar dados reais da API
-	const { 
-		data: consumablesData, 
-		isLoading, 
+	const {
+		data: consumablesData,
+		isLoading,
 		error,
-		refetch
+		refetch,
 	} = api.consumables.list.useQuery({
 		search: searchInput || undefined,
 		type: typeFilter !== "all" ? typeFilter : undefined,
-		active: statusFilter === "active" ? true : statusFilter === "inactive" ? false : undefined,
+		active:
+			statusFilter === "active"
+				? true
+				: statusFilter === "inactive"
+					? false
+					: undefined,
 		page: 1,
 		limit: 100, // Carregar todos para estatísticas
 	});
 
-	// Mutações CRUD  
+	// Mutações CRUD
 	const deleteConsumable = api.consumables.delete.useMutation({
 		onSuccess: () => {
 			refetch();
 		},
 		onError: (error) => {
 			// Erro será exibido via toast automaticamente pela mutação
-		}
+		},
 	});
 
 	const consumables = consumablesData?.data || [];
@@ -70,8 +83,8 @@ export default function ConsumablesPage() {
 	// Filtrar consumables para low_stock no frontend
 	const filteredConsumables = useMemo(() => {
 		if (statusFilter === "low_stock") {
-			return consumables.filter(consumable => 
-				consumable.currentStock <= consumable.alertThreshold
+			return consumables.filter(
+				(consumable) => consumable.currentStock <= consumable.alertThreshold,
 			);
 		}
 		return consumables;
@@ -81,20 +94,40 @@ export default function ConsumablesPage() {
 		const types = {
 			ink: "Tinta",
 			printHead: "Cabeça de Impressão",
-			tool: "Ferramenta", 
+			tool: "Ferramenta",
 			material: "Material",
-			other: "Outro"
+			other: "Outro",
 		};
 		return types[type as keyof typeof types] || type;
 	};
 
 	const getTypeBadge = (type: string) => {
 		const variants = {
-			ink: { variant: "default" as const, label: "Tinta", className: "bg-blue-100 text-blue-800" },
-			printHead: { variant: "secondary" as const, label: "Cabeça", className: "bg-purple-100 text-purple-800" },
-			tool: { variant: "outline" as const, label: "Ferramenta", className: "bg-gray-100 text-gray-800" },
-			material: { variant: "outline" as const, label: "Material", className: "bg-green-100 text-green-800" },
-			other: { variant: "outline" as const, label: "Outro", className: "bg-orange-100 text-orange-800" },
+			ink: {
+				variant: "default" as const,
+				label: "Tinta",
+				className: "bg-blue-100 text-blue-800",
+			},
+			printHead: {
+				variant: "secondary" as const,
+				label: "Cabeça",
+				className: "bg-purple-100 text-purple-800",
+			},
+			tool: {
+				variant: "outline" as const,
+				label: "Ferramenta",
+				className: "bg-gray-100 text-gray-800",
+			},
+			material: {
+				variant: "outline" as const,
+				label: "Material",
+				className: "bg-green-100 text-green-800",
+			},
+			other: {
+				variant: "outline" as const,
+				label: "Outro",
+				className: "bg-orange-100 text-orange-800",
+			},
 		};
 		return variants[type as keyof typeof variants] || variants.other;
 	};
@@ -102,7 +135,8 @@ export default function ConsumablesPage() {
 	const getStockStatus = (consumable: any) => {
 		if (consumable.currentStock <= consumable.alertThreshold) {
 			return { label: "Estoque Baixo", variant: "destructive" as const };
-		} else if (consumable.currentStock <= consumable.minStock) {
+		}
+		if (consumable.currentStock <= consumable.minStock) {
 			return { label: "Estoque Mínimo", variant: "secondary" as const };
 		}
 		return { label: "Estoque OK", variant: "default" as const };
@@ -115,7 +149,9 @@ export default function ConsumablesPage() {
 			render: (value: string, item: any) => (
 				<div>
 					<div className="font-medium">{value}</div>
-					<div className="text-muted-foreground text-sm">{item.code || "Sem código"}</div>
+					<div className="text-muted-foreground text-sm">
+						{item.code || "Sem código"}
+					</div>
 				</div>
 			),
 		},
@@ -124,11 +160,7 @@ export default function ConsumablesPage() {
 			label: "Tipo",
 			render: (value: string) => {
 				const typeInfo = getTypeBadge(value);
-				return (
-					<Badge className={typeInfo.className}>
-						{typeInfo.label}
-					</Badge>
-				);
+				return <Badge className={typeInfo.className}>{typeInfo.label}</Badge>;
 			},
 		},
 		{
@@ -138,7 +170,9 @@ export default function ConsumablesPage() {
 				const stockStatus = getStockStatus(item);
 				return (
 					<div className="space-y-1">
-						<div className="font-medium">{value} {item.unit}</div>
+						<div className="font-medium">
+							{value} {item.unit}
+						</div>
 						<Badge variant={stockStatus.variant} className="text-xs">
 							{stockStatus.label}
 						</Badge>
@@ -160,7 +194,7 @@ export default function ConsumablesPage() {
 			label: "Desgaste/m²",
 			render: (value: number, item: any) => {
 				// Só mostrar para cabeças de impressão
-				if (item.type !== 'printHead' || !value) {
+				if (item.type !== "printHead" || !value) {
 					return <span className="text-muted-foreground text-sm">-</span>;
 				}
 				return (
@@ -168,7 +202,7 @@ export default function ConsumablesPage() {
 						<div className="font-medium text-blue-600">
 							{formatCurrency(Number(value))}
 						</div>
-						<div className="text-xs text-muted-foreground">por m²</div>
+						<div className="text-muted-foreground text-xs">por m²</div>
 					</div>
 				);
 			},
@@ -198,10 +232,12 @@ export default function ConsumablesPage() {
 	};
 
 	const handleDelete = async (consumable: any) => {
-		if (confirm(`Tem certeza que deseja excluir o insumo "${consumable.name}"?`)) {
+		if (
+			confirm(`Tem certeza que deseja excluir o insumo "${consumable.name}"?`)
+		) {
 			try {
-				await deleteConsumable.mutateAsync({ 
-					id: consumable.id
+				await deleteConsumable.mutateAsync({
+					id: consumable.id,
 				});
 			} catch (error) {
 				// Erro tratado pelo onError
@@ -214,13 +250,11 @@ export default function ConsumablesPage() {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
 				<div className="text-center">
-					<AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-4" />
-					<p className="text-lg font-semibold text-destructive">
+					<AlertTriangle className="mx-auto mb-4 h-8 w-8 text-destructive" />
+					<p className="font-semibold text-destructive text-lg">
 						Erro ao carregar insumos
 					</p>
-					<p className="text-sm text-muted-foreground mt-1">
-						{error.message}
-					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
 					<Button onClick={() => refetch()} variant="outline" className="mt-4">
 						Tentar novamente
 					</Button>
@@ -233,13 +267,19 @@ export default function ConsumablesPage() {
 		total: consumables.length,
 		active: consumables.filter((c) => c.active).length,
 		inactive: consumables.filter((c) => !c.active).length,
-		lowStock: consumables.filter((c) => c.currentStock <= c.alertThreshold).length,
+		lowStock: consumables.filter((c) => c.currentStock <= c.alertThreshold)
+			.length,
 		ink: consumables.filter((c) => c.type === "ink").length,
-		tools: consumables.filter((c) => c.type === "tool" || c.type === "printHead").length,
+		tools: consumables.filter(
+			(c) => c.type === "tool" || c.type === "printHead",
+		).length,
 	};
 
 	// Usar virtualização para listas grandes
-	const { shouldVirtualize } = useVirtualization(filteredConsumables.length, 20);
+	const { shouldVirtualize } = useVirtualization(
+		filteredConsumables.length,
+		20,
+	);
 
 	const renderConsumableCard = React.useCallback(
 		({ item }: { item: any }) => <ConsumableCard consumable={item} />,
@@ -354,8 +394,8 @@ export default function ConsumablesPage() {
 			{isLoading ? (
 				<div className="flex items-center justify-center py-12">
 					<div className="text-center">
-						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground mx-auto mb-4" />
-						<p className="text-sm text-muted-foreground">
+						<Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-muted-foreground" />
+						<p className="text-muted-foreground text-sm">
 							Carregando insumos...
 						</p>
 					</div>

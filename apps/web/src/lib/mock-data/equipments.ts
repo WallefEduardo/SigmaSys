@@ -34,6 +34,17 @@ export interface Equipment {
 	nextMaintenance?: string;
 	tags: string[];
 	active: boolean;
+
+	// 🎯 NOVOS CAMPOS para custo total real
+	calculatedCostPerM2?: number;
+	calculatedCostPerHour?: number;
+	totalCostPerM2?: number; // Custo total = fixos + passada padrão
+	costBreakdown?: {
+		hasDefaultPass: boolean;
+		fixedCostPerM2: number;
+		variableCostPerM2: number;
+		isComplete: boolean;
+	};
 }
 
 export const mockEquipments: Equipment[] = [

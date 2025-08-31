@@ -5,7 +5,7 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/trpc";
 
-export function TRPCProvider({ children }: { children: React.ReactNode }) {	
+export function TRPCProvider({ children }: { children: React.ReactNode }) {
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({

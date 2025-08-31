@@ -98,7 +98,7 @@ export function DataTable<T extends { id: string }>({
 												size="sm"
 												onClick={() => onDelete(item)}
 												disabled={isDeleting}
-												className="text-destructive hover:text-destructive hover:bg-destructive/10"
+												className="text-destructive hover:bg-destructive/10 hover:text-destructive"
 											>
 												<Trash2 className="h-4 w-4" />
 											</Button>

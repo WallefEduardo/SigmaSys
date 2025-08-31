@@ -36,19 +36,19 @@ export default function EquipamentosPage() {
 	const [view, setView] = useState<"card" | "table">("card");
 
 	// Buscar dados reais da API
-	const { 
-		data: equipmentsData, 
-		isLoading, 
+	const {
+		data: equipmentsData,
+		isLoading,
 		error,
-		refetch
+		refetch,
 	} = api.equipments.list.useQuery({
 		search: searchInput || undefined,
 		type: typeFilter !== "all" ? typeFilter : undefined,
 		status: statusFilter !== "all" ? statusFilter : undefined,
-		active: true
+		active: true,
 	});
 
-	// Mutações CRUD  
+	// Mutações CRUD
 	const deleteEquipment = api.equipments.deactivate.useMutation({
 		onSuccess: () => {
 			// Refetch a lista após desativar
@@ -56,7 +56,7 @@ export default function EquipamentosPage() {
 		},
 		onError: (error) => {
 			// Erro será exibido via toast automaticamente pela mutação
-		}
+		},
 	});
 
 	// A API retorna uma estrutura paginada: { equipments: [...], pagination: {...} }
@@ -116,13 +116,39 @@ export default function EquipamentosPage() {
 			},
 		},
 		{
-			key: "calculatedCostPerM2",
-			label: "Custo Calculado",
+			key: "totalCostPerM2",
+			label: "Custo Total",
 			render: (value: number, item: any) => (
-				<div className="font-medium text-green-600">
-					{item.calculatedCostPerM2 ? formatCurrency(item.calculatedCostPerM2) + "/m²" : 
-					 item.calculatedCostPerHour ? formatCurrency(item.calculatedCostPerHour) + "/h" :
-					 "Não calculado"}
+				<div className="flex items-center gap-2">
+					{item.totalCostPerM2 && item.totalCostPerM2 > 0 ? (
+						<>
+							<span className="font-medium text-green-600">
+								{formatCurrency(item.totalCostPerM2)}/m²
+							</span>
+							{item.costBreakdown?.isComplete ? (
+								<Badge variant="default" className="text-xs">
+									Total
+								</Badge>
+							) : (
+								<Badge variant="secondary" className="text-xs">
+									Parcial
+								</Badge>
+							)}
+						</>
+					) : (
+						<>
+							<span className="font-medium text-orange-600">
+								{item.calculatedCostPerM2
+									? formatCurrency(item.calculatedCostPerM2) + "/m²"
+									: item.calculatedCostPerHour
+										? formatCurrency(item.calculatedCostPerHour) + "/h"
+										: "Não calculado"}
+							</span>
+							<Badge variant="outline" className="text-xs">
+								Incompleto
+							</Badge>
+						</>
+					)}
 				</div>
 			),
 		},
@@ -147,11 +173,15 @@ export default function EquipamentosPage() {
 	};
 
 	const handleDelete = async (equipment: any) => {
-		if (confirm(`Tem certeza que deseja desativar o equipamento "${equipment.name}"?`)) {
+		if (
+			confirm(
+				`Tem certeza que deseja desativar o equipamento "${equipment.name}"?`,
+			)
+		) {
 			try {
-				await deleteEquipment.mutateAsync({ 
-					id: equipment.id, 
-					reason: "Desativado pelo usuário"
+				await deleteEquipment.mutateAsync({
+					id: equipment.id,
+					reason: "Desativado pelo usuário",
 				});
 			} catch (error) {
 				// Erro tratado pelo onError
@@ -164,12 +194,10 @@ export default function EquipamentosPage() {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
 				<div className="text-center">
-					<p className="text-lg font-semibold text-destructive">
+					<p className="font-semibold text-destructive text-lg">
 						Erro ao carregar equipamentos
 					</p>
-					<p className="text-sm text-muted-foreground mt-1">
-						{error.message}
-					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
 					<Button onClick={() => refetch()} variant="outline" className="mt-4">
 						Tentar novamente
 					</Button>
@@ -190,7 +218,9 @@ export default function EquipamentosPage() {
 	const { shouldVirtualize } = useVirtualization(equipments.length, 20);
 
 	const renderEquipmentCard = React.useCallback(
-		({ item }: { item: any }) => <EquipmentCard equipment={item} onDelete={handleDelete} />,
+		({ item }: { item: any }) => (
+			<EquipmentCard equipment={item} onDelete={handleDelete} />
+		),
 		[],
 	);
 
@@ -299,10 +329,10 @@ export default function EquipamentosPage() {
 				<div className="flex items-center justify-center py-12">
 					<div className="text-center">
 						<div className="animate-pulse space-y-4">
-							<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-							<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+							<div className="mx-auto h-4 w-32 rounded bg-muted" />
+							<div className="mx-auto h-4 w-48 rounded bg-muted" />
 						</div>
-						<p className="text-sm text-muted-foreground mt-2">
+						<p className="mt-2 text-muted-foreground text-sm">
 							Carregando equipamentos...
 						</p>
 					</div>
@@ -339,7 +369,11 @@ export default function EquipamentosPage() {
 						) : (
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 								{equipments.map((equipment) => (
-									<EquipmentCard key={equipment.id} equipment={equipment} onDelete={handleDelete} />
+									<EquipmentCard
+										key={equipment.id}
+										equipment={equipment}
+										onDelete={handleDelete}
+									/>
 								))}
 							</div>
 						)

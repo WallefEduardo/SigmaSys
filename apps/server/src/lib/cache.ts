@@ -115,7 +115,9 @@ export class CacheService {
 				}
 			});
 		} catch (error) {
-			logger.error(`Cache mget error for keys ${keys.join(',')}: ${String(error)}`);
+			logger.error(
+				`Cache mget error for keys ${keys.join(",")}: ${String(error)}`,
+			);
 			return keys.map(() => null);
 		}
 	}
@@ -138,7 +140,7 @@ export class CacheService {
 			await pipeline.exec();
 			return true;
 		} catch (error) {
-			const keys = pairs.map((p) => p.key).join(',');
+			const keys = pairs.map((p) => p.key).join(",");
 			logger.error(`Cache mset error for keys ${keys}: ${String(error)}`);
 			return false;
 		}
@@ -154,7 +156,9 @@ export class CacheService {
 			logger.info(`Cache invalidated: ${keys.length} keys matching ${pattern}`);
 			return keys.length;
 		} catch (error) {
-			logger.error(`Cache pattern invalidation error for ${pattern}: ${String(error)}`);
+			logger.error(
+				`Cache pattern invalidation error for ${pattern}: ${String(error)}`,
+			);
 			return 0;
 		}
 	}
@@ -217,7 +221,9 @@ export class CacheService {
 				total: cached.total,
 			};
 		} catch (error) {
-			logger.error(`List cache get error for key ${key} (page ${page}, limit ${limit}): ${String(error)}`);
+			logger.error(
+				`List cache get error for key ${key} (page ${page}, limit ${limit}): ${String(error)}`,
+			);
 			return null;
 		}
 	}

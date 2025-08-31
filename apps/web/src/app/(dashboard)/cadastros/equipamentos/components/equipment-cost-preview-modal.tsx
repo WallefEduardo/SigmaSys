@@ -30,9 +30,13 @@ export function EquipmentCostPreviewModal({
 	onClose,
 }: EquipmentCostPreviewModalProps) {
 	// Buscar custos organizados da nova tabela
-	const { data: costBreakdown, isLoading, error } = api.equipments.getOrganizedCosts.useQuery(
+	const {
+		data: costBreakdown,
+		isLoading,
+		error,
+	} = api.equipments.getOrganizedCosts.useQuery(
 		{ equipmentId },
-		{ enabled: isOpen } // Só busca quando o modal está aberto
+		{ enabled: isOpen }, // Só busca quando o modal está aberto
 	);
 
 	const renderFixedCosts = () => {
@@ -50,7 +54,9 @@ export function EquipmentCostPreviewModal({
 				<div className="space-y-2 rounded bg-muted/50 p-3 text-sm">
 					<div className="flex justify-between">
 						<span>Depreciação:</span>
-						<span>{formatCurrency(Number(costBreakdown.depreciationPerM2))}/m²</span>
+						<span>
+							{formatCurrency(Number(costBreakdown.depreciationPerM2))}/m²
+						</span>
 					</div>
 					<div className="flex justify-between">
 						<span>Energia:</span>
@@ -58,12 +64,15 @@ export function EquipmentCostPreviewModal({
 					</div>
 					<div className="flex justify-between">
 						<span>Manutenção:</span>
-						<span>{formatCurrency(Number(costBreakdown.maintenancePerM2))}/m²</span>
+						<span>
+							{formatCurrency(Number(costBreakdown.maintenancePerM2))}/m²
+						</span>
 					</div>
 				</div>
 
 				<div className="rounded bg-blue-50 p-2 text-blue-800 text-xs dark:bg-blue-950/20 dark:text-blue-300">
-					<strong>Custos fixos:</strong> Não dependem da passada escolhida. Já incluídos no cálculo base.
+					<strong>Custos fixos:</strong> Não dependem da passada escolhida. Já
+					incluídos no cálculo base.
 				</div>
 			</div>
 		);
@@ -71,10 +80,10 @@ export function EquipmentCostPreviewModal({
 
 	const renderPassCosts = () => {
 		const passBreakdowns = costBreakdown?.passBreakdowns as any[] | undefined;
-		
+
 		if (!passBreakdowns || passBreakdowns.length === 0) {
 			return (
-				<div className="rounded bg-yellow-50 p-3 text-yellow-800 text-sm dark:bg-yellow-950/20 dark:text-yellow-300">
+				<div className="rounded bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-950/20 dark:text-yellow-300">
 					<strong>Nenhuma passada configurada</strong>
 					<br />
 					Configure passadas no formulário de edição para ver custos variáveis.
@@ -90,7 +99,7 @@ export function EquipmentCostPreviewModal({
 				</div>
 
 				{passBreakdowns.map((passData) => (
-					<div key={passData.passKey} className="rounded border p-3 space-y-3">
+					<div key={passData.passKey} className="space-y-3 rounded border p-3">
 						<div className="flex items-center justify-between">
 							<div>
 								<h5 className="font-medium">{passData.passName}</h5>
@@ -113,7 +122,7 @@ export function EquipmentCostPreviewModal({
 											<span>{ink.consumableName}</span>
 											<span>
 												{formatCurrency(ink.costPerM2)}/m²
-												<span className="text-muted-foreground text-xs ml-1">
+												<span className="ml-1 text-muted-foreground text-xs">
 													({ink.consumptionMlPerM2}ml/m²)
 												</span>
 											</span>
@@ -138,7 +147,7 @@ export function EquipmentCostPreviewModal({
 											<span>{head.consumableName}</span>
 											<span>
 												{formatCurrency(head.costPerM2)}/m²
-												<span className="text-muted-foreground text-xs ml-1">
+												<span className="ml-1 text-muted-foreground text-xs">
 													(desgaste calculado)
 												</span>
 											</span>
@@ -147,7 +156,9 @@ export function EquipmentCostPreviewModal({
 									<Separator />
 									<div className="flex justify-between font-medium">
 										<span>Total Cabeças:</span>
-										<span>{formatCurrency(passData.totalHeadCostPerM2)}/m²</span>
+										<span>
+											{formatCurrency(passData.totalHeadCostPerM2)}/m²
+										</span>
 									</div>
 								</div>
 							</div>
@@ -156,7 +167,8 @@ export function EquipmentCostPreviewModal({
 				))}
 
 				<div className="rounded bg-green-50 p-2 text-green-800 text-xs dark:bg-green-950/20 dark:text-green-300">
-					<strong>Como usar:</strong> Some os custos fixos com a passada desejada para obter o custo total por m².
+					<strong>Como usar:</strong> Some os custos fixos com a passada
+					desejada para obter o custo total por m².
 				</div>
 			</div>
 		);
@@ -167,8 +179,8 @@ export function EquipmentCostPreviewModal({
 			return (
 				<div className="flex items-center justify-center py-12">
 					<div className="animate-pulse space-y-4 text-center">
-						<div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-						<div className="h-4 bg-muted rounded w-48 mx-auto"></div>
+						<div className="mx-auto h-4 w-32 rounded bg-muted" />
+						<div className="mx-auto h-4 w-48 rounded bg-muted" />
 					</div>
 				</div>
 			);
@@ -192,7 +204,7 @@ export function EquipmentCostPreviewModal({
 		}
 
 		return (
-			<div className="space-y-6 max-h-[60vh] overflow-y-auto">
+			<div className="max-h-[60vh] space-y-6 overflow-y-auto">
 				{renderFixedCosts()}
 				<Separator />
 				{renderPassCosts()}

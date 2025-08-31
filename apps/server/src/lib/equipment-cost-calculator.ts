@@ -8,13 +8,13 @@ export interface EquipmentCostBreakdown {
 		maintenancePerM2: number;
 		totalFixedPerM2: number;
 	};
-	
+
 	// === CUSTOS VARIÁVEIS POR PASSADA ===
 	passCosts: Array<{
 		passKey: string;
 		passName: string;
 		speedM2PerHour: number;
-		
+
 		// Custos de tintas
 		inkCosts: Array<{
 			consumableId: string;
@@ -24,7 +24,7 @@ export interface EquipmentCostBreakdown {
 			costPerM2: number;
 		}>;
 		totalInkCostPerM2: number;
-		
+
 		// Custos de cabeças (usando nova lógica simplificada)
 		printHeadCosts: Array<{
 			consumableId: string;
@@ -32,11 +32,11 @@ export interface EquipmentCostBreakdown {
 			costPerM2: number;
 		}>;
 		totalPrintHeadCostPerM2: number;
-		
+
 		// Total desta passada
 		totalPassCostPerM2: number;
 	}>;
-	
+
 	// Metadados
 	calculatedAt: Date;
 	equipmentType: string;
@@ -46,17 +46,17 @@ export interface EquipmentCostBreakdown {
 export interface EquipmentForCostCalculation {
 	id: string;
 	type: string;
-	
+
 	// Custos base por hora (inputs do usuário)
 	energyCostPerHour?: number;
 	maintenanceCostPerHour?: number;
-	
+
 	// Depreciação
 	acquisitionValue?: number;
 	residualValue?: number;
 	usefulLifeHours?: number;
 	usefulLifeYears?: number;
-	
+
 	// Nova estrutura de passadas integradas com insumos
 	passes?: {
 		[passKey: string]: {
@@ -80,10 +80,12 @@ export class EquipmentCostCalculator {
 	/**
 	 * NOVA LÓGICA: Calcula custos separados - fixos + variáveis por passada
 	 */
-	async calculateEquipmentCost(equipmentId: string): Promise<EquipmentCostBreakdown> {
+	async calculateEquipmentCost(
+		equipmentId: string,
+	): Promise<EquipmentCostBreakdown> {
 		// Buscar equipamento com dados completos
 		const equipment = await this.getEquipmentWithRelations(equipmentId);
-		
+
 		if (!equipment) {
 			throw new Error(`Equipment ${equipmentId} not found`);
 		}
@@ -113,71 +115,74 @@ export class EquipmentCostCalculator {
 	 */
 	async recalculateAndSaveEquipmentCost(equipmentId: string): Promise<void> {
 		const breakdown = await this.calculateEquipmentCost(equipmentId);
-		
+
 		// 1. Desativar breakdown anterior
 		await this.db.equipmentCostBreakdown.updateMany({
 			where: { equipmentId, isActive: true },
-			data: { isActive: false }
+			data: { isActive: false },
 		});
-		
+
 		// 2. Calcular próxima versão
 		const lastBreakdown = await this.db.equipmentCostBreakdown.findFirst({
 			where: { equipmentId },
-			orderBy: { version: 'desc' }
+			orderBy: { version: "desc" },
 		});
 		const nextVersion = (lastBreakdown?.version || 0) + 1;
-		
+
 		// 3. Salvar breakdown COMPLETO na nova tabela organizada
 		await this.db.equipmentCostBreakdown.create({
 			data: {
 				equipmentId,
 				calculatedAt: breakdown.calculatedAt,
-				
+
 				// Custos fixos detalhados
 				depreciationPerM2: breakdown.fixedCosts.depreciationPerM2,
 				energyPerM2: breakdown.fixedCosts.energyPerM2,
 				maintenancePerM2: breakdown.fixedCosts.maintenancePerM2,
 				totalFixedPerM2: breakdown.fixedCosts.totalFixedPerM2,
-				
+
 				// Custos variáveis por passada (JSON estruturado)
-				passBreakdowns: breakdown.passCosts.map(passData => ({
+				passBreakdowns: breakdown.passCosts.map((passData) => ({
 					passKey: passData.passKey,
 					passName: passData.passName,
 					speedM2PerHour: passData.speedM2PerHour,
-					
+
 					// Detalhes das tintas
-					inkDetails: passData.inkCosts.map(ink => ({
+					inkDetails: passData.inkCosts.map((ink) => ({
 						consumableId: ink.consumableId,
 						consumableName: ink.consumableName,
 						consumptionMlPerM2: ink.consumptionMlPerM2,
 						costPerLiter: ink.costPerLiter,
-						costPerM2: ink.costPerM2
+						costPerM2: ink.costPerM2,
 					})),
 					totalInkCostPerM2: passData.totalInkCostPerM2,
-					
+
 					// Detalhes das cabeças
-					headDetails: passData.printHeadCosts.map(head => ({
+					headDetails: passData.printHeadCosts.map((head) => ({
 						consumableId: head.consumableId,
 						consumableName: head.consumableName,
-						costPerM2: head.costPerM2
+						costPerM2: head.costPerM2,
 					})),
 					totalHeadCostPerM2: passData.totalPrintHeadCostPerM2,
-					
+
 					// Total da passada
-					totalPassCostPerM2: passData.totalPassCostPerM2
+					totalPassCostPerM2: passData.totalPassCostPerM2,
 				})),
-				
+
 				// Metadados
 				equipmentType: breakdown.equipmentType,
-				averageSpeed: this.getAveragePassSpeed(await this.getEquipmentWithRelations(equipmentId)) || 60,
+				averageSpeed:
+					this.getAveragePassSpeed(
+						await this.getEquipmentWithRelations(equipmentId),
+					) || 60,
 				totalPasses: breakdown.passCosts.length,
-				
+
 				// Performance
 				isActive: true,
-				version: nextVersion
-			}
+				version: nextVersion,
+			},
 		});
-		
+
 		// 4. Atualizar campos básicos do equipamento (compatibilidade)
 		await this.db.equipment.update({
 			where: { id: equipmentId },
@@ -185,17 +190,19 @@ export class EquipmentCostCalculator {
 				calculatedCostPerM2: breakdown.fixedCosts.totalFixedPerM2,
 				calculatedCostPerHour: null, // não usado mais para impressoras
 				lastCostCalculation: breakdown.calculatedAt,
-			}
+			},
 		});
 	}
 
 	/**
 	 * Buscar equipamento com todas as relações necessárias
 	 */
-	private async getEquipmentWithRelations(equipmentId: string): Promise<EquipmentForCostCalculation | null> {
-		return await this.db.equipment.findUnique({
+	private async getEquipmentWithRelations(
+		equipmentId: string,
+	): Promise<EquipmentForCostCalculation | null> {
+		return (await this.db.equipment.findUnique({
 			where: { id: equipmentId },
-		}) as EquipmentForCostCalculation | null;
+		})) as EquipmentForCostCalculation | null;
 	}
 
 	/**
@@ -206,13 +213,17 @@ export class EquipmentCostCalculator {
 		const averageSpeed = this.getAveragePassSpeed(equipment) || 60;
 
 		// Depreciação por m²
-		const depreciationPerM2 = this.calculateDepreciationPerM2(equipment, averageSpeed);
+		const depreciationPerM2 = this.calculateDepreciationPerM2(
+			equipment,
+			averageSpeed,
+		);
 
 		// Energia por m²
 		const energyPerM2 = (equipment.energyCostPerHour || 0) / averageSpeed;
 
 		// Manutenção por m²
-		const maintenancePerM2 = (equipment.maintenanceCostPerHour || 0) / averageSpeed;
+		const maintenancePerM2 =
+			(equipment.maintenanceCostPerHour || 0) / averageSpeed;
 
 		const totalFixedPerM2 = depreciationPerM2 + energyPerM2 + maintenancePerM2;
 
@@ -238,11 +249,18 @@ export class EquipmentCostCalculator {
 			// Calcular custos de tintas desta passada
 			const inkCosts = await this.calculateInkCostsForPass(passConfig);
 
-			// Calcular custos de cabeças desta passada  
-			const printHeadCosts = await this.calculatePrintHeadCostsForPass(passConfig);
+			// Calcular custos de cabeças desta passada
+			const printHeadCosts =
+				await this.calculatePrintHeadCostsForPass(passConfig);
 
-			const totalInkCostPerM2 = inkCosts.reduce((sum, ink) => sum + ink.costPerM2, 0);
-			const totalPrintHeadCostPerM2 = printHeadCosts.reduce((sum, head) => sum + head.costPerM2, 0);
+			const totalInkCostPerM2 = inkCosts.reduce(
+				(sum, ink) => sum + ink.costPerM2,
+				0,
+			);
+			const totalPrintHeadCostPerM2 = printHeadCosts.reduce(
+				(sum, head) => sum + head.costPerM2,
+				0,
+			);
 			const totalPassCostPerM2 = totalInkCostPerM2 + totalPrintHeadCostPerM2;
 
 			passCosts.push({
@@ -265,10 +283,14 @@ export class EquipmentCostCalculator {
 	/**
 	 * Calcular velocidade média das passadas para custos fixos
 	 */
-	private getAveragePassSpeed(equipment: EquipmentForCostCalculation): number | null {
+	private getAveragePassSpeed(
+		equipment: EquipmentForCostCalculation,
+	): number | null {
 		if (!equipment.passes) return null;
 
-		const speeds = Object.values(equipment.passes).map(pass => pass.speedM2PerHour);
+		const speeds = Object.values(equipment.passes).map(
+			(pass) => pass.speedM2PerHour,
+		);
 		if (speeds.length === 0) return null;
 
 		return speeds.reduce((sum, speed) => sum + speed, 0) / speeds.length;
@@ -277,7 +299,10 @@ export class EquipmentCostCalculator {
 	/**
 	 * Calcular depreciação por m²
 	 */
-	private calculateDepreciationPerM2(equipment: EquipmentForCostCalculation, averageSpeed: number): number {
+	private calculateDepreciationPerM2(
+		equipment: EquipmentForCostCalculation,
+		averageSpeed: number,
+	): number {
 		if (!equipment.acquisitionValue || !equipment.usefulLifeHours) {
 			return 0;
 		}
@@ -285,7 +310,7 @@ export class EquipmentCostCalculator {
 		const residualValue = equipment.residualValue || 0;
 		const depreciableValue = equipment.acquisitionValue - residualValue;
 		const depreciationPerHour = depreciableValue / equipment.usefulLifeHours;
-		
+
 		return depreciationPerHour / averageSpeed;
 	}
 
@@ -301,7 +326,7 @@ export class EquipmentCostCalculator {
 				where: { id: inkConsumable.consumableId },
 			});
 
-			if (!consumable || consumable.type !== 'ink') {
+			if (!consumable || consumable.type !== "ink") {
 				continue; // Pula se insumo não existe ou não é tinta
 			}
 
@@ -332,43 +357,42 @@ export class EquipmentCostCalculator {
 		// Calculate print head costs for this pass
 
 		for (const headConsumable of passConfig.printHeadConsumables || []) {
-
 			// Buscar dados do insumo cadastrado
 			const consumable = await this.db.consumable.findUnique({
 				where: { id: headConsumable.consumableId },
 			});
 
-			console.log('📋 Dados do consumível encontrado:', {
+			console.log("📋 Dados do consumível encontrado:", {
 				found: !!consumable,
 				name: consumable?.name,
 				type: consumable?.type,
 				costPerM2: consumable?.costPerM2,
 				cost: consumable?.cost,
-				lifespanM2: consumable?.lifespanM2
+				lifespanM2: consumable?.lifespanM2,
 			});
 
-			if (!consumable || consumable.type !== 'printHead') {
-				console.log('❌ Pulando consumível (não é cabeça ou não existe)');
+			if (!consumable || consumable.type !== "printHead") {
+				console.log("❌ Pulando consumível (não é cabeça ou não existe)");
 				continue; // Pula se insumo não existe ou não é cabeça
 			}
 
 			// NOVA LÓGICA: Usar costPerM2 diretamente se disponível
 			let costPerM2 = Number(consumable.costPerM2) || 0;
-			
+
 			// Se não tem costPerM2 calculado, calcular baseado na lifespanM2
 			if (costPerM2 === 0 && consumable.lifespanM2) {
 				costPerM2 = Number(consumable.cost) / Number(consumable.lifespanM2);
-				console.log('💰 Custo calculado da lifespan:', {
+				console.log("💰 Custo calculado da lifespan:", {
 					cost: consumable.cost,
 					lifespanM2: consumable.lifespanM2,
-					calculated: costPerM2
+					calculated: costPerM2,
 				});
 			}
 
-			console.log('✅ Cabeça processada:', {
+			console.log("✅ Cabeça processada:", {
 				consumableId: consumable.id,
 				consumableName: consumable.name,
-				finalCostPerM2: costPerM2
+				finalCostPerM2: costPerM2,
 			});
 
 			printHeadCosts.push({
@@ -388,43 +412,38 @@ export class EquipmentCostCalculator {
 	 */
 	async getOrganizedCosts(equipmentId: string) {
 		const breakdown = await this.db.equipmentCostBreakdown.findFirst({
-			where: { 
-				equipmentId, 
-				isActive: true 
+			where: {
+				equipmentId,
+				isActive: true,
 			},
 			select: {
 				id: true,
 				calculatedAt: true,
-				
+
 				// Custos fixos (sempre os mesmos)
 				depreciationPerM2: true,
 				energyPerM2: true,
 				maintenancePerM2: true,
 				totalFixedPerM2: true,
-				
+
 				// Custos por passada (JSON)
 				passBreakdowns: true,
-				
+
 				// Metadados úteis
 				equipmentType: true,
 				averageSpeed: true,
-				totalPasses: true
-			}
+				totalPasses: true,
+			},
 		});
 
 		if (!breakdown) {
-			console.log('🔄 Breakdown não existe, forçando recálculo...');
+			console.log("🔄 Breakdown não existe, forçando recálculo...");
 			// Se não tem breakdown, calcular e salvar
 			await this.recalculateAndSaveEquipmentCost(equipmentId);
 			return await this.getOrganizedCosts(equipmentId);
 		}
 
-		console.log('📊 Breakdown encontrado:', {
-			id: breakdown.id,
-			calculatedAt: breakdown.calculatedAt,
-			hasPassBreakdowns: !!breakdown.passBreakdowns,
-			passCount: Array.isArray(breakdown.passBreakdowns) ? breakdown.passBreakdowns.length : 0
-		});
+		// Breakdown found and ready to use
 
 		// Return existing breakdown if found and valid
 
@@ -436,20 +455,34 @@ export class EquipmentCostCalculator {
 	 */
 	async getCostForProductCalculation(equipmentId: string, passKey?: string) {
 		const breakdown = await this.getOrganizedCosts(equipmentId);
-		
+
+		// Se não especificou passada, usar a passada padrão do equipamento
+		if (!passKey) {
+			const equipment = await this.db.equipment.findUnique({
+				where: { id: equipmentId },
+				select: { defaultPassKey: true },
+			});
+
+			if (equipment?.defaultPassKey) {
+				passKey = equipment.defaultPassKey;
+			}
+		}
+
 		const result = {
 			equipmentId,
 			calculatedAt: breakdown.calculatedAt,
-			
+
 			// Custos fixos (sempre aplicados)
 			fixedCostPerM2: Number(breakdown.totalFixedPerM2),
-			
-			// Se especificou passada, retornar custo específico
-			passCost: null as any
+
+			// Custos da passada (padrão ou especificada)
+			passCost: null as any,
 		};
 
 		if (passKey && breakdown.passBreakdowns) {
-			const passData = (breakdown.passBreakdowns as any[]).find(p => p.passKey === passKey);
+			const passData = (breakdown.passBreakdowns as any[]).find(
+				(p) => p.passKey === passKey,
+			);
 			if (passData) {
 				result.passCost = {
 					passKey: passData.passKey,
@@ -458,9 +491,10 @@ export class EquipmentCostCalculator {
 					inkCostPerM2: passData.totalInkCostPerM2,
 					headCostPerM2: passData.totalHeadCostPerM2,
 					totalVariableCostPerM2: passData.totalPassCostPerM2,
-					
+					isDefaultPass: !arguments[1], // true se usou passada padrão
+
 					// CUSTO TOTAL = Fixo + Variável
-					totalCostPerM2: result.fixedCostPerM2 + passData.totalPassCostPerM2
+					totalCostPerM2: result.fixedCostPerM2 + passData.totalPassCostPerM2,
 				};
 			}
 		}
@@ -476,7 +510,7 @@ export class EquipmentCostCalculator {
 			where: {
 				companyId,
 				active: true,
-				...(equipmentType ? { type: equipmentType } : {})
+				...(equipmentType ? { type: equipmentType } : {}),
 			},
 			select: {
 				id: true,
@@ -489,27 +523,132 @@ export class EquipmentCostCalculator {
 					select: {
 						totalFixedPerM2: true,
 						totalPasses: true,
-						averageSpeed: true
+						averageSpeed: true,
 					},
-					take: 1
-				}
-			}
+					take: 1,
+				},
+			},
 		});
 
-		return equipments.map(equipment => ({
+		return equipments.map((equipment) => ({
 			id: equipment.id,
 			name: equipment.name,
 			type: equipment.type,
-			fixedCostPerM2: equipment.costBreakdowns[0] 
+			fixedCostPerM2: equipment.costBreakdowns[0]
 				? Number(equipment.costBreakdowns[0].totalFixedPerM2)
 				: Number(equipment.calculatedCostPerM2 || 0),
 			totalPasses: equipment.costBreakdowns[0]?.totalPasses || 0,
-			averageSpeed: equipment.costBreakdowns[0] 
+			averageSpeed: equipment.costBreakdowns[0]
 				? Number(equipment.costBreakdowns[0].averageSpeed)
 				: 60,
 			lastCalculated: equipment.lastCostCalculation,
-			hasDetailedBreakdown: !!equipment.costBreakdowns[0]
+			hasDetailedBreakdown: !!equipment.costBreakdowns[0],
 		}));
+	}
+
+	/**
+	 * NOVO: Listar equipamentos com custos TOTAIS usando passada padrão
+	 * Retorna custo completo = custos fixos + custos da passada padrão (tintas + desgaste cabeças)
+	 */
+	async listEquipmentWithTotalCosts(companyId: string, equipmentType?: string) {
+		const equipments = await this.db.equipment.findMany({
+			where: {
+				companyId,
+				active: true,
+				...(equipmentType ? { type: equipmentType } : {}),
+			},
+			select: {
+				id: true,
+				name: true,
+				type: true,
+				code: true,
+				status: true,
+				manufacturer: true,
+				model: true,
+				year: true,
+				location: true,
+				maxWidth: true,
+				maxHeight: true,
+				maxThickness: true,
+				energyCostPerHour: true,
+				maintenanceCostPerHour: true,
+				nextMaintenance: true,
+				tags: true,
+				calculatedCostPerM2: true,
+				calculatedCostPerHour: true,
+				lastCostCalculation: true,
+				defaultPassKey: true, // 🎯 NOVO: Passada padrão
+				creator: { select: { name: true } },
+				usageLog: {
+					take: 5,
+					orderBy: { createdAt: "desc" },
+					include: {
+						operator: { select: { name: true } },
+					},
+				},
+				_count: {
+					select: {
+						productItems: true,
+						usageLog: true,
+					},
+				},
+			},
+		});
+
+		// Para cada equipamento, calcular custo total com passada padrão
+		const equipmentsWithTotalCost = await Promise.all(
+			equipments.map(async (equipment) => {
+				let totalCostPerM2: number | null = null;
+				let costBreakdown = {
+					hasDefaultPass: false,
+					fixedCostPerM2: 0,
+					variableCostPerM2: 0,
+					isComplete: false,
+				};
+
+				// Se tem passada padrão definida, calcular custo total real
+				if (equipment.defaultPassKey) {
+					try {
+						const costData = await this.getCostForProductCalculation(
+							equipment.id,
+							equipment.defaultPassKey,
+						);
+
+						if (costData.passCost) {
+							totalCostPerM2 = costData.passCost.totalCostPerM2;
+							costBreakdown = {
+								hasDefaultPass: true,
+								fixedCostPerM2: costData.fixedCostPerM2,
+								variableCostPerM2: costData.passCost.totalVariableCostPerM2,
+								isComplete: true,
+							};
+						}
+					} catch (error) {
+						console.warn(
+							`Erro ao calcular custo total para equipamento ${equipment.id}:`,
+							error,
+						);
+					}
+				}
+
+				// Fallback para custos básicos se não conseguir calcular total
+				if (totalCostPerM2 === null) {
+					totalCostPerM2 = Number(
+						equipment.calculatedCostPerM2 ||
+							equipment.calculatedCostPerHour ||
+							0,
+					);
+				}
+
+				return {
+					...equipment,
+					totalCostPerM2,
+					costBreakdown,
+				};
+			}),
+		);
+
+		return equipmentsWithTotalCost;
 	}
 }
 

@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
 }
 
@@ -9,123 +9,100 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ==========================================
-// CORE MODELS - Sistema Base
-// ==========================================
-
 model Plan {
-  id              String   @id @default(cuid())
-  name            String   @unique // Nome do plano
-  description     String?  // Descrição detalhada
-  price           Decimal  @db.Decimal(10, 2) // Preço mensal
-  yearlyPrice     Decimal? @db.Decimal(10, 2) // Preço anual (com desconto)
-  currency        String   @default("BRL")
-  
-  // Limites do plano
-  maxUsers        Int      @default(1) // Máximo de usuários
-  maxCompanies    Int      @default(1) // Para superadmin: quantas empresas pode gerenciar
-  maxClients      Int      @default(100) // Máximo de clientes
-  maxProducts     Int      @default(50) // Máximo de produtos
-  maxOrders       Int      @default(100) // Máximo de ordens mensais
-  maxQuotes       Int      @default(100) // Máximo de orçamentos mensais
-  maxStorage      Int      @default(1024) // Storage em MB
-  
-  // Funcionalidades incluídas
-  features        Json     // Array de features habilitadas
-  modules         Json     // Módulos disponíveis
-  
-  // Configurações
-  trialDays       Int      @default(15) // Dias de trial
-  popular         Boolean  @default(false) // Plano popular/destaque
-  active          Boolean  @default(true)
-  
-  // Metadados
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relations
-  companies       Company[]
-  
+  id           String    @id @default(cuid())
+  name         String    @unique
+  description  String?
+  price        Decimal   @db.Decimal(10, 2)
+  yearlyPrice  Decimal?  @db.Decimal(10, 2)
+  currency     String    @default("BRL")
+  maxUsers     Int       @default(1)
+  maxCompanies Int       @default(1)
+  maxClients   Int       @default(100)
+  maxProducts  Int       @default(50)
+  maxOrders    Int       @default(100)
+  maxQuotes    Int       @default(100)
+  maxStorage   Int       @default(1024)
+  features     Json
+  modules      Json
+  trialDays    Int       @default(15)
+  popular      Boolean   @default(false)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  companies    Company[]
+
   @@map("plans")
 }
 
 model Company {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   name        String
-  cnpj        String?  @unique
+  cnpj        String?         @unique
   email       String?
   phone       String?
   address     String?
-  
-  // Plano e trial
   planId      String?
-  plan        Plan?    @relation(fields: [planId], references: [id])
-  trialEndsAt DateTime? // Quando expira o trial
-  
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  users       User[]
+  trialEndsAt DateTime?
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   clients     Client[]
-  products    Product[]
-  materials   Material[]
+  plan        Plan?           @relation(fields: [planId], references: [id])
+  consumables Consumable[]
   equipments  Equipment[]
-  processes   Process[]
   finishes    Finish[]
   inventory   InventoryItem[]
-  quotes      Quote[]
+  materials   Material[]
   orders      Order[]
+  processes   Process[]
+  products    Product[]
+  quotes      Quote[]
   roles       Role[]
-  consumables Consumable[]
+  users       User[]
 
   @@map("companies")
 }
 
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  name        String
-  password    String
-  role        String   @default("user") // superadmin, master, admin, manager, user
-  permissions Json?    // permissões específicas
-  department  String?  // setor do usuário
-  position    String?  // cargo
-  avatar      String?  // URL do avatar
-  phone       String?
-  active      Boolean  @default(true)
-  lastLoginAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdBy   String?  // quem criou este usuário
-  creator     User?    @relation("UserCreator", fields: [createdBy], references: [id])
-  createdUsers User[]  @relation("UserCreator")
-  
-  // Criações
-  createdClients Client[] @relation("ClientCreator")
-  clientInteractions ClientInteraction[] @relation("UserInteraction")
-  createdMaterials Material[] @relation("MaterialCreator")
-  updatedMaterials Material[] @relation("MaterialUpdater")
+  id                  String                 @id @default(cuid())
+  email               String                 @unique
+  name                String
+  password            String
+  role                String                 @default("user")
+  permissions         Json?
+  department          String?
+  position            String?
+  avatar              String?
+  phone               String?
+  active              Boolean                @default(true)
+  lastLoginAt         DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  companyId           String
+  createdBy           String?
+  clientInteractions  ClientInteraction[]    @relation("UserInteraction")
+  createdClients      Client[]               @relation("ClientCreator")
+  equipmentOperations EquipmentUsage[]       @relation("EquipmentOperator")
+  createdEquipments   Equipment[]            @relation("EquipmentCreator")
+  updatedEquipments   Equipment[]            @relation("EquipmentUpdater")
   priceHistoryRecords MaterialPriceHistory[] @relation("PriceHistoryUser")
-  createdEquipments Equipment[] @relation("EquipmentCreator")
-  updatedEquipments Equipment[] @relation("EquipmentUpdater")
-  equipmentOperations EquipmentUsage[] @relation("EquipmentOperator")
+  createdMaterials    Material[]             @relation("MaterialCreator")
+  updatedMaterials    Material[]             @relation("MaterialUpdater")
+  company             Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator             User?                  @relation("UserCreator", fields: [createdBy], references: [id])
+  createdUsers        User[]                 @relation("UserCreator")
 
   @@map("users")
 }
 
 model Permission {
   id          String   @id @default(cuid())
-  name        String   // nome único da permissão
+  name        String
   description String?
-  module      String   // módulo do sistema (users, products, orders, etc)
-  action      String   // ação (create, read, update, delete, export, etc)
-  resource    String?  // recurso específico (opcional)
+  module      String
+  action      String
+  resource    String?
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
 
@@ -137,184 +114,142 @@ model Role {
   id          String   @id @default(cuid())
   name        String
   description String?
-  permissions Json     // array de IDs de permissões
+  permissions Json
   companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@unique([companyId, name])
   @@map("roles")
 }
 
-// ==========================================
-// CLIENTS - Sistema CRM
-// ==========================================
-
 model Client {
-  id          String   @id @default(cuid())
-  name        String
-  email       String?
-  phone       String?
-  document    String?  // CPF ou CNPJ
-  type        String   @default("person") // person, company
-  address     Json?    // endereço completo
-  birthday    DateTime?
-  segment     String?  // segmento de mercado
-  tags        String[] // tags para categorização
-  notes       String?
-  status      String   @default("active") // active, inactive, prospect, lead
-  source      String?  // origem do lead
-  rating      Int?     // classificação 1-5
-  socialMedia Json?    // redes sociais
-  preferences Json?    // preferências do cliente
-  
-  // Campos comerciais
-  creditLimit Decimal? @db.Decimal(12, 4)
-  paymentTerm Int?     // prazo de pagamento padrão (dias)
-  discount    Decimal? @db.Decimal(5, 2) // desconto padrão (%)
-  
-  // Campos de controle
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdBy   String?
-  creator     User?    @relation("ClientCreator", fields: [createdBy], references: [id])
-  
-  // Relacionamentos comerciais
-  quotes      Quote[]
-  orders      Order[]
+  id           String              @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  document     String?
+  type         String              @default("person")
+  address      Json?
+  birthday     DateTime?
+  segment      String?
+  tags         String[]
+  notes        String?
+  status       String              @default("active")
+  source       String?
+  rating       Int?
+  socialMedia  Json?
+  preferences  Json?
+  creditLimit  Decimal?            @db.Decimal(12, 4)
+  paymentTerm  Int?
+  discount     Decimal?            @db.Decimal(5, 2)
+  active       Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  companyId    String
+  createdBy    String?
   interactions ClientInteraction[]
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator      User?               @relation("ClientCreator", fields: [createdBy], references: [id])
+  orders       Order[]
+  quotes       Quote[]
 
   @@map("clients")
 }
 
 model ClientInteraction {
-  id          String   @id @default(cuid())
-  type        String   // call, email, meeting, whatsapp, visit, etc
+  id          String    @id @default(cuid())
+  type        String
   subject     String
   description String?
-  status      String   @default("completed") // scheduled, completed, cancelled
+  status      String    @default("completed")
   scheduledAt DateTime?
   completedAt DateTime?
-  duration    Int?     // duração em minutos
-  outcome     String?  // resultado da interação
-  nextAction  String?  // próxima ação
+  duration    Int?
+  outcome     String?
+  nextAction  String?
   nextDate    DateTime?
-  
-  // Relations
   clientId    String
-  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
   userId      String
-  user        User     @relation("UserInteraction", fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user        User      @relation("UserInteraction", fields: [userId], references: [id])
 
   @@map("client_interactions")
 }
 
-// ==========================================
-// PRODUCTS - Sistema de Produtos (Fase 3)
-// ==========================================
-
 model Product {
-  id          String   @id @default(cuid())
+  id          String             @id @default(cuid())
   name        String
   description String?
-  code        String?  // código interno
+  code        String?
   category    String?
-  formula     Json?    // pricing formula
-  checklist   Json?    // intelligent checklist
-  margin      Json     // markup, liquid margin, final price
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
+  formula     Json?
+  checklist   Json?
+  margin      Json
+  active      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  materials   ProductMaterial[]
-  equipments  ProductEquipment[]
-  processes   ProductProcess[]
-  finishes    ProductFinish[]
-  quoteItems  QuoteItem[]
   orderItems  OrderItem[]
+  equipments  ProductEquipment[]
+  finishes    ProductFinish[]
+  materials   ProductMaterial[]
+  processes   ProductProcess[]
+  company     Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quoteItems  QuoteItem[]
 
   @@map("products")
 }
 
 model Material {
-  id           String   @id @default(cuid())
-  name         String
-  description  String?
-  code         String?  // código interno
-  barcode      String?  // código de barras
-  unit         String   // m2, ml, un, kg, etc
-  cost         Decimal  @db.Decimal(10, 4)
-  lastCost     Decimal? @db.Decimal(10, 4) // último custo para comparação
-  costHistory  Json?    // histórico de preços
-  
-  // Fornecedor
-  supplier     String?
-  supplierCode String?  // código do fornecedor
-  supplierContact Json? // contato do fornecedor
-  
-  // Estoque
-  minStock     Decimal? @db.Decimal(10, 4)
-  maxStock     Decimal? @db.Decimal(10, 4)
-  location     String?  // localização no estoque
-  
-  // Categorização
-  category     String?
-  subcategory  String?
-  brand        String?  // marca
-  model        String?  // modelo
-  color        String?  // cor
-  
-  // Características físicas
-  dimensions   Json?    // dimensões (largura, altura, espessura)
-  weight       Decimal? @db.Decimal(10, 4)
-  volume       Decimal? @db.Decimal(10, 4)
-  density      Decimal? @db.Decimal(10, 4)
-  
-  // Múltiplas unidades de medida
-  alternativeUnits Json? // unidades alternativas com fatores de conversão
-  
-  // Controle de qualidade
-  quality      String?  // A, B, C
-  certification String? // certificações
-  
-  // Imagens e documentos
-  images       String[] // URLs das imagens
-  documents    String[] // URLs de documentos técnicos
-  
-  // Observações
-  notes        String?
-  tags         String[] // tags para busca
-  
-  // Status
-  active       Boolean  @default(true)
-  discontinued Boolean  @default(false)
-  
-  // Auditoria
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  createdBy    String?
-  updatedBy    String?
-
-  // Relations
-  companyId    String
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  creator      User?    @relation("MaterialCreator", fields: [createdBy], references: [id])
-  updater      User?    @relation("MaterialUpdater", fields: [updatedBy], references: [id])
-  productItems ProductMaterial[]
-  inventory    InventoryItem[]
-  priceHistory MaterialPriceHistory[]
+  id               String                 @id @default(cuid())
+  name             String
+  description      String?
+  code             String?
+  barcode          String?
+  unit             String
+  cost             Decimal                @db.Decimal(10, 4)
+  lastCost         Decimal?               @db.Decimal(10, 4)
+  costHistory      Json?
+  supplier         String?
+  supplierCode     String?
+  supplierContact  Json?
+  minStock         Decimal?               @db.Decimal(10, 4)
+  maxStock         Decimal?               @db.Decimal(10, 4)
+  location         String?
+  category         String?
+  subcategory      String?
+  brand            String?
+  model            String?
+  color            String?
+  dimensions       Json?
+  weight           Decimal?               @db.Decimal(10, 4)
+  volume           Decimal?               @db.Decimal(10, 4)
+  density          Decimal?               @db.Decimal(10, 4)
+  alternativeUnits Json?
+  quality          String?
+  certification    String?
+  images           String[]
+  documents        String[]
+  notes            String?
+  tags             String[]
+  active           Boolean                @default(true)
+  discontinued     Boolean                @default(false)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  createdBy        String?
+  updatedBy        String?
+  companyId        String
+  inventory        InventoryItem[]
+  priceHistory     MaterialPriceHistory[]
+  company          Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator          User?                  @relation("MaterialCreator", fields: [createdBy], references: [id])
+  updater          User?                  @relation("MaterialUpdater", fields: [updatedBy], references: [id])
+  productItems     ProductMaterial[]
 
   @@unique([companyId, code])
   @@index([companyId, category])
@@ -323,147 +258,72 @@ model Material {
 }
 
 model MaterialPriceHistory {
-  id          String   @id @default(cuid())
-  oldPrice    Decimal  @db.Decimal(10, 4)
-  newPrice    Decimal  @db.Decimal(10, 4)
-  reason      String?  // motivo da alteração
-  supplier    String?  // fornecedor da cotação
-  createdAt   DateTime @default(now())
-  createdBy   String?
-
-  // Relations
-  materialId  String
-  material    Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  user        User?    @relation("PriceHistoryUser", fields: [createdBy], references: [id])
+  id         String   @id @default(cuid())
+  oldPrice   Decimal  @db.Decimal(10, 4)
+  newPrice   Decimal  @db.Decimal(10, 4)
+  reason     String?
+  supplier   String?
+  createdAt  DateTime @default(now())
+  createdBy  String?
+  materialId String
+  user       User?    @relation("PriceHistoryUser", fields: [createdBy], references: [id])
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
   @@map("material_price_history")
 }
 
 model Equipment {
-  id            String   @id @default(cuid())
-  name          String
-  description   String?
-  code          String?  // código interno
-  type          String   // "printing" ou "machining"
-  
-  // === CUSTOS BASE (INPUTS DO USUÁRIO) ===
-  energyCostPerHour      Decimal? @db.Decimal(10, 4) // custo de energia por hora
-  maintenanceCostPerHour Decimal? @db.Decimal(10, 4) // custo de manutenção por hora
-  
-  // === SEMPRE M² PARA IMPRESSORAS ===
-  // Impressoras sempre calculam custo em m² - sem campo costUnit
-  
-  // === CUSTOS CALCULADOS AUTOMATICAMENTE ===
-  calculatedCostPerM2   Decimal? @db.Decimal(10, 4) // custo calculado por m²
-  calculatedCostPerHour Decimal? @db.Decimal(10, 4) // custo calculado por hora
-  lastCostCalculation   DateTime? // quando foi calculado pela última vez
-  
-  // === DEPRECIAÇÃO E VIDA ÚTIL (SIMPLIFICADO) ===
-  acquisitionValue     Decimal? @db.Decimal(15, 2) // valor de aquisição
-  residualValue        Decimal? @db.Decimal(15, 2) // valor residual
-  depreciationMethod   String?  // "linear" ou "accelerated"
-  depreciationPerHour  Decimal? @db.Decimal(10, 4) // custo de depreciação por hora (calculado automaticamente)
-  usefulLifeHours      Int?     // vida útil em horas
-  usefulLifeYears      Int?     // vida útil em anos
-  
-  // Capacidade geral
-  maxWidth      Decimal? @db.Decimal(10, 4) // largura máxima
-  maxHeight     Decimal? @db.Decimal(10, 4) // altura máxima
-  maxThickness  Decimal? @db.Decimal(10, 4) // espessura máxima
-  
-  // === CONFIGURAÇÕES ESPECÍFICAS POR TIPO ===
-  printingConfig Json?   // config para impressoras + sistema de passadas
-  machiningConfig Json?  // config para usinagem + ferramentas
-  
-  // === SISTEMA DE PASSADAS INTEGRADO COM INSUMOS ===
-  passes        Json?    // configuração de passadas integradas com insumos cadastrados
-  /*
-  NOVA ESTRUTURA - Integrada com insumos reais cadastrados:
-  {
-    "draft": { 
-      name: "Rascunho",
-      description: "Qualidade rascunho - alta velocidade",
-      speedM2PerHour: 100, // m²/h - BASE PARA CONVERSÃO HORA → M²
-      inkConsumables: [
-        {
-          consumableId: "cuid_tinta_cyan", // ID do insumo cadastrado tipo "ink"
-          consumptionMlPerM2: 8 // quantos ml desta tinta por m²
-        },
-        {
-          consumableId: "cuid_tinta_magenta",
-          consumptionMlPerM2: 5
-        }
-      ],
-      printHeadConsumables: [
-        {
-          consumableId: "cuid_cabeca_dx5", // ID do insumo cadastrado tipo "printHead"
-          // Consumo vem da configuração do próprio insumo (shotsPerM2, lifespan, etc)
-        }
-      ]
-    },
-    "normal": { 
-      name: "Normal", 
-      description: "Qualidade normal - balanceada",
-      speedM2PerHour: 60,
-      inkConsumables: [
-        {
-          consumableId: "cuid_tinta_cyan",
-          consumptionMlPerM2: 15 // mais tinta = melhor qualidade
-        }
-      ],
-      printHeadConsumables: [
-        {
-          consumableId: "cuid_cabeca_dx5"
-        }
-      ]
-    }
-  }
-  // O custo é calculado automaticamente:
-  // - Tintas: consumptionMlPerM2 * (custo_insumo_por_litro / 1000)
-  // - Cabeças: (custo_insumo / lifespan_disparos) * disparos_por_m2
-  */
-  
-  // Status operacional
-  status        String   @default("available") // available, busy, maintenance, broken
-  location      String?  // localização física
-  serialNumber  String?  // número de série
-  manufacturer  String?  // fabricante
-  model         String?  // modelo
-  year          Int?     // ano de fabricação
-  
-  // Manutenção
-  lastMaintenance DateTime?
-  nextMaintenance DateTime?
-  maintenanceInterval Int? // dias entre manutenções
-  maintenanceNotes String?
-  
-  // Documentação
-  manualUrl     String?  // URL do manual
-  images        String[] // fotos do equipamento
-  documents     String[] // documentos técnicos
-  
-  // Observações
-  notes         String?
-  tags          String[]
-  
-  // Status
-  active        Boolean  @default(true)
-  
-  // Auditoria
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdBy     String?
-  updatedBy     String?
-
-  // Relations
-  companyId     String
-  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  creator       User?    @relation("EquipmentCreator", fields: [createdBy], references: [id])
-  updater       User?    @relation("EquipmentUpdater", fields: [updatedBy], references: [id])
-  productItems  ProductEquipment[]
-  usageLog      EquipmentUsage[]
-  installedConsumables EquipmentConsumable[]
-  costBreakdowns EquipmentCostBreakdown[] // custos organizados
+  id                     String                   @id @default(cuid())
+  name                   String
+  description            String?
+  code                   String?
+  type                   String
+  energyCostPerHour      Decimal?                 @db.Decimal(10, 4)
+  maintenanceCostPerHour Decimal?                 @db.Decimal(10, 4)
+  calculatedCostPerM2    Decimal?                 @db.Decimal(10, 4)
+  calculatedCostPerHour  Decimal?                 @db.Decimal(10, 4)
+  lastCostCalculation    DateTime?
+  acquisitionValue       Decimal?                 @db.Decimal(15, 2)
+  residualValue          Decimal?                 @db.Decimal(15, 2)
+  depreciationMethod     String?
+  depreciationPerHour    Decimal?                 @db.Decimal(10, 4)
+  usefulLifeHours        Int?
+  usefulLifeYears        Int?
+  maxWidth               Decimal?                 @db.Decimal(10, 4)
+  maxHeight              Decimal?                 @db.Decimal(10, 4)
+  maxThickness           Decimal?                 @db.Decimal(10, 4)
+  printingConfig         Json?
+  machiningConfig        Json?
+  passes                 Json?
+  defaultPassKey         String?
+  status                 String                   @default("available")
+  location               String?
+  serialNumber           String?
+  manufacturer           String?
+  model                  String?
+  year                   Int?
+  lastMaintenance        DateTime?
+  nextMaintenance        DateTime?
+  maintenanceInterval    Int?
+  maintenanceNotes       String?
+  manualUrl              String?
+  images                 String[]
+  documents              String[]
+  notes                  String?
+  tags                   String[]
+  active                 Boolean                  @default(true)
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  createdBy              String?
+  updatedBy              String?
+  companyId              String
+  installedConsumables   EquipmentConsumable[]
+  costBreakdowns         EquipmentCostBreakdown[]
+  usageLog               EquipmentUsage[]
+  company                Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator                User?                    @relation("EquipmentCreator", fields: [createdBy], references: [id])
+  updater                User?                    @relation("EquipmentUpdater", fields: [updatedBy], references: [id])
+  productItems           ProductEquipment[]
 
   @@unique([companyId, code])
   @@index([companyId, type])
@@ -471,179 +331,102 @@ model Equipment {
   @@map("equipments")
 }
 
-// ==========================================
-// EQUIPMENT COST BREAKDOWN - Sistema de Custos Organizados
-// ==========================================
-
 model EquipmentCostBreakdown {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   equipmentId       String
-  calculatedAt      DateTime @default(now())
-  
-  // === CUSTOS FIXOS DETALHADOS (por m²) ===
-  depreciationPerM2 Decimal  @db.Decimal(12, 8) // custo de depreciação por m²
-  energyPerM2       Decimal  @db.Decimal(12, 8) // custo de energia por m²
-  maintenancePerM2  Decimal  @db.Decimal(12, 8) // custo de manutenção por m²
-  totalFixedPerM2   Decimal  @db.Decimal(12, 8) // total custos fixos por m²
-  
-  // === CUSTOS VARIÁVEIS POR PASSADA ===
-  passBreakdowns    Json     // Array detalhado: [{ passKey, passName, speedM2PerHour, totalInkCost, totalHeadCost, totalPassCost, details }]
-  
-  // === METADADOS ===
-  equipmentType     String   // "printing" ou "machining" 
-  averageSpeed      Decimal  @db.Decimal(8, 2) // velocidade média das passadas em m²/h
-  totalPasses       Int      // número total de passadas configuradas
-  
-  // === PERFORMANCE/CACHE ===
-  isActive          Boolean  @default(true)  // se é o breakdown mais atual
-  version           Int      @default(1)     // versão do cálculo
-  
-  // === AUDITORIA ===
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  // Relations
+  calculatedAt      DateTime  @default(now())
+  depreciationPerM2 Decimal   @db.Decimal(12, 8)
+  energyPerM2       Decimal   @db.Decimal(12, 8)
+  maintenancePerM2  Decimal   @db.Decimal(12, 8)
+  totalFixedPerM2   Decimal   @db.Decimal(12, 8)
+  passBreakdowns    Json
+  equipmentType     String
+  averageSpeed      Decimal   @db.Decimal(8, 2)
+  totalPasses       Int
+  isActive          Boolean   @default(true)
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   equipment         Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  
-  // Índices para performance
-  @@index([equipmentId, isActive])  // busca rápida do breakdown ativo
-  @@index([equipmentId, calculatedAt]) // histórico ordenado
-  @@index([isActive, equipmentType]) // relatórios por tipo
-  @@unique([equipmentId, version]) // controle de versão
+
+  @@unique([equipmentId, version])
+  @@index([equipmentId, isActive])
+  @@index([equipmentId, calculatedAt])
+  @@index([isActive, equipmentType])
   @@map("equipment_cost_breakdowns")
 }
 
 model EquipmentUsage {
-  id          String   @id @default(cuid())
-  startTime   DateTime
-  endTime     DateTime?
-  duration    Int?     // minutos de uso
-  operatorId  String?  // usuário que operou
-  orderId     String?  // ordem de serviço relacionada
-  description String?  // descrição do trabalho
-  cost        Decimal? @db.Decimal(10, 4) // custo calculado
-  
-  // Consumo de insumos
-  consumablesUsed Json? // insumos consumidos
-  
-  // Métricas de produção
-  unitsProduced Int?
-  area          Decimal? @db.Decimal(10, 4) // m² processados
-  length        Decimal? @db.Decimal(10, 4) // metros processados
-  
-  createdAt   DateTime @default(now())
-
-  // Relations
-  equipmentId String
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  operator    User?     @relation("EquipmentOperator", fields: [operatorId], references: [id])
+  id              String    @id @default(cuid())
+  startTime       DateTime
+  endTime         DateTime?
+  duration        Int?
+  operatorId      String?
+  orderId         String?
+  description     String?
+  cost            Decimal?  @db.Decimal(10, 4)
+  consumablesUsed Json?
+  unitsProduced   Int?
+  area            Decimal?  @db.Decimal(10, 4)
+  length          Decimal?  @db.Decimal(10, 4)
+  createdAt       DateTime  @default(now())
+  equipmentId     String
+  equipment       Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  operator        User?     @relation("EquipmentOperator", fields: [operatorId], references: [id])
 
   @@map("equipment_usage")
 }
 
-// ==========================================
-// CONSUMABLES - Sistema de Insumos
-// ==========================================
-
-// Enum para unidades de medida padronizadas
-enum ConsumableUnit {
-  // Unidades por área (tintas)
-  ML_M2      // ml/m² - mililitros por metro quadrado (PRINCIPAL para tintas)
-  L_M2       // L/m² - litros por metro quadrado
-  G_M2       // g/m² - gramas por metro quadrado (tintas sólidas)
-  
-  // Unidades volumétricas 
-  ML         // ml - mililitros
-  L          // L - litros
-  
-  // Unidades de peso
-  G          // g - gramas
-  KG         // kg - quilogramas
-  
-  // Unidades de quantidade
-  PCS        // pcs - peças/unidades
-  
-  // Unidades por passada (específicas)
-  ML_PASS    // ml/passada - para configurações específicas
-  
-  // Unidades para cabeças de impressão
-  SHOTS      // disparos - vida útil em disparos totais
-  SHOTS_M2   // disparos/m² - desgaste por área
-  
-  @@map("consumable_units")
-}
-
 model Consumable {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  code        String?  // código interno
-  type        String   // ink, printHead, tool, material, other
-  
-  // Informações de custo
-  cost        Decimal        @db.Decimal(10, 4) // custo por unidade
-  unit        ConsumableUnit // unidade padronizada
-  supplier    String?        // fornecedor
-  
-  // Para tintas
-  color       String?  // cor da tinta
-  volumeMl    Int?     // volume em ml
-  
-  // Para cabeças de impressão - SIMPLIFICADO
-  lifespanM2  Int?     // vida útil total em m² (para printHead)
-  model       String?  // modelo específico da cabeça (DX5, DX7, I3200, etc)
-  costPerM2   Decimal? @db.Decimal(10, 6) // custo por m² calculado automaticamente (para printHead)
-  
-  // Para ferramentas de usinagem
-  material    String?  // material da ferramenta
-  diameter    Decimal? @db.Decimal(10, 2) // diâmetro
-  
-  // Controle de estoque
-  minStock         Int     @default(0)
-  maxStock         Int     @default(0)
-  currentStock     Int     @default(0)
-  alertThreshold   Int     @default(0) // nível de alerta
-  autoReorder      Boolean @default(false)
-  
-  // Status e metadados
-  active      Boolean  @default(true)
-  tags        String[] @default([])
-  notes       String?
-  
-  // Auditoria
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id                     String                @id @default(cuid())
+  name                   String
+  description            String?
+  code                   String?
+  type                   String
+  cost                   Decimal               @db.Decimal(10, 4)
+  unit                   ConsumableUnit
+  supplier               String?
+  color                  String?
+  volumeMl               Int?
+  lifespanM2             Int?
+  model                  String?
+  costPerM2              Decimal?              @db.Decimal(10, 6)
+  material               String?
+  diameter               Decimal?              @db.Decimal(10, 2)
+  minStock               Int                   @default(0)
+  maxStock               Int                   @default(0)
+  currentStock           Int                   @default(0)
+  alertThreshold         Int                   @default(0)
+  autoReorder            Boolean               @default(false)
+  active                 Boolean               @default(true)
+  tags                   String[]              @default([])
+  notes                  String?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  companyId              String
+  company                Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
   equipmentInstallations EquipmentConsumable[]
-  
+
   @@unique([companyId, code])
   @@index([companyId, type])
   @@index([companyId, active])
   @@map("consumables")
 }
 
-// Tabela de relacionamento entre Equipment e Consumable (cabeças instaladas)
 model EquipmentConsumable {
-  id               String   @id @default(cuid())
-  position         String   // posição no equipamento (A1, B2, etc)
-  installationDate DateTime @default(now())
-  currentUse       Int      @default(0) // uso atual específico desta instalação
+  id               String     @id @default(cuid())
+  position         String
+  installationDate DateTime   @default(now())
+  currentUse       Int        @default(0)
   notes            String?
-  active           Boolean  @default(true)
-  
-  // Auditoria
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  
-  // Relations
+  active           Boolean    @default(true)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
   equipmentId      String
   consumableId     String
-  equipment        Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
   consumable       Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
-  
+  equipment        Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
   @@unique([equipmentId, consumableId, position])
   @@index([equipmentId])
   @@index([consumableId])
@@ -651,19 +434,17 @@ model EquipmentConsumable {
 }
 
 model Process {
-  id           String   @id @default(cuid())
+  id           String           @id @default(cuid())
   name         String
   description  String?
-  costPerHour  Decimal  @db.Decimal(10, 4)
+  costPerHour  Decimal          @db.Decimal(10, 4)
   sector       String?
-  timeUnit     String   // hour, m2, ml, perimeter, etc
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
+  timeUnit     String
+  active       Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
   companyId    String
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
   productItems ProductProcess[]
 
   @@map("processes")
@@ -672,29 +453,25 @@ model Process {
 model ProductMaterial {
   id         String   @id @default(cuid())
   quantity   Decimal  @db.Decimal(10, 4)
-  formula    String?  // calculation formula
+  formula    String?
   createdAt  DateTime @default(now())
-
-  // Relations
   productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   materialId String
   material   Material @relation(fields: [materialId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_materials")
 }
 
 model ProductEquipment {
-  id          String   @id @default(cuid())
-  timeNeeded  Decimal  @db.Decimal(10, 4)
+  id          String    @id @default(cuid())
+  timeNeeded  Decimal   @db.Decimal(10, 4)
   formula     String?
-  createdAt   DateTime @default(now())
-
-  // Relations
+  createdAt   DateTime  @default(now())
   productId   String
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   equipmentId String
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_equipments")
 }
@@ -704,12 +481,10 @@ model ProductProcess {
   timeNeeded Decimal  @db.Decimal(10, 4)
   formula    String?
   createdAt  DateTime @default(now())
-
-  // Relations
   productId  String
-  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   processId  String
-  process    Process @relation(fields: [processId], references: [id])
+  process    Process  @relation(fields: [processId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_processes")
 }
@@ -718,164 +493,156 @@ model ProductFinish {
   id        String   @id @default(cuid())
   quantity  Decimal  @db.Decimal(10, 4)
   createdAt DateTime @default(now())
-
-  // Relations
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   finishId  String
-  finish    Finish  @relation(fields: [finishId], references: [id])
+  finish    Finish   @relation(fields: [finishId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_finishes")
 }
 
 model Finish {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   name        String
   description String?
-  composition Json     // materials + processes
-  cost        Decimal  @db.Decimal(10, 4)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
+  composition Json
+  cost        Decimal         @db.Decimal(10, 4)
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   products    ProductFinish[]
 
   @@map("finishes")
 }
 
-// ==========================================
-// INVENTORY - Sistema de Estoque (Fase 5)
-// ==========================================
-
 model InventoryItem {
-  id          String   @id @default(cuid())
-  quantity    Decimal  @db.Decimal(10, 4)
-  minStock    Decimal? @db.Decimal(10, 4)
-  location    String?
-  batch       String?
-  dimensions  Json?    // for fractional inventory
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  materialId  String
-  material    Material @relation(fields: [materialId], references: [id])
-  movements   InventoryMovement[]
+  id         String              @id @default(cuid())
+  quantity   Decimal             @db.Decimal(10, 4)
+  minStock   Decimal?            @db.Decimal(10, 4)
+  location   String?
+  batch      String?
+  dimensions Json?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  companyId  String
+  materialId String
+  company    Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  material   Material            @relation(fields: [materialId], references: [id])
+  movements  InventoryMovement[]
 
   @@map("inventory_items")
 }
 
 model InventoryMovement {
-  id          String   @id @default(cuid())
-  type        String   // in, out
-  quantity    Decimal  @db.Decimal(10, 4)
+  id          String        @id @default(cuid())
+  type        String
+  quantity    Decimal       @db.Decimal(10, 4)
   reason      String
-  reference   String?  // order, adjustment, etc
-  createdAt   DateTime @default(now())
-
-  // Relations
+  reference   String?
+  createdAt   DateTime      @default(now())
   inventoryId String
   inventory   InventoryItem @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
 
   @@map("inventory_movements")
 }
 
-// ==========================================
-// QUOTES & ORDERS - Sistema Comercial (Fase 6)
-// ==========================================
-
 model Quote {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   number      String
   title       String
   description String?
-  status      String   @default("draft") // draft, sent, approved, rejected, expired
-  totalCost   Decimal  @db.Decimal(12, 4)
-  totalPrice  Decimal  @db.Decimal(12, 4)
-  margin      Decimal  @db.Decimal(5, 2)
+  status      String      @default("draft")
+  totalCost   Decimal     @db.Decimal(12, 4)
+  totalPrice  Decimal     @db.Decimal(12, 4)
+  margin      Decimal     @db.Decimal(5, 2)
   validUntil  DateTime?
   notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   companyId   String
-  company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   clientId    String
-  client      Client     @relation(fields: [clientId], references: [id])
-  items       QuoteItem[]
   order       Order?
+  items       QuoteItem[]
+  client      Client      @relation(fields: [clientId], references: [id])
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@unique([companyId, number])
   @@map("quotes")
 }
 
 model QuoteItem {
-  id          String   @id @default(cuid())
-  quantity    Decimal  @db.Decimal(10, 4)
-  unitCost    Decimal  @db.Decimal(10, 4)
-  unitPrice   Decimal  @db.Decimal(10, 4)
-  totalCost   Decimal  @db.Decimal(12, 4)
-  totalPrice  Decimal  @db.Decimal(12, 4)
-  checklist   Json?    // filled checklist
-  createdAt   DateTime @default(now())
-
-  // Relations
-  quoteId     String
-  quote       Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-  productId   String
-  product     Product @relation(fields: [productId], references: [id])
+  id         String   @id @default(cuid())
+  quantity   Decimal  @db.Decimal(10, 4)
+  unitCost   Decimal  @db.Decimal(10, 4)
+  unitPrice  Decimal  @db.Decimal(10, 4)
+  totalCost  Decimal  @db.Decimal(12, 4)
+  totalPrice Decimal  @db.Decimal(12, 4)
+  checklist  Json?
+  createdAt  DateTime @default(now())
+  quoteId    String
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quote      Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
   @@map("quote_items")
 }
 
 model Order {
-  id          String   @id @default(cuid())
-  number      String
-  title       String
-  description String?
-  status      String   @default("pending") // pending, production, completed, delivered
-  totalCost   Decimal  @db.Decimal(12, 4)
-  totalPrice  Decimal  @db.Decimal(12, 4)
-  startDate   DateTime?
+  id           String      @id @default(cuid())
+  number       String
+  title        String
+  description  String?
+  status       String      @default("pending")
+  totalCost    Decimal     @db.Decimal(12, 4)
+  totalPrice   Decimal     @db.Decimal(12, 4)
+  startDate    DateTime?
   deliveryDate DateTime?
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  companyId   String
-  company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  clientId    String
-  client      Client     @relation(fields: [clientId], references: [id])
-  quoteId     String?    @unique
-  quote       Quote?     @relation(fields: [quoteId], references: [id])
-  items       OrderItem[]
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  companyId    String
+  clientId     String
+  quoteId      String?     @unique
+  items        OrderItem[]
+  client       Client      @relation(fields: [clientId], references: [id])
+  company      Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quote        Quote?      @relation(fields: [quoteId], references: [id])
 
   @@unique([companyId, number])
   @@map("orders")
 }
 
 model OrderItem {
-  id          String   @id @default(cuid())
-  quantity    Decimal  @db.Decimal(10, 4)
-  unitCost    Decimal  @db.Decimal(10, 4)
-  unitPrice   Decimal  @db.Decimal(10, 4)
-  totalCost   Decimal  @db.Decimal(12, 4)
-  totalPrice  Decimal  @db.Decimal(12, 4)
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
-
-  // Relations
-  orderId     String
-  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId   String
-  product     Product @relation(fields: [productId], references: [id])
+  id         String   @id @default(cuid())
+  quantity   Decimal  @db.Decimal(10, 4)
+  unitCost   Decimal  @db.Decimal(10, 4)
+  unitPrice  Decimal  @db.Decimal(10, 4)
+  totalCost  Decimal  @db.Decimal(12, 4)
+  totalPrice Decimal  @db.Decimal(12, 4)
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  orderId    String
+  productId  String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
 
   @@map("order_items")
+}
+
+enum ConsumableUnit {
+  ML_M2
+  L_M2
+  G_M2
+  ML
+  L
+  G
+  KG
+  PCS
+  ML_PASS
+  SHOTS
+  SHOTS_M2
+
+  @@map("consumable_units")
 }

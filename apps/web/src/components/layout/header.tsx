@@ -34,7 +34,7 @@ export function Header() {
 	};
 
 	return (
-		<header className="h-full w-full flex items-center justify-between border-b bg-background px-6">
+		<header className="flex h-full w-full items-center justify-between border-b bg-background px-6">
 			<div className="flex items-center gap-4">
 				<h1 className="font-semibold text-foreground text-xl">
 					Sistema ERP - Comunicação Visual

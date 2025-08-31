@@ -7,6 +7,7 @@ import {
 	ChevronLeft,
 	ChevronRight,
 	DollarSign,
+	Droplets,
 	Factory,
 	FileText,
 	Home,
@@ -18,16 +19,15 @@ import {
 	Truck,
 	Users,
 	Wrench,
-	Droplets,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/contexts/sidebar-context";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { useSidebar } from "@/contexts/sidebar-context";
 
 interface MenuItem {
 	id: string;

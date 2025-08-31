@@ -1,6 +1,16 @@
 "use client";
 
-import { Calendar, Calculator, Edit, MapPin, Settings, Trash2, Zap } from "lucide-react";
+import {
+	AlertCircle,
+	Calculator,
+	Calendar,
+	CheckCircle,
+	Edit,
+	MapPin,
+	Settings,
+	Trash2,
+	Zap,
+} from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +35,7 @@ interface EquipmentCardProps {
 export const EquipmentCard = React.memo<EquipmentCardProps>(
 	function EquipmentCard({ equipment, onDelete }) {
 		const [showCostPreview, setShowCostPreview] = React.useState(false);
-		
+
 		// Usando utility function de formatação
 
 		const getStatusInfo = (status: string) => {
@@ -82,191 +92,234 @@ export const EquipmentCard = React.memo<EquipmentCardProps>(
 
 		return (
 			<>
-			<Card className="flex h-full flex-col transition-shadow hover:shadow-lg">
-				<CardHeader className="pb-3">
-					<div className="flex items-start justify-between gap-2">
-						<div className="min-w-0 flex-1">
-							<CardTitle className="line-clamp-2 text-lg leading-tight">
-								{equipment.name}
-							</CardTitle>
-							<CardDescription className="mt-1 flex items-center gap-2">
-								<span>{equipment.code}</span>
-								<Badge className={typeInfo.color}>{typeInfo.label}</Badge>
-							</CardDescription>
-						</div>
-						<Badge variant={statusInfo.variant} className="shrink-0">
-							{statusInfo.label}
-						</Badge>
-					</div>
-				</CardHeader>
-
-				<CardContent className="flex-1 space-y-3">
-					<div className="space-y-2">
-						<div className="flex items-center justify-between">
-							<span className="text-muted-foreground text-sm">
-								Custo por m²: {/* Sempre m² para impressoras */}
-							</span>
-							<div className="flex items-center gap-2">
-								<span className="font-semibold text-green-600">
-									{equipment.calculatedCostPerM2 ? `${formatCurrency(equipment.calculatedCostPerM2)}/m²` :
-									 equipment.calculatedCostPerHour ? `${formatCurrency(equipment.calculatedCostPerHour)}/h` :
-									 "Não calculado"}
-								</span>
-								{equipment.type === "printing" && (
-									<Button
-										variant="ghost"
-										size="sm"
-										className="h-6 w-6 p-0"
-										onClick={() => setShowCostPreview(true)}
-										title="Ver detalhamento dos custos"
-									>
-										<Calculator className="h-3 w-3" />
-									</Button>
-								)}
+				<Card className="flex h-full flex-col transition-shadow hover:shadow-lg">
+					<CardHeader className="pb-3">
+						<div className="flex items-start justify-between gap-2">
+							<div className="min-w-0 flex-1">
+								<CardTitle className="line-clamp-2 text-lg leading-tight">
+									{equipment.name}
+								</CardTitle>
+								<CardDescription className="mt-1 flex items-center gap-2">
+									<span>{equipment.code}</span>
+									<Badge className={typeInfo.color}>{typeInfo.label}</Badge>
+								</CardDescription>
 							</div>
+							<Badge variant={statusInfo.variant} className="shrink-0">
+								{statusInfo.label}
+							</Badge>
 						</div>
+					</CardHeader>
 
-						{equipment.manufacturer && (
+					<CardContent className="flex-1 space-y-3">
+						<div className="space-y-2">
 							<div className="flex items-center justify-between">
 								<span className="text-muted-foreground text-sm">
-									Fabricante:
+									Custo por m²: {/* Sempre m² para impressoras */}
 								</span>
-								<span className="font-medium text-sm">
-									{equipment.manufacturer}
-								</span>
-							</div>
-						)}
+								<div className="flex items-center gap-2">
+									{/* 🎯 NOVA LÓGICA: Mostrar custo total com indicadores visuais */}
+									{equipment.totalCostPerM2 && equipment.totalCostPerM2 > 0 ? (
+										<div className="flex items-center gap-2">
+											<span className="font-semibold text-green-600">
+												{formatCurrency(equipment.totalCostPerM2)}/m²
+											</span>
+											{/* Indicador visual de custo completo */}
+											{equipment.costBreakdown?.isComplete ? (
+												<div
+													className="flex items-center gap-1"
+													title="Custo total: Fixos + Tintas + Desgaste de Cabeças"
+												>
+													<CheckCircle className="h-3 w-3 text-green-500" />
+													<span className="text-green-600 text-xs">Total</span>
+												</div>
+											) : (
+												<div
+													className="flex items-center gap-1"
+													title="Custo parcial - Configure passada padrão para custo total"
+												>
+													<AlertCircle className="h-3 w-3 text-orange-500" />
+													<span className="text-orange-600 text-xs">
+														Parcial
+													</span>
+												</div>
+											)}
+										</div>
+									) : (
+										<div className="flex items-center gap-2">
+											<span className="font-semibold text-orange-600">
+												{equipment.calculatedCostPerM2
+													? `${formatCurrency(equipment.calculatedCostPerM2)}/m²`
+													: equipment.calculatedCostPerHour
+														? `${formatCurrency(equipment.calculatedCostPerHour)}/h`
+														: "Não calculado"}
+											</span>
+											<div
+												className="flex items-center gap-1"
+												title="Configure passadas e passada padrão para obter custo total"
+											>
+												<AlertCircle className="h-3 w-3 text-orange-500" />
+												<span className="text-orange-600 text-xs">
+													Incompleto
+												</span>
+											</div>
+										</div>
+									)}
 
-						{equipment.model && (
-							<div className="flex items-center justify-between">
-								<span className="text-muted-foreground text-sm">Modelo:</span>
-								<span className="font-medium text-sm">{equipment.model}</span>
+									{equipment.type === "printing" && (
+										<Button
+											variant="ghost"
+											size="sm"
+											className="h-6 w-6 p-0"
+											onClick={() => setShowCostPreview(true)}
+											title="Ver detalhamento dos custos"
+										>
+											<Calculator className="h-3 w-3" />
+										</Button>
+									)}
+								</div>
 							</div>
-						)}
 
-						{equipment.year && (
-							<div className="flex items-center justify-between">
-								<span className="text-muted-foreground text-sm">Ano:</span>
-								<span className="font-medium text-sm">{equipment.year}</span>
-							</div>
-						)}
-					</div>
-
-					{/* Especificações Técnicas */}
-					<div className="space-y-1 rounded bg-muted/50 p-3 text-sm">
-						<div className="mb-2 font-medium text-muted-foreground">
-							Especificações
-						</div>
-						{equipment.maxWidth && equipment.maxHeight && (
-							<div className="flex justify-between">
-								<span>Área máx:</span>
-								<span>
-									{equipment.maxWidth} × {equipment.maxHeight} mm
-								</span>
-							</div>
-						)}
-						{equipment.maxThickness && (
-							<div className="flex justify-between">
-								<span>Espessura máx:</span>
-								<span>{equipment.maxThickness} mm</span>
-							</div>
-						)}
-						{equipment.energyCostPerHour && (
-							<div className="flex justify-between">
-								<span className="flex items-center gap-1">
-									<Zap className="h-3 w-3" />
-									Energia/h:
-								</span>
-								<span>{formatCurrency(equipment.energyCostPerHour)}</span>
-							</div>
-						)}
-					</div>
-
-					{equipment.location && (
-						<div className="flex items-center gap-2 rounded bg-muted/50 p-2 text-muted-foreground text-sm">
-							<MapPin className="h-3 w-3 shrink-0" />
-							<span className="truncate">{equipment.location}</span>
-						</div>
-					)}
-
-					{/* Manutenção */}
-					{equipment.nextMaintenance && (
-						<div className="flex items-center gap-2 rounded bg-muted/50 p-2 text-sm">
-							<Calendar className="h-3 w-3 shrink-0" />
-							<div className="flex-1">
-								<div className="flex justify-between">
-									<span className="text-muted-foreground">
-										Próxima manutenção:
+							{equipment.manufacturer && (
+								<div className="flex items-center justify-between">
+									<span className="text-muted-foreground text-sm">
+										Fabricante:
 									</span>
-									<span
-										className={
-											isMaintenanceDue() ? "font-medium text-red-600" : ""
-										}
-									>
-										{formatDate(equipment.nextMaintenance)}
+									<span className="font-medium text-sm">
+										{equipment.manufacturer}
 									</span>
 								</div>
-								{isMaintenanceDue() && (
-									<div className="font-medium text-red-600 text-xs">
-										Manutenção em atraso!
-									</div>
-								)}
-							</div>
-						</div>
-					)}
+							)}
 
-					{equipment.tags && equipment.tags.length > 0 && (
-						<div className="flex flex-wrap gap-1">
-							{equipment.tags.slice(0, 3).map((tag) => (
-								<Badge key={tag} variant="outline" className="text-xs">
-									{tag}
-								</Badge>
-							))}
-							{equipment.tags.length > 3 && (
-								<Badge variant="outline" className="text-xs">
-									+{equipment.tags.length - 3}
-								</Badge>
+							{equipment.model && (
+								<div className="flex items-center justify-between">
+									<span className="text-muted-foreground text-sm">Modelo:</span>
+									<span className="font-medium text-sm">{equipment.model}</span>
+								</div>
+							)}
+
+							{equipment.year && (
+								<div className="flex items-center justify-between">
+									<span className="text-muted-foreground text-sm">Ano:</span>
+									<span className="font-medium text-sm">{equipment.year}</span>
+								</div>
 							)}
 						</div>
-					)}
-				</CardContent>
 
-				<CardFooter className="pt-3">
-					<div className="flex w-full gap-2">
-						<Button variant="outline" size="sm" asChild className="flex-1">
-							<Link href={`/cadastros/equipamentos/${equipment.id}`}>
-								<Settings className="mr-1 h-4 w-4" />
-								Detalhes
-							</Link>
-						</Button>
-						<Button variant="outline" size="sm" asChild>
-							<Link href={`/cadastros/equipamentos/${equipment.id}/editar`}>
-								<Edit className="h-4 w-4" />
-							</Link>
-						</Button>
-						{onDelete && (
-							<Button 
-								variant="outline" 
-								size="sm"
-								onClick={() => onDelete(equipment)}
-								className="text-destructive hover:text-destructive hover:bg-destructive/10"
-							>
-								<Trash2 className="h-4 w-4" />
-							</Button>
+						{/* Especificações Técnicas */}
+						<div className="space-y-1 rounded bg-muted/50 p-3 text-sm">
+							<div className="mb-2 font-medium text-muted-foreground">
+								Especificações
+							</div>
+							{equipment.maxWidth && equipment.maxHeight && (
+								<div className="flex justify-between">
+									<span>Área máx:</span>
+									<span>
+										{equipment.maxWidth} × {equipment.maxHeight} mm
+									</span>
+								</div>
+							)}
+							{equipment.maxThickness && (
+								<div className="flex justify-between">
+									<span>Espessura máx:</span>
+									<span>{equipment.maxThickness} mm</span>
+								</div>
+							)}
+							{equipment.energyCostPerHour && (
+								<div className="flex justify-between">
+									<span className="flex items-center gap-1">
+										<Zap className="h-3 w-3" />
+										Energia/h:
+									</span>
+									<span>{formatCurrency(equipment.energyCostPerHour)}</span>
+								</div>
+							)}
+						</div>
+
+						{equipment.location && (
+							<div className="flex items-center gap-2 rounded bg-muted/50 p-2 text-muted-foreground text-sm">
+								<MapPin className="h-3 w-3 shrink-0" />
+								<span className="truncate">{equipment.location}</span>
+							</div>
 						)}
-					</div>
-				</CardFooter>
-			</Card>
-			
-			{/* Modal de preview de custos */}
-			{showCostPreview && (
-				<EquipmentCostPreviewModal
-					equipmentId={equipment.id}
-					equipmentName={equipment.name}
-					isOpen={showCostPreview}
-					onClose={() => setShowCostPreview(false)}
-				/>
-			)}
+
+						{/* Manutenção */}
+						{equipment.nextMaintenance && (
+							<div className="flex items-center gap-2 rounded bg-muted/50 p-2 text-sm">
+								<Calendar className="h-3 w-3 shrink-0" />
+								<div className="flex-1">
+									<div className="flex justify-between">
+										<span className="text-muted-foreground">
+											Próxima manutenção:
+										</span>
+										<span
+											className={
+												isMaintenanceDue() ? "font-medium text-red-600" : ""
+											}
+										>
+											{formatDate(equipment.nextMaintenance)}
+										</span>
+									</div>
+									{isMaintenanceDue() && (
+										<div className="font-medium text-red-600 text-xs">
+											Manutenção em atraso!
+										</div>
+									)}
+								</div>
+							</div>
+						)}
+
+						{equipment.tags && equipment.tags.length > 0 && (
+							<div className="flex flex-wrap gap-1">
+								{equipment.tags.slice(0, 3).map((tag) => (
+									<Badge key={tag} variant="outline" className="text-xs">
+										{tag}
+									</Badge>
+								))}
+								{equipment.tags.length > 3 && (
+									<Badge variant="outline" className="text-xs">
+										+{equipment.tags.length - 3}
+									</Badge>
+								)}
+							</div>
+						)}
+					</CardContent>
+
+					<CardFooter className="pt-3">
+						<div className="flex w-full gap-2">
+							<Button variant="outline" size="sm" asChild className="flex-1">
+								<Link href={`/cadastros/equipamentos/${equipment.id}`}>
+									<Settings className="mr-1 h-4 w-4" />
+									Detalhes
+								</Link>
+							</Button>
+							<Button variant="outline" size="sm" asChild>
+								<Link href={`/cadastros/equipamentos/${equipment.id}/editar`}>
+									<Edit className="h-4 w-4" />
+								</Link>
+							</Button>
+							{onDelete && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => onDelete(equipment)}
+									className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+								>
+									<Trash2 className="h-4 w-4" />
+								</Button>
+							)}
+						</div>
+					</CardFooter>
+				</Card>
+
+				{/* Modal de preview de custos */}
+				{showCostPreview && (
+					<EquipmentCostPreviewModal
+						equipmentId={equipment.id}
+						equipmentName={equipment.name}
+						isOpen={showCostPreview}
+						onClose={() => setShowCostPreview(false)}
+					/>
+				)}
 			</>
 		);
 	},

@@ -398,7 +398,7 @@ export async function seedPhase3() {
 
 	console.log("✅ FASE 3 seedada com sucesso!");
 	console.log(`   📦 ${materials.length} materiais criados`);
-	console.log(`   ⚙️ 0 equipamentos criados (removido dados de exemplo)`);
+	console.log("   ⚙️ 0 equipamentos criados (removido dados de exemplo)");
 	console.log(`   🔧 ${processes.length} processos criados`);
 	console.log(`   ✨ ${finishes.length} acabamentos criados`);
 	console.log(`   🛍️ ${products.length} produtos criados`);
