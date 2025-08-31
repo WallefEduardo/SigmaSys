@@ -22,10 +22,8 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,15 +48,14 @@ import {
 	typeLabels,
 } from "@/lib/mock-data/clients";
 import { api } from "@/lib/trpc";
+import Link from "next/link";
 
 export default function ClientsPage() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [typeFilter, setTypeFilter] = useState<string>("all");
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 	const [segmentFilter, setSegmentFilter] = useState<string>("all");
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-	const [editingClient, setEditingClient] = useState<any>(null);
 	const [viewingClient, setViewingClient] = useState<any>(null);
 	const [page, setPage] = useState(1);
 
@@ -82,21 +79,6 @@ export default function ClientsPage() {
 
 	const { data: clientStats } = api.clients.stats.useQuery();
 
-	const createClientMutation = api.clients.create.useMutation({
-		onSuccess: () => {
-			refetch();
-			setIsDialogOpen(false);
-			setEditingClient(null);
-		},
-	});
-
-	const updateClientMutation = api.clients.update.useMutation({
-		onSuccess: () => {
-			refetch();
-			setIsDialogOpen(false);
-			setEditingClient(null);
-		},
-	});
 
 	const deactivateClientMutation = api.clients.deactivate.useMutation({
 		onSuccess: () => {
@@ -107,63 +89,17 @@ export default function ClientsPage() {
 	const clients = clientsData?.clients || [];
 	const pagination = clientsData?.pagination;
 
-	const handleEdit = (client: any) => {
-		setEditingClient(client);
-		setIsDialogOpen(true);
-	};
 
 	const handleView = (client: any) => {
 		setViewingClient(client);
 		setIsViewDialogOpen(true);
 	};
 
-	const handleCreate = () => {
-		setEditingClient(null);
-		setIsDialogOpen(true);
-	};
 
 	const handleToggleStatus = (clientId: string) => {
 		deactivateClientMutation.mutate({ id: clientId });
 	};
 
-	const handleSubmit = (formData: FormData) => {
-		const data = {
-			name: formData.get("name") as string,
-			email: (formData.get("email") as string) || undefined,
-			phone: (formData.get("phone") as string) || undefined,
-			document: (formData.get("document") as string) || undefined,
-			type: formData.get("type") as "person" | "company",
-			segment: (formData.get("segment") as string) || undefined,
-			status: formData.get("status") as
-				| "active"
-				| "inactive"
-				| "prospect"
-				| "lead",
-			source: (formData.get("source") as string) || undefined,
-			rating: formData.get("rating")
-				? Number(formData.get("rating"))
-				: undefined,
-			creditLimit: formData.get("creditLimit")
-				? Number(formData.get("creditLimit"))
-				: undefined,
-			paymentTerm: formData.get("paymentTerm")
-				? Number(formData.get("paymentTerm"))
-				: undefined,
-			discount: formData.get("discount")
-				? Number(formData.get("discount"))
-				: undefined,
-			notes: (formData.get("notes") as string) || undefined,
-		};
-
-		if (editingClient) {
-			updateClientMutation.mutate({
-				id: editingClient.id,
-				...data,
-			});
-		} else {
-			createClientMutation.mutate(data);
-		}
-	};
 
 	const formatCurrency = (value: number) => {
 		return new Intl.NumberFormat("pt-BR", {
@@ -194,9 +130,11 @@ export default function ClientsPage() {
 					CRM - Gestão de Clientes
 				</h2>
 				<div className="flex items-center space-x-2">
-					<Button onClick={handleCreate}>
-						<Plus className="mr-2 h-4 w-4" />
-						Novo Cliente
+					<Button asChild>
+						<Link href="/cadastros/clientes/novo">
+							<Plus className="mr-2 h-4 w-4" />
+							Novo Cliente
+						</Link>
 					</Button>
 				</div>
 			</div>
@@ -412,9 +350,11 @@ export default function ClientsPage() {
 											<Button
 												variant="outline"
 												size="sm"
-												onClick={() => handleEdit(client)}
+												asChild
 											>
-												Editar
+												<Link href={`/cadastros/clientes/${client.id}/editar`}>
+													Editar
+												</Link>
 											</Button>
 											<Button
 												variant={client.active ? "destructive" : "default"}
@@ -589,175 +529,6 @@ export default function ClientsPage() {
 				</DialogContent>
 			</Dialog>
 
-			{/* Dialog for Create/Edit Client */}
-			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
-					<DialogHeader>
-						<DialogTitle>
-							{editingClient ? "Editar Cliente" : "Novo Cliente"}
-						</DialogTitle>
-						<DialogDescription>
-							{editingClient
-								? "Altere as informações do cliente aqui."
-								: "Preencha as informações para criar um novo cliente."}
-						</DialogDescription>
-					</DialogHeader>
-					<form action={handleSubmit} className="grid gap-4 py-4">
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="name" className="text-right">
-								Nome
-							</label>
-							<Input
-								id="name"
-								name="name"
-								defaultValue={editingClient?.name || ""}
-								className="col-span-3"
-								required
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="type" className="text-right">
-								Tipo
-							</label>
-							<Select
-								name="type"
-								defaultValue={editingClient?.type || "person"}
-							>
-								<SelectTrigger className="col-span-3">
-									<SelectValue placeholder="Selecione o tipo" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="person">Pessoa Física</SelectItem>
-									<SelectItem value="company">Pessoa Jurídica</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="email" className="text-right">
-								Email
-							</label>
-							<Input
-								id="email"
-								name="email"
-								type="email"
-								defaultValue={editingClient?.email || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="phone" className="text-right">
-								Telefone
-							</label>
-							<Input
-								id="phone"
-								name="phone"
-								defaultValue={editingClient?.phone || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="document" className="text-right">
-								Documento
-							</label>
-							<Input
-								id="document"
-								name="document"
-								defaultValue={editingClient?.document || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="segment" className="text-right">
-								Segmento
-							</label>
-							<Input
-								id="segment"
-								name="segment"
-								defaultValue={editingClient?.segment || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="status" className="text-right">
-								Status
-							</label>
-							<Select
-								name="status"
-								defaultValue={editingClient?.status || "prospect"}
-							>
-								<SelectTrigger className="col-span-3">
-									<SelectValue placeholder="Selecione o status" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="prospect">Prospect</SelectItem>
-									<SelectItem value="lead">Lead</SelectItem>
-									<SelectItem value="active">Ativo</SelectItem>
-									<SelectItem value="inactive">Inativo</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="source" className="text-right">
-								Origem
-							</label>
-							<Input
-								id="source"
-								name="source"
-								defaultValue={editingClient?.source || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="rating" className="text-right">
-								Avaliação
-							</label>
-							<Select
-								name="rating"
-								defaultValue={editingClient?.rating?.toString() || ""}
-							>
-								<SelectTrigger className="col-span-3">
-									<SelectValue placeholder="Selecione uma avaliação" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="">Sem avaliação</SelectItem>
-									<SelectItem value="1">1 Estrela</SelectItem>
-									<SelectItem value="2">2 Estrelas</SelectItem>
-									<SelectItem value="3">3 Estrelas</SelectItem>
-									<SelectItem value="4">4 Estrelas</SelectItem>
-									<SelectItem value="5">5 Estrelas</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-							<label htmlFor="notes" className="text-right">
-								Observações
-							</label>
-							<Input
-								id="notes"
-								name="notes"
-								defaultValue={editingClient?.notes || ""}
-								className="col-span-3"
-							/>
-						</div>
-						<DialogFooter>
-							<Button
-								type="submit"
-								disabled={
-									createClientMutation.isPending ||
-									updateClientMutation.isPending
-								}
-							>
-								{createClientMutation.isPending ||
-								updateClientMutation.isPending
-									? "Salvando..."
-									: editingClient
-										? "Salvar alterações"
-										: "Criar cliente"}
-							</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
 		</div>
 	);
 }

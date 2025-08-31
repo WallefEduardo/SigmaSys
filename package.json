@@ -22,10 +22,12 @@
 		"db:stop": "turbo -F server db:stop",
 		"db:down": "turbo -F server db:down"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"date-fns": "^4.1.0"
+	},
 	"devDependencies": {
-		"turbo": "^2.5.4",
-		"@biomejs/biome": "^2.2.0"
+		"@biomejs/biome": "^2.2.0",
+		"turbo": "^2.5.4"
 	},
 	"packageManager": "pnpm@10.14.0"
 }
