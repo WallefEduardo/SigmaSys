@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Trash2, Package, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -79,8 +79,9 @@ export function DataTable<T extends { id: string }>({
 												variant="outline"
 												size="sm"
 												onClick={() => onView(item)}
+												title="Visualizar"
 											>
-												Ver
+												<Package className="h-4 w-4" />
 											</Button>
 										)}
 										{onEdit && (
@@ -88,8 +89,9 @@ export function DataTable<T extends { id: string }>({
 												variant="outline"
 												size="sm"
 												onClick={() => onEdit(item)}
+												title="Editar"
 											>
-												Editar
+												<Edit className="h-4 w-4" />
 											</Button>
 										)}
 										{onDelete && (
@@ -98,7 +100,8 @@ export function DataTable<T extends { id: string }>({
 												size="sm"
 												onClick={() => onDelete(item)}
 												disabled={isDeleting}
-												className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+												title="Deletar"
+												className="hover:bg-destructive hover:text-destructive-foreground"
 											>
 												<Trash2 className="h-4 w-4" />
 											</Button>

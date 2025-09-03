@@ -1,5 +1,6 @@
 import { publicProcedure, router } from "../lib/trpc";
 import { authRouter } from "./auth";
+import { calculationRulesRouter } from "./calculation-rules";
 import { clientsRouter } from "./clients";
 import { companiesRouter } from "./companies";
 import { consumablesRouter } from "./consumables";
@@ -35,6 +36,7 @@ export const appRouter = router({
 	processes: processesRouter,
 	finishes: finishesRouter,
 	products: productsRouter,
+	calculationRules: calculationRulesRouter,
 
 	// Sistema de monitoramento e administração
 	system: systemRouter,

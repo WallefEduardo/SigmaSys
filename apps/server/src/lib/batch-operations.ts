@@ -1,4 +1,4 @@
-import type { PrismaClient } from "../../../prisma/generated/client";
+import type { PrismaClient } from "../../prisma/generated/client";
 import { CacheService } from "./cache";
 import { logger } from "./logger";
 import { QueueHelpers } from "./queue";
@@ -160,7 +160,7 @@ export class BatchOperations {
 			const success = errors.length === 0 || (skipErrors && results.length > 0);
 
 			// Registrar métricas
-			TelemetryService.recordDatabaseQuery(
+			TelemetryService.trackDatabaseQuery(
 				"batch_create",
 				table,
 				duration,
@@ -243,8 +243,7 @@ export class BatchOperations {
 							const { where, data } = batch[i];
 
 							try {
-								// @ts-expect-error - Dynamic table access
-								const updated = await tx[table].update({
+								const updated = await (tx as any)[table].update({
 									where,
 									data,
 								});
@@ -375,8 +374,7 @@ export class BatchOperations {
 							const where = batch[i];
 
 							try {
-								// @ts-expect-error - Dynamic table access
-								const deleted = await tx[table].delete({ where });
+								const deleted = await (tx as any)[table].delete({ where });
 
 								batchResults.push({ id: deleted.id });
 								summary.deleted++;
@@ -504,8 +502,7 @@ export class BatchOperations {
 							const { where, create, update } = batch[i];
 
 							try {
-								// @ts-expect-error - Dynamic table access
-								const upserted = await tx[table].upsert({
+								const upserted = await (tx as any)[table].upsert({
 									where,
 									create,
 									update,
@@ -514,7 +511,7 @@ export class BatchOperations {
 								batchResults.push(upserted);
 
 								// Verificar se foi criado ou atualizado
-								const existing = await tx[table].findUnique({ where });
+								const existing = await (tx as any)[table].findUnique({ where });
 								if (!existing) {
 									summary.created++;
 								} else {
@@ -625,8 +622,7 @@ export class BatchOperations {
 			async (tx) => {
 				// Usar createMany quando possível para melhor performance
 				try {
-					// @ts-expect-error - Dynamic table access
-					const createResult = await tx[table].createMany({
+					const createResult = await (tx as any)[table].createMany({
 						data: batch,
 						skipDuplicates: skipErrors,
 					});
@@ -634,8 +630,7 @@ export class BatchOperations {
 					created = createResult.count;
 
 					// Se precisarmos dos objetos criados, fazer uma consulta adicional
-					// @ts-expect-error - Dynamic table access
-					const createdItems = await tx[table].findMany({
+					const createdItems = await (tx as any)[table].findMany({
 						orderBy: { createdAt: "desc" },
 						take: batch.length,
 					});
@@ -655,13 +650,12 @@ export class BatchOperations {
 					if (skipErrors) {
 						for (let i = 0; i < batch.length; i++) {
 							try {
-								// @ts-expect-error - Dynamic table access
-								const created = await tx[table].create({ data: batch[i] });
-								results.push(created);
+								const createdItem = await (tx as any)[table].create({ data: batch[i] });
+								results.push(createdItem);
 								created++;
 
 								if (enableCache) {
-									await BatchOperations.invalidateRelatedCache(table, created);
+									await BatchOperations.invalidateRelatedCache(table, createdItem);
 								}
 							} catch (itemError) {
 								errors.push({
@@ -880,7 +874,7 @@ export class BatchOperations {
 				return BatchOperations.batchDelete(db, table, retryData, {
 					...options,
 					skipErrors: true,
-				});
+				}) as Promise<BatchResult<T>>;
 			case "upsert":
 				return BatchOperations.batchUpsert(db, table, retryData, {
 					...options,

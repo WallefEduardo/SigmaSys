@@ -36,30 +36,30 @@ model Plan {
 }
 
 model Company {
-  id          String          @id @default(cuid())
-  name        String
-  cnpj        String?         @unique
-  email       String?
-  phone       String?
-  address     String?
-  planId      String?
-  trialEndsAt DateTime?
-  active      Boolean         @default(true)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  clients     Client[]
-  plan        Plan?           @relation(fields: [planId], references: [id])
-  consumables Consumable[]
-  equipments  Equipment[]
-  finishes    Finish[]
-  inventory   InventoryItem[]
-  materials   Material[]
-  orders      Order[]
-  processes   Process[]
-  products    Product[]
-  quotes      Quote[]
-  roles       Role[]
-  users       User[]
+  id                String             @id @default(cuid())
+  name              String
+  cnpj              String?            @unique
+  email             String?
+  phone             String?
+  address           String?
+  planId            String?
+  trialEndsAt       DateTime?
+  active            Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  clients           Client[]
+  plan              Plan?              @relation(fields: [planId], references: [id])
+  consumables       Consumable[]
+  equipments        Equipment[]
+  finishes          Finish[]
+  inventory         InventoryItem[]
+  materials         Material[]
+  orders            Order[]
+  processes         Process[]
+  products          Product[]
+  quotes            Quote[]
+  roles             Role[]
+  users             User[]
 
   @@map("companies")
 }
@@ -244,6 +244,7 @@ model Material {
   createdBy        String?
   updatedBy        String?
   companyId        String
+  categoryId       String?
   inventory        InventoryItem[]
   priceHistory     MaterialPriceHistory[]
   company          Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -254,6 +255,7 @@ model Material {
   @@unique([companyId, code])
   @@index([companyId, category])
   @@index([companyId, supplier])
+  @@index([companyId, categoryId])
   @@map("materials")
 }
 
@@ -646,3 +648,5 @@ enum ConsumableUnit {
 
   @@map("consumable_units")
 }
+
+

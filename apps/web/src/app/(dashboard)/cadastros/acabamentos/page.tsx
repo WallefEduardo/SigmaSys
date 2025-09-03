@@ -50,7 +50,7 @@ export default function AcabamentosPage() {
 		active: true,
 	});
 
-	const finishes = Array.isArray(finishesData) ? finishesData : [];
+	const finishes = finishesData?.finishes || [];
 
 	// Debounce para busca
 	const debouncedSearch = useDebounce((term: string) => {

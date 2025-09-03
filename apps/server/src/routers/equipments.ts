@@ -1913,6 +1913,6 @@ export const equipmentsRouter = router({
 			const companyId = ensureCompanyAccess()(ctx);
 
 			const calculator = new EquipmentCostCalculator(ctx.db);
-			return await calculator.listEquipmentCosts(companyId, input.type);
+			return await calculator.listEquipmentWithTotalCosts(companyId, input.type);
 		}),
 });

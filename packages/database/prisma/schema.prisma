@@ -1,0 +1,744 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model Plan {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  description  String?
+  price        Decimal   @db.Decimal(10, 2)
+  yearlyPrice  Decimal?  @db.Decimal(10, 2)
+  currency     String    @default("BRL")
+  maxUsers     Int       @default(1)
+  maxCompanies Int       @default(1)
+  maxClients   Int       @default(100)
+  maxProducts  Int       @default(50)
+  maxOrders    Int       @default(100)
+  maxQuotes    Int       @default(100)
+  maxStorage   Int       @default(1024)
+  features     Json
+  modules      Json
+  trialDays    Int       @default(15)
+  popular      Boolean   @default(false)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  companies    Company[]
+
+  @@map("plans")
+}
+
+model Company {
+  id                String             @id @default(cuid())
+  name              String
+  cnpj              String?            @unique
+  email             String?
+  phone             String?
+  address           String?
+  planId            String?
+  trialEndsAt       DateTime?
+  active            Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  clients           Client[]
+  plan              Plan?              @relation(fields: [planId], references: [id])
+  consumables       Consumable[]
+  equipments        Equipment[]
+  finishes          Finish[]
+  inventory         InventoryItem[]
+  materials         Material[]
+  orders            Order[]
+  processes         Process[]
+  products          Product[]
+  quotes            Quote[]
+  roles             Role[]
+  users             User[]
+
+  @@map("companies")
+}
+
+model User {
+  id                  String                 @id @default(cuid())
+  email               String                 @unique
+  name                String
+  password            String
+  role                String                 @default("user")
+  permissions         Json?
+  department          String?
+  position            String?
+  avatar              String?
+  phone               String?
+  active              Boolean                @default(true)
+  lastLoginAt         DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  companyId           String
+  createdBy           String?
+  clientInteractions  ClientInteraction[]    @relation("UserInteraction")
+  createdClients      Client[]               @relation("ClientCreator")
+  equipmentOperations EquipmentUsage[]       @relation("EquipmentOperator")
+  createdEquipments   Equipment[]            @relation("EquipmentCreator")
+  updatedEquipments   Equipment[]            @relation("EquipmentUpdater")
+  priceHistoryRecords MaterialPriceHistory[] @relation("PriceHistoryUser")
+  createdMaterials    Material[]             @relation("MaterialCreator")
+  updatedMaterials    Material[]             @relation("MaterialUpdater")
+  company             Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator             User?                  @relation("UserCreator", fields: [createdBy], references: [id])
+  createdUsers        User[]                 @relation("UserCreator")
+
+  @@map("users")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  module      String
+  action      String
+  resource    String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@unique([module, action, resource])
+  @@map("permissions")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  permissions Json
+  companyId   String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, name])
+  @@map("roles")
+}
+
+model Client {
+  id           String              @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  document     String?
+  type         String              @default("person")
+  address      Json?
+  birthday     DateTime?
+  segment      String?
+  tags         String[]
+  notes        String?
+  status       String              @default("active")
+  source       String?
+  rating       Int?
+  socialMedia  Json?
+  preferences  Json?
+  creditLimit  Decimal?            @db.Decimal(12, 4)
+  paymentTerm  Int?
+  discount     Decimal?            @db.Decimal(5, 2)
+  active       Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  companyId    String
+  createdBy    String?
+  interactions ClientInteraction[]
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator      User?               @relation("ClientCreator", fields: [createdBy], references: [id])
+  orders       Order[]
+  quotes       Quote[]
+
+  @@map("clients")
+}
+
+model ClientInteraction {
+  id          String    @id @default(cuid())
+  type        String
+  subject     String
+  description String?
+  status      String    @default("completed")
+  scheduledAt DateTime?
+  completedAt DateTime?
+  duration    Int?
+  outcome     String?
+  nextAction  String?
+  nextDate    DateTime?
+  clientId    String
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user        User      @relation("UserInteraction", fields: [userId], references: [id])
+
+  @@map("client_interactions")
+}
+
+model Product {
+  id          String             @id @default(cuid())
+  name        String
+  description String?
+  code        String?
+  category    String?
+  formula     Json?
+  checklist   Json?
+  margin      Json
+  active      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  companyId   String
+  orderItems  OrderItem[]
+  equipments  ProductEquipment[]
+  finishes    ProductFinish[]
+  materials   ProductMaterial[]
+  processes   ProductProcess[]
+  company     Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quoteItems  QuoteItem[]
+  materialRules ProductMaterialRule[]
+
+  @@map("products")
+}
+
+model Material {
+  id               String                 @id @default(cuid())
+  name             String
+  description      String?
+  code             String?
+  barcode          String?
+  unit             String
+  cost             Decimal                @db.Decimal(10, 4)
+  lastCost         Decimal?               @db.Decimal(10, 4)
+  costHistory      Json?
+  supplier         String?
+  supplierCode     String?
+  supplierContact  Json?
+  minStock         Decimal?               @db.Decimal(10, 4)
+  maxStock         Decimal?               @db.Decimal(10, 4)
+  location         String?
+  category         String?
+  subcategory      String?
+  brand            String?
+  model            String?
+  color            String?
+  dimensions       Json?
+  weight           Decimal?               @db.Decimal(10, 4)
+  volume           Decimal?               @db.Decimal(10, 4)
+  density          Decimal?               @db.Decimal(10, 4)
+  alternativeUnits Json?
+  quality          String?
+  certification    String?
+  images           String[]
+  documents        String[]
+  notes            String?
+  tags             String[]
+  active           Boolean                @default(true)
+  discontinued     Boolean                @default(false)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  createdBy        String?
+  updatedBy        String?
+  companyId        String
+  categoryId       String?
+  inventory        InventoryItem[]
+  priceHistory     MaterialPriceHistory[]
+  company          Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator          User?                  @relation("MaterialCreator", fields: [createdBy], references: [id])
+  updater          User?                  @relation("MaterialUpdater", fields: [updatedBy], references: [id])
+  productItems     ProductMaterial[]
+  materialRules         ProductMaterialRule[]
+  calculationRules      MaterialCalculationRule[]
+
+  @@unique([companyId, code])
+  @@index([companyId, category])
+  @@index([companyId, supplier])
+  @@index([companyId, categoryId])
+  @@map("materials")
+}
+
+model MaterialPriceHistory {
+  id         String   @id @default(cuid())
+  oldPrice   Decimal  @db.Decimal(10, 4)
+  newPrice   Decimal  @db.Decimal(10, 4)
+  reason     String?
+  supplier   String?
+  createdAt  DateTime @default(now())
+  createdBy  String?
+  materialId String
+  user       User?    @relation("PriceHistoryUser", fields: [createdBy], references: [id])
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@map("material_price_history")
+}
+
+model Equipment {
+  id                     String                   @id @default(cuid())
+  name                   String
+  description            String?
+  code                   String?
+  type                   String
+  energyCostPerHour      Decimal?                 @db.Decimal(10, 4)
+  maintenanceCostPerHour Decimal?                 @db.Decimal(10, 4)
+  calculatedCostPerM2    Decimal?                 @db.Decimal(10, 4)
+  calculatedCostPerHour  Decimal?                 @db.Decimal(10, 4)
+  lastCostCalculation    DateTime?
+  acquisitionValue       Decimal?                 @db.Decimal(15, 2)
+  residualValue          Decimal?                 @db.Decimal(15, 2)
+  depreciationMethod     String?
+  depreciationPerHour    Decimal?                 @db.Decimal(10, 4)
+  usefulLifeHours        Int?
+  usefulLifeYears        Int?
+  maxWidth               Decimal?                 @db.Decimal(10, 4)
+  maxHeight              Decimal?                 @db.Decimal(10, 4)
+  maxThickness           Decimal?                 @db.Decimal(10, 4)
+  printingConfig         Json?
+  machiningConfig        Json?
+  passes                 Json?
+  defaultPassKey         String?
+  status                 String                   @default("available")
+  location               String?
+  serialNumber           String?
+  manufacturer           String?
+  model                  String?
+  year                   Int?
+  lastMaintenance        DateTime?
+  nextMaintenance        DateTime?
+  maintenanceInterval    Int?
+  maintenanceNotes       String?
+  manualUrl              String?
+  images                 String[]
+  documents              String[]
+  notes                  String?
+  tags                   String[]
+  active                 Boolean                  @default(true)
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  createdBy              String?
+  updatedBy              String?
+  companyId              String
+  installedConsumables   EquipmentConsumable[]
+  costBreakdowns         EquipmentCostBreakdown[]
+  usageLog               EquipmentUsage[]
+  company                Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator                User?                    @relation("EquipmentCreator", fields: [createdBy], references: [id])
+  updater                User?                    @relation("EquipmentUpdater", fields: [updatedBy], references: [id])
+  productItems           ProductEquipment[]
+  materialRules          ProductMaterialRule[]
+
+  @@unique([companyId, code])
+  @@index([companyId, type])
+  @@index([companyId, status])
+  @@map("equipments")
+}
+
+model EquipmentCostBreakdown {
+  id                String    @id @default(cuid())
+  equipmentId       String
+  calculatedAt      DateTime  @default(now())
+  depreciationPerM2 Decimal   @db.Decimal(12, 8)
+  energyPerM2       Decimal   @db.Decimal(12, 8)
+  maintenancePerM2  Decimal   @db.Decimal(12, 8)
+  totalFixedPerM2   Decimal   @db.Decimal(12, 8)
+  passBreakdowns    Json
+  equipmentType     String
+  averageSpeed      Decimal   @db.Decimal(8, 2)
+  totalPasses       Int
+  isActive          Boolean   @default(true)
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  equipment         Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@unique([equipmentId, version])
+  @@index([equipmentId, isActive])
+  @@index([equipmentId, calculatedAt])
+  @@index([isActive, equipmentType])
+  @@map("equipment_cost_breakdowns")
+}
+
+model EquipmentUsage {
+  id              String    @id @default(cuid())
+  startTime       DateTime
+  endTime         DateTime?
+  duration        Int?
+  operatorId      String?
+  orderId         String?
+  description     String?
+  cost            Decimal?  @db.Decimal(10, 4)
+  consumablesUsed Json?
+  unitsProduced   Int?
+  area            Decimal?  @db.Decimal(10, 4)
+  length          Decimal?  @db.Decimal(10, 4)
+  createdAt       DateTime  @default(now())
+  equipmentId     String
+  equipment       Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  operator        User?     @relation("EquipmentOperator", fields: [operatorId], references: [id])
+
+  @@map("equipment_usage")
+}
+
+model Consumable {
+  id                     String                @id @default(cuid())
+  name                   String
+  description            String?
+  code                   String?
+  type                   String
+  cost                   Decimal               @db.Decimal(10, 4)
+  unit                   ConsumableUnit
+  supplier               String?
+  color                  String?
+  volumeMl               Int?
+  lifespanM2             Int?
+  model                  String?
+  costPerM2              Decimal?              @db.Decimal(10, 6)
+  material               String?
+  diameter               Decimal?              @db.Decimal(10, 2)
+  minStock               Int                   @default(0)
+  maxStock               Int                   @default(0)
+  currentStock           Int                   @default(0)
+  alertThreshold         Int                   @default(0)
+  autoReorder            Boolean               @default(false)
+  active                 Boolean               @default(true)
+  tags                   String[]              @default([])
+  notes                  String?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  companyId              String
+  company                Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  equipmentInstallations EquipmentConsumable[]
+
+  @@unique([companyId, code])
+  @@index([companyId, type])
+  @@index([companyId, active])
+  @@map("consumables")
+}
+
+model EquipmentConsumable {
+  id               String     @id @default(cuid())
+  position         String
+  installationDate DateTime   @default(now())
+  currentUse       Int        @default(0)
+  notes            String?
+  active           Boolean    @default(true)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  equipmentId      String
+  consumableId     String
+  consumable       Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  equipment        Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@unique([equipmentId, consumableId, position])
+  @@index([equipmentId])
+  @@index([consumableId])
+  @@map("equipment_consumables")
+}
+
+model Process {
+  id           String           @id @default(cuid())
+  name         String
+  description  String?
+  costPerHour  Decimal          @db.Decimal(10, 4)
+  sector       String?
+  timeUnit     String
+  active       Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  companyId    String
+  company      Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  productItems ProductProcess[]
+
+  @@map("processes")
+}
+
+model ProductMaterial {
+  id         String   @id @default(cuid())
+  quantity   Decimal  @db.Decimal(10, 4)
+  formula    String?
+  createdAt  DateTime @default(now())
+  productId  String
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_materials")
+}
+
+model ProductEquipment {
+  id          String    @id @default(cuid())
+  timeNeeded  Decimal   @db.Decimal(10, 4)
+  formula     String?
+  createdAt   DateTime  @default(now())
+  productId   String
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_equipments")
+}
+
+model ProductProcess {
+  id         String   @id @default(cuid())
+  timeNeeded Decimal  @db.Decimal(10, 4)
+  formula    String?
+  createdAt  DateTime @default(now())
+  productId  String
+  processId  String
+  process    Process  @relation(fields: [processId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_processes")
+}
+
+model ProductFinish {
+  id        String   @id @default(cuid())
+  quantity  Decimal  @db.Decimal(10, 4)
+  createdAt DateTime @default(now())
+  productId String
+  finishId  String
+  finish    Finish   @relation(fields: [finishId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_finishes")
+}
+
+model Finish {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  composition Json
+  cost        Decimal         @db.Decimal(10, 4)
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  companyId   String
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  products    ProductFinish[]
+
+  @@map("finishes")
+}
+
+model InventoryItem {
+  id         String              @id @default(cuid())
+  quantity   Decimal             @db.Decimal(10, 4)
+  minStock   Decimal?            @db.Decimal(10, 4)
+  location   String?
+  batch      String?
+  dimensions Json?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  companyId  String
+  materialId String
+  company    Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  material   Material            @relation(fields: [materialId], references: [id])
+  movements  InventoryMovement[]
+
+  @@map("inventory_items")
+}
+
+model InventoryMovement {
+  id          String        @id @default(cuid())
+  type        String
+  quantity    Decimal       @db.Decimal(10, 4)
+  reason      String
+  reference   String?
+  createdAt   DateTime      @default(now())
+  inventoryId String
+  inventory   InventoryItem @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  @@map("inventory_movements")
+}
+
+model Quote {
+  id          String      @id @default(cuid())
+  number      String
+  title       String
+  description String?
+  status      String      @default("draft")
+  totalCost   Decimal     @db.Decimal(12, 4)
+  totalPrice  Decimal     @db.Decimal(12, 4)
+  margin      Decimal     @db.Decimal(5, 2)
+  validUntil  DateTime?
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  companyId   String
+  clientId    String
+  order       Order?
+  items       QuoteItem[]
+  client      Client      @relation(fields: [clientId], references: [id])
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  calculations QuoteCalculation[]
+
+  @@unique([companyId, number])
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id         String   @id @default(cuid())
+  quantity   Decimal  @db.Decimal(10, 4)
+  unitCost   Decimal  @db.Decimal(10, 4)
+  unitPrice  Decimal  @db.Decimal(10, 4)
+  totalCost  Decimal  @db.Decimal(12, 4)
+  totalPrice Decimal  @db.Decimal(12, 4)
+  checklist  Json?
+  createdAt  DateTime @default(now())
+  quoteId    String
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quote      Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@map("quote_items")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  number       String
+  title        String
+  description  String?
+  status       String      @default("pending")
+  totalCost    Decimal     @db.Decimal(12, 4)
+  totalPrice   Decimal     @db.Decimal(12, 4)
+  startDate    DateTime?
+  deliveryDate DateTime?
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  companyId    String
+  clientId     String
+  quoteId      String?     @unique
+  items        OrderItem[]
+  client       Client      @relation(fields: [clientId], references: [id])
+  company      Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quote        Quote?      @relation(fields: [quoteId], references: [id])
+
+  @@unique([companyId, number])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  quantity   Decimal  @db.Decimal(10, 4)
+  unitCost   Decimal  @db.Decimal(10, 4)
+  unitPrice  Decimal  @db.Decimal(10, 4)
+  totalCost  Decimal  @db.Decimal(12, 4)
+  totalPrice Decimal  @db.Decimal(12, 4)
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  orderId    String
+  productId  String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+enum ConsumableUnit {
+  ML_M2
+  L_M2
+  G_M2
+  ML
+  L
+  G
+  KG
+  PCS
+  ML_PASS
+  SHOTS
+  SHOTS_M2
+
+  @@map("consumable_units")
+}
+
+// 🧮 SISTEMA DE CÁLCULOS INTELIGENTES
+// =====================================
+
+// Regras de cálculo dinâmicas
+model CalculationRule {
+  id          String                  @id @default(cuid())
+  name        String                  // "Área das Laterais"
+  category    CalculationCategory     // AREA, LENGTH, UNIT
+  formula     String                  // "((L + A) * 2) * E"
+  variables   Json                    // ["L", "A", "E"]
+  resultUnit  String                  // "m2", "ml", "un"
+  description String?
+  active      Boolean                 @default(true)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  // Relations
+  materialRules         ProductMaterialRule[]
+  materialCalculations  MaterialCalculationRule[]
+  calculations          QuoteCalculation[]
+
+  @@map("calculation_rules")
+}
+
+// Relação direta entre Material e CalculationRule
+model MaterialCalculationRule {
+  id                 String          @id @default(cuid())
+  materialId         String
+  calculationRuleId  String
+  createdAt          DateTime        @default(now())
+
+  // Relations
+  material       Material        @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  calculationRule CalculationRule @relation(fields: [calculationRuleId], references: [id], onDelete: Cascade)
+
+  @@unique([materialId, calculationRuleId])
+  @@map("material_calculation_rules")
+}
+
+// Regras de material no produto (nova estrutura)
+model ProductMaterialRule {
+  id                 String          @id @default(cuid())
+  productId          String
+  questionId         String          // ID da pergunta do checklist
+  answerOption       String          // Opção de resposta específica
+  materialId         String
+  equipmentId        String?
+  calculationRuleId  String
+  multiplier         Decimal         @default(1) @db.Decimal(10, 4)
+  wasteFactor        Decimal         @default(0) @db.Decimal(5, 4)
+  createdAt          DateTime        @default(now())
+
+  // Relations
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  material       Material        @relation(fields: [materialId], references: [id])
+  equipment      Equipment?      @relation(fields: [equipmentId], references: [id])
+  calculationRule CalculationRule @relation(fields: [calculationRuleId], references: [id])
+
+  @@map("product_material_rules")
+}
+
+// Log de cálculos realizados
+model QuoteCalculation {
+  id             String          @id @default(cuid())
+  quoteId        String
+  ruleId         String
+  inputVariables Json            // {"L": 3, "A": 1, "E": 0.2}
+  calculatedValue Decimal        @db.Decimal(10, 4)
+  unitCost       Decimal         @db.Decimal(10, 4)
+  totalCost      Decimal         @db.Decimal(12, 4)
+  createdAt      DateTime        @default(now())
+
+  // Relations
+  quote Quote           @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  rule  CalculationRule @relation(fields: [ruleId], references: [id])
+
+  @@map("quote_calculations")
+}
+
+enum CalculationCategory {
+  AREA     // Fórmulas que retornam área (m²)
+  LENGTH   // Fórmulas que retornam comprimento (ml)
+  UNIT     // Fórmulas que retornam unidades (un)
+
+  @@map("calculation_categories")
+}
+
+

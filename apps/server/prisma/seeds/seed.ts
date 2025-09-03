@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 import { AuthService } from "../../src/lib/auth";
 import { PrismaClient } from "../generated/client";
-import { seedPhase3 } from "./phase3-seed";
 import { seedPlans } from "./plans-seed";
 
 // Carregar variáveis de ambiente
@@ -266,9 +265,7 @@ async function main() {
 		console.log("✅ Cliente criado:", client.name);
 	}
 
-	// 5. Executar seed da Fase 3 (Produtos e Fórmulas)
-	console.log("\n🌱 Executando seed da Fase 3...");
-	await seedPhase3();
+	// 5. Produtos e Fórmulas removidos - cadastro manual
 
 	console.log("\n🎉 Seeds executados com sucesso!");
 	console.log("\n📋 Credenciais criadas:");

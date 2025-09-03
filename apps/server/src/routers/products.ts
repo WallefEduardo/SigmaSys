@@ -28,16 +28,24 @@ const productFinishSchema = z.object({
 });
 
 const checklistSchema = z
-	.array(
-		z.object({
+	.object({
+		nodes: z.array(z.object({
 			id: z.string(),
-			question: z.string(),
-			type: z.enum(["boolean", "number", "text", "select"]),
-			options: z.array(z.string()).optional(),
-			required: z.boolean().default(false),
-			defaultValue: z.any().optional(),
-		}),
-	)
+			type: z.string(),
+			data: z.any(),
+			position: z.object({
+				x: z.number(),
+				y: z.number(),
+			}),
+		})).optional(),
+		edges: z.array(z.object({
+			id: z.string(),
+			source: z.string(),
+			target: z.string(),
+			type: z.string().optional(),
+		})).optional(),
+		selections: z.any().optional(),
+	})
 	.optional();
 
 const marginSchema = z.object({
@@ -145,7 +153,7 @@ export const productsRouter = router({
 									id: true,
 									name: true,
 									type: true,
-									costPerHour: true,
+									calculatedCostPerHour: true,
 								},
 							},
 						},
@@ -183,6 +191,11 @@ export const productsRouter = router({
 				});
 			}
 
+			// Debug logs para verificar se o checklist está sendo retornado
+			console.log('🔍 GET PRODUCT BY ID - Product found:', product.name);
+			console.log('🔍 GET PRODUCT BY ID - Checklist data:', product.checklist);
+			console.log('🔍 GET PRODUCT BY ID - Checklist type:', typeof product.checklist);
+
 			return product;
 		}),
 
@@ -209,7 +222,7 @@ export const productsRouter = router({
 
 			// Validar fórmula se fornecida
 			if (input.formula) {
-				const validation = FormulaEngine.validateFormula(input.formula);
+				const validation = await FormulaEngine.validateFormula(input.formula);
 				if (!validation.valid) {
 					throw new TRPCError({
 						code: "BAD_REQUEST",
@@ -221,7 +234,7 @@ export const productsRouter = router({
 			// Validar fórmulas dos materiais, equipamentos e processos
 			for (const material of input.materials) {
 				if (material.formula) {
-					const validation = FormulaEngine.validateFormula(material.formula);
+					const validation = await FormulaEngine.validateFormula(material.formula);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -233,7 +246,7 @@ export const productsRouter = router({
 
 			for (const equipment of input.equipments) {
 				if (equipment.formula) {
-					const validation = FormulaEngine.validateFormula(equipment.formula);
+					const validation = await FormulaEngine.validateFormula(equipment.formula);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -245,7 +258,7 @@ export const productsRouter = router({
 
 			for (const process of input.processes) {
 				if (process.formula) {
-					const validation = FormulaEngine.validateFormula(process.formula);
+					const validation = await FormulaEngine.validateFormula(process.formula);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -352,6 +365,11 @@ export const productsRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			const companyId = ensureCompanyAccess()(ctx);
 			const { id, materials, equipments, processes, finishes, ...data } = input;
+			
+			// Debug: Log dos dados recebidos
+			console.log('🔍 UPDATE PRODUCT - Input recebido:', input);
+			console.log('🔍 UPDATE PRODUCT - Checklist data:', input.checklist);
+			console.log('🔍 UPDATE PRODUCT - Data para update:', data);
 
 			// Verificar se produto existe
 			const existingProduct = await ctx.db.product.findFirst({
@@ -367,7 +385,7 @@ export const productsRouter = router({
 
 			// Validar fórmula se fornecida
 			if (data.formula) {
-				const validation = FormulaEngine.validateFormula(data.formula);
+				const validation = await FormulaEngine.validateFormula(data.formula);
 				if (!validation.valid) {
 					throw new TRPCError({
 						code: "BAD_REQUEST",
@@ -378,10 +396,12 @@ export const productsRouter = router({
 
 			// Atualizar produto em transação
 			const product = await ctx.db.$transaction(async (tx) => {
+				console.log('🔍 UPDATE PRODUCT - Executando update com data:', data);
 				const updatedProduct = await tx.product.update({
 					where: { id },
 					data,
 				});
+				console.log('🔍 UPDATE PRODUCT - Produto atualizado:', updatedProduct);
 
 				// Atualizar materiais se fornecidos
 				if (materials !== undefined) {
@@ -484,7 +504,7 @@ export const productsRouter = router({
 					equipments: {
 						include: {
 							equipment: {
-								select: { name: true, costPerHour: true, type: true },
+								select: { name: true, calculatedCostPerHour: true, type: true },
 							},
 						},
 					},
@@ -521,7 +541,7 @@ export const productsRouter = router({
 				// Aplicar fórmula se existir
 				if (productMaterial.formula) {
 					try {
-						const result = FormulaEngine.calculateFormula(
+						const result = await FormulaEngine.calculateFormula(
 							productMaterial.formula,
 							context,
 							productMaterial.material.unit,
@@ -556,7 +576,7 @@ export const productsRouter = router({
 				// Aplicar fórmula se existir
 				if (productEquipment.formula) {
 					try {
-						const result = FormulaEngine.calculateFormula(
+						const result = await FormulaEngine.calculateFormula(
 							productEquipment.formula,
 							context,
 							"hour",
@@ -571,7 +591,7 @@ export const productsRouter = router({
 				}
 
 				const equipmentCost =
-					Number(productEquipment.equipment.costPerHour) * timeNeeded;
+					Number(productEquipment.equipment.calculatedCostPerHour) * timeNeeded;
 				totalCost += equipmentCost;
 
 				breakdown.push({
@@ -579,7 +599,7 @@ export const productsRouter = router({
 					name: productEquipment.equipment.name,
 					timeNeeded,
 					unit: "hour",
-					costPerHour: Number(productEquipment.equipment.costPerHour),
+					costPerHour: Number(productEquipment.equipment.calculatedCostPerHour),
 					totalCost: equipmentCost,
 					formula: productEquipment.formula,
 				});
@@ -592,7 +612,7 @@ export const productsRouter = router({
 				// Aplicar fórmula se existir
 				if (productProcess.formula) {
 					try {
-						const result = FormulaEngine.calculateFormula(
+						const result = await FormulaEngine.calculateFormula(
 							productProcess.formula,
 							context,
 							productProcess.process.timeUnit,
@@ -693,6 +713,89 @@ export const productsRouter = router({
 		.query(({ input }) => {
 			return FormulaEngine.previewFormula(input.formula, input.context);
 		}),
+
+	// Deletar produto
+	delete: protectedProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const companyId = ensureCompanyAccess()(ctx);
+			const { id } = input;
+
+			// Verificar se o produto existe e pertence à company
+			const product = await ctx.db.product.findFirst({
+				where: { id, companyId },
+				include: {
+					_count: {
+						select: {
+							quoteItems: true,
+							orderItems: true,
+						},
+					},
+				},
+			});
+
+			if (!product) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Product not found",
+				});
+			}
+
+			// Verificar se o produto está sendo usado em cotações ou pedidos
+			if (product._count.quoteItems > 0 || product._count.orderItems > 0) {
+				const totalUsage = product._count.quoteItems + product._count.orderItems;
+				throw new TRPCError({
+					code: "CONFLICT",
+					message: `Cannot delete product. It is being used in ${totalUsage} orders.`,
+				});
+			}
+
+			// Deletar todas as relações do produto
+			await ctx.db.$transaction(async (tx) => {
+				// Deletar relações com materiais
+				await tx.productMaterial.deleteMany({
+					where: { productId: id },
+				});
+
+				// Deletar relações com equipamentos
+				await tx.productEquipment.deleteMany({
+					where: { productId: id },
+				});
+
+				// Deletar relações com processos
+				await tx.productProcess.deleteMany({
+					where: { productId: id },
+				});
+
+				// Deletar relações com acabamentos
+				await tx.productFinish.deleteMany({
+					where: { productId: id },
+				});
+
+				// Deletar o produto
+				await tx.product.delete({
+					where: { id },
+				});
+			});
+
+			return { success: true };
+		}),
+
+	// Buscar categorias de produtos
+	categories: protectedProcedure.query(async ({ ctx }) => {
+		const companyId = ensureCompanyAccess()(ctx);
+
+		const products = await ctx.db.product.findMany({
+			where: { companyId, category: { not: null } },
+			select: { category: true },
+			distinct: ["category"],
+		});
+
+		return products
+			.map((p) => p.category)
+			.filter(Boolean)
+			.sort();
+	}),
 
 	// Estatísticas
 	stats: protectedProcedure.query(async ({ ctx }) => {

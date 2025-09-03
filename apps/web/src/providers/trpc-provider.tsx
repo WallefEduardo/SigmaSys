@@ -33,6 +33,13 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 							) {
 								return false;
 							}
+							// Não tentar novamente para erros de conflict (409) - são erros de negócio
+							if (
+								error instanceof TRPCClientError &&
+								error.data?.httpStatus === 409
+							) {
+								return false;
+							}
 							return failureCount < 1;
 						},
 					},

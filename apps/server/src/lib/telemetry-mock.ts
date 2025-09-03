@@ -21,6 +21,16 @@ export class TelemetryService {
 		operation: string,
 		table: string,
 		duration: number,
+		success = true,
+	) {
+		// Mock - não faz nada
+	}
+
+	static recordDatabaseQuery(
+		operation: string,
+		table: string,
+		duration: number,
+		success = true,
 	) {
 		// Mock - não faz nada
 	}
@@ -31,6 +41,14 @@ export class TelemetryService {
 
 	static trackError(error: Error, context?: any) {
 		console.error("🚨 Error tracked:", error.message, context);
+	}
+
+	static recordError(
+		type: string,
+		severity: "low" | "medium" | "high" | "critical",
+		context?: string,
+	) {
+		console.error("🚨 Error recorded:", type, severity, context);
 	}
 
 	static trackCacheHit(key: string) {
@@ -79,6 +97,19 @@ export class TelemetryService {
 			setStatus: () => {},
 			end: () => {},
 		};
+	}
+
+	static recordTransaction(
+		operation: string,
+		duration: number,
+		success = true,
+		retries = 0,
+	) {
+		// Mock - não faz nada
+	}
+
+	static async healthCheck(): Promise<boolean> {
+		return true;
 	}
 
 	static getMetrics() {

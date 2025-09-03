@@ -8,17 +8,11 @@
 		"compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
 		"dev": "tsx watch src/index.ts",
 		"start": "node dist/index.js",
-		"db:push": "prisma db push",
-		"db:studio": "prisma studio",
-		"db:generate": "prisma generate",
-		"db:migrate": "prisma migrate dev",
-		"db:start": "docker compose up -d",
-		"db:watch": "docker compose up",
-		"db:stop": "docker compose stop",
-		"db:down": "docker compose down",
-		"db:seed": "tsx prisma/seeds/seed.ts"
+		"seed:categories": "tsx src/scripts/seed-categories.ts",
+		"seed:categories:clear": "tsx src/scripts/seed-categories.ts --clear"
 	},
 	"dependencies": {
+		"@repo/database": "workspace:*",
 		"@fastify/cors": "^11.0.1",
 		"@opentelemetry/api": "^1.9.0",
 		"@opentelemetry/auto-instrumentations-node": "^0.62.1",
@@ -26,6 +20,7 @@
 		"@opentelemetry/sdk-node": "^0.203.0",
 		"@prisma/client": "^6.13.0",
 		"@radix-ui/react-switch": "^1.2.6",
+		"@radix-ui/react-tabs": "^1.1.13",
 		"@trpc/client": "^11.4.2",
 		"@trpc/server": "^11.4.2",
 		"@types/bull": "^4.10.4",

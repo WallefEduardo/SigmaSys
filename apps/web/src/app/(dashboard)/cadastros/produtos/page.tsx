@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, Edit, Filter, Package, Plus, Search } from "lucide-react";
+import { Calculator, CheckSquare, Edit, Filter, Package, Plus, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,122 +17,60 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
+import { useConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { api } from "@/lib/trpc";
+import { formatCurrency } from "@/lib/utils/currency";
 
-// Mock data para produtos
-interface Product {
-	id: string;
-	name: string;
-	description?: string;
-	code?: string;
-	category?: string;
-	formula?: string;
-	margin: {
-		markup: number;
-		liquidMargin: number;
-	};
-	baseCost: number;
-	finalPrice: number;
-	active: boolean;
-	complexity: "simple" | "medium" | "complex";
-	tags: string[];
-}
-
-const mockProducts: Product[] = [
-	{
-		id: "1",
-		name: "Placa de Acrílico Personalizada",
-		description: "Placa de acrílico com impressão UV e corte personalizado",
-		code: "PRD-ACR-001",
-		category: "Placas",
-		formula: "largura * altura * 45.80 + perimetro * 12.50",
-		margin: { markup: 2.5, liquidMargin: 60 },
-		baseCost: 125.4,
-		finalPrice: 313.5,
-		active: true,
-		complexity: "medium",
-		tags: ["acrílico", "impressão", "corte", "personalizado"],
-	},
-	{
-		id: "2",
-		name: "Banner em Lona",
-		description: "Banner impresso em lona 440g com acabamento soldado",
-		code: "PRD-LON-001",
-		category: "Banners",
-		formula: "largura * altura * 8.90 + perimetro * 2.50",
-		margin: { markup: 3.0, liquidMargin: 67 },
-		baseCost: 89.5,
-		finalPrice: 268.5,
-		active: true,
-		complexity: "simple",
-		tags: ["lona", "banner", "impressão", "soldado"],
-	},
-	{
-		id: "3",
-		name: "Letreiro em Aço Inox",
-		description: "Letreiro corporativo em aço inox com LED",
-		code: "PRD-LET-001",
-		category: "Letreiros",
-		formula: "largura * altura * 150.00 + quantidade * 45.00",
-		margin: { markup: 2.8, liquidMargin: 64 },
-		baseCost: 420.0,
-		finalPrice: 1176.0,
-		active: true,
-		complexity: "complex",
-		tags: ["aço", "inox", "led", "corporativo"],
-	},
-	{
-		id: "4",
-		name: "Adesivo para Vitrine",
-		description: "Adesivo recortado para aplicação em vitrine",
-		code: "PRD-ADE-001",
-		category: "Adesivos",
-		formula: "area * 15.50 + max(largura, altura) * 5.00",
-		margin: { markup: 3.5, liquidMargin: 71 },
-		baseCost: 45.8,
-		finalPrice: 160.3,
-		active: true,
-		complexity: "simple",
-		tags: ["adesivo", "vitrine", "recorte"],
-	},
-	{
-		id: "5",
-		name: "Estrutura para Outdoor",
-		description: "Estrutura metálica para outdoor com impressão",
-		code: "PRD-OUT-001",
-		category: "Outdoor",
-		formula: "largura * altura * 25.00 + volume * 180.00",
-		margin: { markup: 2.2, liquidMargin: 55 },
-		baseCost: 850.0,
-		finalPrice: 1870.0,
-		active: false,
-		complexity: "complex",
-		tags: ["outdoor", "estrutura", "metálica"],
-	},
-];
 
 export default function ProdutosPage() {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchInput, setSearchInput] = useState("");
 	const [categoryFilter, setCategoryFilter] = useState("all");
 	const [complexityFilter, setComplexityFilter] = useState("all");
-	const [view, setView] = useState<"card" | "table">("card");
+	const [view, setView] = useState<"card" | "table">("table"); // Sempre tabela como padrão
+	const { confirm, ConfirmDialog } = useConfirmDialog();
 
-	const categories = [
-		...new Set(mockProducts.map((p) => p.category).filter(Boolean)),
-	];
+	// Buscar dados reais da API
+	const {
+		data: productsData,
+		isLoading,
+		error,
+		refetch,
+	} = api.products.list.useQuery({
+		search: searchInput || undefined,
+		category: categoryFilter !== "all" ? categoryFilter : undefined,
+		active: true, // Sempre buscar apenas produtos ativos
+	});
 
-	const filteredProducts = mockProducts.filter((product) => {
-		const matchesSearch =
-			product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			product.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			product.description?.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesCategory =
-			categoryFilter === "all" || product.category === categoryFilter;
+	// Buscar categorias disponíveis
+	const { data: categoriesData } = api.products.categories.useQuery();
+
+	// Mutation para deletar produto
+	const { mutateAsync: deleteProduct, isLoading: isDeleting } = api.products.delete.useMutation({
+		onSuccess: () => {
+			refetch();
+		},
+	});
+
+	const products = productsData?.products || [];
+	const categories = Array.isArray(categoriesData) ? categoriesData : [];
+	
+	// Debug - vamos ver o que está retornando
+	console.log('Products API Response:', productsData);
+	console.log('Products array:', products);
+
+
+	// Debounce para busca
+	const debouncedSearch = useDebounce((term: string) => {
+		// A busca é reativa através do useQuery
+	}, 300);
+
+	// Filtrar produtos no frontend 
+	const filteredProducts = products.filter((product) => {
 		const matchesComplexity =
-			complexityFilter === "all" || product.complexity === complexityFilter;
-		return (
-			matchesSearch && matchesCategory && matchesComplexity && product.active
-		);
+			complexityFilter === "all" || (product.complexity || 'medium') === complexityFilter;
+		return matchesComplexity && (product.active !== false); // Default true se não existir
 	});
 
 	const formatCurrency = (value: number) => {
@@ -182,33 +120,33 @@ export default function ProdutosPage() {
 		{
 			key: "complexity",
 			label: "Complexidade",
-			render: (value: string) => (
-				<Badge className={getComplexityColor(value)}>
-					{getComplexityLabel(value)}
+			render: (value: string, item: any) => (
+				<Badge className={getComplexityColor(value || 'medium')}>
+					{getComplexityLabel(value || 'medium')}
 				</Badge>
 			),
 		},
 		{
-			key: "baseCost",
-			label: "Custo Base",
-			render: (value: number) => (
-				<div className="font-medium text-red-600">{formatCurrency(value)}</div>
+			key: "createdAt",
+			label: "Data de Criação",
+			render: (value: string) => (
+				<div className="text-sm">{new Date(value).toLocaleDateString('pt-BR')}</div>
 			),
 		},
 		{
-			key: "finalPrice",
-			label: "Preço Final",
-			render: (value: number) => (
-				<div className="font-medium text-green-600">
-					{formatCurrency(value)}
+			key: "checklist",
+			label: "Checklist",
+			render: (value: any) => (
+				<div className="flex items-center gap-1">
+					{value && (value.nodes?.length > 0 || value.length > 0) ? (
+						<>
+							<CheckSquare className="h-3 w-3 text-green-600" />
+							<span className="text-xs text-green-600">Configurado</span>
+						</>
+					) : (
+						<span className="text-muted-foreground text-xs">Não configurado</span>
+					)}
 				</div>
-			),
-		},
-		{
-			key: "margin.liquidMargin",
-			label: "Margem",
-			render: (value: number) => (
-				<div className="font-medium text-blue-600">{value}%</div>
 			),
 		},
 		{
@@ -233,6 +171,58 @@ export default function ProdutosPage() {
 	const handleView = (product: any) => {
 		router.push(`/cadastros/produtos/${product.id}`);
 	};
+
+	const handleDelete = async (product: any) => {
+		const confirmed = await confirm({
+			title: "Deletar Produto",
+			description: `Tem certeza que deseja deletar "${product.name}"? Esta ação não pode ser desfeita.`,
+			confirmText: "Deletar",
+			variant: "destructive",
+			isLoading: isDeleting,
+		});
+
+		if (confirmed) {
+			try {
+				await deleteProduct({ id: product.id });
+			} catch (error: any) {
+				console.error('Erro ao deletar produto:', error);
+				
+				// Mostrar erro específico para o usuário
+				let errorMessage = "Erro ao deletar produto";
+				if (error.message?.includes("being used in") && error.message?.includes("orders")) {
+					const match = error.message.match(/being used in (\d+) orders?/);
+					const count = match ? match[1] : "alguns";
+					errorMessage = `Não é possível deletar "${product.name}" porque está sendo usado em ${count} pedido${count !== "1" ? "s" : ""}.`;
+				}
+				
+				// Mostrar dialog de erro
+				await confirm({
+					title: "Não foi possível deletar",
+					description: errorMessage,
+					confirmText: "Ok",
+					cancelText: "",
+					variant: "default",
+				});
+			}
+		}
+	};
+
+	// Estados de erro e loading
+	if (error) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="text-center">
+					<p className="font-semibold text-destructive text-lg">
+						Erro ao carregar produtos
+					</p>
+					<p className="mt-1 text-muted-foreground text-sm">{error.message}</p>
+					<Button onClick={() => refetch()} variant="outline" className="mt-4">
+						Tentar novamente
+					</Button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-6">
@@ -267,18 +257,12 @@ export default function ProdutosPage() {
 				<Card>
 					<CardHeader className="pb-2">
 						<CardTitle className="font-medium text-muted-foreground text-sm">
-							Margem Média
+							Categorias
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="font-bold text-2xl text-green-600">
-							{Math.round(
-								filteredProducts.reduce(
-									(sum, p) => sum + p.margin.liquidMargin,
-									0,
-								) / filteredProducts.length || 0,
-							)}
-							%
+							{categories.length}
 						</div>
 					</CardContent>
 				</Card>
@@ -286,15 +270,12 @@ export default function ProdutosPage() {
 				<Card>
 					<CardHeader className="pb-2">
 						<CardTitle className="font-medium text-muted-foreground text-sm">
-							Ticket Médio
+							Com Checklist
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="font-bold text-2xl text-blue-600">
-							{formatCurrency(
-								filteredProducts.reduce((sum, p) => sum + p.finalPrice, 0) /
-									filteredProducts.length || 0,
-							)}
+							{filteredProducts.filter((p) => p.checklist && (p.checklist.nodes?.length > 0 || p.checklist.length > 0)).length}
 						</div>
 					</CardContent>
 				</Card>
@@ -319,10 +300,18 @@ export default function ProdutosPage() {
 					<Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
 					<Input
 						placeholder="Buscar produtos por nome, código ou descrição..."
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							debouncedSearch(e.target.value);
+						}}
 						className="pl-10"
+						aria-label="Campo de busca para produtos"
+						aria-describedby="search-hint"
 					/>
+					<span id="search-hint" className="sr-only">
+						Digite para buscar por nome, código ou descrição dos produtos
+					</span>
 				</div>
 
 				<Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -356,10 +345,22 @@ export default function ProdutosPage() {
 				<ViewToggle view={view} onViewChange={setView} />
 			</div>
 
-			{filteredProducts.length === 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<div className="text-center">
+						<div className="animate-pulse space-y-4">
+							<div className="mx-auto h-4 w-32 rounded bg-muted" />
+							<div className="mx-auto h-4 w-48 rounded bg-muted" />
+						</div>
+						<p className="mt-2 text-muted-foreground text-sm">
+							Carregando produtos...
+						</p>
+					</div>
+				</div>
+			) : filteredProducts.length === 0 ? (
 				<div className="py-12 text-center">
 					<div className="mb-4 text-muted-foreground">
-						{searchTerm ||
+						{searchInput ||
 						categoryFilter !== "all" ||
 						complexityFilter !== "all"
 							? "Nenhum produto encontrado com os filtros aplicados"
@@ -401,8 +402,8 @@ export default function ProdutosPage() {
 													)}
 												</div>
 											</div>
-											<Badge className={getComplexityColor(product.complexity)}>
-												{getComplexityLabel(product.complexity)}
+											<Badge className={getComplexityColor(product.complexity || 'medium')}>
+												{getComplexityLabel(product.complexity || 'medium')}
 											</Badge>
 										</div>
 										{product.description && (
@@ -413,34 +414,27 @@ export default function ProdutosPage() {
 									</CardHeader>
 
 									<CardContent className="flex-1 space-y-3">
-										{/* Preços */}
+										{/* Info básica */}
 										<div className="space-y-2">
 											<div className="flex items-center justify-between">
 												<span className="text-muted-foreground text-sm">
-													Custo base:
+													Criado em:
 												</span>
-												<span className="font-medium text-red-600">
-													{formatCurrency(product.baseCost)}
-												</span>
-											</div>
-
-											<div className="flex items-center justify-between">
-												<span className="text-muted-foreground text-sm">
-													Preço final:
-												</span>
-												<span className="font-semibold text-green-600">
-													{formatCurrency(product.finalPrice)}
+												<span className="text-sm">
+													{new Date(product.createdAt).toLocaleDateString('pt-BR')}
 												</span>
 											</div>
 
-											<div className="flex items-center justify-between">
-												<span className="text-muted-foreground text-sm">
-													Margem:
-												</span>
-												<span className="font-medium text-blue-600">
-													{product.margin.liquidMargin}%
-												</span>
-											</div>
+											{product.margin && (
+												<div className="flex items-center justify-between">
+													<span className="text-muted-foreground text-sm">
+														Markup:
+													</span>
+													<span className="font-medium text-blue-600">
+														{product.margin.markup || 2.5}x
+													</span>
+												</div>
+											)}
 										</div>
 
 										{/* Fórmula */}
@@ -458,44 +452,52 @@ export default function ProdutosPage() {
 											</div>
 										)}
 
-										{/* Tags */}
-										{product.tags && product.tags.length > 0 && (
-											<div className="flex flex-wrap gap-1">
-												{product.tags.slice(0, 3).map((tag) => (
-													<Badge
-														key={tag}
-														variant="outline"
-														className="text-xs"
-													>
-														{tag}
-													</Badge>
-												))}
-												{product.tags.length > 3 && (
-													<Badge variant="outline" className="text-xs">
-														+{product.tags.length - 3}
-													</Badge>
-												)}
+										{/* Checklist Status */}
+										{product.checklist && (product.checklist.nodes?.length > 0) && (
+											<div className="rounded bg-green-50 dark:bg-green-950/20 p-3">
+												<div className="flex items-center gap-2">
+													<CheckSquare className="h-3 w-3 text-green-600" />
+													<span className="text-green-600 font-medium text-xs">
+														CHECKLIST CONFIGURADO
+													</span>
+												</div>
+												<div className="mt-1 text-xs text-green-600">
+													{product.checklist.nodes.length} perguntas criadas
+												</div>
 											</div>
 										)}
 									</CardContent>
 
 									<div className="p-6 pt-3">
-										<div className="flex w-full gap-2">
-											<Button
-												variant="outline"
-												size="sm"
+										<div className="flex justify-end gap-2">
+											<Button 
+												variant="outline" 
+												size="sm" 
 												asChild
-												className="flex-1"
+												title="Visualizar"
 											>
 												<Link href={`/cadastros/produtos/${product.id}`}>
-													<Package className="mr-1 h-4 w-4" />
-													Detalhes
+													<Package className="h-4 w-4" />
 												</Link>
 											</Button>
-											<Button variant="outline" size="sm" asChild>
+											<Button 
+												variant="outline" 
+												size="sm" 
+												asChild
+												title="Editar"
+											>
 												<Link href={`/cadastros/produtos/${product.id}/editar`}>
-													<Calculator className="h-4 w-4" />
+													<Edit className="h-4 w-4" />
 												</Link>
+											</Button>
+											<Button 
+												variant="outline" 
+												size="sm"
+												onClick={() => handleDelete(product)}
+												title="Deletar"
+												className="hover:bg-destructive hover:text-destructive-foreground"
+											>
+												<Trash2 className="h-4 w-4" />
 											</Button>
 										</div>
 									</div>
@@ -508,11 +510,13 @@ export default function ProdutosPage() {
 							columns={productColumns}
 							onEdit={handleEdit}
 							onView={handleView}
+							onDelete={handleDelete}
 							emptyMessage="Nenhum produto encontrado"
 						/>
 					)}
 				</>
 			)}
+			<ConfirmDialog />
 		</div>
 	);
 }
