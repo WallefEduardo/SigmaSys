@@ -111,7 +111,6 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
 
   // 🔍 Capturar mudanças de viewport (zoom, pan) 
   const onMove = useCallback((event: any, viewport: { x: number; y: number; zoom: number }) => {
-    console.log('🔍 CHECKLISTFLOW - Viewport alterado:', viewport);
     dispatch({ type: 'UPDATE_VIEWPORT', payload: viewport });
   }, [dispatch]);
 
@@ -199,8 +198,7 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
     }));
   }, [nodes, handleEditNode]);
 
-  // Debug FORÇADO para ver se o componente monta
-  console.log('🚀 CHECKLISTFLOWCONTENT RENDERIZANDO - nodes:', nodes.length);
+  // Debug removido para produção
 
   return (
     <>

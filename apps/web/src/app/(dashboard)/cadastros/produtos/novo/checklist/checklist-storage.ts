@@ -45,14 +45,6 @@ class ChecklistStorage {
       const compressedData = this.compressData(dataToSave);
       
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(compressedData));
-      
-      console.log('💾 CHECKLIST-STORAGE - Dados salvos:', {
-        nodes: config.nodes.length,
-        edges: config.edges.length,
-        timestamp: new Date(dataToSave.timestamp).toLocaleTimeString(),
-        size: `${JSON.stringify(compressedData).length} chars`
-      });
-      
       return true;
     } catch (error) {
       console.error('❌ CHECKLIST-STORAGE - Erro ao salvar:', error);
@@ -80,17 +72,9 @@ class ChecklistStorage {
       // Verificar se dados não são muito antigos
       const daysOld = (Date.now() - data.timestamp) / (1000 * 60 * 60 * 24);
       if (daysOld > this.MAX_STORAGE_AGE_DAYS) {
-        console.warn(`⚠️ CHECKLIST-STORAGE - Dados muito antigos (${daysOld.toFixed(1)} dias), limpando...`);
         this.clear();
         return null;
       }
-
-      console.log('📖 CHECKLIST-STORAGE - Dados carregados:', {
-        nodes: data.config.nodes.length,
-        edges: data.config.edges.length,
-        age: `${daysOld.toFixed(1)} dias`,
-        version: data.version
-      });
 
       return data;
     } catch (error) {
@@ -105,7 +89,6 @@ class ChecklistStorage {
   static clear(): void {
     try {
       localStorage.removeItem(this.STORAGE_KEY);
-      console.log('🧹 CHECKLIST-STORAGE - Dados limpos');
     } catch (error) {
       console.error('❌ CHECKLIST-STORAGE - Erro ao limpar:', error);
     }

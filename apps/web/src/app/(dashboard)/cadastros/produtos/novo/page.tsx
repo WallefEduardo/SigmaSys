@@ -94,7 +94,6 @@ export default function NovoProdutoPage() {
 			toast.success("Produto criado com sucesso!");
 			// ✅ Limpar localStorage do checklist com a chave correta
 			ChecklistStorage.clear();
-			console.log("🧹 localStorage do checklist limpo após criação do produto");
 			router.push("/cadastros/produtos");
 		},
 		onError: (error) => {
@@ -113,13 +112,11 @@ export default function NovoProdutoPage() {
 		}
 
 		// Preparar dados do checklist para o backend
-		console.log("FormData.checklist:", formData.checklist);
 		const checklistData = formData.checklist ? {
 			nodes: formData.checklist.nodes || [],
 			edges: formData.checklist.edges || [],
 			selections: formData.checklist.selections || {}
 		} : null;
-		console.log("ChecklistData preparado:", checklistData);
 
 		// Preparar dados do produto
 		const productData = {
@@ -139,7 +136,6 @@ export default function NovoProdutoPage() {
 			finishes: [],
 		};
 
-		console.log("Enviando dados do produto:", productData);
 		createProductMutation.mutate(productData);
 	};
 
@@ -424,7 +420,6 @@ export default function NovoProdutoPage() {
 						{activeTab === "checklist" && (
 							<ChecklistCard 
 								onComplete={(config) => {
-									console.log("Checklist configuration updated:", config);
 									setFormData(prev => ({ 
 										...prev, 
 										checklist: config 

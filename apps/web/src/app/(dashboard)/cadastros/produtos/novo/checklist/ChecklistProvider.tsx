@@ -235,11 +235,6 @@ export function ChecklistProvider({
   enableAutoSave = true, 
   productId 
 }: ChecklistProviderProps) {
-  console.log('🏗️ CHECKLISTPROVIDER - Componente montando/remontando!', {
-    enableAutoSave,
-    productId,
-    initialDataNodes: initialData?.nodes?.length || 0
-  });
 
   const [state, dispatch] = useReducer(checklistReducer, initialState);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -250,46 +245,25 @@ export function ChecklistProvider({
 
   // 🚀 AUTO-LOAD: Carregar dados do localStorage na inicialização - EXECUTAR APENAS UMA VEZ
   useEffect(() => {
-    console.log('🔍 CHECKLISTPROVIDER - useEffect AUTO-LOAD executado:', {
-      hasInitialized: hasInitializedRef.current,
-      hasLoadedFromStorage: hasLoadedFromStorageRef.current,
-      enableAutoSave,
-      initialDataLength: initialData?.nodes?.length || 0,
-      currentStateNodes: state.nodes.length
-    });
-
     // 🛡️ SUPER PROTEÇÃO: Se já tem dados carregados no estado, não resetar
     if (state.nodes.length > 0 && hasInitializedRef.current) {
-      console.log('🛡️ CHECKLISTPROVIDER - Estado já tem dados, mantendo-os:', {
-        nodes: state.nodes.length,
-        edges: state.edges.length
-      });
       return;
     }
 
     // Se já inicializou, não fazer novamente
     if (hasInitializedRef.current) {
-      console.log('⏭️ CHECKLISTPROVIDER - Pulando inicialização (já inicializado)');
       return;
     }
     
     // Prioridade 1: Dados salvos no localStorage (se auto-save ativado)
     if (enableAutoSave) {
-      console.log('🔍 CHECKLISTPROVIDER - Tentando carregar do localStorage...');
       const savedData = ChecklistStorage.load();
-      console.log('📖 CHECKLISTPROVIDER - Dados do localStorage:', savedData);
       
       if (savedData?.config && savedData.config.nodes.length > 0) {
         hasInitializedRef.current = true;
         hasLoadedFromStorageRef.current = true;
         dispatch({ type: 'LOAD_DATA', payload: savedData.config });
-        console.log('🚀 CHECKLISTPROVIDER - Auto-load do localStorage realizado:', {
-          nodes: savedData.config.nodes.length,
-          edges: savedData.config.edges.length
-        });
         return;
-      } else {
-        console.log('❌ CHECKLISTPROVIDER - Nenhum dado válido no localStorage');
       }
     }
     
@@ -297,12 +271,7 @@ export function ChecklistProvider({
     if (initialData?.nodes?.length > 0) {
       hasInitializedRef.current = true;
       dispatch({ type: 'LOAD_DATA', payload: initialData });
-      console.log('✅ CHECKLISTPROVIDER - Dados iniciais carregados:', {
-        nodes: initialData.nodes.length,
-        edges: initialData.edges?.length || 0
-      });
     } else {
-      console.log('ℹ️ CHECKLISTPROVIDER - Nenhum dado inicial encontrado, iniciando vazio');
       hasInitializedRef.current = true; // Marcar como inicializado mesmo que vazio
     }
   }, []); // 🚀 DEPENDÊNCIAS VAZIAS - executar apenas na montagem
@@ -354,7 +323,7 @@ export function ChecklistProvider({
         selections: state.selections,
       };
 
-      console.log('🔄 CHECKLISTPROVIDER - Notificando mudanças (debounced):', config);
+      // Notificar mudanças para componente pai
       onConfigurationChange(config);
       dispatch({ type: 'MARK_CLEAN' });
     }, 300); // 300ms debounce
@@ -397,28 +366,13 @@ export function ChecklistProvider({
         viewport: state.viewport,
       };
 
-      console.log('💾 CHECKLISTPROVIDER - Tentando auto-save:', {
-        nodes: config.nodes.length,
-        edges: config.edges.length,
-        productId,
-        hasChanges: ChecklistStorage.hasChanges(config)
-      });
-
       // Só salva se realmente houve mudanças
       if (ChecklistStorage.hasChanges(config)) {
         const success = ChecklistStorage.save(config, productId);
-        if (success) {
-          console.log('✅ CHECKLISTPROVIDER - Auto-save realizado com sucesso:', {
-            nodes: config.nodes.length,
-            edges: config.edges.length,
-            timestamp: new Date().toLocaleTimeString(),
-            storageStats: ChecklistStorage.getStats()
-          });
-        } else {
-          console.error('❌ CHECKLISTPROVIDER - Auto-save falhou!');
+        // Manter apenas log de erro importante
+        if (!success) {
+          console.error('❌ Auto-save falhou!');
         }
-      } else {
-        console.log('⏭️ CHECKLISTPROVIDER - Auto-save pulado (sem mudanças)');
       }
     }, 500); // 500ms debounce para auto-save
 
@@ -434,12 +388,10 @@ export function ChecklistProvider({
   }, []);
 
   const updateNode = useCallback((nodeId: string, data: any) => {
-    console.log('🔄 CHECKLISTPROVIDER - updateNode chamado:', nodeId, data);
     dispatch({ type: 'UPDATE_NODE', payload: { nodeId, data } });
   }, []);
 
   const addNode = useCallback((node: Node) => {
-    console.log('🔄 CHECKLISTPROVIDER - addNode chamado:', node);
     dispatch({ type: 'ADD_NODE', payload: node });
     dispatch({ type: 'INCREMENT_NODE_ID' });
   }, []);
@@ -478,7 +430,6 @@ export function ChecklistProvider({
   const clearAutoSave = useCallback(() => {
     if (enableAutoSave) {
       ChecklistStorage.clear();
-      console.log('🧹 CHECKLISTPROVIDER - Auto-save limpo');
     }
   }, [enableAutoSave]);
 
