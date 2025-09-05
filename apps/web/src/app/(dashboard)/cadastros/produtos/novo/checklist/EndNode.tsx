@@ -18,7 +18,7 @@ export default React.memo(function EndNode({ data }: EndNodeProps) {
       <Handle 
         type="target" 
         position={Position.Top} 
-        className="w-3 h-3"
+        className="w-6 h-6 bg-white border-4 border-purple-500 shadow-lg hover:bg-gray-100 transition-colors"
       />
     </div>
   );

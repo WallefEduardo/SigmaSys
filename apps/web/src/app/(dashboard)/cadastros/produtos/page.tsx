@@ -56,9 +56,7 @@ export default function ProdutosPage() {
 	const products = productsData?.products || [];
 	const categories = Array.isArray(categoriesData) ? categoriesData : [];
 	
-	// Debug - vamos ver o que está retornando
-	console.log('Products API Response:', productsData);
-	console.log('Products array:', products);
+	// Debug logs removidos
 
 
 	// Debounce para busca

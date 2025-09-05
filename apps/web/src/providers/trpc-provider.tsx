@@ -71,11 +71,7 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 							}
 						}
 
-						// Log para debug
-						console.log(
-							"🔐 Token para tRPC:",
-							token ? `${token.substring(0, 20)}...` : "Não encontrado",
-						);
+						// Log para debug (removido em produção)
 
 						return token ? { authorization: `Bearer ${token}` } : {};
 					},

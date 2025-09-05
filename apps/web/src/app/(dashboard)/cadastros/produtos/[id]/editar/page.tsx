@@ -88,13 +88,11 @@ export default function EditarProdutoPage() {
 		}
 
 		// Preparar dados do checklist para o backend
-		console.log("FormData.checklist:", formData.checklist);
 		const checklistData = formData.checklist ? {
 			nodes: formData.checklist.nodes || [],
 			edges: formData.checklist.edges || [],
 			selections: formData.checklist.selections || {}
 		} : null;
-		console.log("ChecklistData preparado:", checklistData);
 
 		// Preparar dados do produto
 		const productData = {
@@ -115,7 +113,6 @@ export default function EditarProdutoPage() {
 			finishes: [],
 		};
 
-		console.log("Atualizando produto:", productData);
 		updateProductMutation.mutate(productData);
 	};
 
@@ -386,17 +383,14 @@ export default function EditarProdutoPage() {
 								<CardContent>
 									<ChecklistFlow 
 										onComplete={(config) => {
-											console.log("🔄 FRONTEND - ChecklistFlow onComplete chamado:", config);
-											setFormData(prev => {
-												const updated = { 
-													...prev, 
-													checklist: config 
-												};
-												console.log("🔄 FRONTEND - FormData atualizado:", updated.checklist);
-												return updated;
-											});
+											setFormData(prev => ({ 
+												...prev, 
+												checklist: config 
+											}));
 										}}
 										initialData={formData.checklist}
+										productId={productId} // Use o ID específico do produto
+										forceInitialData={true} // Force usar initialData em vez do localStorage
 									/>
 								</CardContent>
 							</Card>

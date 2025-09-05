@@ -18,7 +18,7 @@ export default React.memo(function StartNode({ data }: StartNodeProps) {
       <Handle 
         type="source" 
         position={Position.Bottom} 
-        className="w-3 h-3"
+        className="w-6 h-6 bg-white border-4 border-green-500 shadow-lg hover:bg-gray-100 transition-colors"
       />
     </div>
   );

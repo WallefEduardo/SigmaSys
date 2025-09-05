@@ -73,7 +73,6 @@ function checklistReducer(state: ChecklistState, action: ChecklistAction): Check
         };
       });
 
-      console.log('✅ CHECKLISTPROVIDER - Dados carregados com', validatedNodes.length, 'nodes validados');
 
       return {
         ...state,
@@ -226,6 +225,7 @@ interface ChecklistProviderProps {
   initialData?: { nodes: Node[]; edges: Edge[]; selections: ChecklistSelections; viewport?: { x: number; y: number; zoom: number } };
   enableAutoSave?: boolean; // Controle para habilitar/desabilitar auto-save
   productId?: string; // ID do produto para chave única no localStorage
+  forceInitialData?: boolean; // Force usar initialData em vez do localStorage (para edição de produtos)
 }
 
 export function ChecklistProvider({ 
@@ -233,7 +233,8 @@ export function ChecklistProvider({
   onConfigurationChange, 
   initialData, 
   enableAutoSave = true, 
-  productId 
+  productId,
+  forceInitialData = false
 }: ChecklistProviderProps) {
 
   const [state, dispatch] = useReducer(checklistReducer, initialState);
@@ -255,8 +256,21 @@ export function ChecklistProvider({
       return;
     }
     
-    // Prioridade 1: Dados salvos no localStorage (se auto-save ativado)
-    if (enableAutoSave) {
+    // 🎯 PRIORIDADE FORÇADA: Se forceInitialData=true, usar initialData e limpar localStorage
+    if (forceInitialData && initialData) {
+      hasInitializedRef.current = true;
+      
+      // Limpar localStorage para evitar conflitos futuros com este produto específico
+      if (enableAutoSave && productId && productId !== "temp_draft") {
+        ChecklistStorage.clear();
+      }
+      
+      dispatch({ type: 'LOAD_DATA', payload: initialData });
+      return;
+    }
+    
+    // Prioridade 1: Dados salvos no localStorage (se auto-save ativado e não forçando initialData)
+    if (enableAutoSave && !forceInitialData) {
       const savedData = ChecklistStorage.load();
       
       if (savedData?.config && savedData.config.nodes.length > 0) {

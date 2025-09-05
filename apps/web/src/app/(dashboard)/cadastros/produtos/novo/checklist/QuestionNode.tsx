@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Handle, Position } from 'reactflow';
-import { MessageSquare, Package, Cpu, Settings, Palette, Edit3 } from 'lucide-react';
+import { MessageSquare, Package, Cpu, Settings, Palette, Edit3, Trash2 } from 'lucide-react';
 
 interface QuestionNodeProps {
   data: {
@@ -18,6 +18,7 @@ interface QuestionNodeProps {
     }>;
     onSelect?: (optionId: string) => void;
     onEdit?: () => void;
+    onDelete?: () => void;
   };
 }
 
@@ -49,7 +50,12 @@ export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
 
   return (
     <div className="bg-white border-2 border-blue-400 rounded-lg p-4 shadow-md min-w-[300px] max-w-[350px]">
-      <Handle type="target" position={Position.Top} className="w-3 h-3" />
+      {/* 🔵 Handle MAIOR para facilitar conexão */}
+      <Handle 
+        type="target" 
+        position={Position.Top} 
+        className="w-6 h-6 bg-blue-500 border-4 border-white shadow-lg hover:bg-blue-600 transition-colors" 
+      />
       
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -57,15 +63,26 @@ export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
           <MessageSquare className="h-5 w-5 text-blue-500 flex-shrink-0" />
           <h3 className="font-semibold text-gray-900 text-sm leading-tight">{data.question}</h3>
         </div>
-        {data.onEdit && (
-          <button
-            onClick={data.onEdit}
-            className="p-1 hover:bg-gray-100 rounded-md transition-colors flex-shrink-0"
-            title="Editar pergunta"
-          >
-            <Edit3 className="h-4 w-4 text-gray-500" />
-          </button>
-        )}
+        <div className="flex gap-1">
+          {data.onEdit && (
+            <button
+              onClick={data.onEdit}
+              className="p-1 hover:bg-blue-100 rounded-md transition-colors flex-shrink-0"
+              title="Editar pergunta"
+            >
+              <Edit3 className="h-4 w-4 text-blue-600 hover:text-blue-700" />
+            </button>
+          )}
+          {data.onDelete && (
+            <button
+              onClick={data.onDelete}
+              className="p-1 hover:bg-red-100 rounded-md transition-colors flex-shrink-0"
+              title="Deletar pergunta"
+            >
+              <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
+            </button>
+          )}
+        </div>
       </div>
       
       {/* Description */}
@@ -130,16 +147,16 @@ export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
               </div>
             </div>
             
-            {/* Conditional handles */}
+            {/* Conditional handles MAIORES */}
             {data.responseType === 'conditional' && (
               <Handle
                 type="source"
                 position={Position.Right}
                 id={`option-${index}`}
-                className="w-3 h-3"
+                className="w-5 h-5 bg-green-500 border-3 border-white shadow-lg hover:bg-green-600 transition-colors"
                 style={{ 
                   top: `${30 + index * 50}px`,
-                  right: '-6px'
+                  right: '-10px'
                 }}
               />
             )}
@@ -147,9 +164,13 @@ export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
         ))}
       </div>
       
-      {/* Bottom handle for non-conditional */}
+      {/* Bottom handle MAIOR for non-conditional */}
       {data.responseType !== 'conditional' && (
-        <Handle type="source" position={Position.Bottom} className="w-3 h-3" />
+        <Handle 
+          type="source" 
+          position={Position.Bottom} 
+          className="w-6 h-6 bg-green-500 border-4 border-white shadow-lg hover:bg-green-600 transition-colors" 
+        />
       )}
     </div>
   );

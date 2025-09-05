@@ -20,6 +20,7 @@ import QuestionNode from './QuestionNode';
 import StartNode from './StartNode';
 import EndNode from './EndNode';
 import QuestionModal from './QuestionModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 import { ChecklistProvider, useChecklist } from './ChecklistProvider';
 import { SimpleAutoSaveIndicator } from './AutoSaveIndicator';
 
@@ -47,6 +48,8 @@ interface ChecklistFlowProps {
   onComplete?: (data: ChecklistConfiguration) => void;
   initialData?: ChecklistConfiguration;
   onAddQuestion?: () => void;
+  productId?: string;
+  forceInitialData?: boolean;
 }
 
 interface ChecklistFlowRef {
@@ -54,13 +57,14 @@ interface ChecklistFlowRef {
 }
 
 const ChecklistFlow = forwardRef<ChecklistFlowRef, ChecklistFlowProps>(
-  function ChecklistFlow({ onComplete, initialData, onAddQuestion }, ref) {
+  function ChecklistFlow({ onComplete, initialData, onAddQuestion, productId, forceInitialData }, ref) {
     return (
       <ChecklistProvider 
         onConfigurationChange={onComplete} 
         initialData={initialData}
         enableAutoSave={true} // 🚀 Habilitar auto-save
-        productId="temp_draft" // 🆔 ID temporário para produtos em criação
+        productId={productId || "temp_draft"} // 🆔 Use ID específico ou fallback para drafts
+        forceInitialData={forceInitialData} // 🎯 Force usar initialData quando editando produto existente
       >
         <ReactFlowProvider>
           <ChecklistFlowInternal ref={ref} onComplete={onComplete} initialData={initialData} onAddQuestion={onAddQuestion} />
@@ -71,11 +75,13 @@ const ChecklistFlow = forwardRef<ChecklistFlowRef, ChecklistFlowProps>(
 );
 
 function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: ChecklistFlowProps & { ref: React.Ref<ChecklistFlowRef> }) {
-  const { state, addNode, updateNode, updateEdges, dispatch } = useChecklist();
+  const { state, addNode, updateNode, removeNode, updateEdges, dispatch } = useChecklist();
   const { nodes, edges, nextNodeId, viewport } = state;
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNode, setEditingNode] = useState<Node | null>(null);
+  const [deleteNodeId, setDeleteNodeId] = useState<string | null>(null);
+  const [isDeletingNode, setIsDeletingNode] = useState(false);
 
   // Expor função de adicionar pergunta via ref
   const handleOpenAddQuestionModal = useCallback(() => {
@@ -93,6 +99,31 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
       setIsModalOpen(true);
     }
   }, [nodes]);
+
+  const handleDeleteNode = useCallback((nodeId: string) => {
+    setDeleteNodeId(nodeId);
+  }, []);
+
+  const confirmDeleteNode = useCallback(async () => {
+    if (!deleteNodeId) return;
+    
+    setIsDeletingNode(true);
+    
+    try {
+      // Simular um pequeno delay para UX
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Deletar o node e suas conexões
+      removeNode(deleteNodeId);
+      
+      // Fechar modal
+      setDeleteNodeId(null);
+    } catch (error) {
+      console.error('Erro ao deletar pergunta:', error);
+    } finally {
+      setIsDeletingNode(false);
+    }
+  }, [deleteNodeId, removeNode]);
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     const updatedNodes = applyNodeChanges(changes, nodes);
@@ -135,9 +166,10 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
       updateNode(editingNode.id, {
         ...questionData,
         onSelect: (optionId: string) => {
-          console.log('Option selected:', optionId);
+          // Option selected callback
         },
         onEdit: () => handleEditNode(editingNode.id),
+        onDelete: () => handleDeleteNode(editingNode.id),
       });
       setEditingNode(null);
     } else {
@@ -150,9 +182,10 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
         data: {
           ...questionData,
           onSelect: (optionId: string) => {
-            console.log('Option selected:', optionId);
+            // Option selected callback
           },
           onEdit: () => handleEditNode(nodeId),
+          onDelete: () => handleDeleteNode(nodeId),
         },
       };
 
@@ -193,10 +226,11 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
         ? {
             ...node.data,
             onEdit: () => handleEditNode(node.id),
+            onDelete: () => handleDeleteNode(node.id),
           }
         : node.data,
     }));
-  }, [nodes, handleEditNode]);
+  }, [nodes, handleEditNode, handleDeleteNode]);
 
   // Debug removido para produção
 
@@ -211,6 +245,15 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
         onSave={handleAddQuestion}
         initialData={editingNode?.data}
         isEditing={!!editingNode}
+      />
+      
+      <DeleteConfirmModal
+        isOpen={!!deleteNodeId}
+        onClose={() => setDeleteNodeId(null)}
+        onConfirm={confirmDeleteNode}
+        title="Deletar Pergunta"
+        description="Tem certeza que deseja deletar esta pergunta? Esta ação não pode ser desfeita e todas as conexões relacionadas serão removidas."
+        isDeleting={isDeletingNode}
       />
       
       <div className="relative w-full h-[600px] border border-gray-700 rounded-lg overflow-hidden bg-gray-900">

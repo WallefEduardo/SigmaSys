@@ -166,7 +166,6 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
   };
 
   const duplicateOption = (optionId: string) => {
-    console.log('🔍 QUESTIONMODAL - duplicateOption chamado para:', optionId);
     const optionToDuplicate = questionData.options.find(opt => opt.id === optionId);
     if (optionToDuplicate) {
       const timestamp = Date.now();
@@ -183,17 +182,10 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
         })),
       };
       
-      console.log('🔍 QUESTIONMODAL - Opção duplicada criada:', duplicatedOption);
-      setQuestionData(prev => {
-        const updated = {
-          ...prev,
-          options: [...prev.options, duplicatedOption],
-        };
-        console.log('🔍 QUESTIONMODAL - Estado atualizado com nova opção:', updated.options.length, 'opções');
-        return updated;
-      });
-    } else {
-      console.log('🔍 QUESTIONMODAL - Opção para duplicar não encontrada:', optionId);
+      setQuestionData(prev => ({
+        ...prev,
+        options: [...prev.options, duplicatedOption],
+      }));
     }
   };
 
@@ -266,15 +258,8 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
   };
 
   const handleSave = () => {
-    console.log('🔍 QUESTIONMODAL - handleSave chamado');
-    console.log('🔍 QUESTIONMODAL - questionData:', questionData);
-    console.log('🔍 QUESTIONMODAL - isEditing:', isEditing);
-    console.log('🔍 QUESTIONMODAL - options count:', questionData.options.length);
-    
     if (questionData.question && questionData.options.length > 0) {
-      console.log('🔍 QUESTIONMODAL - Validação passou, chamando onSave...');
       onSave(questionData);
-      console.log('🔍 QUESTIONMODAL - onSave chamado, fechando modal...');
       onClose();
       // Só reseta se não estiver editando
       if (!isEditing) {
@@ -286,10 +271,7 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
         });
       }
     } else {
-      console.log('🔍 QUESTIONMODAL - Validação falhou:', {
-        hasQuestion: !!questionData.question,
-        hasOptions: questionData.options.length > 0
-      });
+      toast.error('Preencha todos os campos obrigatórios');
     }
   };
 
