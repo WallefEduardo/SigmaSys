@@ -169,7 +169,8 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
         addNode(newNode);
       }
       
-      dispatch({ type: 'INCREMENT_NODE_ID' });
+      // ✅ INCREMENT_NODE_ID já é chamado dentro do addNode() no ChecklistProvider
+      // Remoção da duplicação que causava pulo de IDs
     }
   };
 
