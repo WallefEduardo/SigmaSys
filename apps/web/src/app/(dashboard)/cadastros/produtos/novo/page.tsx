@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 // Import the new ChecklistFlow component
 import ChecklistFlow, { ChecklistFlowRef } from './checklist/ChecklistFlow';
 import FlowTestModal from './checklist/FlowTestModal';
+import ChecklistStorage from './checklist/checklist-storage';
 
 function ChecklistCard({ 
 	onComplete, 
@@ -91,8 +92,9 @@ export default function NovoProdutoPage() {
 	const createProductMutation = api.products.create.useMutation({
 		onSuccess: () => {
 			toast.success("Produto criado com sucesso!");
-			// Limpar localStorage do checklist
-			localStorage.removeItem('checklist-flow-data');
+			// ✅ Limpar localStorage do checklist com a chave correta
+			ChecklistStorage.clear();
+			console.log("🧹 localStorage do checklist limpo após criação do produto");
 			router.push("/cadastros/produtos");
 		},
 		onError: (error) => {

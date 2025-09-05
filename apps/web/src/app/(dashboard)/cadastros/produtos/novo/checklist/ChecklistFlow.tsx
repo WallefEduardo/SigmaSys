@@ -21,6 +21,7 @@ import StartNode from './StartNode';
 import EndNode from './EndNode';
 import QuestionModal from './QuestionModal';
 import { ChecklistProvider, useChecklist } from './ChecklistProvider';
+import { SimpleAutoSaveIndicator } from './AutoSaveIndicator';
 
 import 'reactflow/dist/style.css';
 
@@ -55,7 +56,12 @@ interface ChecklistFlowRef {
 const ChecklistFlow = forwardRef<ChecklistFlowRef, ChecklistFlowProps>(
   function ChecklistFlow({ onComplete, initialData, onAddQuestion }, ref) {
     return (
-      <ChecklistProvider onConfigurationChange={onComplete} initialData={initialData}>
+      <ChecklistProvider 
+        onConfigurationChange={onComplete} 
+        initialData={initialData}
+        enableAutoSave={true} // 🚀 Habilitar auto-save
+        productId="temp_draft" // 🆔 ID temporário para produtos em criação
+      >
         <ReactFlowProvider>
           <ChecklistFlowInternal ref={ref} onComplete={onComplete} initialData={initialData} onAddQuestion={onAddQuestion} />
         </ReactFlowProvider>
@@ -66,7 +72,7 @@ const ChecklistFlow = forwardRef<ChecklistFlowRef, ChecklistFlowProps>(
 
 function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: ChecklistFlowProps & { ref: React.Ref<ChecklistFlowRef> }) {
   const { state, addNode, updateNode, updateEdges, dispatch } = useChecklist();
-  const { nodes, edges, nextNodeId } = state;
+  const { nodes, edges, nextNodeId, viewport } = state;
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNode, setEditingNode] = useState<Node | null>(null);
@@ -102,6 +108,12 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
     const newEdges = addEdge(params, edges);
     updateEdges(newEdges);
   }, [edges, updateEdges]);
+
+  // 🔍 Capturar mudanças de viewport (zoom, pan) 
+  const onMove = useCallback((event: any, viewport: { x: number; y: number; zoom: number }) => {
+    console.log('🔍 CHECKLISTFLOW - Viewport alterado:', viewport);
+    dispatch({ type: 'UPDATE_VIEWPORT', payload: viewport });
+  }, [dispatch]);
 
   interface QuestionData {
     question: string;
@@ -203,7 +215,11 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
         isEditing={!!editingNode}
       />
       
-      <div className="w-full h-[600px] border border-gray-700 rounded-lg overflow-hidden bg-gray-900">
+      <div className="relative w-full h-[600px] border border-gray-700 rounded-lg overflow-hidden bg-gray-900">
+        {/* 💾 Auto-Save Indicator */}
+        <div className="absolute top-3 right-3 z-10">
+          <SimpleAutoSaveIndicator />
+        </div>
         <ReactFlow
           nodes={nodesWithCallbacks}
           edges={edges}
@@ -211,8 +227,9 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          fitView={true}
-          defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+          viewport={viewport}
+          onMove={onMove}
+          fitView={nodes.length === 0}
           minZoom={0.1}
           maxZoom={2}
           attributionPosition="bottom-left"
@@ -224,7 +241,7 @@ function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: 
           style={{ 
             width: '100%', 
             height: '100%',
-            backgroundColor: '#111827' // gray-900
+            backgroundColor: '#111827'
           }}
         >
           <Background 
