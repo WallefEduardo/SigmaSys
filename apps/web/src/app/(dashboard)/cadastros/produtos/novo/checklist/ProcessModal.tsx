@@ -73,10 +73,21 @@ export default function ProcessModal({ isOpen, onClose, onSave, initialProcesses
     measurementText: ""
   });
 
-  // Buscar dados
-  const { data: processesData } = api.processes.list.useQuery({});
-  const { data: calculationRulesData } = api.calculationRules.list.useQuery({ active: true });
-  const { data: predefinedRulesData } = api.calculationRules.getPredefined.useQuery({});
+  // 🛡️ Queries protegidas com fallbacks seguros
+  const { data: processesData, isLoading: processesLoading, error: processesError } = api.processes.list.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: calculationRulesData, isLoading: rulesLoading, error: rulesError } = api.calculationRules.list.useQuery(
+    { active: true },
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: predefinedRulesData, isLoading: predefinedLoading, error: predefinedError } = api.calculationRules.getPredefined.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
   
   const processesOptions = processesData?.processes || [];
   const calculationRules = calculationRulesData?.rules || [];
@@ -331,19 +342,33 @@ export default function ProcessModal({ isOpen, onClose, onSave, initialProcesses
                     <SelectValue placeholder="Selecione o processo" />
                   </SelectTrigger>
                   <SelectContent>
-                    {processesOptions.map((process) => (
-                      <SelectItem key={process.id} value={process.id}>
-                        {process.name}
-                        <span className="text-muted-foreground ml-2">
-                          (R$ {Number(process.costPerHour).toFixed(2)}/hora)
-                        </span>
-                        {process.sector && (
-                          <span className="text-xs text-muted-foreground ml-2">
-                            - {process.sector}
-                          </span>
-                        )}
+                    {processesLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Carregando processos...
                       </SelectItem>
-                    ))}
+                    ) : processesError ? (
+                      <SelectItem value="error" disabled>
+                        Erro ao carregar processos
+                      </SelectItem>
+                    ) : processesOptions.length === 0 ? (
+                      <SelectItem value="empty" disabled>
+                        Nenhum processo encontrado
+                      </SelectItem>
+                    ) : (
+                      processesOptions.map((process) => (
+                        <SelectItem key={process.id} value={process.id}>
+                          {process.name}
+                          <span className="text-muted-foreground ml-2">
+                            (R$ {Number(process.costPerHour).toFixed(2)}/hora)
+                          </span>
+                          {process.sector && (
+                            <span className="text-xs text-muted-foreground ml-2">
+                              - {process.sector}
+                            </span>
+                          )}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>

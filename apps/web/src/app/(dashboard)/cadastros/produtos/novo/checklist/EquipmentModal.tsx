@@ -73,10 +73,21 @@ export default function EquipmentModal({ isOpen, onClose, onSave, initialEquipme
     measurementText: ""
   });
 
-  // Buscar dados
-  const { data: equipmentsData } = api.equipments.listWithCosts.useQuery({});
-  const { data: calculationRulesData } = api.calculationRules.list.useQuery({ active: true });
-  const { data: predefinedRulesData } = api.calculationRules.getPredefined.useQuery({});
+  // 🛡️ Queries protegidas com fallbacks seguros
+  const { data: equipmentsData, isLoading: equipmentsLoading, error: equipmentsError } = api.equipments.listWithCosts.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: calculationRulesData, isLoading: rulesLoading, error: rulesError } = api.calculationRules.list.useQuery(
+    { active: true },
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: predefinedRulesData, isLoading: predefinedLoading, error: predefinedError } = api.calculationRules.getPredefined.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
   
   const equipmentsOptions = equipmentsData || [];
   const calculationRules = calculationRulesData?.rules || [];
@@ -347,23 +358,37 @@ export default function EquipmentModal({ isOpen, onClose, onSave, initialEquipme
                     <SelectValue placeholder="Selecione o equipamento" />
                   </SelectTrigger>
                   <SelectContent>
-                    {equipmentsOptions.map((equipment) => {
-                      const Icon = getEquipmentTypeIcon(equipment.type);
-                      return (
-                        <SelectItem key={equipment.id} value={equipment.id}>
-                          <div className="flex items-center gap-2">
-                            <Icon className="w-4 h-4" />
-                            <span>{equipment.name}</span>
-                            <Badge variant="secondary" className="text-xs">
-                              {getEquipmentTypeLabel(equipment.type)}
-                            </Badge>
-                            <span className="text-muted-foreground ml-2">
-                              (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
-                            </span>
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                    {equipmentsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Carregando equipamentos...
+                      </SelectItem>
+                    ) : equipmentsError ? (
+                      <SelectItem value="error" disabled>
+                        Erro ao carregar equipamentos
+                      </SelectItem>
+                    ) : equipmentsOptions.length === 0 ? (
+                      <SelectItem value="empty" disabled>
+                        Nenhum equipamento encontrado
+                      </SelectItem>
+                    ) : (
+                      equipmentsOptions.map((equipment) => {
+                        const Icon = getEquipmentTypeIcon(equipment.type);
+                        return (
+                          <SelectItem key={equipment.id} value={equipment.id}>
+                            <div className="flex items-center gap-2">
+                              <Icon className="w-4 h-4" />
+                              <span>{equipment.name}</span>
+                              <Badge variant="secondary" className="text-xs">
+                                {getEquipmentTypeLabel(equipment.type)}
+                              </Badge>
+                              <span className="text-muted-foreground ml-2">
+                                (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
+                              </span>
+                            </div>
+                          </SelectItem>
+                        );
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>

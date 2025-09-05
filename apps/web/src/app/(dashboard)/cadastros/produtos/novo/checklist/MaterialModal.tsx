@@ -77,11 +77,26 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
     measurementText: ""
   });
 
-  // Buscar dados
-  const { data: materialsData } = api.materials.list.useQuery({});
-  const { data: calculationRulesData } = api.calculationRules.list.useQuery({ active: true });
-  const { data: predefinedRulesData } = api.calculationRules.getPredefined.useQuery({});
-  const { data: equipmentsData } = api.equipments.listWithCosts.useQuery({ limit: 100 });
+  // 🛡️ Queries protegidas com fallbacks seguros
+  const { data: materialsData, isLoading: materialsLoading, error: materialsError } = api.materials.list.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: calculationRulesData, isLoading: rulesLoading, error: rulesError } = api.calculationRules.list.useQuery(
+    { active: true },
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: predefinedRulesData, isLoading: predefinedLoading, error: predefinedError } = api.calculationRules.getPredefined.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  
+  const { data: equipmentsData, isLoading: equipmentsLoading, error: equipmentsError } = api.equipments.listWithCosts.useQuery(
+    { limit: 100 },
+    { retry: 1, enabled: isOpen }
+  );
   
   const materialsOptions = materialsData?.materials || [];
   const calculationRules = calculationRulesData?.rules || [];
@@ -360,14 +375,28 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                     <SelectValue placeholder="Selecione a matéria prima" />
                   </SelectTrigger>
                   <SelectContent>
-                    {materialsOptions.map((material) => (
-                      <SelectItem key={material.id} value={material.id}>
-                        {material.name}
-                        <span className="text-muted-foreground ml-2">
-                          (R$ {Number(material.cost).toFixed(2)}/{material.unit})
-                        </span>
+                    {materialsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Carregando materiais...
                       </SelectItem>
-                    ))}
+                    ) : materialsError ? (
+                      <SelectItem value="error" disabled>
+                        Erro ao carregar materiais
+                      </SelectItem>
+                    ) : materialsOptions.length === 0 ? (
+                      <SelectItem value="empty" disabled>
+                        Nenhum material encontrado
+                      </SelectItem>
+                    ) : (
+                      materialsOptions.map((material) => (
+                        <SelectItem key={material.id} value={material.id}>
+                          {material.name}
+                          <span className="text-muted-foreground ml-2">
+                            (R$ {Number(material.cost).toFixed(2)}/{material.unit})
+                          </span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -383,14 +412,24 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum equipamento</SelectItem>
-                    {equipmentsOptions.map((equipment) => (
-                      <SelectItem key={equipment.id} value={equipment.id}>
-                        {equipment.name}
-                        <span className="text-muted-foreground ml-2">
-                          (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
-                        </span>
+                    {equipmentsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Carregando equipamentos...
                       </SelectItem>
-                    ))}
+                    ) : equipmentsError ? (
+                      <SelectItem value="error" disabled>
+                        Erro ao carregar equipamentos
+                      </SelectItem>
+                    ) : (
+                      equipmentsOptions.map((equipment) => (
+                        <SelectItem key={equipment.id} value={equipment.id}>
+                          {equipment.name}
+                          <span className="text-muted-foreground ml-2">
+                            (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
+                          </span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>

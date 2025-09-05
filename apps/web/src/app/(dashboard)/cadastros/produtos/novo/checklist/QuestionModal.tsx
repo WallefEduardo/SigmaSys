@@ -114,10 +114,32 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
   }, [isOpen, isEditing, JSON.stringify(initialData)]);
 
   // Fetch real data - usando estrutura correta do tRPC
-  const { data: materialsData } = api.materials.list.useQuery({ limit: 100 });
-  const { data: processesData } = api.processes.list.useQuery();
-  const { data: equipmentsData } = api.equipments.list.useQuery();
-  const { data: finishesData } = api.finishes.list.useQuery();
+  // 🛡️ Queries protegidas com fallbacks seguros
+  const { data: materialsData, isLoading: materialsLoading, error: materialsError } = api.materials.list.useQuery(
+    { limit: 100 },
+    { retry: 1, enabled: isOpen } // Só executar quando modal abrir
+  );
+  const { data: processesData, isLoading: processesLoading, error: processesError } = api.processes.list.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  const { data: equipmentsData, isLoading: equipmentsLoading, error: equipmentsError } = api.equipments.list.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+  const { data: finishesData, isLoading: finishesLoading, error: finishesError } = api.finishes.list.useQuery(
+    {},
+    { retry: 1, enabled: isOpen }
+  );
+
+  // 🔒 Dados seguros com fallbacks
+  const safeMaterials = materialsData?.materials || [];
+  const safeProcesses = processesData?.processes || [];
+  const safeEquipments = equipmentsData?.equipments || [];
+  const safeFinishes = finishesData?.finishes || [];
+
+  // 📊 Loading state geral
+  const isLoadingData = materialsLoading || processesLoading || equipmentsLoading || finishesLoading;
   
   const materials = materialsData?.items || [];
   const processes = processesData || [];
