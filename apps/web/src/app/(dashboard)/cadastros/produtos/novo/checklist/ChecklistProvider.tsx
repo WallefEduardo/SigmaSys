@@ -227,10 +227,12 @@ export function ChecklistProvider({ children, onConfigurationChange, initialData
   const [state, dispatch] = useReducer(checklistReducer, initialState);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const previousConfigRef = useRef<string>('');
+  const hasInitializedRef = useRef(false);
 
-  // Load initial data on mount
+  // Load initial data on mount - only once
   useEffect(() => {
-    if (initialData && initialData.nodes?.length > 0) {
+    if (!hasInitializedRef.current && initialData?.nodes?.length > 0) {
+      hasInitializedRef.current = true;
       dispatch({ type: 'LOAD_DATA', payload: initialData });
       console.log('✅ CHECKLISTPROVIDER - Dados iniciais carregados:', initialData);
     }

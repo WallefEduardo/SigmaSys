@@ -1,64 +1,84 @@
 "use client";
 
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useImperativeHandle, forwardRef } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
   Controls,
   Background,
-  useOnViewportChange,
   Connection,
   Edge,
   Node,
   ReactFlowProvider,
+  NodeChange,
+  EdgeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
 } from 'reactflow';
 
-import { initialNodes, initialEdges } from './initial-elements';
-import StartNode from './nodes/StartNode';
-import MaterialNode from './nodes/MaterialNode';
-import ProcessNode from './nodes/ProcessNode';
-import DecisionNode from './nodes/DecisionNode';
-import EndNode from './nodes/EndNode';
-import QuestionNode from './nodes/QuestionNode';
+import QuestionNode from './QuestionNode';
+import StartNode from './StartNode';
+import EndNode from './EndNode';
 import QuestionModal from './QuestionModal';
 import { ChecklistProvider, useChecklist } from './ChecklistProvider';
 
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-
 import 'reactflow/dist/style.css';
-import './checklist-flow.css';
 
 const nodeTypes = {
   start: StartNode,
-  material: MaterialNode,
-  process: ProcessNode,
-  decision: DecisionNode,
-  end: EndNode,
   question: QuestionNode,
+  end: EndNode,
 };
 
+interface ChecklistConfiguration {
+  nodes: Node[];
+  edges: Edge[];
+  selections: {
+    productType: string | null;
+    materials: string[];
+    processes: string[];
+    equipment: string[];
+    finishes: string[];
+  };
+}
+
 interface ChecklistFlowProps {
-  onComplete?: (data: any) => void;
-  initialData?: any; // Para carregar dados existentes ao editar
+  onComplete?: (data: ChecklistConfiguration) => void;
+  initialData?: ChecklistConfiguration;
   onAddQuestion?: () => void;
 }
 
-function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: ChecklistFlowProps) {
-  const { state, updateNode, addNode, updateEdges, dispatch } = useChecklist();
-  const { nodes, edges, selections, nextNodeId, viewport } = state;
+interface ChecklistFlowRef {
+  openAddQuestionModal: () => void;
+}
+
+const ChecklistFlow = forwardRef<ChecklistFlowRef, ChecklistFlowProps>(
+  function ChecklistFlow({ onComplete, initialData, onAddQuestion }, ref) {
+    return (
+      <ChecklistProvider onConfigurationChange={onComplete} initialData={initialData}>
+        <ReactFlowProvider>
+          <ChecklistFlowInternal ref={ref} onComplete={onComplete} initialData={initialData} onAddQuestion={onAddQuestion} />
+        </ReactFlowProvider>
+      </ChecklistProvider>
+    );
+  }
+);
+
+function ChecklistFlowInternal({ onComplete, initialData, onAddQuestion, ref }: ChecklistFlowProps & { ref: React.Ref<ChecklistFlowRef> }) {
+  const { state, addNode, updateNode, updateEdges, dispatch } = useChecklist();
+  const { nodes, edges, nextNodeId } = state;
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNode, setEditingNode] = useState<Node | null>(null);
-  const viewportTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Expor função de adicionar pergunta para o componente pai
-  useEffect(() => {
-    if (onAddQuestion) {
-      // Esta é uma forma de expor a função - pode ser melhorada com useImperativeHandle se necessário
-      (window as any).openAddQuestionModal = () => setIsModalOpen(true);
-    }
-  }, [onAddQuestion]);
+  // Expor função de adicionar pergunta via ref
+  const handleOpenAddQuestionModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    openAddQuestionModal: handleOpenAddQuestionModal
+  }), [handleOpenAddQuestionModal]);
 
   const handleEditNode = useCallback((nodeId: string) => {
     const nodeToEdit = nodes.find(node => node.id === nodeId);
@@ -68,145 +88,54 @@ function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: Checkl
     }
   }, [nodes]);
 
-  // Adicionar callbacks aos nodes quando necessário
-  const addCallbacksToNodes = useCallback((nodesList: Node[]) => {
-    return nodesList.map((node: any) => ({
-      ...node,
-      data: node.type === 'question' ? {
-        ...node.data,
-        onSelect: (optionId: string) => {
-          console.log('Option selected:', optionId);
-        },
-        onEdit: () => handleEditNode(node.id),
-      } : node.data
-    }));
-  }, [handleEditNode]);
-
-  const onConnect = useCallback((params: Edge | Connection) => {
-    const updatedEdges = addEdge(params, edges);
-    updateEdges(updatedEdges);
-    console.log('🔄 CHECKLISTFLOW - Edge conectada:', params);
-  }, [edges, updateEdges]);
-
-  // Handler para mudanças nos nodes (posição, remoção, etc)
-  const handleNodesChange = useCallback((changes: any) => {
-    const updatedNodes = nodes.map((node: Node) => {
-      for (const change of changes) {
-        if (change.id === node.id) {
-          switch (change.type) {
-            case 'position':
-              if (!change.dragging) { // Só atualizar quando parar de arrastar
-                return { ...node, position: change.position };
-              }
-              break;
-            case 'remove':
-              return null; // Será filtrado depois
-            case 'select':
-              return { ...node, selected: change.selected };
-          }
-        }
-      }
-      return node;
-    }).filter(Boolean) as Node[];
-
-    // Se houve mudanças reais, atualizar o estado
-    if (JSON.stringify(updatedNodes) !== JSON.stringify(nodes)) {
-      dispatch({ type: 'UPDATE_NODES', payload: updatedNodes });
-      console.log('🔄 CHECKLISTFLOW - Nodes atualizados:', changes);
-    }
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    const updatedNodes = applyNodeChanges(changes, nodes);
+    dispatch({ type: 'UPDATE_NODES', payload: updatedNodes });
   }, [nodes, dispatch]);
 
-  // Handler para mudanças nas edges (remoção, etc)
-  const handleEdgesChange = useCallback((changes: any) => {
-    const updatedEdges = edges.filter((edge: Edge) => {
-      for (const change of changes) {
-        if (change.id === edge.id && change.type === 'remove') {
-          return false;
-        }
-      }
-      return true;
-    });
-
-    // Se houve remoções, atualizar o estado
-    if (updatedEdges.length !== edges.length) {
-      updateEdges(updatedEdges);
-      console.log('🔄 CHECKLISTFLOW - Edges atualizadas:', changes);
-    }
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    const updatedEdges = applyEdgeChanges(changes, edges);
+    updateEdges(updatedEdges);
   }, [edges, updateEdges]);
 
-  // Hook para detectar mudanças de viewport
-  useOnViewportChange({
-    onStart: (viewport) => {
-      // Cancelar timeout anterior se existir
-      if (viewportTimeoutRef.current) {
-        clearTimeout(viewportTimeoutRef.current);
-      }
-    },
-    onEnd: (viewport) => {
-      // Debounce para evitar muitos updates durante drag/zoom
-      viewportTimeoutRef.current = setTimeout(() => {
-        dispatch({ type: 'UPDATE_VIEWPORT', payload: viewport });
-        console.log('🔄 CHECKLISTFLOW - Viewport atualizado:', viewport);
-        viewportTimeoutRef.current = null;
-      }, 300); // 300ms de delay
-    },
-  });
+  const onConnect = useCallback((params: Edge | Connection) => {
+    const newEdges = addEdge(params, edges);
+    updateEdges(newEdges);
+  }, [edges, updateEdges]);
 
-  const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-    console.log('Node clicked:', node);
-    
-    // Update selections based on node type and data
-    if (node.type === 'material' && node.data.onSelect) {
-      const newSelections = {
-        ...selections,
-        materials: [...selections.materials, node.id],
-      };
-      dispatch({ type: 'UPDATE_SELECTIONS', payload: newSelections });
-    } else if (node.type === 'process' && node.data.onSelect) {
-      const newSelections = {
-        ...selections,
-        processes: [...selections.processes, node.id],
-      };
-      dispatch({ type: 'UPDATE_SELECTIONS', payload: newSelections });
-    }
-  }, [selections, dispatch]);
+  interface QuestionData {
+    question: string;
+    description?: string;
+    responseType: 'single' | 'multiple' | 'conditional';
+    options: Array<{
+      id: string;
+      label: string;
+      actions: Array<{
+        type: string;
+        itemName: string;
+        quantity?: number;
+      }>;
+    }>;
+  }
 
-  const handleAddQuestion = (questionData: any) => {
+  const handleAddQuestion = (questionData: QuestionData) => {
     if (editingNode) {
       // Editando node existente
-      console.log('🔍 CHECKLISTFLOW - Editando node existente:', editingNode.id);
-      
-      // Processar os dados para garantir compatibilidade com QuestionNode
-      const processedQuestionData = {
+      updateNode(editingNode.id, {
         ...questionData,
-        options: questionData.options.map((option: any) => ({
-          ...option,
-          actions: option.actions.map((action: any) => ({
-            ...action,
-            // Garantir que itemName sempre existe para o QuestionNode
-            itemName: action.itemName || action.itemId || 'Item não definido'
-          }))
-        })),
         onSelect: (optionId: string) => {
           console.log('Option selected:', optionId);
         },
         onEdit: () => handleEditNode(editingNode.id),
-        // Adicionar timestamp para forçar re-render
-        __timestamp: Date.now(),
-      };
-      
-      console.log('🔍 CHECKLISTFLOW - Dados processados:', processedQuestionData);
-      updateNode(editingNode.id, processedQuestionData);
-      
+      });
       setEditingNode(null);
     } else {
       // Criando novo node
-      console.log('🔍 CHECKLISTFLOW - Criando novo node');
       const nodeId = `node-${nextNodeId}`;
       const newNode: Node = {
         id: nodeId,
         type: 'question',
-        position: { x: 250, y: nodes.length * 150 },
+        position: { x: 250, y: nodes.length * 200 + 50 },
         data: {
           ...questionData,
           onSelect: (optionId: string) => {
@@ -216,7 +145,7 @@ function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: Checkl
         },
       };
 
-      // If this is the first node, make it the start node
+      // Se não há nodes, adicionar também um start node
       if (nodes.length === 0) {
         const startNode: Node = {
           id: 'start',
@@ -225,17 +154,16 @@ function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: Checkl
           data: { label: 'Início' },
         };
         
-        // Adicionar ambos os nodes
         addNode(startNode);
         addNode(newNode);
         
-        // Connect start to first question
+        // Conectar start ao primeiro question
         const edge: Edge = {
           id: 'e-start-1',
           source: 'start',
           target: newNode.id,
-          type: 'smoothstep',
         };
+        
         updateEdges([edge]);
       } else {
         addNode(newNode);
@@ -244,6 +172,22 @@ function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: Checkl
       dispatch({ type: 'INCREMENT_NODE_ID' });
     }
   };
+
+  // Adicionar callbacks aos nodes (SEM LOGS para evitar spam)
+  const nodesWithCallbacks = React.useMemo(() => {
+    return nodes.map((node) => ({
+      ...node,
+      data: node.type === 'question' 
+        ? {
+            ...node.data,
+            onEdit: () => handleEditNode(node.id),
+          }
+        : node.data,
+    }));
+  }, [nodes, handleEditNode]);
+
+  // Debug FORÇADO para ver se o componente monta
+  console.log('🚀 CHECKLISTFLOWCONTENT RENDERIZANDO - nodes:', nodes.length);
 
   return (
     <>
@@ -258,41 +202,62 @@ function ChecklistFlowContent({ onComplete, initialData, onAddQuestion }: Checkl
         isEditing={!!editingNode}
       />
       
-      <div className="w-full h-[600px] border rounded-lg overflow-hidden relative">
-      <ReactFlow
-        nodes={addCallbacksToNodes(nodes)}
-        edges={edges}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
-        onConnect={onConnect}
-        onNodeClick={handleNodeClick}
-        defaultViewport={viewport}
-        nodeTypes={nodeTypes}
-        fitView={nodes.length === 0} // Só fit view se não houver dados salvos
-        attributionPosition="bottom-left"
-      >
-        <Background color="#e5e7eb" gap={16} />
-        <MiniMap 
-          style={{
-            height: 100,
-            width: 150,
+      <div className="w-full h-[600px] border border-gray-700 rounded-lg overflow-hidden bg-gray-900">
+        <ReactFlow
+          nodes={nodesWithCallbacks}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          fitView={true}
+          defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+          minZoom={0.1}
+          maxZoom={2}
+          attributionPosition="bottom-left"
+          defaultEdgeOptions={{
+            style: { stroke: '#6366f1', strokeWidth: 2 },
+            type: 'smoothstep',
           }}
-          zoomable
-          pannable
-        />
-        <Controls />
-      </ReactFlow>
+          connectionLineStyle={{ stroke: '#6366f1', strokeWidth: 2 }}
+          style={{ 
+            width: '100%', 
+            height: '100%',
+            backgroundColor: '#111827' // gray-900
+          }}
+        >
+          <Background 
+            color="#374151" 
+            gap={20} 
+            size={1}
+            variant="dots"
+          />
+          <MiniMap 
+            style={{
+              height: 120,
+              width: 180,
+              backgroundColor: '#1f2937',
+              border: '1px solid #374151'
+            }}
+            maskColor="rgba(0, 0, 0, 0.6)"
+            nodeColor="#60a5fa"
+            zoomable
+            pannable
+          />
+          <Controls 
+            style={{
+              button: {
+                backgroundColor: '#1f2937',
+                border: '1px solid #374151',
+                color: '#f3f4f6'
+              }
+            }}
+          />
+        </ReactFlow>
       </div>
     </>
   );
 }
 
-export default function ChecklistFlow({ onComplete, initialData, onAddQuestion }: ChecklistFlowProps) {
-  return (
-    <ChecklistProvider onConfigurationChange={onComplete} initialData={initialData}>
-      <ReactFlowProvider>
-        <ChecklistFlowContent onComplete={onComplete} initialData={initialData} onAddQuestion={onAddQuestion} />
-      </ReactFlowProvider>
-    </ChecklistProvider>
-  );
-}
+export default ChecklistFlow;
+export type { ChecklistFlowRef };

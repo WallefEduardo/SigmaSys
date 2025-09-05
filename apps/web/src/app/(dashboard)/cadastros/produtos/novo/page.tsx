@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Save, FileText, DollarSign, CheckSquare, Plus, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { api } from "@/lib/trpc";
 import { toast } from "sonner";
 import { FormulaBuilder } from "@/components/forms/formula-builder";
@@ -19,8 +19,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
-// Import the ChecklistFlow component directly instead of lazy loading to avoid chunk issues
-import ChecklistFlow from './checklist/ChecklistFlow';
+// Import the new ChecklistFlow component
+import ChecklistFlow, { ChecklistFlowRef } from './checklist/ChecklistFlow';
 import FlowTestModal from './checklist/FlowTestModal';
 
 function ChecklistCard({ 
@@ -32,20 +32,19 @@ function ChecklistCard({
 	checklistData?: any;
 	onTestFlow: () => void;
 }) {
+	const checklistRef = useRef<ChecklistFlowRef>(null);
 	return (
-		<Card>
+		<Card className="bg-gray-900 border-gray-700">
 			<CardHeader>
 				<div className="flex items-center justify-between">
-					<CardTitle>Configuração por Checklist</CardTitle>
+					<CardTitle className="text-gray-100">Configuração por Checklist</CardTitle>
 					<div className="flex gap-2">
 						<Button
 							size="sm"
 							variant="outline"
+							className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
 							onClick={() => {
-								// Abrir modal de adicionar pergunta
-								if ((window as any).openAddQuestionModal) {
-									(window as any).openAddQuestionModal();
-								}
+								checklistRef.current?.openAddQuestionModal();
 							}}
 						>
 							<Plus className="h-4 w-4 mr-1" />
@@ -54,6 +53,7 @@ function ChecklistCard({
 						<Button
 							size="sm"
 							variant="outline"
+							className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white disabled:opacity-50"
 							onClick={onTestFlow}
 							disabled={!checklistData?.nodes?.length}
 						>
@@ -63,8 +63,8 @@ function ChecklistCard({
 					</div>
 				</div>
 			</CardHeader>
-			<CardContent>
-				<ChecklistFlow onComplete={onComplete} />
+			<CardContent className="bg-gray-900">
+				<ChecklistFlow ref={checklistRef} onComplete={onComplete} onAddQuestion={() => {}} />
 			</CardContent>
 		</Card>
 	);

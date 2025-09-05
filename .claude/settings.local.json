@@ -29,7 +29,8 @@
       "WebSearch",
       "Read(/home/wallef/sistemas/DashTemplate/app/[lang]/(dashboard)/(diagram)/diagram-overview/**)",
       "Bash(node:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(pnpm run:*)"
     ],
     "deny": [],
     "ask": []

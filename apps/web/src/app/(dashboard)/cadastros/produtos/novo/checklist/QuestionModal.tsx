@@ -23,6 +23,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Package, Cpu, Settings, Palette, Copy } from 'lucide-react';
 import { api } from "@/lib/trpc";
 import MaterialModal from "./MaterialModal";
+import ProcessModal from "./ProcessModal";
+import EquipmentModal from "./EquipmentModal";
 
 interface QuestionModalProps {
   isOpen: boolean;
@@ -46,6 +48,8 @@ interface ResponseAction {
   quantity?: number;
   formula?: string;
   materials?: any[]; // Para armazenar múltiplos materiais do modal
+  processes?: any[]; // Para armazenar múltiplos processos do modal
+  equipments?: any[]; // Para armazenar múltiplos equipamentos do modal
 }
 
 interface QuestionData {
@@ -78,6 +82,8 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
   });
   
   const [materialModalOpen, setMaterialModalOpen] = useState(false);
+  const [processModalOpen, setProcessModalOpen] = useState(false);
+  const [equipmentModalOpen, setEquipmentModalOpen] = useState(false);
   const [currentEditingAction, setCurrentEditingAction] = useState<{
     optionId: string;
     actionId: string;
@@ -448,6 +454,86 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
                               </Button>
                             )}
                           </div>
+                        ) : action.type === 'add_process' ? (
+                          // Seção especial para processos com modal
+                          <div className="flex-1 flex items-center gap-2">
+                            {action.processes && action.processes.length > 0 ? (
+                              <div className="flex-1 p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                                <span className="font-medium text-orange-800">
+                                  {action.processes.length} processo{action.processes.length > 1 ? 's' : ''} configurado{action.processes.length > 1 ? 's' : ''}
+                                </span>
+                                <div className="text-xs text-orange-600 mt-1">
+                                  {action.processes.map((proc: any) => proc.processName).join(', ')}
+                                </div>
+                              </div>
+                            ) : (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="flex-1 justify-start"
+                                onClick={() => {
+                                  setCurrentEditingAction({ optionId: option.id, actionId: action.id });
+                                  setProcessModalOpen(true);
+                                }}
+                              >
+                                <Cpu className="h-4 w-4 mr-2" />
+                                Configurar Processos
+                              </Button>
+                            )}
+                            {action.processes && action.processes.length > 0 && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setCurrentEditingAction({ optionId: option.id, actionId: action.id });
+                                  setProcessModalOpen(true);
+                                }}
+                              >
+                                Editar
+                              </Button>
+                            )}
+                          </div>
+                        ) : action.type === 'add_equipment' ? (
+                          // Seção especial para equipamentos com modal
+                          <div className="flex-1 flex items-center gap-2">
+                            {action.equipments && action.equipments.length > 0 ? (
+                              <div className="flex-1 p-2 bg-purple-50 border border-purple-200 rounded text-sm">
+                                <span className="font-medium text-purple-800">
+                                  {action.equipments.length} equipamento{action.equipments.length > 1 ? 's' : ''} configurado{action.equipments.length > 1 ? 's' : ''}
+                                </span>
+                                <div className="text-xs text-purple-600 mt-1">
+                                  {action.equipments.map((equip: any) => equip.equipmentName).join(', ')}
+                                </div>
+                              </div>
+                            ) : (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="flex-1 justify-start"
+                                onClick={() => {
+                                  setCurrentEditingAction({ optionId: option.id, actionId: action.id });
+                                  setEquipmentModalOpen(true);
+                                }}
+                              >
+                                <Settings className="h-4 w-4 mr-2" />
+                                Configurar Equipamentos
+                              </Button>
+                            )}
+                            {action.equipments && action.equipments.length > 0 && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setCurrentEditingAction({ optionId: option.id, actionId: action.id });
+                                  setEquipmentModalOpen(true);
+                                }}
+                              >
+                                Editar
+                              </Button>
+                            )}
+                          </div>
                         ) : (
                           // Seção normal para outros tipos de ação
                           <>
@@ -537,6 +623,56 @@ export default function QuestionModal({ isOpen, onClose, onSave, initialData, is
                 .find(opt => opt.id === currentEditingAction.optionId)
                 ?.actions.find(act => act.id === currentEditingAction.actionId)
                 ?.materials || []
+            : []
+        }
+      />
+
+      {/* Modal de Processos */}
+      <ProcessModal
+        isOpen={processModalOpen}
+        onClose={() => {
+          setProcessModalOpen(false);
+          setCurrentEditingAction(null);
+        }}
+        onSave={(processes) => {
+          if (currentEditingAction) {
+            // Salvar os processos na ação correspondente
+            updateAction(currentEditingAction.optionId, currentEditingAction.actionId, 'processes', processes);
+          }
+          setProcessModalOpen(false);
+          setCurrentEditingAction(null);
+        }}
+        initialProcesses={
+          currentEditingAction 
+            ? questionData.options
+                .find(opt => opt.id === currentEditingAction.optionId)
+                ?.actions.find(act => act.id === currentEditingAction.actionId)
+                ?.processes || []
+            : []
+        }
+      />
+
+      {/* Modal de Equipamentos */}
+      <EquipmentModal
+        isOpen={equipmentModalOpen}
+        onClose={() => {
+          setEquipmentModalOpen(false);
+          setCurrentEditingAction(null);
+        }}
+        onSave={(equipments) => {
+          if (currentEditingAction) {
+            // Salvar os equipamentos na ação correspondente
+            updateAction(currentEditingAction.optionId, currentEditingAction.actionId, 'equipments', equipments);
+          }
+          setEquipmentModalOpen(false);
+          setCurrentEditingAction(null);
+        }}
+        initialEquipments={
+          currentEditingAction 
+            ? questionData.options
+                .find(opt => opt.id === currentEditingAction.optionId)
+                ?.actions.find(act => act.id === currentEditingAction.actionId)
+                ?.equipments || []
             : []
         }
       />

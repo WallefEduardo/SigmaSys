@@ -20,83 +20,77 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Plus, Calculator, Hash, Edit2, Save, X, DollarSign } from 'lucide-react';
+import { Trash2, Plus, Calculator, Hash, Edit2, Save, X, Settings, Printer } from 'lucide-react';
 import { api } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormulaModal from "./FormulaModal";
 import { FormulaEngine, type FormulaVariables } from "@/lib/formula-engine";
 
-interface MaterialModalProps {
+interface EquipmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (materials: MaterialItem[]) => void;
-  initialMaterials?: MaterialItem[];
+  onSave: (equipments: EquipmentItem[]) => void;
+  initialEquipments?: EquipmentItem[];
 }
 
-interface MaterialItem {
+interface EquipmentItem {
   id: string;
-  materialId: string;
-  materialName: string;
-  materialCost: number;
   equipmentId: string;
   equipmentName: string;
-  equipmentCostPerM2?: number;
+  equipmentType: string;
+  costPerM2: number;
   calculationType: 'fixed' | 'formula';
-  fixedQuantity?: number;
+  fixedTime?: number; // tempo fixo em minutos
   calculationRuleId?: string;
   calculationRuleName?: string;
   calculationRuleFormula?: string;
   multiplier?: number; // Multiplicador para fórmulas
-  unit: string;
+  timeUnit: string;
   description?: string;
   measurementText?: string; // Texto personalizado para coleta de medidas
   // Custos calculados
-  totalMaterialCost?: number;
-  totalEquipmentCost?: number;
-  totalCost?: number;
+  totalTime?: number; // tempo total em minutos
+  totalCost?: number; // custo total calculado
 }
 
-export default function MaterialModal({ isOpen, onClose, onSave, initialMaterials = [] }: MaterialModalProps) {
-  const [materials, setMaterials] = useState<MaterialItem[]>([]);
+export default function EquipmentModal({ isOpen, onClose, onSave, initialEquipments = [] }: EquipmentModalProps) {
+  const [equipments, setEquipments] = useState<EquipmentItem[]>([]);
   const [showFormulaModal, setShowFormulaModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showCostDetailModal, setShowCostDetailModal] = useState(false);
-  const [selectedMaterialForDetail, setSelectedMaterialForDetail] = useState<MaterialItem | null>(null);
+  const [selectedEquipmentForDetail, setSelectedEquipmentForDetail] = useState<EquipmentItem | null>(null);
   const [currentForm, setCurrentForm] = useState({
-    materialId: "",
-    equipmentId: "none",
+    equipmentId: "",
     calculationType: "fixed" as 'fixed' | 'formula',
-    fixedQuantity: "",
+    fixedTime: "",
     calculationRuleId: "",
     calculationRuleName: "",
     calculationRuleFormula: "",
     multiplier: "1",
-    unit: "",
+    timeUnit: "",
     description: "",
     measurementText: ""
   });
 
   // Buscar dados
-  const { data: materialsData } = api.materials.list.useQuery({});
+  const { data: equipmentsData } = api.equipments.listWithCosts.useQuery({});
   const { data: calculationRulesData } = api.calculationRules.list.useQuery({ active: true });
   const { data: predefinedRulesData } = api.calculationRules.getPredefined.useQuery({});
-  const { data: equipmentsData } = api.equipments.listWithCosts.useQuery({ limit: 100 });
   
-  const materialsOptions = materialsData?.materials || [];
+  const equipmentsOptions = equipmentsData || [];
   const calculationRules = calculationRulesData?.rules || [];
   const predefinedRules = predefinedRulesData?.rules || [];
   const allRules = [...calculationRules, ...predefinedRules];
-  const equipmentsOptions = equipmentsData || [];
 
-  // Carregar materiais iniciais quando modal abrir
+  // Carregar equipamentos iniciais quando modal abrir
   useEffect(() => {
-    if (isOpen && initialMaterials.length > 0) {
-      setMaterials(initialMaterials);
+    if (isOpen && initialEquipments.length > 0) {
+      setEquipments(initialEquipments);
     } else if (isOpen) {
-      setMaterials([]);
+      setEquipments([]);
     }
-  }, [isOpen, initialMaterials]);
+  }, [isOpen, initialEquipments]);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -107,32 +101,43 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
     }
   };
 
-  // Função para preparar estrutura dos custos (SEM calcular valores reais)
-  const prepareCostStructure = (material: any, equipment: any, calculationType: string, quantity?: number, formula?: string, multiplier = 1) => {
-    const materialCost = Number(material.cost) || 0;
-    const equipmentCostPerM2 = Number(equipment?.totalCostPerM2) || 0;
+  const getEquipmentTypeIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'printing': return Printer;
+      case 'machining': return Settings;
+      default: return Settings;
+    }
+  };
+
+  const getEquipmentTypeLabel = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'printing': return 'Impressão';
+      case 'machining': return 'Usinagem';
+      default: return 'Equipamento';
+    }
+  };
+
+  // Função para preparar estrutura dos tempos/custos (SEM calcular valores reais)
+  const prepareCostStructure = (equipment: any, calculationType: string, time?: number, formula?: string, multiplier = 1) => {
+    const costPerM2 = Number(equipment.totalCostPerM2) || 0;
     
-    // ⚠️ NO MATERIAL MODAL: Não calcular valores reais, apenas estruturar
+    // ⚠️ NO EQUIPMENT MODAL: Não calcular valores reais, apenas estruturar
     // Os cálculos reais acontecem no Teste de Fluxo / Orçamento quando há medidas
     
     return {
-      calculatedQuantity: 0, // Será calculado com medidas reais
-      equipmentArea: 0, // Será calculado com medidas reais
-      totalMaterialCost: 0, // Será calculado com medidas reais
-      totalEquipmentCost: 0, // Será calculado com medidas reais  
+      calculatedTime: 0, // Será calculado com medidas reais
       totalCost: 0, // Será calculado com medidas reais
       // Manter dados para estrutura
-      materialCostPerUnit: materialCost,
-      equipmentCostPerM2: equipmentCostPerM2
+      costPerM2: costPerM2
     };
   };
 
-  const addMaterial = () => {
-    if (!currentForm.materialId) {
+  const addEquipment = () => {
+    if (!currentForm.equipmentId) {
       return;
     }
     
-    if (currentForm.calculationType === 'fixed' && !currentForm.fixedQuantity) {
+    if (currentForm.calculationType === 'fixed' && !currentForm.fixedTime) {
       return;
     }
     
@@ -140,31 +145,27 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
       return;
     }
 
-    const material = materialsOptions.find(m => m.id === currentForm.materialId);
-    const equipment = currentForm.equipmentId === 'none' ? null : equipmentsOptions.find(e => e.id === currentForm.equipmentId);
+    const equipment = equipmentsOptions.find(e => e.id === currentForm.equipmentId);
     const rule = allRules.find(r => r.id === currentForm.calculationRuleId);
 
     // Preparar estrutura de custos (sem cálculos reais ainda)
     const costs = prepareCostStructure(
-      material,
       equipment,
       currentForm.calculationType,
-      parseFloat(currentForm.fixedQuantity),
+      parseFloat(currentForm.fixedTime),
       currentForm.calculationRuleFormula,
       parseFloat(currentForm.multiplier) || 1
     );
 
-    const newMaterial: MaterialItem = {
-      id: `mat-${Date.now()}`,
-      materialId: currentForm.materialId,
-      materialName: material?.name || "",
-      materialCost: Number(material?.cost) || 0,
-      equipmentId: currentForm.equipmentId === 'none' ? '' : currentForm.equipmentId,
-      equipmentName: equipment?.name || "Nenhum",
-      equipmentCostPerM2: Number(equipment?.totalCostPerM2) || 0,
+    const newEquipment: EquipmentItem = {
+      id: `equipment-${Date.now()}`,
+      equipmentId: currentForm.equipmentId,
+      equipmentName: equipment?.name || "",
+      equipmentType: equipment?.type || "",
+      costPerM2: Number(equipment?.totalCostPerM2) || 0,
       calculationType: currentForm.calculationType,
       ...(currentForm.calculationType === 'fixed' 
-        ? { fixedQuantity: parseFloat(currentForm.fixedQuantity) }
+        ? { fixedTime: parseFloat(currentForm.fixedTime) }
         : { 
             calculationRuleId: currentForm.calculationRuleId,
             calculationRuleName: currentForm.calculationRuleName,
@@ -172,29 +173,25 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
             multiplier: parseFloat(currentForm.multiplier) || 1
           }
       ),
-      unit: currentForm.unit || material?.unit || rule?.resultUnit || "un",
+      timeUnit: currentForm.timeUnit || "minutos",
       description: currentForm.description.trim() || undefined,
       measurementText: currentForm.measurementText.trim() || undefined,
       // Custos calculados
-      totalMaterialCost: costs.totalMaterialCost,
-      totalEquipmentCost: costs.totalEquipmentCost,
+      totalTime: costs.calculatedTime,
       totalCost: costs.totalCost
     };
 
-    setMaterials(prev => [...prev, newMaterial]);
+    setEquipments(prev => [...prev, newEquipment]);
     setCurrentForm({
-      materialId: "",
-      equipmentId: "none",
+      equipmentId: "",
       calculationType: "fixed",
-      fixedQuantity: "",
+      fixedTime: "",
       calculationRuleId: "",
       calculationRuleName: "",
       calculationRuleFormula: "",
       multiplier: "1",
-      unit: "",
-      description: "",
-      measurementText: "",
-      measurementText: ""
+      timeUnit: "",
+      description: ""
     });
   };
 
@@ -208,55 +205,50 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
     setShowFormulaModal(false);
   };
 
-  const removeMaterial = (id: string) => {
-    setMaterials(prev => prev.filter(m => m.id !== id));
+  const removeEquipment = (id: string) => {
+    setEquipments(prev => prev.filter(e => e.id !== id));
     setEditingId(null); // Cancelar edição se estava editando este item
   };
 
-  const startEdit = (material: MaterialItem) => {
-    setEditingId(material.id);
+  const startEdit = (equipment: EquipmentItem) => {
+    setEditingId(equipment.id);
     setCurrentForm({
-      materialId: material.materialId,
-      equipmentId: material.equipmentId || 'none',
-      calculationType: material.calculationType,
-      fixedQuantity: material.fixedQuantity?.toString() || "",
-      calculationRuleId: material.calculationRuleId || "",
-      calculationRuleName: material.calculationRuleName || "",
-      calculationRuleFormula: material.calculationRuleFormula || "",
-      multiplier: material.multiplier?.toString() || "1",
-      unit: material.unit,
-      description: material.description || "",
-      measurementText: material.measurementText || ""
+      equipmentId: equipment.equipmentId,
+      calculationType: equipment.calculationType,
+      fixedTime: equipment.fixedTime?.toString() || "",
+      calculationRuleId: equipment.calculationRuleId || "",
+      calculationRuleName: equipment.calculationRuleName || "",
+      calculationRuleFormula: equipment.calculationRuleFormula || "",
+      multiplier: equipment.multiplier?.toString() || "1",
+      timeUnit: equipment.timeUnit,
+      description: equipment.description || "",
+      measurementText: equipment.measurementText || ""
     });
   };
 
   const saveEdit = () => {
     if (!editingId) return;
 
-    const material = materialsOptions.find(m => m.id === currentForm.materialId);
-    const equipment = currentForm.equipmentId === 'none' ? null : equipmentsOptions.find(e => e.id === currentForm.equipmentId);
+    const equipment = equipmentsOptions.find(e => e.id === currentForm.equipmentId);
 
     // Preparar estrutura de custos (sem cálculos reais ainda)
     const costs = prepareCostStructure(
-      material,
       equipment,
       currentForm.calculationType,
-      parseFloat(currentForm.fixedQuantity),
+      parseFloat(currentForm.fixedTime),
       currentForm.calculationRuleFormula,
       parseFloat(currentForm.multiplier) || 1
     );
 
-    const updatedMaterial: MaterialItem = {
+    const updatedEquipment: EquipmentItem = {
       id: editingId,
-      materialId: currentForm.materialId,
-      materialName: material?.name || "",
-      materialCost: Number(material?.cost) || 0,
-      equipmentId: currentForm.equipmentId === 'none' ? '' : currentForm.equipmentId,
-      equipmentName: equipment?.name || "Nenhum",
-      equipmentCostPerM2: Number(equipment?.totalCostPerM2) || 0,
+      equipmentId: currentForm.equipmentId,
+      equipmentName: equipment?.name || "",
+      equipmentType: equipment?.type || "",
+      costPerM2: Number(equipment?.totalCostPerM2) || 0,
       calculationType: currentForm.calculationType,
       ...(currentForm.calculationType === 'fixed' 
-        ? { fixedQuantity: parseFloat(currentForm.fixedQuantity) }
+        ? { fixedTime: parseFloat(currentForm.fixedTime) }
         : { 
             calculationRuleId: currentForm.calculationRuleId,
             calculationRuleName: currentForm.calculationRuleName,
@@ -264,63 +256,58 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
             multiplier: parseFloat(currentForm.multiplier) || 1
           }
       ),
-      unit: currentForm.unit || material?.unit || "un",
+      timeUnit: currentForm.timeUnit || "minutos",
       description: currentForm.description.trim() || undefined,
       measurementText: currentForm.measurementText.trim() || undefined,
       // Custos calculados
-      totalMaterialCost: costs.totalMaterialCost,
-      totalEquipmentCost: costs.totalEquipmentCost,
+      totalTime: costs.calculatedTime,
       totalCost: costs.totalCost
     };
 
-    setMaterials(prev => prev.map(m => m.id === editingId ? updatedMaterial : m));
+    setEquipments(prev => prev.map(e => e.id === editingId ? updatedEquipment : e));
     cancelEdit();
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setCurrentForm({
-      materialId: "",
-      equipmentId: "none",
+      equipmentId: "",
       calculationType: "fixed",
-      fixedQuantity: "",
+      fixedTime: "",
       calculationRuleId: "",
       calculationRuleName: "",
       calculationRuleFormula: "",
       multiplier: "1",
-      unit: "",
-      description: "",
-      measurementText: ""
+      timeUnit: "",
+      description: ""
     });
   };
 
   const handleSave = () => {
-    onSave(materials);
+    onSave(equipments);
     onClose();
-    setMaterials([]);
+    setEquipments([]);
   };
 
   const handleCancel = () => {
     onClose();
-    setMaterials([]);
+    setEquipments([]);
     setEditingId(null);
     setCurrentForm({
-      materialId: "",
-      equipmentId: "none",
+      equipmentId: "",
       calculationType: "fixed",
-      fixedQuantity: "",
+      fixedTime: "",
       calculationRuleId: "",
       calculationRuleName: "",
       calculationRuleFormula: "",
       multiplier: "1",
-      unit: "",
-      description: "",
-      measurementText: ""
+      timeUnit: "",
+      description: ""
     });
   };
 
-  const handleShowCostDetail = (material: MaterialItem) => {
-    setSelectedMaterialForDetail(material);
+  const handleShowCostDetail = (equipment: EquipmentItem) => {
+    setSelectedEquipmentForDetail(equipment);
     setShowCostDetailModal(true);
   };
 
@@ -328,9 +315,9 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adicionar Materiais</DialogTitle>
+          <DialogTitle>Adicionar Equipamentos</DialogTitle>
           <DialogDescription>
-            Configure os materiais necessários para este produto
+            Configure os equipamentos necessários para este produto (impressoras, máquinas, etc.)
           </DialogDescription>
         </DialogHeader>
 
@@ -338,74 +325,59 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
           {/* Formulário de Adição */}
           <div className={`border rounded-lg p-4 space-y-4 ${editingId ? 'opacity-50 pointer-events-none' : ''}`}>
             <h3 className="font-medium text-lg">
-              Adicionar Material
+              Adicionar Equipamento
               {editingId && <span className="text-sm text-muted-foreground ml-2">(Bloqueado durante edição)</span>}
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="material">Matéria Prima *</Label>
+                <Label htmlFor="equipment">Equipamento (Impressora/Máquina) *</Label>
                 <Select
-                  value={currentForm.materialId}
+                  value={currentForm.equipmentId}
                   onValueChange={(value) => {
-                    const material = materialsOptions.find(m => m.id === value);
+                    const equipment = equipmentsOptions.find(e => e.id === value);
                     setCurrentForm(prev => ({
                       ...prev,
-                      materialId: value,
-                      unit: material?.unit || "un"
+                      equipmentId: value,
+                      timeUnit: "minutos"
                     }));
                   }}
                 >
                   <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Selecione a matéria prima" />
+                    <SelectValue placeholder="Selecione o equipamento" />
                   </SelectTrigger>
                   <SelectContent>
-                    {materialsOptions.map((material) => (
-                      <SelectItem key={material.id} value={material.id}>
-                        {material.name}
-                        <span className="text-muted-foreground ml-2">
-                          (R$ {Number(material.cost).toFixed(2)}/{material.unit})
-                        </span>
-                      </SelectItem>
-                    ))}
+                    {equipmentsOptions.map((equipment) => {
+                      const Icon = getEquipmentTypeIcon(equipment.type);
+                      return (
+                        <SelectItem key={equipment.id} value={equipment.id}>
+                          <div className="flex items-center gap-2">
+                            <Icon className="w-4 h-4" />
+                            <span>{equipment.name}</span>
+                            <Badge variant="secondary" className="text-xs">
+                              {getEquipmentTypeLabel(equipment.type)}
+                            </Badge>
+                            <span className="text-muted-foreground ml-2">
+                              (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
+                            </span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
-
-              <div>
-                <Label htmlFor="equipment">Equipamento (Opcional)</Label>
-                <Select
-                  value={currentForm.equipmentId}
-                  onValueChange={(value) => setCurrentForm(prev => ({ ...prev, equipmentId: value }))}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Selecione o equipamento (opcional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Nenhum equipamento</SelectItem>
-                    {equipmentsOptions.map((equipment) => (
-                      <SelectItem key={equipment.id} value={equipment.id}>
-                        {equipment.name}
-                        <span className="text-muted-foreground ml-2">
-                          (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
             </div>
 
-            {/* Sistema de Cálculo Inteligente - Layout lado a lado */}
+            {/* Sistema de Cálculo de Tempo de Uso - Layout lado a lado */}
             <div className="space-y-4">
-              <Label className="text-base font-medium">Como Calcular a Quantidade? *</Label>
+              <Label className="text-base font-medium">Como Calcular o Tempo de Uso? *</Label>
               <RadioGroup 
                 value={currentForm.calculationType} 
                 onValueChange={(value) => setCurrentForm(prev => ({ 
                   ...prev, 
                   calculationType: value as 'fixed' | 'formula',
-                  fixedQuantity: "",
+                  fixedTime: "",
                   calculationRuleId: "",
                   calculationRuleName: "",
                   calculationRuleFormula: "",
@@ -413,16 +385,16 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                 }))}
                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
               >
-                {/* Quantidade Fixa */}
+                {/* Tempo Fixo */}
                 <div className="flex items-start space-x-3 p-3 border rounded-lg">
                   <RadioGroupItem value="fixed" id="fixed" className="mt-1" />
                   <div className="flex-1">
                     <Label htmlFor="fixed" className="flex items-center text-sm font-medium cursor-pointer">
                       <Hash className="w-4 h-4 mr-2" />
-                      Quantidade Fixa
+                      Tempo de Uso Fixo
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Ex: 1 tubo de cola, 4 parafusos, 2 dobradiças
+                      Ex: 15 minutos na impressora, 30 minutos na máquina
                     </p>
                     
                     {currentForm.calculationType === 'fixed' && (
@@ -430,11 +402,14 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                         <Input
                           type="number"
                           step="0.01"
-                          value={currentForm.fixedQuantity}
-                          onChange={(e) => setCurrentForm(prev => ({ ...prev, fixedQuantity: e.target.value }))}
-                          placeholder="Ex: 1, 4, 2.5..."
+                          value={currentForm.fixedTime}
+                          onChange={(e) => setCurrentForm(prev => ({ ...prev, fixedTime: e.target.value }))}
+                          placeholder="Ex: 15, 30, 60..."
                           className="w-32"
                         />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Tempo em minutos
+                        </p>
                       </div>
                     )}
                   </div>
@@ -446,10 +421,10 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                   <div className="flex-1">
                     <Label htmlFor="formula" className="flex items-center text-sm font-medium cursor-pointer">
                       <Calculator className="w-4 h-4 mr-2" />
-                      Fórmula Dinâmica
+                      Tempo Calculado por Dimensão
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      O sistema calcula automaticamente baseado nas medidas que o vendedor informar
+                      O sistema calcula tempo baseado no tamanho da peça (ex: 2m² = 20 minutos)
                     </p>
                         
                         {currentForm.calculationType === 'formula' && (
@@ -472,7 +447,7 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                             {currentForm.calculationRuleId && (
                               <div>
                                 <Label htmlFor="multiplier" className="text-sm font-medium">
-                                  Multiplicador
+                                  Multiplicador de Tempo
                                 </Label>
                                 <Input
                                   id="multiplier"
@@ -485,7 +460,27 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                                   className="w-24 mt-1"
                                 />
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  Quantidade = Resultado da Fórmula × Multiplicador
+                                  Tempo = Resultado da Fórmula × Multiplicador (minutos por m²)
+                                </p>
+                              </div>
+                            )}
+                            
+                            {/* Campo de Texto para Medidas */}
+                            {currentForm.calculationRuleId && (
+                              <div>
+                                <Label htmlFor="measurementText" className="text-sm font-medium">
+                                  Texto para Coleta de Medidas (opcional)
+                                </Label>
+                                <Input
+                                  id="measurementText"
+                                  type="text"
+                                  value={currentForm.measurementText}
+                                  onChange={(e) => setCurrentForm(prev => ({ ...prev, measurementText: e.target.value }))}
+                                  placeholder="Ex: Informe o tempo estimado de operação"
+                                  className="mt-1"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Se deixado vazio, será usado um texto padrão
                                 </p>
                               </div>
                             )}
@@ -500,7 +495,7 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                                   </div>
                                   {currentForm.multiplier && parseFloat(currentForm.multiplier) !== 1 && (
                                     <div className="text-muted-foreground">
-                                      Multiplicador: <span className="font-mono">{currentForm.multiplier}x</span>
+                                      Multiplicador: <span className="font-mono">{currentForm.multiplier}x min/m²</span>
                                     </div>
                                   )}
                                 </div>
@@ -522,40 +517,21 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                 id="description"
                 value={currentForm.description}
                 onChange={(e) => setCurrentForm(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Descreva detalhes específicos deste material para o produto..."
+                placeholder="Descreva detalhes específicos do uso deste equipamento para o produto..."
                 rows={3}
                 className="w-full"
               />
               <p className="text-xs text-muted-foreground">
-                Esta descrição será específica para este produto e aparecerá na lista de materiais.
+                Esta descrição será específica para este produto e aparecerá na lista de equipamentos.
               </p>
             </div>
 
-            {/* Campo de Texto para Medidas - Só aparece se for fórmula */}
-            {currentForm.calculationType === 'formula' && currentForm.calculationRuleId && (
-              <div className="space-y-2">
-                <Label htmlFor="measurementText" className="text-base font-medium">
-                  Texto Personalizado para Medidas (Opcional)
-                </Label>
-                <Input
-                  id="measurementText"
-                  value={currentForm.measurementText}
-                  onChange={(e) => setCurrentForm(prev => ({ ...prev, measurementText: e.target.value }))}
-                  placeholder="Ex: Informe as dimensões da fachada"
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Texto que aparecerá para o vendedor quando for coletar as medidas. Se vazio, usará texto padrão.
-                </p>
-              </div>
-            )}
-
             <Button 
               type="button" 
-              onClick={addMaterial}
+              onClick={addEquipment}
               disabled={
-                !currentForm.materialId || 
-                (currentForm.calculationType === 'fixed' && !currentForm.fixedQuantity) ||
+                !currentForm.equipmentId || 
+                (currentForm.calculationType === 'fixed' && !currentForm.fixedTime) ||
                 (currentForm.calculationType === 'formula' && !currentForm.calculationRuleId)
               }
               className="w-full"
@@ -567,17 +543,17 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
 
           {/* Seção de Edição */}
           {editingId && (
-            <div className="border rounded-lg p-4 space-y-4 bg-blue-50/50 dark:bg-blue-950/20">
+            <div className="border rounded-lg p-4 space-y-4 bg-purple-50/50 dark:bg-purple-950/20">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-lg">Editando Material</h3>
+                <h3 className="font-medium text-lg">Editando Equipamento</h3>
                 <div className="flex gap-2">
                   <Button
                     type="button"
                     size="sm"
                     onClick={saveEdit}
                     disabled={
-                      !currentForm.materialId || 
-                      (currentForm.calculationType === 'fixed' && !currentForm.fixedQuantity) ||
+                      !currentForm.equipmentId || 
+                      (currentForm.calculationType === 'fixed' && !currentForm.fixedTime) ||
                       (currentForm.calculationType === 'formula' && !currentForm.calculationRuleId)
                     }
                   >
@@ -596,29 +572,29 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label htmlFor="edit-material">Matéria Prima *</Label>
+                  <Label htmlFor="edit-equipment">Equipamento *</Label>
                   <Select
-                    value={currentForm.materialId}
+                    value={currentForm.equipmentId}
                     onValueChange={(value) => {
-                      const material = materialsOptions.find(m => m.id === value);
+                      const equipment = equipmentsOptions.find(e => e.id === value);
                       setCurrentForm(prev => ({
                         ...prev,
-                        materialId: value,
-                        unit: material?.unit || "un"
+                        equipmentId: value,
+                        timeUnit: "minutos"
                       }));
                     }}
                   >
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Selecione a matéria prima" />
+                      <SelectValue placeholder="Selecione o equipamento" />
                     </SelectTrigger>
                     <SelectContent>
-                      {materialsOptions.map((material) => (
-                        <SelectItem key={material.id} value={material.id}>
-                          {material.name}
+                      {equipmentsOptions.map((equipment) => (
+                        <SelectItem key={equipment.id} value={equipment.id}>
+                          {equipment.name}
                           <span className="text-muted-foreground ml-2">
-                            (R$ {Number(material.cost).toFixed(2)}/{material.unit})
+                            (R$ {Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²)
                           </span>
                         </SelectItem>
                       ))}
@@ -626,35 +602,15 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="edit-equipment">Equipamento (Opcional)</Label>
-                  <Select
-                    value={currentForm.equipmentId}
-                    onValueChange={(value) => setCurrentForm(prev => ({ ...prev, equipmentId: value }))}
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Selecione o equipamento (opcional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Nenhum equipamento</SelectItem>
-                      {equipmentsOptions.map((equipment) => (
-                        <SelectItem key={equipment.id} value={equipment.id}>
-                          {equipment.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 {/* Sistema de Cálculo para Edição */}
-                <div className="col-span-2">
-                  <Label className="text-base font-medium">Como Calcular a Quantidade? *</Label>
+                <div className="space-y-4">
+                  <Label className="text-base font-medium">Como Calcular o Tempo de Uso? *</Label>
                   <RadioGroup 
                     value={currentForm.calculationType} 
                     onValueChange={(value) => setCurrentForm(prev => ({ 
                       ...prev, 
                       calculationType: value as 'fixed' | 'formula',
-                      fixedQuantity: "",
+                      fixedTime: "",
                       calculationRuleId: "",
                       calculationRuleName: "",
                       calculationRuleFormula: "",
@@ -663,13 +619,13 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                     className="mt-2"
                   >
                     <div className="space-y-4">
-                      {/* Quantidade Fixa para Edição */}
+                      {/* Tempo Fixo para Edição */}
                       <div className="flex items-start space-x-3 p-3 border rounded-lg">
                         <RadioGroupItem value="fixed" id="edit-fixed" className="mt-1" />
                         <div className="flex-1">
                           <Label htmlFor="edit-fixed" className="flex items-center text-sm font-medium cursor-pointer">
                             <Hash className="w-4 h-4 mr-2" />
-                            Quantidade Fixa
+                            Tempo de Uso Fixo
                           </Label>
                           
                           {currentForm.calculationType === 'fixed' && (
@@ -677,9 +633,9 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                               <Input
                                 type="number"
                                 step="0.01"
-                                value={currentForm.fixedQuantity}
-                                onChange={(e) => setCurrentForm(prev => ({ ...prev, fixedQuantity: e.target.value }))}
-                                placeholder="Ex: 1, 4, 2.5..."
+                                value={currentForm.fixedTime}
+                                onChange={(e) => setCurrentForm(prev => ({ ...prev, fixedTime: e.target.value }))}
+                                placeholder="Ex: 15, 30, 60..."
                                 className="w-32"
                               />
                             </div>
@@ -693,7 +649,7 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                         <div className="flex-1">
                           <Label htmlFor="edit-formula" className="flex items-center text-sm font-medium cursor-pointer">
                             <Calculator className="w-4 h-4 mr-2" />
-                            Fórmula Dinâmica
+                            Tempo Calculado por Dimensão
                           </Label>
                           
                           {currentForm.calculationType === 'formula' && (
@@ -715,7 +671,7 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                               {currentForm.calculationRuleId && (
                                 <div>
                                   <Label htmlFor="edit-multiplier" className="text-sm font-medium">
-                                    Multiplicador
+                                    Multiplicador de Tempo
                                   </Label>
                                   <Input
                                     id="edit-multiplier"
@@ -728,7 +684,27 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                                     className="w-24 mt-1"
                                   />
                                   <p className="text-xs text-muted-foreground mt-1">
-                                    Quantidade = Resultado da Fórmula × Multiplicador
+                                    Tempo = Resultado da Fórmula × Multiplicador (min/m²)
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {/* Campo de Texto para Medidas - Edição */}
+                              {currentForm.calculationRuleId && (
+                                <div>
+                                  <Label htmlFor="edit-measurementText" className="text-sm font-medium">
+                                    Texto para Coleta de Medidas (opcional)
+                                  </Label>
+                                  <Input
+                                    id="edit-measurementText"
+                                    type="text"
+                                    value={currentForm.measurementText}
+                                    onChange={(e) => setCurrentForm(prev => ({ ...prev, measurementText: e.target.value }))}
+                                    placeholder="Ex: Informe o tempo estimado de operação"
+                                    className="mt-1"
+                                  />
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Se deixado vazio, será usado um texto padrão
                                   </p>
                                 </div>
                               )}
@@ -742,7 +718,7 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                                     </div>
                                     {currentForm.multiplier && parseFloat(currentForm.multiplier) !== 1 && (
                                       <div className="text-muted-foreground">
-                                        Multiplicador: <span className="font-mono">{currentForm.multiplier}x</span>
+                                        Multiplicador: <span className="font-mono">{currentForm.multiplier}x min/m²</span>
                                       </div>
                                     )}
                                   </div>
@@ -765,135 +741,118 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                     id="edit-description"
                     value={currentForm.description}
                     onChange={(e) => setCurrentForm(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Descreva detalhes específicos deste material para o produto..."
+                    placeholder="Descreva detalhes específicos do uso deste equipamento para o produto..."
                     rows={3}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Esta descrição será específica para este produto e aparecerá na lista de materiais.
+                    Esta descrição será específica para este produto e aparecerá na lista de equipamentos.
                   </p>
                 </div>
-
-                {/* Campo de Texto para Medidas - Edição - Só aparece se for fórmula */}
-                {currentForm.calculationType === 'formula' && currentForm.calculationRuleId && (
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-measurementText" className="text-base font-medium">
-                      Texto Personalizado para Medidas (Opcional)
-                    </Label>
-                    <Input
-                      id="edit-measurementText"
-                      value={currentForm.measurementText}
-                      onChange={(e) => setCurrentForm(prev => ({ ...prev, measurementText: e.target.value }))}
-                      placeholder="Ex: Informe as dimensões da fachada"
-                      className="w-full"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Texto que aparecerá para o vendedor quando for coletar as medidas. Se vazio, usará texto padrão.
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           )}
 
-          {/* Tabela de Materiais Adicionados */}
-          {materials.length > 0 && (
+          {/* Tabela de Equipamentos Adicionados */}
+          {equipments.length > 0 && (
             <div className="space-y-4">
               {/* Header com Total dos Custos por m² */}
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-lg">Materiais Adicionados ({materials.length})</h3>
+                <h3 className="font-medium text-lg">Equipamentos Adicionados ({equipments.length})</h3>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="text-muted-foreground">
-                    Total por m²: <span className="font-bold text-lg text-green-600">
-                      R$ {materials.reduce((sum, m) => sum + ((m.materialCost || 0) + (m.equipmentCostPerM2 || 0)), 0).toFixed(2)}/m²
+                    Custo médio por m²: <span className="font-bold text-lg text-purple-600">
+                      R$ {equipments.length > 0 ? (equipments.reduce((sum, e) => sum + (e.costPerM2 || 0), 0) / equipments.length).toFixed(2) : '0.00'}/m²
                     </span>
                   </div>
                 </div>
               </div>
               
               <div className="border rounded-lg overflow-hidden">
-                <div className="bg-muted/50 px-4 py-2 grid grid-cols-9 gap-3 font-medium text-sm">
-                  <div>Matéria Prima</div>
+                <div className="bg-muted/50 px-4 py-2 grid grid-cols-8 gap-3 font-medium text-sm">
                   <div>Equipamento</div>
-                  <div>Cálculo</div>
+                  <div>Tipo</div>
+                  <div>Cálculo de Tempo</div>
                   <div className="text-center">Unidade</div>
-                  <div className="text-center">Custo Material</div>
-                  <div className="text-center">Custo Equip.</div>
                   <div className="text-center">Custo/m²</div>
+                  <div className="text-center">Tempo Base</div>
                   <div className="text-center">Ações</div>
                   <div className="text-center">Editar</div>
                 </div>
                 
-                {materials.map((material) => (
-                  <div key={material.id} className="px-4 py-3 grid grid-cols-9 gap-3 border-t text-sm">
-                    <div className="font-medium">{material.materialName}</div>
-                    <div className="text-muted-foreground">{material.equipmentName}</div>
-                    <div>
-                      {material.calculationType === 'fixed' ? (
-                        <div className="flex items-center gap-2">
-                          <Hash className="w-3 h-3 text-muted-foreground" />
-                          <span className="font-mono">{material.fixedQuantity}</span>
-                        </div>
-                      ) : (
-                        <div className="space-y-1">
+                {equipments.map((equipment) => {
+                  const Icon = getEquipmentTypeIcon(equipment.equipmentType);
+                  return (
+                    <div key={equipment.id} className="px-4 py-3 grid grid-cols-8 gap-3 border-t text-sm">
+                      <div className="font-medium">{equipment.equipmentName}</div>
+                      <div className="flex items-center gap-1">
+                        <Icon className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-muted-foreground text-xs">
+                          {getEquipmentTypeLabel(equipment.equipmentType)}
+                        </span>
+                      </div>
+                      <div>
+                        {equipment.calculationType === 'fixed' ? (
                           <div className="flex items-center gap-2">
-                            <Calculator className="w-3 h-3 text-muted-foreground" />
-                            <span className="font-medium text-xs">{material.calculationRuleName}</span>
+                            <Hash className="w-3 h-3 text-muted-foreground" />
+                            <span className="font-mono">{equipment.fixedTime} min</span>
                           </div>
-                          <div className="text-xs text-muted-foreground font-mono">
-                            {material.calculationRuleFormula}
-                            {material.multiplier && material.multiplier !== 1 && (
-                              <span className="ml-1 text-blue-600">× {material.multiplier}</span>
-                            )}
+                        ) : (
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <Calculator className="w-3 h-3 text-muted-foreground" />
+                              <span className="font-medium text-xs">{equipment.calculationRuleName}</span>
+                            </div>
+                            <div className="text-xs text-muted-foreground font-mono">
+                              {equipment.calculationRuleFormula}
+                              {equipment.multiplier && equipment.multiplier !== 1 && (
+                                <span className="ml-1 text-purple-600">× {equipment.multiplier}</span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
+                      <div className="text-center text-muted-foreground">{equipment.timeUnit}</div>
+                      <div className="text-center">
+                        <span className="font-mono text-sm">
+                          R$ {(equipment.costPerM2 || 0).toFixed(2)}/m²
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleShowCostDetail(equipment)}
+                          className="font-mono text-sm font-bold text-purple-600 hover:text-purple-700 cursor-pointer transition-colors underline decoration-dotted underline-offset-2"
+                        >
+                          {equipment.calculationType === 'fixed' ? `${equipment.fixedTime} min` : 'Calculado'}
+                        </button>
+                      </div>
+                      <div className="flex justify-center gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeEquipment(equipment.id)}
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="flex justify-center gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => startEdit(equipment)}
+                          className="h-8 w-8 p-0 text-purple-600 hover:text-purple-700"
+                          disabled={editingId !== null && editingId !== equipment.id}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="text-center text-muted-foreground">{material.unit}</div>
-                    <div className="text-center">
-                      <span className="font-mono text-sm">
-                        R$ {(material.materialCost || 0).toFixed(2)}/m²
-                      </span>
-                    </div>
-                    <div className="text-center">
-                      <span className="font-mono text-sm">
-                        R$ {(material.equipmentCostPerM2 || 0).toFixed(2)}/m²
-                      </span>
-                    </div>
-                    <div className="text-center">
-                      <button
-                        type="button"
-                        onClick={() => handleShowCostDetail(material)}
-                        className="font-mono text-sm font-bold text-green-600 hover:text-green-700 cursor-pointer transition-colors underline decoration-dotted underline-offset-2"
-                      >
-                        R$ {((material.materialCost || 0) + (material.equipmentCostPerM2 || 0)).toFixed(2)}/m²
-                      </button>
-                    </div>
-                    <div className="flex justify-center gap-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeMaterial(material.id)}
-                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="flex justify-center gap-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => startEdit(material)}
-                        className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700"
-                        disabled={editingId !== null && editingId !== material.id}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -905,9 +864,9 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
           </Button>
           <Button 
             onClick={handleSave}
-            disabled={materials.length === 0}
+            disabled={equipments.length === 0}
           >
-            Salvar Materiais ({materials.length})
+            Salvar Equipamentos ({equipments.length})
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -917,53 +876,57 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
         isOpen={showFormulaModal}
         onClose={() => setShowFormulaModal(false)}
         onSelect={handleFormulaSelect}
-        materialName={materialsOptions.find(m => m.id === currentForm.materialId)?.name}
-        materialUnit={materialsOptions.find(m => m.id === currentForm.materialId)?.unit}
+        materialName={equipmentsOptions.find(e => e.id === currentForm.equipmentId)?.name}
+        materialUnit="minutos por m²"
       />
 
-      {/* Modal de Detalhamento de Custos */}
+      {/* Modal de Detalhamento de Uso */}
       <Dialog open={showCostDetailModal} onOpenChange={setShowCostDetailModal}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-green-600" />
-              Custos por m²
+              <Settings className="w-5 h-5 text-purple-600" />
+              Detalhamento do Equipamento
             </DialogTitle>
             <DialogDescription>
-              Detalhamento dos custos unitários deste material
+              Detalhamento do tempo de uso e custo deste equipamento
             </DialogDescription>
           </DialogHeader>
 
-          {selectedMaterialForDetail && (
+          {selectedEquipmentForDetail && (
             <div className="space-y-4 py-4">
-              {/* Header do Material */}
+              {/* Header do Equipamento */}
               <div className="p-4 bg-muted/50 rounded-lg border">
-                <div className="font-medium text-lg">{selectedMaterialForDetail.materialName}</div>
+                <div className="flex items-center gap-2 mb-1">
+                  {(() => {
+                    const Icon = getEquipmentTypeIcon(selectedEquipmentForDetail.equipmentType);
+                    return <Icon className="w-5 h-5" />;
+                  })()}
+                  <div className="font-medium text-lg">{selectedEquipmentForDetail.equipmentName}</div>
+                </div>
                 <div className="text-sm text-muted-foreground">
-                  {selectedMaterialForDetail.equipmentName !== "Nenhum" && (
-                    <>Equipamento: {selectedMaterialForDetail.equipmentName}</>
-                  )}
+                  Tipo: {getEquipmentTypeLabel(selectedEquipmentForDetail.equipmentType)}
                 </div>
               </div>
 
-              {/* Detalhamento dos Custos por m² */}
+              {/* Detalhamento do Tempo */}
               <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Composição do Custo por m²</h4>
+                <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Configuração do Tempo de Uso</h4>
                 
-                {/* Custo da Matéria-Prima */}
+                {/* Método de Cálculo */}
                 <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                     <div>
-                      <div className="font-medium text-sm">Custo da Matéria-Prima</div>
+                      <div className="font-medium text-sm">Método de Cálculo</div>
                       <div className="text-xs text-muted-foreground">
-                        {selectedMaterialForDetail.calculationType === 'fixed' ? (
-                          <>Quantidade fixa: {selectedMaterialForDetail.fixedQuantity} {selectedMaterialForDetail.unit}</>
+                        {selectedEquipmentForDetail.calculationType === 'fixed' ? (
+                          <>Tempo fixo: {selectedEquipmentForDetail.fixedTime} minutos</>
                         ) : (
                           <>
-                            Fórmula: {selectedMaterialForDetail.calculationRuleName}
-                            {selectedMaterialForDetail.multiplier && selectedMaterialForDetail.multiplier !== 1 && (
-                              <span className="ml-1 text-blue-600">× {selectedMaterialForDetail.multiplier}</span>
+                            Fórmula: {selectedEquipmentForDetail.calculationRuleName}
+                            {selectedEquipmentForDetail.multiplier && selectedEquipmentForDetail.multiplier !== 1 && (
+                              <span className="ml-1 text-blue-600">× {selectedEquipmentForDetail.multiplier}</span>
                             )}
                           </>
                         )}
@@ -971,52 +934,52 @@ export default function MaterialModal({ isOpen, onClose, onSave, initialMaterial
                     </div>
                   </div>
                   <div className="font-mono font-bold text-blue-700">
-                    R$ {(selectedMaterialForDetail.materialCost || 0).toFixed(2)}/m²
+                    {selectedEquipmentForDetail.calculationType === 'fixed' ? (
+                      `${selectedEquipmentForDetail.fixedTime} min`
+                    ) : (
+                      'Calculado dinamicamente'
+                    )}
                   </div>
                 </div>
 
-                {/* Custo do Equipamento */}
-                <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg border">
+                {/* Custo por m² */}
+                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg border">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                     <div>
-                      <div className="font-medium text-sm">Custo do Equipamento</div>
+                      <div className="font-medium text-sm">Custo por m²</div>
                       <div className="text-xs text-muted-foreground">
-                        {selectedMaterialForDetail.equipmentName !== "Nenhum" ? (
-                          <>Equipamento: {selectedMaterialForDetail.equipmentName}</>
-                        ) : (
-                          "Nenhum equipamento selecionado"
-                        )}
+                        Custo total do equipamento (incluindo depreciação, energia, manutenção)
                       </div>
                     </div>
                   </div>
-                  <div className="font-mono font-bold text-orange-700">
-                    R$ {(selectedMaterialForDetail.equipmentCostPerM2 || 0).toFixed(2)}/m²
+                  <div className="font-mono font-bold text-purple-700">
+                    R$ {(selectedEquipmentForDetail.costPerM2 || 0).toFixed(2)}/m²
                   </div>
                 </div>
 
-                {/* Total por m² */}
+                {/* Total Estimado */}
                 <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border-2 border-green-200 dark:border-green-800">
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 rounded-full bg-green-600"></div>
                     <div>
-                      <div className="font-bold text-base">Custo Total por m²</div>
+                      <div className="font-bold text-base">Estrutura de Cálculo</div>
                       <div className="text-xs text-muted-foreground">
-                        Material + Equipamento
+                        Tempo de Uso × Custo por m²
                       </div>
                     </div>
                   </div>
                   <div className="font-mono font-bold text-xl text-green-700">
-                    R$ {((selectedMaterialForDetail.materialCost || 0) + (selectedMaterialForDetail.equipmentCostPerM2 || 0)).toFixed(2)}/m²
+                    Configurado ✓
                   </div>
                 </div>
               </div>
 
               {/* Observações */}
-              {selectedMaterialForDetail.description && (
+              {selectedEquipmentForDetail.description && (
                 <div className="p-3 bg-muted/30 rounded-lg border">
                   <div className="font-medium text-sm mb-1">Observações</div>
-                  <div className="text-sm text-muted-foreground">{selectedMaterialForDetail.description}</div>
+                  <div className="text-sm text-muted-foreground">{selectedEquipmentForDetail.description}</div>
                 </div>
               )}
             </div>

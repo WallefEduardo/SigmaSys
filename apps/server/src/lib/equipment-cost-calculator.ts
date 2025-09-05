@@ -411,6 +411,8 @@ export class EquipmentCostCalculator {
 	 * Buscar custos organizados (OTIMIZADO para cálculo de produtos)
 	 */
 	async getOrganizedCosts(equipmentId: string) {
+		console.log(`📊 [getOrganizedCosts] Buscando breakdown para equipamento: ${equipmentId}`);
+		
 		const breakdown = await this.db.equipmentCostBreakdown.findFirst({
 			where: {
 				equipmentId,
@@ -434,6 +436,13 @@ export class EquipmentCostCalculator {
 				averageSpeed: true,
 				totalPasses: true,
 			},
+		});
+
+		console.log(`🔍 [getOrganizedCosts] Resultado da consulta:`, {
+			hasBreakdown: !!breakdown,
+			breakdownId: breakdown?.id,
+			passBreakdowns: breakdown?.passBreakdowns,
+			totalPasses: breakdown?.totalPasses
 		});
 
 		if (!breakdown) {
@@ -483,6 +492,7 @@ export class EquipmentCostCalculator {
 			const passData = (breakdown.passBreakdowns as any[]).find(
 				(p) => p.passKey === passKey,
 			);
+
 			if (passData) {
 				result.passCost = {
 					passKey: passData.passKey,
