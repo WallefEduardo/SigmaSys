@@ -13,50 +13,50 @@ export interface Unit {
 // Unidades simplificadas para comunicação visual
 export const visualCommunicationUnits: Unit[] = [
 	// Área - Para materiais em chapas/bobinas (vinil, lona, acrílico)
-	{ 
-		id: "m2", 
-		name: "Metro Quadrado", 
-		symbol: "m²", 
-		category: "area" 
+	{
+		id: "m2",
+		name: "Metro Quadrado",
+		symbol: "m²",
+		category: "area",
 	},
 
 	// Comprimento/Linear - Para materiais lineares (perfis, molduras, cabos)
-	{ 
-		id: "m", 
-		name: "Metro Linear", 
-		symbol: "m", 
-		category: "length" 
+	{
+		id: "m",
+		name: "Metro Linear",
+		symbol: "m",
+		category: "length",
 	},
 
 	// Volume - Para líquidos (tintas, solventes, vernizes)
-	{ 
-		id: "L", 
-		name: "Litro", 
-		symbol: "L", 
-		category: "volume" 
+	{
+		id: "L",
+		name: "Litro",
+		symbol: "L",
+		category: "volume",
 	},
 
 	// Peso - Para materiais pesados quando necessário
-	{ 
-		id: "kg", 
-		name: "Quilograma", 
-		symbol: "kg", 
-		category: "weight" 
+	{
+		id: "kg",
+		name: "Quilograma",
+		symbol: "kg",
+		category: "weight",
 	},
 
 	// Quantidade - Para componentes discretos (parafusos, LEDs, conectores)
-	{ 
-		id: "un", 
-		name: "Unidade", 
-		symbol: "un", 
-		category: "quantity" 
+	{
+		id: "un",
+		name: "Unidade",
+		symbol: "un",
+		category: "quantity",
 	},
 ];
 
 // Manter todas as unidades para compatibilidade com dados existentes
 export const defaultUnits: Unit[] = [
 	...visualCommunicationUnits,
-	
+
 	// Unidades legadas para migração (marcadas como depreciadas)
 	{
 		id: "cm2",
@@ -129,13 +129,16 @@ export class UnitsService {
 
 		return await CacheService.getOrSet(
 			cacheKey,
-			async () => visualCommunicationUnits.filter((unit) => unit.category === category),
+			async () =>
+				visualCommunicationUnits.filter((unit) => unit.category === category),
 			CacheTTL.UNITS,
 		);
 	}
 
 	static getUnitsByCategorySync(category: string): Unit[] {
-		return visualCommunicationUnits.filter((unit) => unit.category === category);
+		return visualCommunicationUnits.filter(
+			(unit) => unit.category === category,
+		);
 	}
 
 	static async getAllUnits(): Promise<Unit[]> {

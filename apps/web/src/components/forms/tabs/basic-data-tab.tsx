@@ -196,7 +196,10 @@ export const BasicDataTab = React.memo(function BasicDataTab({
 								value={watch("energyCostPerHour") || 0}
 								onChange={(value) => {
 									// Garantir que o valor seja número
-									const numValue = typeof value === 'string' ? parseFloat(value) : value;
+									const numValue =
+										typeof value === "string"
+											? Number.parseFloat(value)
+											: value;
 									setValue("energyCostPerHour", numValue || 0, {
 										shouldValidate: true,
 										shouldDirty: true,
@@ -223,7 +226,10 @@ export const BasicDataTab = React.memo(function BasicDataTab({
 								value={watch("maintenanceCostPerHour") || 0}
 								onChange={(value) => {
 									// Garantir que o valor seja número
-									const numValue = typeof value === 'string' ? parseFloat(value) : value;
+									const numValue =
+										typeof value === "string"
+											? Number.parseFloat(value)
+											: value;
 									setValue("maintenanceCostPerHour", numValue || 0, {
 										shouldValidate: true,
 										shouldDirty: true,

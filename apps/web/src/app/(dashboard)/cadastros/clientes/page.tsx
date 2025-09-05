@@ -14,6 +14,7 @@ import {
 	TrendingUp,
 	Users,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,14 +42,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-
 import {
 	statusColors,
 	statusLabels,
 	typeLabels,
 } from "@/lib/mock-data/clients";
 import { api } from "@/lib/trpc";
-import Link from "next/link";
 
 export default function ClientsPage() {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -79,7 +78,6 @@ export default function ClientsPage() {
 
 	const { data: clientStats } = api.clients.stats.useQuery();
 
-
 	const deactivateClientMutation = api.clients.deactivate.useMutation({
 		onSuccess: () => {
 			refetch();
@@ -89,17 +87,14 @@ export default function ClientsPage() {
 	const clients = clientsData?.clients || [];
 	const pagination = clientsData?.pagination;
 
-
 	const handleView = (client: any) => {
 		setViewingClient(client);
 		setIsViewDialogOpen(true);
 	};
 
-
 	const handleToggleStatus = (clientId: string) => {
 		deactivateClientMutation.mutate({ id: clientId });
 	};
-
 
 	const formatCurrency = (value: number) => {
 		return new Intl.NumberFormat("pt-BR", {
@@ -347,11 +342,7 @@ export default function ClientsPage() {
 											>
 												<Eye className="h-4 w-4" />
 											</Button>
-											<Button
-												variant="outline"
-												size="sm"
-												asChild
-											>
+											<Button variant="outline" size="sm" asChild>
 												<Link href={`/cadastros/clientes/${client.id}/editar`}>
 													Editar
 												</Link>
@@ -528,7 +519,6 @@ export default function ClientsPage() {
 					)}
 				</DialogContent>
 			</Dialog>
-
 		</div>
 	);
 }

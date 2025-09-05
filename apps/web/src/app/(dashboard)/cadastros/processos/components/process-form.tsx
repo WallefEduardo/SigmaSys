@@ -27,7 +27,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-	name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(200, "Nome não pode ter mais que 200 caracteres"),
+	name: z
+		.string()
+		.min(2, "Nome deve ter pelo menos 2 caracteres")
+		.max(200, "Nome não pode ter mais que 200 caracteres"),
 	description: z.string().optional(),
 	costPerHour: z.coerce.number().min(0, "Custo deve ser maior ou igual a zero"),
 	sector: z.string().optional(),
@@ -37,13 +40,13 @@ const formSchema = z.object({
 
 const sectors = [
 	"Impressão",
-	"Usinagem", 
+	"Usinagem",
 	"Metalurgia",
 	"Montagem",
 	"Acabamento",
 	"Pintura",
 	"Instalação",
-	"Outros"
+	"Outros",
 ];
 
 const timeUnits = [
@@ -61,7 +64,11 @@ interface ProcessFormProps {
 	isLoading?: boolean;
 }
 
-export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) {
+export function ProcessForm({
+	process,
+	onSubmit,
+	isLoading,
+}: ProcessFormProps) {
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -81,14 +88,20 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 			...values,
 			// Converter strings vazias para undefined
 			description: values.description || undefined,
-			sector: values.sector && values.sector !== "none" ? values.sector : undefined,
-			defaultTime: values.defaultTime && values.defaultTime > 0 ? values.defaultTime : undefined,
+			sector:
+				values.sector && values.sector !== "none" ? values.sector : undefined,
+			defaultTime:
+				values.defaultTime && values.defaultTime > 0
+					? values.defaultTime
+					: undefined,
 		};
 
 		onSubmit(formData);
 	};
 
-	const selectedTimeUnit = timeUnits.find(unit => unit.value === form.watch("timeUnit"));
+	const selectedTimeUnit = timeUnits.find(
+		(unit) => unit.value === form.watch("timeUnit"),
+	);
 
 	return (
 		<div className="space-y-6">
@@ -118,9 +131,9 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										<FormItem>
 											<FormLabel>Nome do Processo *</FormLabel>
 											<FormControl>
-												<Input 
+												<Input
 													placeholder="Ex: Impressão Digital, Corte a Laser..."
-													{...field} 
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -135,7 +148,7 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										<FormItem>
 											<FormLabel>Descrição</FormLabel>
 											<FormControl>
-												<Textarea 
+												<Textarea
 													placeholder="Descreva as características e especificações do processo..."
 													rows={3}
 													{...field}
@@ -156,7 +169,10 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>Setor</FormLabel>
-												<Select onValueChange={field.onChange} defaultValue={field.value}>
+												<Select
+													onValueChange={field.onChange}
+													defaultValue={field.value}
+												>
 													<FormControl>
 														<SelectTrigger>
 															<SelectValue placeholder="Selecione um setor" />
@@ -182,7 +198,10 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>Unidade de Tempo/Medida</FormLabel>
-												<Select onValueChange={field.onChange} defaultValue={field.value}>
+												<Select
+													onValueChange={field.onChange}
+													defaultValue={field.value}
+												>
 													<FormControl>
 														<SelectTrigger>
 															<SelectValue placeholder="Selecione a unidade" />
@@ -222,11 +241,15 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										name="costPerHour"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Custo por {selectedTimeUnit?.label || "Unidade"} *</FormLabel>
+												<FormLabel>
+													Custo por {selectedTimeUnit?.label || "Unidade"} *
+												</FormLabel>
 												<FormControl>
 													<div className="relative">
-														<span className="absolute left-3 top-2.5 text-muted-foreground">R$</span>
-														<Input 
+														<span className="absolute top-2.5 left-3 text-muted-foreground">
+															R$
+														</span>
+														<Input
 															type="number"
 															step="0.01"
 															min="0"
@@ -237,7 +260,8 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 													</div>
 												</FormControl>
 												<FormDescription>
-													Custo do processo por {selectedTimeUnit?.label?.toLowerCase() || "unidade"}
+													Custo do processo por{" "}
+													{selectedTimeUnit?.label?.toLowerCase() || "unidade"}
 												</FormDescription>
 												<FormMessage />
 											</FormItem>
@@ -250,12 +274,15 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
-													Tempo Padrão {selectedTimeUnit?.value !== 'hour' ? `(por ${selectedTimeUnit?.label})` : ''}
+													Tempo Padrão{" "}
+													{selectedTimeUnit?.value !== "hour"
+														? `(por ${selectedTimeUnit?.label})`
+														: ""}
 												</FormLabel>
 												<FormControl>
 													<div className="relative">
-														<Clock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-														<Input 
+														<Clock className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
+														<Input
 															type="number"
 															step="0.01"
 															min="0"
@@ -266,10 +293,9 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 													</div>
 												</FormControl>
 												<FormDescription>
-													{selectedTimeUnit?.value === 'hour' 
+													{selectedTimeUnit?.value === "hour"
 														? "Tempo padrão em horas para este processo (opcional)"
-														: `Tempo padrão para processar uma ${selectedTimeUnit?.label?.toLowerCase()} (opcional)`
-													}
+														: `Tempo padrão para processar uma ${selectedTimeUnit?.label?.toLowerCase()} (opcional)`}
 												</FormDescription>
 												<FormMessage />
 											</FormItem>
@@ -277,36 +303,48 @@ export function ProcessForm({ process, onSubmit, isLoading }: ProcessFormProps) 
 									/>
 
 									{/* Preview de custo */}
-									{form.watch("costPerHour") > 0 && form.watch("defaultTime") > 0 && (
-										<div className="rounded-lg bg-muted/50 p-4">
-											<h4 className="font-medium text-sm">Visualização de Custo</h4>
-											<div className="mt-2 space-y-1 text-sm">
-												<div className="flex justify-between">
-													<span className="text-muted-foreground">
-														Custo por {selectedTimeUnit?.label?.toLowerCase()}:
-													</span>
-													<span className="font-medium">
-														R$ {form.watch("costPerHour")?.toFixed(2) || "0,00"}
-													</span>
-												</div>
-												<div className="flex justify-between">
-													<span className="text-muted-foreground">
-														Tempo padrão:
-													</span>
-													<span className="font-medium">
-														{form.watch("defaultTime")} {selectedTimeUnit?.value === 'hour' ? 'h' : selectedTimeUnit?.label}
-													</span>
-												</div>
-												<hr className="my-2" />
-												<div className="flex justify-between font-semibold">
-													<span>Custo total padrão:</span>
-													<span className="text-primary">
-														R$ {((form.watch("costPerHour") || 0) * (form.watch("defaultTime") || 0)).toFixed(2)}
-													</span>
+									{form.watch("costPerHour") > 0 &&
+										form.watch("defaultTime") > 0 && (
+											<div className="rounded-lg bg-muted/50 p-4">
+												<h4 className="font-medium text-sm">
+													Visualização de Custo
+												</h4>
+												<div className="mt-2 space-y-1 text-sm">
+													<div className="flex justify-between">
+														<span className="text-muted-foreground">
+															Custo por {selectedTimeUnit?.label?.toLowerCase()}
+															:
+														</span>
+														<span className="font-medium">
+															R${" "}
+															{form.watch("costPerHour")?.toFixed(2) || "0,00"}
+														</span>
+													</div>
+													<div className="flex justify-between">
+														<span className="text-muted-foreground">
+															Tempo padrão:
+														</span>
+														<span className="font-medium">
+															{form.watch("defaultTime")}{" "}
+															{selectedTimeUnit?.value === "hour"
+																? "h"
+																: selectedTimeUnit?.label}
+														</span>
+													</div>
+													<hr className="my-2" />
+													<div className="flex justify-between font-semibold">
+														<span>Custo total padrão:</span>
+														<span className="text-primary">
+															R${" "}
+															{(
+																(form.watch("costPerHour") || 0) *
+																(form.watch("defaultTime") || 0)
+															).toFixed(2)}
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
-									)}
+										)}
 								</CardContent>
 							</Card>
 						</div>

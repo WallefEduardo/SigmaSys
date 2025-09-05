@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowLeft, Clock, DollarSign, Edit, Settings, TrendingUp } from "lucide-react";
+import {
+	ArrowLeft,
+	Clock,
+	DollarSign,
+	Edit,
+	Settings,
+	TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -15,10 +22,10 @@ export default function ProcessoDetalhesPage() {
 	const params = useParams();
 	const processId = params.id as string;
 
-	const { 
-		data: process, 
-		isLoading, 
-		error 
+	const {
+		data: process,
+		isLoading,
+		error,
 	} = api.processes.getById.useQuery({ id: processId });
 
 	if (isLoading) {
@@ -40,16 +47,15 @@ export default function ProcessoDetalhesPage() {
 						Processo não encontrado
 					</p>
 					<p className="mt-1 text-muted-foreground text-sm">
-						{error?.message || "O processo solicitado não existe ou foi removido"}
+						{error?.message ||
+							"O processo solicitado não existe ou foi removido"}
 					</p>
 					<div className="mt-4 flex gap-2">
 						<Button variant="outline" onClick={() => router.back()}>
 							Voltar
 						</Button>
 						<Button asChild>
-							<Link href="/cadastros/processos">
-								Ver todos os processos
-							</Link>
+							<Link href="/cadastros/processos">Ver todos os processos</Link>
 						</Button>
 					</div>
 				</div>
@@ -95,8 +101,8 @@ export default function ProcessoDetalhesPage() {
 			{/* Cabeçalho */}
 			<div className="flex items-center justify-between">
 				<div>
-					<div className="flex items-center gap-3 mb-2">
-						<h1 className="text-3xl font-bold">{process.name}</h1>
+					<div className="mb-2 flex items-center gap-3">
+						<h1 className="font-bold text-3xl">{process.name}</h1>
 						{process.sector && (
 							<Badge className={getSectorColor(process.sector)}>
 								{process.sector}
@@ -138,7 +144,7 @@ export default function ProcessoDetalhesPage() {
 							<label className="font-medium text-sm">Nome do Processo</label>
 							<p className="text-muted-foreground">{process.name}</p>
 						</div>
-						
+
 						{process.description && (
 							<div>
 								<label className="font-medium text-sm">Descrição</label>
@@ -199,10 +205,9 @@ export default function ProcessoDetalhesPage() {
 							<div>
 								<label className="font-medium text-sm">Tempo Padrão</label>
 								<p className="text-muted-foreground">
-									{process.timeUnit === 'hour' 
+									{process.timeUnit === "hour"
 										? formatTime(process.defaultTime)
-										: `${process.defaultTime} ${getTimeUnitLabel(process.timeUnit)}`
-									}
+										: `${process.defaultTime} ${getTimeUnitLabel(process.timeUnit)}`}
 								</p>
 							</div>
 						)}
@@ -213,9 +218,13 @@ export default function ProcessoDetalhesPage() {
 								<Separator />
 								<div className="rounded-lg bg-muted/50 p-4">
 									<div className="flex items-center justify-between">
-										<span className="font-medium text-sm">Custo Total Padrão:</span>
-										<span className="font-bold text-primary text-lg">
-											{formatCurrency(process.costPerHour * process.defaultTime)}
+										<span className="font-medium text-sm">
+											Custo Total Padrão:
+										</span>
+										<span className="font-bold text-lg text-primary">
+											{formatCurrency(
+												process.costPerHour * process.defaultTime,
+											)}
 										</span>
 									</div>
 									<p className="mt-1 text-muted-foreground text-xs">
@@ -242,16 +251,20 @@ export default function ProcessoDetalhesPage() {
 							<div className="font-bold text-2xl">
 								{process._count?.productItems || 0}
 							</div>
-							<div className="text-muted-foreground text-sm">Produtos usando</div>
+							<div className="text-muted-foreground text-sm">
+								Produtos usando
+							</div>
 						</div>
-						
+
 						<div className="text-center">
 							<div className="font-bold text-2xl">
 								{formatCurrency(process.costPerHour)}
 							</div>
-							<div className="text-muted-foreground text-sm">Custo por unidade</div>
+							<div className="text-muted-foreground text-sm">
+								Custo por unidade
+							</div>
 						</div>
-						
+
 						<div className="text-center">
 							<div className="font-bold text-2xl">
 								{process.active ? "Ativo" : "Inativo"}
@@ -271,11 +284,12 @@ export default function ProcessoDetalhesPage() {
 					<CardContent>
 						<div className="space-y-2">
 							{process.productItems.map((item: any) => (
-								<div key={item.id} className="flex items-center justify-between p-2 rounded border">
+								<div
+									key={item.id}
+									className="flex items-center justify-between rounded border p-2"
+								>
 									<span className="font-medium">{item.product.name}</span>
-									<Badge variant="outline">
-										Quantidade: {item.quantity}
-									</Badge>
+									<Badge variant="outline">Quantidade: {item.quantity}</Badge>
 								</div>
 							))}
 						</div>

@@ -10,10 +10,10 @@ export default function EditarProcessoPage() {
 	const params = useParams();
 	const processId = params.id as string;
 
-	const { 
-		data: process, 
-		isLoading, 
-		error 
+	const {
+		data: process,
+		isLoading,
+		error,
 	} = api.processes.getById.useQuery({ id: processId });
 
 	const updateProcess = api.processes.update.useMutation({
@@ -52,12 +52,13 @@ export default function EditarProcessoPage() {
 						Processo não encontrado
 					</p>
 					<p className="mt-1 text-muted-foreground text-sm">
-						{error?.message || "O processo solicitado não existe ou foi removido"}
+						{error?.message ||
+							"O processo solicitado não existe ou foi removido"}
 					</p>
 					<div className="mt-4 flex gap-2">
-						<button 
+						<button
 							onClick={() => router.back()}
-							className="px-4 py-2 border rounded hover:bg-gray-50"
+							className="rounded border px-4 py-2 hover:bg-gray-50"
 						>
 							Voltar
 						</button>
@@ -68,9 +69,9 @@ export default function EditarProcessoPage() {
 	}
 
 	return (
-		<ProcessForm 
+		<ProcessForm
 			process={process}
-			onSubmit={handleSubmit} 
+			onSubmit={handleSubmit}
 			isLoading={updateProcess.isPending}
 		/>
 	);

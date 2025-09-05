@@ -1,33 +1,33 @@
 "use client";
 
-import { useState } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { 
-	Calendar, 
-	Clock, 
-	Mail, 
-	MessageCircle, 
-	Phone, 
-	Plus, 
-	Star, 
-	User,
+import {
+	Calendar,
+	Clock,
+	DollarSign,
 	FileText,
-	DollarSign
+	Mail,
+	MessageCircle,
+	Phone,
+	Plus,
+	Star,
+	User,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
+import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/trpc";
 import type { ClientInteraction } from "@/lib/types/shared";
 
@@ -36,7 +36,10 @@ interface InteractionTimelineProps {
 	clientId: string;
 }
 
-export function InteractionTimeline({ interactions, clientId }: InteractionTimelineProps) {
+export function InteractionTimeline({
+	interactions,
+	clientId,
+}: InteractionTimelineProps) {
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [newInteraction, setNewInteraction] = useState({
 		type: "" as const,
@@ -60,37 +63,58 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 
 	const getInteractionIcon = (type: string) => {
 		switch (type) {
-			case "call": return <Phone className="h-4 w-4" />;
-			case "email": return <Mail className="h-4 w-4" />;
-			case "meeting": return <User className="h-4 w-4" />;
-			case "quote": return <FileText className="h-4 w-4" />;
-			case "order": return <DollarSign className="h-4 w-4" />;
-			case "note": return <MessageCircle className="h-4 w-4" />;
-			default: return <MessageCircle className="h-4 w-4" />;
+			case "call":
+				return <Phone className="h-4 w-4" />;
+			case "email":
+				return <Mail className="h-4 w-4" />;
+			case "meeting":
+				return <User className="h-4 w-4" />;
+			case "quote":
+				return <FileText className="h-4 w-4" />;
+			case "order":
+				return <DollarSign className="h-4 w-4" />;
+			case "note":
+				return <MessageCircle className="h-4 w-4" />;
+			default:
+				return <MessageCircle className="h-4 w-4" />;
 		}
 	};
 
 	const getInteractionColor = (type: string) => {
 		switch (type) {
-			case "call": return "bg-blue-500";
-			case "email": return "bg-green-500";
-			case "meeting": return "bg-purple-500";
-			case "quote": return "bg-orange-500";
-			case "order": return "bg-emerald-500";
-			case "note": return "bg-gray-500";
-			default: return "bg-gray-500";
+			case "call":
+				return "bg-blue-500";
+			case "email":
+				return "bg-green-500";
+			case "meeting":
+				return "bg-purple-500";
+			case "quote":
+				return "bg-orange-500";
+			case "order":
+				return "bg-emerald-500";
+			case "note":
+				return "bg-gray-500";
+			default:
+				return "bg-gray-500";
 		}
 	};
 
 	const getInteractionTypeLabel = (type: string) => {
 		switch (type) {
-			case "call": return "Ligação";
-			case "email": return "E-mail";
-			case "meeting": return "Reunião";
-			case "quote": return "Orçamento";
-			case "order": return "Pedido";
-			case "note": return "Nota";
-			default: return "Interação";
+			case "call":
+				return "Ligação";
+			case "email":
+				return "E-mail";
+			case "meeting":
+				return "Reunião";
+			case "quote":
+				return "Orçamento";
+			case "order":
+				return "Pedido";
+			case "note":
+				return "Nota";
+			default:
+				return "Interação";
 		}
 	};
 
@@ -130,8 +154,11 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 									<Label htmlFor="type">Tipo de Interação</Label>
 									<Select
 										value={newInteraction.type}
-										onValueChange={(value) => 
-											setNewInteraction(prev => ({ ...prev, type: value as any }))
+										onValueChange={(value) =>
+											setNewInteraction((prev) => ({
+												...prev,
+												type: value as any,
+											}))
 										}
 									>
 										<SelectTrigger>
@@ -155,8 +182,11 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 									id="description"
 									placeholder="Descreva brevemente a interação..."
 									value={newInteraction.description}
-									onChange={(e) => 
-										setNewInteraction(prev => ({ ...prev, description: e.target.value }))
+									onChange={(e) =>
+										setNewInteraction((prev) => ({
+											...prev,
+											description: e.target.value,
+										}))
 									}
 								/>
 							</div>
@@ -167,23 +197,23 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 									id="notes"
 									placeholder="Observações adicionais..."
 									value={newInteraction.notes}
-									onChange={(e) => 
-										setNewInteraction(prev => ({ ...prev, notes: e.target.value }))
+									onChange={(e) =>
+										setNewInteraction((prev) => ({
+											...prev,
+											notes: e.target.value,
+										}))
 									}
 								/>
 							</div>
 
 							<div className="flex gap-2">
-								<Button 
+								<Button
 									onClick={handleAddInteraction}
 									disabled={addInteraction.isPending}
 								>
 									{addInteraction.isPending ? "Salvando..." : "Salvar"}
 								</Button>
-								<Button
-									variant="outline"
-									onClick={() => setShowAddForm(false)}
-								>
+								<Button variant="outline" onClick={() => setShowAddForm(false)}>
 									Cancelar
 								</Button>
 							</div>
@@ -195,23 +225,24 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 			{/* Timeline de interações */}
 			<div className="space-y-4">
 				{interactions.length === 0 ? (
-					<div className="text-center py-8 text-muted-foreground">
-						<MessageCircle className="mx-auto h-12 w-12 mb-4 opacity-50" />
+					<div className="py-8 text-center text-muted-foreground">
+						<MessageCircle className="mx-auto mb-4 h-12 w-12 opacity-50" />
 						<p>Nenhuma interação registrada</p>
-						<p className="text-sm">Adicione a primeira interação com este cliente</p>
+						<p className="text-sm">
+							Adicione a primeira interação com este cliente
+						</p>
 					</div>
 				) : (
 					<div className="relative">
 						{/* Linha vertical da timeline */}
-						<div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
+						<div className="absolute top-0 bottom-0 left-6 w-0.5 bg-border" />
 
 						{interactions.map((interaction, index) => (
 							<div key={interaction.id} className="relative flex gap-4">
 								{/* Ícone da interação */}
-								<div className={`
-									relative z-10 flex h-12 w-12 items-center justify-center rounded-full 
-									${getInteractionColor(interaction.type)} text-white
-								`}>
+								<div
+									className={`relative z-10 flex h-12 w-12 items-center justify-center rounded-full${getInteractionColor(interaction.type)} text-white`}
+								>
 									{getInteractionIcon(interaction.type)}
 								</div>
 
@@ -219,18 +250,22 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 								<div className="flex-1 pb-8">
 									<Card>
 										<CardContent className="pt-4">
-											<div className="flex items-start justify-between mb-2">
+											<div className="mb-2 flex items-start justify-between">
 												<div className="flex items-center gap-2">
 													<Badge variant="outline">
 														{getInteractionTypeLabel(interaction.type)}
 													</Badge>
-													<div className="flex items-center gap-1 text-sm text-muted-foreground">
+													<div className="flex items-center gap-1 text-muted-foreground text-sm">
 														<Calendar className="h-3 w-3" />
 														<span>
-															{format(new Date(interaction.date), "dd/MM/yyyy", { locale: ptBR })}
+															{format(
+																new Date(interaction.date),
+																"dd/MM/yyyy",
+																{ locale: ptBR },
+															)}
 														</span>
 													</div>
-													<div className="flex items-center gap-1 text-sm text-muted-foreground">
+													<div className="flex items-center gap-1 text-muted-foreground text-sm">
 														<Clock className="h-3 w-3" />
 														<span>
 															{format(new Date(interaction.date), "HH:mm")}
@@ -238,19 +273,21 @@ export function InteractionTimeline({ interactions, clientId }: InteractionTimel
 													</div>
 												</div>
 											</div>
-											
-											<h4 className="font-medium mb-2">{interaction.description}</h4>
-											
+
+											<h4 className="mb-2 font-medium">
+												{interaction.description}
+											</h4>
+
 											{interaction.notes && (
-												<p className="text-sm text-muted-foreground">
+												<p className="text-muted-foreground text-sm">
 													{interaction.notes}
 												</p>
 											)}
-											
+
 											{interaction.user && (
-												<div className="flex items-center gap-2 mt-3 pt-3 border-t">
+												<div className="mt-3 flex items-center gap-2 border-t pt-3">
 													<User className="h-4 w-4 text-muted-foreground" />
-													<span className="text-sm text-muted-foreground">
+													<span className="text-muted-foreground text-sm">
 														Por {interaction.user.name}
 													</span>
 												</div>

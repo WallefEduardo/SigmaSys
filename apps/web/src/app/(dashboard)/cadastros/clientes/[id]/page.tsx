@@ -1,6 +1,14 @@
 "use client";
 
-import { ArrowLeft, Calendar, Edit, Mail, MapPin, Phone, Star } from "lucide-react";
+import {
+	ArrowLeft,
+	Calendar,
+	Edit,
+	Mail,
+	MapPin,
+	Phone,
+	Star,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -26,8 +34,8 @@ export default function ClienteDetalhesPage() {
 		return (
 			<div className="space-y-6">
 				<div className="animate-pulse space-y-4">
-					<div className="h-8 w-64 bg-muted rounded" />
-					<div className="h-32 bg-muted rounded" />
+					<div className="h-8 w-64 rounded bg-muted" />
+					<div className="h-32 rounded bg-muted" />
 				</div>
 			</div>
 		);
@@ -36,32 +44,39 @@ export default function ClienteDetalhesPage() {
 	if (!client) {
 		return (
 			<div className="flex flex-col items-center justify-center py-12">
-				<p className="text-lg font-semibold text-destructive">Cliente não encontrado</p>
+				<p className="font-semibold text-destructive text-lg">
+					Cliente não encontrado
+				</p>
 			</div>
 		);
 	}
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case "active": return "default";
-			case "inactive": return "secondary";
-			case "prospect": return "outline";
-			case "lead": return "destructive";
-			default: return "default";
+			case "active":
+				return "default";
+			case "inactive":
+				return "secondary";
+			case "prospect":
+				return "outline";
+			case "lead":
+				return "destructive";
+			default:
+				return "default";
 		}
 	};
 
 	const formatAddress = (address: any) => {
 		if (!address) return "Endereço não informado";
-		
+
 		const parts = [
 			address.street,
 			address.number,
 			address.neighborhood,
 			address.city,
-			address.state
+			address.state,
 		].filter(Boolean);
-		
+
 		return parts.length > 0 ? parts.join(", ") : "Endereço não informado";
 	};
 
@@ -77,8 +92,8 @@ export default function ClienteDetalhesPage() {
 						</Link>
 					</Button>
 					<div>
-						<h1 className="text-3xl font-bold">{client.name}</h1>
-						<div className="flex items-center gap-2 mt-1">
+						<h1 className="font-bold text-3xl">{client.name}</h1>
+						<div className="mt-1 flex items-center gap-2">
 							<Badge variant={getStatusColor(client.status)}>
 								{client.status}
 							</Badge>
@@ -104,7 +119,7 @@ export default function ClienteDetalhesPage() {
 
 			<div className="grid gap-6 lg:grid-cols-3">
 				{/* Informações Principais */}
-				<div className="lg:col-span-2 space-y-6">
+				<div className="space-y-6 lg:col-span-2">
 					{/* Dados Básicos */}
 					<Card>
 						<CardHeader>
@@ -126,25 +141,27 @@ export default function ClienteDetalhesPage() {
 								)}
 								{client.document && (
 									<div className="flex items-center gap-2">
-										<span className="text-sm font-medium">Documento:</span>
+										<span className="font-medium text-sm">Documento:</span>
 										<span>{client.document}</span>
 									</div>
 								)}
 								{client.birthday && (
 									<div className="flex items-center gap-2">
 										<Calendar className="h-4 w-4 text-muted-foreground" />
-										<span>{new Date(client.birthday).toLocaleDateString()}</span>
+										<span>
+											{new Date(client.birthday).toLocaleDateString()}
+										</span>
 									</div>
 								)}
 							</div>
-							
+
 							{client.address && (
 								<div>
-									<div className="flex items-center gap-2 mb-2">
+									<div className="mb-2 flex items-center gap-2">
 										<MapPin className="h-4 w-4 text-muted-foreground" />
 										<span className="font-medium">Endereço</span>
 									</div>
-									<p className="text-sm text-muted-foreground pl-6">
+									<p className="pl-6 text-muted-foreground text-sm">
 										{formatAddress(client.address)}
 									</p>
 								</div>
@@ -153,7 +170,7 @@ export default function ClienteDetalhesPage() {
 							{client.notes && (
 								<div>
 									<span className="font-medium">Observações</span>
-									<p className="text-sm text-muted-foreground mt-1">
+									<p className="mt-1 text-muted-foreground text-sm">
 										{client.notes}
 									</p>
 								</div>
@@ -168,7 +185,7 @@ export default function ClienteDetalhesPage() {
 								<CardTitle>Histórico de Interações</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<InteractionTimeline 
+								<InteractionTimeline
 									interactions={interactions.interactions}
 									clientId={client.id}
 								/>
@@ -196,7 +213,9 @@ export default function ClienteDetalhesPage() {
 								</div>
 								<div className="flex justify-between">
 									<span className="text-sm">Interações</span>
-									<span className="font-medium">{client._count.interactions}</span>
+									<span className="font-medium">
+										{client._count.interactions}
+									</span>
 								</div>
 							</div>
 						</CardContent>
@@ -210,30 +229,34 @@ export default function ClienteDetalhesPage() {
 						<CardContent className="space-y-3">
 							{client.segment && (
 								<div>
-									<span className="text-sm font-medium">Segmento</span>
-									<p className="text-sm text-muted-foreground">{client.segment}</p>
+									<span className="font-medium text-sm">Segmento</span>
+									<p className="text-muted-foreground text-sm">
+										{client.segment}
+									</p>
 								</div>
 							)}
 							{client.creditLimit && (
 								<div>
-									<span className="text-sm font-medium">Limite de Crédito</span>
-									<p className="text-sm text-muted-foreground">
+									<span className="font-medium text-sm">Limite de Crédito</span>
+									<p className="text-muted-foreground text-sm">
 										R$ {client.creditLimit.toLocaleString()}
 									</p>
 								</div>
 							)}
 							{client.paymentTerm && (
 								<div>
-									<span className="text-sm font-medium">Prazo de Pagamento</span>
-									<p className="text-sm text-muted-foreground">
+									<span className="font-medium text-sm">
+										Prazo de Pagamento
+									</span>
+									<p className="text-muted-foreground text-sm">
 										{client.paymentTerm} dias
 									</p>
 								</div>
 							)}
 							{client.discount && (
 								<div>
-									<span className="text-sm font-medium">Desconto Padrão</span>
-									<p className="text-sm text-muted-foreground">
+									<span className="font-medium text-sm">Desconto Padrão</span>
+									<p className="text-muted-foreground text-sm">
 										{client.discount}%
 									</p>
 								</div>

@@ -70,7 +70,7 @@ export const equipmentsRouter = router({
 			try {
 				// 🎯 NOVA LÓGICA: Usar cost calculator para obter custos totais reais
 				const calculator = new EquipmentCostCalculator(ctx.db);
-				
+
 				// Primeiro tentar a consulta original simples para testar
 				const allEquipments = await ctx.db.equipment.findMany({
 					where: {
@@ -95,7 +95,7 @@ export const equipmentsRouter = router({
 						},
 					},
 				});
-				
+
 				// Aplicar custo total para cada equipamento
 				const allEquipmentsWithCosts = await Promise.all(
 					allEquipments.map(async (equipment) => {
@@ -115,8 +115,10 @@ export const equipmentsRouter = router({
 								);
 								if (costData.passCost) {
 									// 🎯 CORREÇÃO: Somar fixos + variáveis para o total real
-									totalCostPerM2 = costData.fixedCostPerM2 + costData.passCost.totalVariableCostPerM2;
-									
+									totalCostPerM2 =
+										costData.fixedCostPerM2 +
+										costData.passCost.totalVariableCostPerM2;
+
 									costBreakdown = {
 										hasDefaultPass: true,
 										fixedCostPerM2: costData.fixedCostPerM2,
@@ -125,13 +127,18 @@ export const equipmentsRouter = router({
 									};
 								}
 							} catch (error) {
-								console.warn(`Erro ao calcular custo para equipamento ${equipment.id}:`, error);
+								console.warn(
+									`Erro ao calcular custo para equipamento ${equipment.id}:`,
+									error,
+								);
 							}
 						}
 
 						if (totalCostPerM2 === null) {
 							totalCostPerM2 = Number(
-								equipment.calculatedCostPerM2 || equipment.calculatedCostPerHour || 0,
+								equipment.calculatedCostPerM2 ||
+									equipment.calculatedCostPerHour ||
+									0,
 							);
 						}
 
@@ -279,7 +286,9 @@ export const equipmentsRouter = router({
 			}
 
 			// 🎯 CORREÇÃO: Log para debug do defaultPassKey no getById
-			console.log(`[GET_BY_ID] Equipamento ${equipment.name} - defaultPassKey: ${equipment.defaultPassKey}`);
+			console.log(
+				`[GET_BY_ID] Equipamento ${equipment.name} - defaultPassKey: ${equipment.defaultPassKey}`,
+			);
 
 			return equipment;
 		}),
@@ -448,7 +457,9 @@ export const equipmentsRouter = router({
 				// 🎯 CORREÇÃO: Garantir que defaultPassKey seja preservada explicitamente
 				if (equipmentData.defaultPassKey) {
 					dataToSave.defaultPassKey = equipmentData.defaultPassKey;
-					console.log(`[CREATE] Salvando defaultPassKey: ${equipmentData.defaultPassKey}`);
+					console.log(
+						`[CREATE] Salvando defaultPassKey: ${equipmentData.defaultPassKey}`,
+					);
 				}
 
 				const equipment = await ctx.db.equipment.create({
@@ -599,7 +610,14 @@ export const equipmentsRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			const startTime = performance.now();
 			const companyId = ensureCompanyAccess()(ctx);
-			const { id, lastMaintenance, maintenanceInterval, passes, printHeads, ...data } = input;
+			const {
+				id,
+				lastMaintenance,
+				maintenanceInterval,
+				passes,
+				printHeads,
+				...data
+			} = input;
 
 			try {
 				// Verificar se equipamento existe
@@ -656,12 +674,14 @@ export const equipmentsRouter = router({
 
 				// 🎯 CORREÇÃO: Log para debug do defaultPassKey no update
 				if (data.defaultPassKey !== undefined) {
-					console.log(`[UPDATE] Atualizando defaultPassKey: ${data.defaultPassKey}`);
+					console.log(
+						`[UPDATE] Atualizando defaultPassKey: ${data.defaultPassKey}`,
+					);
 				}
 
 				// Log para debug de passes
 				if (passes !== undefined) {
-					console.log(`[UPDATE] Atualizando passes:`, passes);
+					console.log("[UPDATE] Atualizando passes:", passes);
 				}
 
 				// Preparar dados para atualização (remover campos que não existem na tabela)
@@ -696,16 +716,16 @@ export const equipmentsRouter = router({
 
 				// Processar cabeças de impressão se fornecidas
 				if (printHeads !== undefined) {
-					console.log(`[UPDATE] Processando cabeças de impressão:`, printHeads);
-					
+					console.log("[UPDATE] Processando cabeças de impressão:", printHeads);
+
 					// Remover cabeças antigas
 					await ctx.db.equipmentConsumable.deleteMany({
 						where: {
 							equipmentId: id,
 							consumable: {
-								type: "printHead"
-							}
-						}
+								type: "printHead",
+							},
+						},
 					});
 
 					// Adicionar novas cabeças
@@ -717,13 +737,17 @@ export const equipmentsRouter = router({
 									equipmentId: id,
 									consumableId: head.consumableId,
 									position: head.position || "",
-									installationDate: head.installationDate ? new Date(head.installationDate) : new Date(),
+									installationDate: head.installationDate
+										? new Date(head.installationDate)
+										: new Date(),
 									notes: head.notes || null,
-								}
+								},
 							});
 						}
 					}
-					console.log(`[UPDATE] ${printHeadEntries.length} cabeças processadas`);
+					console.log(
+						`[UPDATE] ${printHeadEntries.length} cabeças processadas`,
+					);
 				}
 
 				const duration = performance.now() - startTime;
@@ -1070,7 +1094,9 @@ export const equipmentsRouter = router({
 				},
 			});
 
-			console.log(`[GET_INSTALLED_CONSUMABLES] Equipamento ${input.equipmentId} - ${installedConsumables.length} cabeças encontradas`);
+			console.log(
+				`[GET_INSTALLED_CONSUMABLES] Equipamento ${input.equipmentId} - ${installedConsumables.length} cabeças encontradas`,
+			);
 
 			return installedConsumables;
 		}),
@@ -1913,6 +1939,9 @@ export const equipmentsRouter = router({
 			const companyId = ensureCompanyAccess()(ctx);
 
 			const calculator = new EquipmentCostCalculator(ctx.db);
-			return await calculator.listEquipmentWithTotalCosts(companyId, input.type);
+			return await calculator.listEquipmentWithTotalCosts(
+				companyId,
+				input.type,
+			);
 		}),
 });

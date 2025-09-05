@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowLeft, DollarSign, Edit, Layers, Package, TrendingUp } from "lucide-react";
+import {
+	ArrowLeft,
+	DollarSign,
+	Edit,
+	Layers,
+	Package,
+	TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -15,10 +22,10 @@ export default function AcabamentoDetalhesPage() {
 	const params = useParams();
 	const finishId = params.id as string;
 
-	const { 
-		data: finish, 
-		isLoading, 
-		error 
+	const {
+		data: finish,
+		isLoading,
+		error,
 	} = api.finishes.getById.useQuery({ id: finishId });
 
 	// Buscar materiais e processos para mostrar nomes completos
@@ -47,7 +54,8 @@ export default function AcabamentoDetalhesPage() {
 						Acabamento não encontrado
 					</p>
 					<p className="mt-1 text-muted-foreground text-sm">
-						{error?.message || "O acabamento solicitado não existe ou foi removido"}
+						{error?.message ||
+							"O acabamento solicitado não existe ou foi removido"}
 					</p>
 					<div className="mt-4 flex gap-2">
 						<Button variant="outline" onClick={() => router.back()}>
@@ -65,13 +73,13 @@ export default function AcabamentoDetalhesPage() {
 	}
 
 	const getMaterialName = (materialId: string) => {
-		const material = materials.find(m => m.id === materialId);
-		return material ? material.name : 'Material não encontrado';
+		const material = materials.find((m) => m.id === materialId);
+		return material ? material.name : "Material não encontrado";
 	};
 
 	const getProcessName = (processId: string) => {
-		const process = processes.find(p => p.id === processId);
-		return process ? process.name : 'Processo não encontrado';
+		const process = processes.find((p) => p.id === processId);
+		return process ? process.name : "Processo não encontrado";
 	};
 
 	const calculateCompositionCost = () => {
@@ -80,7 +88,7 @@ export default function AcabamentoDetalhesPage() {
 		// Custo dos materiais
 		if (finish.composition?.materials) {
 			finish.composition.materials.forEach((comp: any) => {
-				const material = materials.find(m => m.id === comp.materialId);
+				const material = materials.find((m) => m.id === comp.materialId);
 				if (material) {
 					totalCost += material.costPerUnit * comp.quantity;
 				}
@@ -90,7 +98,7 @@ export default function AcabamentoDetalhesPage() {
 		// Custo dos processos
 		if (finish.composition?.processes) {
 			finish.composition.processes.forEach((comp: any) => {
-				const process = processes.find(p => p.id === comp.processId);
+				const process = processes.find((p) => p.id === comp.processId);
 				if (process) {
 					totalCost += process.costPerHour * comp.timeNeeded;
 				}
@@ -107,8 +115,8 @@ export default function AcabamentoDetalhesPage() {
 			{/* Cabeçalho */}
 			<div className="flex items-center justify-between">
 				<div>
-					<div className="flex items-center gap-3 mb-2">
-						<h1 className="text-3xl font-bold">{finish.name}</h1>
+					<div className="mb-2 flex items-center gap-3">
+						<h1 className="font-bold text-3xl">{finish.name}</h1>
 						<Badge variant={finish.active ? "default" : "secondary"}>
 							{finish.active ? "Ativo" : "Inativo"}
 						</Badge>
@@ -145,7 +153,7 @@ export default function AcabamentoDetalhesPage() {
 							<label className="font-medium text-sm">Nome do Acabamento</label>
 							<p className="text-muted-foreground">{finish.name}</p>
 						</div>
-						
+
 						{finish.description && (
 							<div>
 								<label className="font-medium text-sm">Descrição</label>
@@ -184,11 +192,13 @@ export default function AcabamentoDetalhesPage() {
 
 						{compositionCost > 0 && (
 							<div>
-								<label className="font-medium text-sm">Custo da Composição</label>
-								<p className="font-semibold text-muted-foreground text-lg">
+								<label className="font-medium text-sm">
+									Custo da Composição
+								</label>
+								<p className="font-semibold text-lg text-muted-foreground">
 									{formatCurrency(compositionCost)}
 								</p>
-								<p className="text-xs text-muted-foreground mt-1">
+								<p className="mt-1 text-muted-foreground text-xs">
 									Baseado nos materiais e processos
 								</p>
 							</div>
@@ -200,17 +210,25 @@ export default function AcabamentoDetalhesPage() {
 								<div className="rounded-lg bg-muted/50 p-4">
 									<div className="flex items-center justify-between">
 										<span className="font-medium text-sm">
-											{finish.cost > compositionCost ? 'Margem:' : 'Diferença:'}
+											{finish.cost > compositionCost ? "Margem:" : "Diferença:"}
 										</span>
-										<span className={`font-bold text-lg ${
-											finish.cost > compositionCost ? 'text-green-600' : 'text-red-600'
-										}`}>
+										<span
+											className={`font-bold text-lg ${
+												finish.cost > compositionCost
+													? "text-green-600"
+													: "text-red-600"
+											}`}
+										>
 											{formatCurrency(Math.abs(finish.cost - compositionCost))}
 										</span>
 									</div>
 									{finish.cost > compositionCost && (
-										<p className="text-xs text-muted-foreground mt-1">
-											{(((finish.cost - compositionCost) / compositionCost) * 100).toFixed(1)}% sobre o custo de composição
+										<p className="mt-1 text-muted-foreground text-xs">
+											{(
+												((finish.cost - compositionCost) / compositionCost) *
+												100
+											).toFixed(1)}
+											% sobre o custo de composição
 										</p>
 									)}
 								</div>
@@ -221,72 +239,98 @@ export default function AcabamentoDetalhesPage() {
 			</div>
 
 			{/* Composição - Materiais */}
-			{finish.composition?.materials && finish.composition.materials.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Composição - Materiais</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-3">
-							{finish.composition.materials.map((comp: any, index: number) => {
-								const material = materials.find(m => m.id === comp.materialId);
-								const itemCost = material ? material.costPerUnit * comp.quantity : 0;
-								
-								return (
-									<div key={index} className="flex items-center justify-between p-3 rounded border">
-										<div className="flex-1">
-											<p className="font-medium">{getMaterialName(comp.materialId)}</p>
-											<p className="text-muted-foreground text-sm">
-												{comp.quantity} {comp.unit}
-												{material && ` × ${formatCurrency(material.costPerUnit)}/${material.unit}`}
-											</p>
-										</div>
-										<div className="text-right">
-											<p className="font-semibold text-green-600">
-												{formatCurrency(itemCost)}
-											</p>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</CardContent>
-				</Card>
-			)}
+			{finish.composition?.materials &&
+				finish.composition.materials.length > 0 && (
+					<Card>
+						<CardHeader>
+							<CardTitle>Composição - Materiais</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-3">
+								{finish.composition.materials.map(
+									(comp: any, index: number) => {
+										const material = materials.find(
+											(m) => m.id === comp.materialId,
+										);
+										const itemCost = material
+											? material.costPerUnit * comp.quantity
+											: 0;
+
+										return (
+											<div
+												key={index}
+												className="flex items-center justify-between rounded border p-3"
+											>
+												<div className="flex-1">
+													<p className="font-medium">
+														{getMaterialName(comp.materialId)}
+													</p>
+													<p className="text-muted-foreground text-sm">
+														{comp.quantity} {comp.unit}
+														{material &&
+															` × ${formatCurrency(material.costPerUnit)}/${material.unit}`}
+													</p>
+												</div>
+												<div className="text-right">
+													<p className="font-semibold text-green-600">
+														{formatCurrency(itemCost)}
+													</p>
+												</div>
+											</div>
+										);
+									},
+								)}
+							</div>
+						</CardContent>
+					</Card>
+				)}
 
 			{/* Composição - Processos */}
-			{finish.composition?.processes && finish.composition.processes.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Composição - Processos</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-3">
-							{finish.composition.processes.map((comp: any, index: number) => {
-								const process = processes.find(p => p.id === comp.processId);
-								const itemCost = process ? process.costPerHour * comp.timeNeeded : 0;
-								
-								return (
-									<div key={index} className="flex items-center justify-between p-3 rounded border">
-										<div className="flex-1">
-											<p className="font-medium">{getProcessName(comp.processId)}</p>
-											<p className="text-muted-foreground text-sm">
-												{comp.timeNeeded} {comp.unit}
-												{process && ` × ${formatCurrency(process.costPerHour)}/h`}
-											</p>
-										</div>
-										<div className="text-right">
-											<p className="font-semibold text-blue-600">
-												{formatCurrency(itemCost)}
-											</p>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</CardContent>
-				</Card>
-			)}
+			{finish.composition?.processes &&
+				finish.composition.processes.length > 0 && (
+					<Card>
+						<CardHeader>
+							<CardTitle>Composição - Processos</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-3">
+								{finish.composition.processes.map(
+									(comp: any, index: number) => {
+										const process = processes.find(
+											(p) => p.id === comp.processId,
+										);
+										const itemCost = process
+											? process.costPerHour * comp.timeNeeded
+											: 0;
+
+										return (
+											<div
+												key={index}
+												className="flex items-center justify-between rounded border p-3"
+											>
+												<div className="flex-1">
+													<p className="font-medium">
+														{getProcessName(comp.processId)}
+													</p>
+													<p className="text-muted-foreground text-sm">
+														{comp.timeNeeded} {comp.unit}
+														{process &&
+															` × ${formatCurrency(process.costPerHour)}/h`}
+													</p>
+												</div>
+												<div className="text-right">
+													<p className="font-semibold text-blue-600">
+														{formatCurrency(itemCost)}
+													</p>
+												</div>
+											</div>
+										);
+									},
+								)}
+							</div>
+						</CardContent>
+					</Card>
+				)}
 
 			{/* Estatísticas de Uso */}
 			<Card>
@@ -302,16 +346,20 @@ export default function AcabamentoDetalhesPage() {
 							<div className="font-bold text-2xl">
 								{finish.products?.length || 0}
 							</div>
-							<div className="text-muted-foreground text-sm">Produtos usando</div>
+							<div className="text-muted-foreground text-sm">
+								Produtos usando
+							</div>
 						</div>
-						
+
 						<div className="text-center">
 							<div className="font-bold text-2xl">
 								{formatCurrency(finish.cost)}
 							</div>
-							<div className="text-muted-foreground text-sm">Custo unitário</div>
+							<div className="text-muted-foreground text-sm">
+								Custo unitário
+							</div>
 						</div>
-						
+
 						<div className="text-center">
 							<div className="font-bold text-2xl">
 								{finish.active ? "Ativo" : "Inativo"}
@@ -331,11 +379,12 @@ export default function AcabamentoDetalhesPage() {
 					<CardContent>
 						<div className="space-y-2">
 							{finish.products.map((item: any) => (
-								<div key={item.id} className="flex items-center justify-between p-2 rounded border">
+								<div
+									key={item.id}
+									className="flex items-center justify-between rounded border p-2"
+								>
 									<span className="font-medium">{item.product.name}</span>
-									<Badge variant="outline">
-										ID: {item.product.id}
-									</Badge>
+									<Badge variant="outline">ID: {item.product.id}</Badge>
 								</div>
 							))}
 						</div>

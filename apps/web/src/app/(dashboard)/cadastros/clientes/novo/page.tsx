@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "@/lib/trpc";
-import { ClientForm } from "../components/client-form";
 import type { ClientFormData } from "@/lib/types/shared";
+import { ClientForm } from "../components/client-form";
 
 export default function NovoClientePage() {
 	const router = useRouter();
@@ -27,17 +27,14 @@ export default function NovoClientePage() {
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-3xl font-bold">Novo Cliente</h1>
+					<h1 className="font-bold text-3xl">Novo Cliente</h1>
 					<p className="text-muted-foreground">
 						Cadastre um novo cliente ou empresa
 					</p>
 				</div>
 			</div>
 
-			<ClientForm 
-				onSubmit={handleSubmit}
-				isLoading={createClient.isPending}
-			/>
+			<ClientForm onSubmit={handleSubmit} isLoading={createClient.isPending} />
 		</div>
 	);
 }

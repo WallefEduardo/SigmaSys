@@ -23,9 +23,6 @@ export default function NovoAcabamentoPage() {
 	};
 
 	return (
-		<FinishForm 
-			onSubmit={handleSubmit} 
-			isLoading={createFinish.isPending}
-		/>
+		<FinishForm onSubmit={handleSubmit} isLoading={createFinish.isPending} />
 	);
 }

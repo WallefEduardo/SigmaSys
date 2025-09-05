@@ -11,6 +11,7 @@ import {
 } from "@/components/forms/equipment-form-types";
 import { EquipmentTabs } from "@/components/forms/equipment-tabs";
 import { Button } from "@/components/ui/button";
+
 // Usando any para permitir todos os campos do backend
 interface EquipmentFormProps {
 	equipment?: any;
@@ -45,34 +46,42 @@ export function EquipmentForm({
 			maxHeight: equipment?.maxHeight || undefined,
 			maxThickness: equipment?.maxThickness || undefined,
 			// 🎯 CORREÇÃO: Carregar dados de depreciação do equipamento
-			acquisitionValue: equipment?.acquisitionValue ? Number(equipment.acquisitionValue) : undefined,
-			residualValue: equipment?.residualValue ? Number(equipment.residualValue) : undefined,
+			acquisitionValue: equipment?.acquisitionValue
+				? Number(equipment.acquisitionValue)
+				: undefined,
+			residualValue: equipment?.residualValue
+				? Number(equipment.residualValue)
+				: undefined,
 			depreciationMethod: equipment?.depreciationMethod || "linear",
-			usefulLifeHours: equipment?.usefulLifeHours ? Number(equipment.usefulLifeHours) : undefined,
-			usefulLifeYears: equipment?.usefulLifeYears ? Number(equipment.usefulLifeYears) : undefined,
+			usefulLifeHours: equipment?.usefulLifeHours
+				? Number(equipment.usefulLifeHours)
+				: undefined,
+			usefulLifeYears: equipment?.usefulLifeYears
+				? Number(equipment.usefulLifeYears)
+				: undefined,
 			// 🎯 CORREÇÃO: Carregar passadas e cabeças do equipamento
 			passes: equipment?.passes || {},
 			// Converter consumables para formato printHeads
-			printHeads: equipment?.consumables ? 
-				equipment.consumables.reduce((acc: any, ec: any) => {
-					if (ec.consumable?.type === 'printHead') {
-						const headId = `head_${ec.id}`;
-						acc[headId] = {
-							id: headId,
-							consumableId: ec.consumableId,
-							position: ec.position,
-							installationDate: ec.installationDate ? 
-								new Date(ec.installationDate).toISOString().split('T')[0] : 
-								new Date().toISOString().split('T')[0],
-							notes: ec.notes || ""
-						};
-					}
-					return acc;
-				}, {}) : 
-				{},
+			printHeads: equipment?.consumables
+				? equipment.consumables.reduce((acc: any, ec: any) => {
+						if (ec.consumable?.type === "printHead") {
+							const headId = `head_${ec.id}`;
+							acc[headId] = {
+								id: headId,
+								consumableId: ec.consumableId,
+								position: ec.position,
+								installationDate: ec.installationDate
+									? new Date(ec.installationDate).toISOString().split("T")[0]
+									: new Date().toISOString().split("T")[0],
+								notes: ec.notes || "",
+							};
+						}
+						return acc;
+					}, {})
+				: {},
 			defaultPassKey: equipment?.defaultPassKey || undefined,
 			consumables: equipment?.consumables || {},
-			// 🎯 CORREÇÃO: Carregar dados de manutenção do equipamento  
+			// 🎯 CORREÇÃO: Carregar dados de manutenção do equipamento
 			maintenanceInterval: equipment?.maintenanceInterval || undefined,
 			maintenanceNotes: equipment?.maintenanceNotes || "",
 			// 🎯 CORREÇÃO: Carregar outros dados do equipamento
@@ -108,14 +117,24 @@ export function EquipmentForm({
 			location: values.location,
 			maxWidth: values.maxWidth ? Number(values.maxWidth) : undefined,
 			maxHeight: values.maxHeight ? Number(values.maxHeight) : undefined,
-			maxThickness: values.maxThickness ? Number(values.maxThickness) : undefined,
+			maxThickness: values.maxThickness
+				? Number(values.maxThickness)
+				: undefined,
 			tags: values.tags,
 			// Campos de depreciação
-			acquisitionValue: values.acquisitionValue ? Number(values.acquisitionValue) : undefined,
-			residualValue: values.residualValue ? Number(values.residualValue) : undefined,
+			acquisitionValue: values.acquisitionValue
+				? Number(values.acquisitionValue)
+				: undefined,
+			residualValue: values.residualValue
+				? Number(values.residualValue)
+				: undefined,
 			depreciationMethod: values.depreciationMethod,
-			usefulLifeHours: values.usefulLifeHours ? Number(values.usefulLifeHours) : undefined,
-			usefulLifeYears: values.usefulLifeYears ? Number(values.usefulLifeYears) : undefined,
+			usefulLifeHours: values.usefulLifeHours
+				? Number(values.usefulLifeHours)
+				: undefined,
+			usefulLifeYears: values.usefulLifeYears
+				? Number(values.usefulLifeYears)
+				: undefined,
 			// Removido consumables - não é usado no update e causava erro
 			maintenanceInterval: values.maintenanceInterval,
 			maintenanceNotes: values.maintenanceNotes,
@@ -189,27 +208,37 @@ export function EquipmentForm({
 		}
 
 		// Limpar campos undefined e arrays vazios que podem causar problemas
-		const cleanedFormData = Object.entries(formData).reduce((acc, [key, value]) => {
-			// Pular valores undefined, null, string vazia
-			if (value === undefined || value === null || value === "") {
+		const cleanedFormData = Object.entries(formData).reduce(
+			(acc, [key, value]) => {
+				// Pular valores undefined, null, string vazia
+				if (value === undefined || value === null || value === "") {
+					return acc;
+				}
+				// Pular arrays vazios
+				if (Array.isArray(value) && value.length === 0) {
+					return acc;
+				}
+				// Pular objetos vazios (exceto passes e printHeads que podem ser objetos válidos)
+				if (
+					typeof value === "object" &&
+					!Array.isArray(value) &&
+					key !== "passes" &&
+					key !== "printHeads" &&
+					Object.keys(value).length === 0
+				) {
+					return acc;
+				}
+				// Adicionar valor limpo
+				acc[key] = value;
 				return acc;
-			}
-			// Pular arrays vazios
-			if (Array.isArray(value) && value.length === 0) {
-				return acc;
-			}
-			// Pular objetos vazios (exceto passes e printHeads que podem ser objetos válidos)
-			if (typeof value === 'object' && !Array.isArray(value) && 
-				key !== 'passes' && key !== 'printHeads' && 
-				Object.keys(value).length === 0) {
-				return acc;
-			}
-			// Adicionar valor limpo
-			acc[key] = value;
-			return acc;
-		}, {} as any);
+			},
+			{} as any,
+		);
 
-		console.log("  🧹 FormData limpo:", JSON.stringify(cleanedFormData, null, 2));
+		console.log(
+			"  🧹 FormData limpo:",
+			JSON.stringify(cleanedFormData, null, 2),
+		);
 
 		onSubmit(cleanedFormData);
 	};
@@ -233,43 +262,66 @@ export function EquipmentForm({
 					<Button
 						onClick={() => {
 							console.log("🔘 Botão Atualizar/Salvar clicado!");
-							
+
 							// Converter valores string para number antes de validar
 							const currentValues = form.getValues();
-							
+
 							// Forçar conversão de campos numéricos
-							if (typeof currentValues.energyCostPerHour === 'string') {
-								form.setValue('energyCostPerHour', parseFloat(currentValues.energyCostPerHour) || 0);
+							if (typeof currentValues.energyCostPerHour === "string") {
+								form.setValue(
+									"energyCostPerHour",
+									Number.parseFloat(currentValues.energyCostPerHour) || 0,
+								);
 							}
-							if (typeof currentValues.maintenanceCostPerHour === 'string') {
-								form.setValue('maintenanceCostPerHour', parseFloat(currentValues.maintenanceCostPerHour) || 0);
+							if (typeof currentValues.maintenanceCostPerHour === "string") {
+								form.setValue(
+									"maintenanceCostPerHour",
+									Number.parseFloat(currentValues.maintenanceCostPerHour) || 0,
+								);
 							}
-							if (currentValues.maxWidth && typeof currentValues.maxWidth === 'string') {
-								form.setValue('maxWidth', parseFloat(currentValues.maxWidth) || 0);
+							if (
+								currentValues.maxWidth &&
+								typeof currentValues.maxWidth === "string"
+							) {
+								form.setValue(
+									"maxWidth",
+									Number.parseFloat(currentValues.maxWidth) || 0,
+								);
 							}
-							if (currentValues.maxHeight && typeof currentValues.maxHeight === 'string') {
-								form.setValue('maxHeight', parseFloat(currentValues.maxHeight) || 0);
+							if (
+								currentValues.maxHeight &&
+								typeof currentValues.maxHeight === "string"
+							) {
+								form.setValue(
+									"maxHeight",
+									Number.parseFloat(currentValues.maxHeight) || 0,
+								);
 							}
-							if (currentValues.maxThickness && typeof currentValues.maxThickness === 'string') {
-								form.setValue('maxThickness', parseFloat(currentValues.maxThickness) || 0);
+							if (
+								currentValues.maxThickness &&
+								typeof currentValues.maxThickness === "string"
+							) {
+								form.setValue(
+									"maxThickness",
+									Number.parseFloat(currentValues.maxThickness) || 0,
+								);
 							}
-							
+
 							console.log("🔢 Valores convertidos:", {
 								energyCostPerHour: form.getValues("energyCostPerHour"),
-								maintenanceCostPerHour: form.getValues("maintenanceCostPerHour"),
+								maintenanceCostPerHour: form.getValues(
+									"maintenanceCostPerHour",
+								),
 								tipos: {
 									energy: typeof form.getValues("energyCostPerHour"),
-									maintenance: typeof form.getValues("maintenanceCostPerHour")
-								}
+									maintenance: typeof form.getValues("maintenanceCostPerHour"),
+								},
 							});
-							
+
 							// Agora sim, submeter o formulário
-							form.handleSubmit(
-								handleSubmit,
-								(errors) => {
-									console.error("❌ Erros de validação:", errors);
-								}
-							)();
+							form.handleSubmit(handleSubmit, (errors) => {
+								console.error("❌ Erros de validação:", errors);
+							})();
 						}}
 						disabled={isLoading}
 					>

@@ -1,7 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Building2, Mail, MapPin, Phone, Plus, Save, Star, User, X } from "lucide-react";
+import {
+	ArrowLeft,
+	Building2,
+	Mail,
+	MapPin,
+	Phone,
+	Plus,
+	Save,
+	Star,
+	User,
+	X,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,24 +55,28 @@ const formSchema = z.object({
 	notes: z.string().optional(),
 	birthday: z.string().optional(),
 	// Endereço
-	address: z.object({
-		street: z.string().optional(),
-		number: z.string().optional(),
-		complement: z.string().optional(),
-		neighborhood: z.string().optional(),
-		city: z.string().optional(),
-		state: z.string().optional(),
-		zipCode: z.string().optional(),
-		country: z.string().default("Brasil"),
-	}).optional(),
+	address: z
+		.object({
+			street: z.string().optional(),
+			number: z.string().optional(),
+			complement: z.string().optional(),
+			neighborhood: z.string().optional(),
+			city: z.string().optional(),
+			state: z.string().optional(),
+			zipCode: z.string().optional(),
+			country: z.string().default("Brasil"),
+		})
+		.optional(),
 	// Redes sociais
-	socialMedia: z.object({
-		facebook: z.string().url("URL inválida").optional().or(z.literal("")),
-		instagram: z.string().url("URL inválida").optional().or(z.literal("")),
-		linkedin: z.string().url("URL inválida").optional().or(z.literal("")),
-		twitter: z.string().url("URL inválida").optional().or(z.literal("")),
-		website: z.string().url("URL inválida").optional().or(z.literal("")),
-	}).optional(),
+	socialMedia: z
+		.object({
+			facebook: z.string().url("URL inválida").optional().or(z.literal("")),
+			instagram: z.string().url("URL inválida").optional().or(z.literal("")),
+			linkedin: z.string().url("URL inválida").optional().or(z.literal("")),
+			twitter: z.string().url("URL inválida").optional().or(z.literal("")),
+			website: z.string().url("URL inválida").optional().or(z.literal("")),
+		})
+		.optional(),
 });
 
 interface ClientFormProps {
@@ -91,7 +106,9 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 			paymentTerm: client?.paymentTerm ?? 0,
 			discount: client?.discount ?? 0,
 			notes: client?.notes ?? "",
-			birthday: client?.birthday ? new Date(client.birthday).toISOString().split('T')[0] : "",
+			birthday: client?.birthday
+				? new Date(client.birthday).toISOString().split("T")[0]
+				: "",
 			address: {
 				street: client?.address?.street ?? "",
 				number: client?.address?.number ?? "",
@@ -124,18 +141,29 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 			source: values.source || undefined,
 			notes: values.notes || undefined,
 			rating: values.rating && values.rating > 0 ? values.rating : undefined,
-			creditLimit: values.creditLimit && values.creditLimit > 0 ? values.creditLimit : undefined,
-			paymentTerm: values.paymentTerm && values.paymentTerm > 0 ? values.paymentTerm : undefined,
-			discount: values.discount && values.discount > 0 ? values.discount : undefined,
+			creditLimit:
+				values.creditLimit && values.creditLimit > 0
+					? values.creditLimit
+					: undefined,
+			paymentTerm:
+				values.paymentTerm && values.paymentTerm > 0
+					? values.paymentTerm
+					: undefined,
+			discount:
+				values.discount && values.discount > 0 ? values.discount : undefined,
 			// Converter data para ISO datetime se preenchida
-			birthday: values.birthday ? new Date(values.birthday + "T00:00:00.000Z").toISOString() : undefined,
+			birthday: values.birthday
+				? new Date(values.birthday + "T00:00:00.000Z").toISOString()
+				: undefined,
 			// Limpar endereço se todos os campos estiverem vazios
-			address: Object.values(values.address || {}).some(v => v && v.trim()) 
-				? values.address 
+			address: Object.values(values.address || {}).some((v) => v && v.trim())
+				? values.address
 				: undefined,
 			// Limpar redes sociais se todos os campos estiverem vazios
-			socialMedia: Object.values(values.socialMedia || {}).some(v => v && v.trim()) 
-				? values.socialMedia 
+			socialMedia: Object.values(values.socialMedia || {}).some(
+				(v) => v && v.trim(),
+			)
+				? values.socialMedia
 				: undefined,
 		};
 
@@ -189,7 +217,11 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 												<FormLabel>Nome *</FormLabel>
 												<FormControl>
 													<Input
-														placeholder={clientType === "company" ? "Ex: Empresa XYZ Ltda" : "Ex: João da Silva"}
+														placeholder={
+															clientType === "company"
+																? "Ex: Empresa XYZ Ltda"
+																: "Ex: João da Silva"
+														}
 														{...field}
 													/>
 												</FormControl>
@@ -204,15 +236,22 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>Tipo *</FormLabel>
-												<Select onValueChange={field.onChange} defaultValue={field.value}>
+												<Select
+													onValueChange={field.onChange}
+													defaultValue={field.value}
+												>
 													<FormControl>
 														<SelectTrigger>
 															<SelectValue placeholder="Selecione o tipo" />
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														<SelectItem value="person">Pessoa Física</SelectItem>
-														<SelectItem value="company">Pessoa Jurídica</SelectItem>
+														<SelectItem value="person">
+															Pessoa Física
+														</SelectItem>
+														<SelectItem value="company">
+															Pessoa Jurídica
+														</SelectItem>
 													</SelectContent>
 												</Select>
 												<FormMessage />
@@ -226,7 +265,10 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>Status *</FormLabel>
-												<Select onValueChange={field.onChange} defaultValue={field.value}>
+												<Select
+													onValueChange={field.onChange}
+													defaultValue={field.value}
+												>
 													<FormControl>
 														<SelectTrigger>
 															<SelectValue placeholder="Selecione o status" />
@@ -269,10 +311,7 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 											<FormItem>
 												<FormLabel>Telefone</FormLabel>
 												<FormControl>
-													<Input
-														placeholder="(11) 99999-9999"
-														{...field}
-													/>
+													<Input placeholder="(11) 99999-9999" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -290,8 +329,8 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 												<FormControl>
 													<Input
 														placeholder={
-															clientType === "company" 
-																? "00.000.000/0001-00" 
+															clientType === "company"
+																? "00.000.000/0001-00"
 																: "000.000.000-00"
 														}
 														{...field}
@@ -310,10 +349,7 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 												<FormItem>
 													<FormLabel>Data de Nascimento</FormLabel>
 													<FormControl>
-														<Input
-															type="date"
-															{...field}
-														/>
+														<Input type="date" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -370,8 +406,10 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Avaliação</FormLabel>
-											<Select 
-												onValueChange={(value) => field.onChange(value ? Number(value) : undefined)}
+											<Select
+												onValueChange={(value) =>
+													field.onChange(value ? Number(value) : undefined)
+												}
 												defaultValue={field.value?.toString()}
 											>
 												<FormControl>
@@ -383,8 +421,12 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 													<SelectItem value="1">⭐ 1 - Ruim</SelectItem>
 													<SelectItem value="2">⭐⭐ 2 - Regular</SelectItem>
 													<SelectItem value="3">⭐⭐⭐ 3 - Bom</SelectItem>
-													<SelectItem value="4">⭐⭐⭐⭐ 4 - Muito Bom</SelectItem>
-													<SelectItem value="5">⭐⭐⭐⭐⭐ 5 - Excelente</SelectItem>
+													<SelectItem value="4">
+														⭐⭐⭐⭐ 4 - Muito Bom
+													</SelectItem>
+													<SelectItem value="5">
+														⭐⭐⭐⭐⭐ 5 - Excelente
+													</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -421,7 +463,13 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 													step="0.01"
 													placeholder="0,00"
 													{...field}
-													onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+													onChange={(e) =>
+														field.onChange(
+															e.target.value
+																? Number(e.target.value)
+																: undefined,
+														)
+													}
 												/>
 											</FormControl>
 											<FormDescription>Limite em reais (R$)</FormDescription>
@@ -441,7 +489,13 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 													type="number"
 													placeholder="30"
 													{...field}
-													onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+													onChange={(e) =>
+														field.onChange(
+															e.target.value
+																? Number(e.target.value)
+																: undefined,
+														)
+													}
 												/>
 											</FormControl>
 											<FormDescription>Prazo em dias</FormDescription>
@@ -463,10 +517,18 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 													max="100"
 													placeholder="0"
 													{...field}
-													onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+													onChange={(e) =>
+														field.onChange(
+															e.target.value
+																? Number(e.target.value)
+																: undefined,
+														)
+													}
 												/>
 											</FormControl>
-											<FormDescription>Desconto em percentual (%)</FormDescription>
+											<FormDescription>
+												Desconto em percentual (%)
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -628,7 +690,10 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 										<FormItem>
 											<FormLabel>Facebook</FormLabel>
 											<FormControl>
-												<Input placeholder="https://facebook.com/perfil" {...field} />
+												<Input
+													placeholder="https://facebook.com/perfil"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -642,7 +707,10 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 										<FormItem>
 											<FormLabel>Instagram</FormLabel>
 											<FormControl>
-												<Input placeholder="https://instagram.com/perfil" {...field} />
+												<Input
+													placeholder="https://instagram.com/perfil"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -656,7 +724,10 @@ export function ClientForm({ client, onSubmit, isLoading }: ClientFormProps) {
 										<FormItem>
 											<FormLabel>LinkedIn</FormLabel>
 											<FormControl>
-												<Input placeholder="https://linkedin.com/in/perfil" {...field} />
+												<Input
+													placeholder="https://linkedin.com/in/perfil"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>

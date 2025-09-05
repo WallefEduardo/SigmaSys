@@ -50,7 +50,8 @@ export const CacheKeys = {
 	UNITS_ALL_LEGACY: () => "units:all_legacy",
 	MATERIAL_LIST: (companyId: string, filters: string) =>
 		`materials:list:${companyId}:${Buffer.from(filters).toString("base64")}`,
-	MATERIAL_CATEGORIES: (companyId: string) => `materials:categories:${companyId}`,
+	MATERIAL_CATEGORIES: (companyId: string) =>
+		`materials:categories:${companyId}`,
 	MATERIAL_STATS: (companyId: string) => `materials:stats:${companyId}`,
 	EQUIPMENT_LIST: (companyId: string, filters: string) =>
 		`equipments:list:${companyId}:${Buffer.from(filters).toString("base64")}`,

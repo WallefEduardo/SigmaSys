@@ -650,12 +650,17 @@ export class BatchOperations {
 					if (skipErrors) {
 						for (let i = 0; i < batch.length; i++) {
 							try {
-								const createdItem = await (tx as any)[table].create({ data: batch[i] });
+								const createdItem = await (tx as any)[table].create({
+									data: batch[i],
+								});
 								results.push(createdItem);
 								created++;
 
 								if (enableCache) {
-									await BatchOperations.invalidateRelatedCache(table, createdItem);
+									await BatchOperations.invalidateRelatedCache(
+										table,
+										createdItem,
+									);
 								}
 							} catch (itemError) {
 								errors.push({

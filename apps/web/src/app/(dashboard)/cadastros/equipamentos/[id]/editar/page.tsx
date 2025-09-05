@@ -58,7 +58,7 @@ export default function EditarEquipamentoPage() {
 		console.log("🔄 Iniciando atualização do equipamento...");
 		console.log("📋 Dados recebidos do formulário:", data);
 		console.log("🆔 ID do equipamento:", equipmentId);
-		
+
 		try {
 			const result = await updateEquipment.mutateAsync({
 				id: equipmentId,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, Package, Edit } from "lucide-react";
+import { Edit, Package, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

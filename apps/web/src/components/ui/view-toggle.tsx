@@ -1,8 +1,8 @@
 "use client";
 
 import { Grid, List } from "lucide-react";
-import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 interface ViewToggleProps {
 	view: "card" | "table";

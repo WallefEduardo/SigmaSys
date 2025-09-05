@@ -29,21 +29,29 @@ const productFinishSchema = z.object({
 
 const checklistSchema = z
 	.object({
-		nodes: z.array(z.object({
-			id: z.string(),
-			type: z.string(),
-			data: z.any(),
-			position: z.object({
-				x: z.number(),
-				y: z.number(),
-			}),
-		})).optional(),
-		edges: z.array(z.object({
-			id: z.string(),
-			source: z.string(),
-			target: z.string(),
-			type: z.string().optional(),
-		})).optional(),
+		nodes: z
+			.array(
+				z.object({
+					id: z.string(),
+					type: z.string(),
+					data: z.any(),
+					position: z.object({
+						x: z.number(),
+						y: z.number(),
+					}),
+				}),
+			)
+			.optional(),
+		edges: z
+			.array(
+				z.object({
+					id: z.string(),
+					source: z.string(),
+					target: z.string(),
+					type: z.string().optional(),
+				}),
+			)
+			.optional(),
 		selections: z.any().optional(),
 	})
 	.optional();
@@ -192,9 +200,12 @@ export const productsRouter = router({
 			}
 
 			// Debug logs para verificar se o checklist está sendo retornado
-			console.log('🔍 GET PRODUCT BY ID - Product found:', product.name);
-			console.log('🔍 GET PRODUCT BY ID - Checklist data:', product.checklist);
-			console.log('🔍 GET PRODUCT BY ID - Checklist type:', typeof product.checklist);
+			console.log("🔍 GET PRODUCT BY ID - Product found:", product.name);
+			console.log("🔍 GET PRODUCT BY ID - Checklist data:", product.checklist);
+			console.log(
+				"🔍 GET PRODUCT BY ID - Checklist type:",
+				typeof product.checklist,
+			);
 
 			return product;
 		}),
@@ -234,7 +245,9 @@ export const productsRouter = router({
 			// Validar fórmulas dos materiais, equipamentos e processos
 			for (const material of input.materials) {
 				if (material.formula) {
-					const validation = await FormulaEngine.validateFormula(material.formula);
+					const validation = await FormulaEngine.validateFormula(
+						material.formula,
+					);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -246,7 +259,9 @@ export const productsRouter = router({
 
 			for (const equipment of input.equipments) {
 				if (equipment.formula) {
-					const validation = await FormulaEngine.validateFormula(equipment.formula);
+					const validation = await FormulaEngine.validateFormula(
+						equipment.formula,
+					);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -258,7 +273,9 @@ export const productsRouter = router({
 
 			for (const process of input.processes) {
 				if (process.formula) {
-					const validation = await FormulaEngine.validateFormula(process.formula);
+					const validation = await FormulaEngine.validateFormula(
+						process.formula,
+					);
 					if (!validation.valid) {
 						throw new TRPCError({
 							code: "BAD_REQUEST",
@@ -365,11 +382,11 @@ export const productsRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			const companyId = ensureCompanyAccess()(ctx);
 			const { id, materials, equipments, processes, finishes, ...data } = input;
-			
+
 			// Debug: Log dos dados recebidos
-			console.log('🔍 UPDATE PRODUCT - Input recebido:', input);
-			console.log('🔍 UPDATE PRODUCT - Checklist data:', input.checklist);
-			console.log('🔍 UPDATE PRODUCT - Data para update:', data);
+			console.log("🔍 UPDATE PRODUCT - Input recebido:", input);
+			console.log("🔍 UPDATE PRODUCT - Checklist data:", input.checklist);
+			console.log("🔍 UPDATE PRODUCT - Data para update:", data);
 
 			// Verificar se produto existe
 			const existingProduct = await ctx.db.product.findFirst({
@@ -396,12 +413,12 @@ export const productsRouter = router({
 
 			// Atualizar produto em transação
 			const product = await ctx.db.$transaction(async (tx) => {
-				console.log('🔍 UPDATE PRODUCT - Executando update com data:', data);
+				console.log("🔍 UPDATE PRODUCT - Executando update com data:", data);
 				const updatedProduct = await tx.product.update({
 					where: { id },
 					data,
 				});
-				console.log('🔍 UPDATE PRODUCT - Produto atualizado:', updatedProduct);
+				console.log("🔍 UPDATE PRODUCT - Produto atualizado:", updatedProduct);
 
 				// Atualizar materiais se fornecidos
 				if (materials !== undefined) {
@@ -743,7 +760,8 @@ export const productsRouter = router({
 
 			// Verificar se o produto está sendo usado em cotações ou pedidos
 			if (product._count.quoteItems > 0 || product._count.orderItems > 0) {
-				const totalUsage = product._count.quoteItems + product._count.orderItems;
+				const totalUsage =
+					product._count.quoteItems + product._count.orderItems;
 				throw new TRPCError({
 					code: "CONFLICT",
 					message: `Cannot delete product. It is being used in ${totalUsage} orders.`,

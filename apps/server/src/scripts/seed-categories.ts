@@ -11,11 +11,13 @@ async function seedCategories() {
 		// Buscar todas as empresas ativas
 		const companies = await prisma.company.findMany({
 			where: { active: true },
-			select: { id: true, name: true }
+			select: { id: true, name: true },
 		});
 
 		if (companies.length === 0) {
-			console.log("❌ Nenhuma empresa encontrada. Execute primeiro o seed de empresas.");
+			console.log(
+				"❌ Nenhuma empresa encontrada. Execute primeiro o seed de empresas.",
+			);
 			return;
 		}
 
@@ -34,11 +36,13 @@ async function seedCategories() {
 
 			// Verificar quantas categorias já existem para esta empresa
 			const existingCount = await prisma.materialCategory.count({
-				where: { companyId: company.id }
+				where: { companyId: company.id },
 			});
 
 			if (existingCount > 0) {
-				console.log(`ℹ️  Empresa já possui ${existingCount} categorias. Adicionando apenas novas...`);
+				console.log(
+					`ℹ️  Empresa já possui ${existingCount} categorias. Adicionando apenas novas...`,
+				);
 			}
 
 			const categoriesToInsert = [];
@@ -50,8 +54,8 @@ async function seedCategories() {
 						companyId: company.id,
 						name: category.name,
 						visualType: category.visualType,
-						substrate: category.substrate
-					}
+						substrate: category.substrate,
+					},
 				});
 
 				if (existing) {
@@ -72,7 +76,7 @@ async function seedCategories() {
 					requiredProcesses: category.requiredProcesses,
 					quizRules: category.quizRules,
 					priority: category.priority,
-					companyId: company.id
+					companyId: company.id,
 				});
 			}
 
@@ -81,22 +85,26 @@ async function seedCategories() {
 				const batchSize = 50;
 				for (let i = 0; i < categoriesToInsert.length; i += batchSize) {
 					const batch = categoriesToInsert.slice(i, i + batchSize);
-					
+
 					await prisma.materialCategory.createMany({
 						data: batch,
-						skipDuplicates: true
+						skipDuplicates: true,
 					});
 
 					totalInserted += batch.length;
-					console.log(`  ✅ Lote ${Math.floor(i / batchSize) + 1}: ${batch.length} categorias inseridas`);
+					console.log(
+						`  ✅ Lote ${Math.floor(i / batchSize) + 1}: ${batch.length} categorias inseridas`,
+					);
 				}
 			}
 
-			console.log(`  📈 Total para ${company.name}: ${categoriesToInsert.length} novas categorias`);
+			console.log(
+				`  📈 Total para ${company.name}: ${categoriesToInsert.length} novas categorias`,
+			);
 		}
 
 		// Estatísticas finais
-		console.log(`\n📊 Resumo da População:`);
+		console.log("\n📊 Resumo da População:");
 		console.log(`  ✅ Total inserido: ${totalInserted} categorias`);
 		console.log(`  ⏭️  Total pulado: ${totalSkipped} categorias (já existiam)`);
 		console.log(`  🏢 Empresas processadas: ${companies.length}`);
@@ -107,30 +115,31 @@ async function seedCategories() {
 
 		// Estatísticas por tipo
 		const statsByType = await prisma.materialCategory.groupBy({
-			by: ['visualType'],
+			by: ["visualType"],
 			_count: { visualType: true },
-			orderBy: { _count: { visualType: 'desc' } }
+			orderBy: { _count: { visualType: "desc" } },
 		});
 
-		console.log(`\n📈 Distribuição por tipo visual:`);
-		statsByType.forEach(stat => {
+		console.log("\n📈 Distribuição por tipo visual:");
+		statsByType.forEach((stat) => {
 			console.log(`  ${stat.visualType}: ${stat._count.visualType} categorias`);
 		});
 
 		// Categorias com maior prioridade
 		const topCategories = await prisma.materialCategory.findMany({
 			take: 10,
-			orderBy: { priority: 'desc' },
-			select: { name: true, priority: true, visualType: true }
+			orderBy: { priority: "desc" },
+			select: { name: true, priority: true, visualType: true },
 		});
 
-		console.log(`\n⭐ Top 10 categorias por prioridade:`);
+		console.log("\n⭐ Top 10 categorias por prioridade:");
 		topCategories.forEach((cat, index) => {
-			console.log(`  ${index + 1}. ${cat.name} (${cat.priority}) - ${cat.visualType}`);
+			console.log(
+				`  ${index + 1}. ${cat.name} (${cat.priority}) - ${cat.visualType}`,
+			);
 		});
 
-		console.log(`\n🎉 População de categorias concluída com sucesso!`);
-
+		console.log("\n🎉 População de categorias concluída com sucesso!");
 	} catch (error) {
 		console.error("❌ Erro durante a população de categorias:", error);
 		throw error;
@@ -143,10 +152,9 @@ async function seedCategories() {
 async function clearCategories() {
 	try {
 		console.log("🗑️  Limpando categorias existentes...");
-		
+
 		const deleteResult = await prisma.materialCategory.deleteMany({});
 		console.log(`✅ ${deleteResult.count} categorias removidas`);
-		
 	} catch (error) {
 		console.error("❌ Erro ao limpar categorias:", error);
 		throw error;
@@ -156,21 +164,20 @@ async function clearCategories() {
 // Executar seed
 async function main() {
 	const args = process.argv.slice(2);
-	
+
 	if (args.includes("--clear")) {
 		await clearCategories();
 	}
-	
+
 	if (!args.includes("--clear-only")) {
 		await seedCategories();
 	}
 }
 
 // Executar se chamado diretamente
-main()
-	.catch((error) => {
-		console.error("💥 Falha crítica:", error);
-		process.exit(1);
-	});
+main().catch((error) => {
+	console.error("💥 Falha crítica:", error);
+	process.exit(1);
+});
 
 export { seedCategories, clearCategories };

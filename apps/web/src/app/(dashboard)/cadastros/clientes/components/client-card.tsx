@@ -126,11 +126,11 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 	};
 
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="transition-shadow hover:shadow-md">
 			<CardHeader className="pb-3">
 				<div className="flex items-start justify-between">
 					<div className="flex-1">
-						<div className="flex items-center gap-3 mb-2">
+						<div className="mb-2 flex items-center gap-3">
 							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
 								{client.type === "company" ? (
 									<Building2 className="h-5 w-5 text-primary" />
@@ -138,9 +138,11 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 									<User className="h-5 w-5 text-primary" />
 								)}
 							</div>
-							<div className="flex-1 min-w-0">
-								<h3 className="font-semibold text-lg truncate">{client.name}</h3>
-								<div className="flex items-center gap-2 mt-1">
+							<div className="min-w-0 flex-1">
+								<h3 className="truncate font-semibold text-lg">
+									{client.name}
+								</h3>
+								<div className="mt-1 flex items-center gap-2">
 									<Badge
 										variant="outline"
 										className={getStatusColor(client.status)}
@@ -189,19 +191,19 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 				{/* Contact Information */}
 				<div className="space-y-2">
 					{client.email && (
-						<div className="flex items-center gap-2 text-sm text-muted-foreground">
+						<div className="flex items-center gap-2 text-muted-foreground text-sm">
 							<Mail className="h-4 w-4" />
 							<span className="truncate">{client.email}</span>
 						</div>
 					)}
 					{client.phone && (
-						<div className="flex items-center gap-2 text-sm text-muted-foreground">
+						<div className="flex items-center gap-2 text-muted-foreground text-sm">
 							<Phone className="h-4 w-4" />
 							<span>{client.phone}</span>
 						</div>
 					)}
 					{formatAddress(client.address) && (
-						<div className="flex items-center gap-2 text-sm text-muted-foreground">
+						<div className="flex items-center gap-2 text-muted-foreground text-sm">
 							<MapPin className="h-4 w-4" />
 							<span className="truncate">{formatAddress(client.address)}</span>
 						</div>
@@ -216,16 +218,18 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 							<span>{client.segment}</span>
 						</div>
 					)}
-					
+
 					{client.rating && (
 						<div className="flex items-center gap-2">
 							<div className="flex items-center">
 								<Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-								<span className="ml-1 text-sm font-medium">{client.rating}/5</span>
+								<span className="ml-1 font-medium text-sm">
+									{client.rating}/5
+								</span>
 							</div>
 						</div>
 					)}
-					
+
 					{client.creditLimit && (
 						<div className="flex items-center gap-2 text-sm">
 							<DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -235,8 +239,8 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 				</div>
 
 				{/* Stats */}
-				<div className="flex items-center justify-between pt-3 border-t">
-					<div className="flex items-center gap-4 text-sm text-muted-foreground">
+				<div className="flex items-center justify-between border-t pt-3">
+					<div className="flex items-center gap-4 text-muted-foreground text-sm">
 						<div className="flex items-center gap-1">
 							<FileText className="h-4 w-4" />
 							<span>{client._count.quotes}</span>
@@ -248,8 +252,8 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 							<span className="text-xs">pedidos</span>
 						</div>
 					</div>
-					
-					<div className="text-xs text-muted-foreground">
+
+					<div className="text-muted-foreground text-xs">
 						{client.birthday && (
 							<div className="flex items-center gap-1">
 								<Calendar className="h-3 w-3" />
@@ -263,7 +267,7 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 
 				{/* Tags */}
 				{client.tags && client.tags.length > 0 && (
-					<div className="flex flex-wrap gap-1 pt-2 border-t">
+					<div className="flex flex-wrap gap-1 border-t pt-2">
 						{client.tags.slice(0, 3).map((tag) => (
 							<Badge key={tag} variant="secondary" className="text-xs">
 								{tag}
@@ -280,9 +284,7 @@ export function ClientCard({ client, onEdit, onDeactivate }: ClientCardProps) {
 				{/* Action Buttons */}
 				<div className="flex gap-2 pt-2">
 					<Button variant="outline" size="sm" className="flex-1" asChild>
-						<Link href={`/cadastros/clientes/${client.id}`}>
-							Ver Detalhes
-						</Link>
+						<Link href={`/cadastros/clientes/${client.id}`}>Ver Detalhes</Link>
 					</Button>
 					<Button variant="outline" size="sm" asChild>
 						<Link href={`/cadastros/clientes/${client.id}/editar`}>

@@ -1,6 +1,6 @@
 import { config } from "dotenv";
-import { prisma } from "../src/client";
 import { AuthService } from "../src/auth";
+import { prisma } from "../src/client";
 import { seedPlans } from "./plans-seed";
 
 // Carregar variáveis de ambiente

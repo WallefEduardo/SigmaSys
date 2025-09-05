@@ -64,7 +64,7 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
 	const { data: installedConsumables = [], isLoading: loadingInstalled } =
 		api.equipments.getInstalledConsumables.useQuery(
 			{ equipmentId: equipmentId! },
-			{ enabled: !!equipmentId }
+			{ enabled: !!equipmentId },
 		);
 
 	// Usar estado local do formulário em vez de depender do backend
@@ -76,22 +76,28 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
 	// Carregar cabeças instaladas quando dados chegarem do backend
 	React.useEffect(() => {
 		if (equipmentId && installedConsumables.length > 0 && !headsLoaded) {
-			console.log("🔄 Carregando cabeças instaladas do backend:", installedConsumables);
-			
-			const headsFromBackend = installedConsumables.reduce((acc: any, ec: any) => {
-				const headId = `head_${ec.id}`;
-				acc[headId] = {
-					id: headId,
-					consumableId: ec.consumableId,
-					position: ec.position || "",
-					installationDate: ec.installationDate ? 
-						new Date(ec.installationDate).toISOString().split('T')[0] : 
-						new Date().toISOString().split('T')[0],
-					notes: ec.notes || ""
-				};
-				return acc;
-			}, {});
-			
+			console.log(
+				"🔄 Carregando cabeças instaladas do backend:",
+				installedConsumables,
+			);
+
+			const headsFromBackend = installedConsumables.reduce(
+				(acc: any, ec: any) => {
+					const headId = `head_${ec.id}`;
+					acc[headId] = {
+						id: headId,
+						consumableId: ec.consumableId,
+						position: ec.position || "",
+						installationDate: ec.installationDate
+							? new Date(ec.installationDate).toISOString().split("T")[0]
+							: new Date().toISOString().split("T")[0],
+						notes: ec.notes || "",
+					};
+					return acc;
+				},
+				{},
+			);
+
 			setValue("printHeads", headsFromBackend);
 			setHeadsLoaded(true);
 			console.log("✅ Cabeças carregadas:", headsFromBackend);
@@ -105,9 +111,21 @@ export function PrintHeadsTab({ form, equipmentId }: PrintHeadsTabProps) {
 		console.log("  📦 Loading disponíveis:", loadingPrintHeads);
 		console.log("  🔧 Cabeças instaladas do backend:", installedConsumables);
 		console.log("  📦 Loading instaladas:", loadingInstalled);
-		console.log("  🖨️ Cabeças no formulário (watchedPrintHeads):", watchedPrintHeads);
-		console.log("  📊 Número de cabeças no formulário:", Object.keys(watchedPrintHeads).length);
-	}, [availablePrintHeads, loadingPrintHeads, installedConsumables, loadingInstalled, watchedPrintHeads]);
+		console.log(
+			"  🖨️ Cabeças no formulário (watchedPrintHeads):",
+			watchedPrintHeads,
+		);
+		console.log(
+			"  📊 Número de cabeças no formulário:",
+			Object.keys(watchedPrintHeads).length,
+		);
+	}, [
+		availablePrintHeads,
+		loadingPrintHeads,
+		installedConsumables,
+		loadingInstalled,
+		watchedPrintHeads,
+	]);
 
 	// Estado para formulário de nova cabeça
 	const [showNewHeadForm, setShowNewHeadForm] = React.useState(false);

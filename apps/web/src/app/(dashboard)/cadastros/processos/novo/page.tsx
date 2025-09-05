@@ -23,9 +23,6 @@ export default function NovoProcessoPage() {
 	};
 
 	return (
-		<ProcessForm 
-			onSubmit={handleSubmit} 
-			isLoading={createProcess.isPending}
-		/>
+		<ProcessForm onSubmit={handleSubmit} isLoading={createProcess.isPending} />
 	);
 }

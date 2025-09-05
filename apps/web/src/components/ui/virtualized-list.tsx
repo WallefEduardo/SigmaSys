@@ -26,10 +26,10 @@ export function VirtualizedList<T = any>({
 	loading = false,
 	renderItem,
 }: VirtualizedListProps<T>) {
-	const [visibleItems, setVisibleItems] = React.useState(() => 
-		items.length > threshold ? items.slice(0, threshold) : items
+	const [visibleItems, setVisibleItems] = React.useState(() =>
+		items.length > threshold ? items.slice(0, threshold) : items,
 	);
-	
+
 	const [showingAll, setShowingAll] = React.useState(items.length <= threshold);
 
 	React.useEffect(() => {
@@ -44,7 +44,7 @@ export function VirtualizedList<T = any>({
 
 	const loadMore = React.useCallback(() => {
 		if (showingAll) return;
-		
+
 		const nextBatch = Math.min(visibleItems.length + threshold, items.length);
 		setVisibleItems(items.slice(0, nextBatch));
 		setShowingAll(nextBatch >= items.length);
@@ -74,27 +74,25 @@ export function VirtualizedList<T = any>({
 
 	return (
 		<div className={cn("space-y-4", className)}>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{visibleItems.map((item, index) => (
-					<div key={index}>
-						{renderItem(item, index)}
-					</div>
+					<div key={index}>{renderItem(item, index)}</div>
 				))}
 			</div>
-			
+
 			{!showingAll && (
 				<div className="flex justify-center pt-4">
 					<button
 						onClick={loadMore}
-						className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors"
+						className="rounded-md bg-secondary px-4 py-2 text-secondary-foreground transition-colors hover:bg-secondary/80"
 					>
 						Carregar mais ({items.length - visibleItems.length} restantes)
 					</button>
 				</div>
 			)}
-			
+
 			{items.length > threshold && showingAll && (
-				<div className="text-center text-muted-foreground text-sm pt-4">
+				<div className="pt-4 text-center text-muted-foreground text-sm">
 					Mostrando todos os {items.length} itens
 				</div>
 			)}
@@ -119,9 +117,7 @@ export function VirtualizedMaterialList({
 	loading = false,
 }: VirtualizedMaterialListProps) {
 	const renderMaterialCard = React.useCallback(
-		(item: any, index: number) => (
-			<CardComponent key={index} material={item} />
-		),
+		(item: any, index: number) => <CardComponent key={index} material={item} />,
 		[CardComponent],
 	);
 

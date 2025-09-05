@@ -1,29 +1,36 @@
 "use client";
 
-import { ArrowLeft, Edit, Calculator, CheckSquare, Package, Calendar } from "lucide-react";
-import { useRouter, useParams } from "next/navigation";
+import {
+	ArrowLeft,
+	Calculator,
+	Calendar,
+	CheckSquare,
+	Edit,
+	Package,
+} from "lucide-react";
 import Link from "next/link";
-import { api } from "@/lib/trpc";
+import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/trpc";
 // import { Separator } from "@/components/ui/separator";
 
 export default function VisualizarProdutoPage() {
 	const router = useRouter();
 	const params = useParams();
 	const productId = params?.id as string;
-	
+
 	// Buscar dados do produto
-	const { data: productData, isLoading: isLoadingProduct } = api.products.getById.useQuery(
-		{ id: productId },
-		{ enabled: !!productId }
-	);
+	const { data: productData, isLoading: isLoadingProduct } =
+		api.products.getById.useQuery({ id: productId }, { enabled: !!productId });
 
 	const getComplexityColor = (complexity: string) => {
 		const colors = {
-			simple: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-			medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+			simple:
+				"bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+			medium:
+				"bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
 			complex: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 		};
 		return colors[complexity as keyof typeof colors] || colors.medium;
@@ -32,7 +39,7 @@ export default function VisualizarProdutoPage() {
 	const getComplexityLabel = (complexity: string) => {
 		const labels = {
 			simple: "Simples",
-			medium: "Médio", 
+			medium: "Médio",
 			complex: "Complexo",
 		};
 		return labels[complexity as keyof typeof labels] || "Médio";
@@ -42,7 +49,7 @@ export default function VisualizarProdutoPage() {
 		return (
 			<div className="flex items-center justify-center py-12">
 				<div className="text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+					<div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
 					<p className="text-muted-foreground">Carregando produto...</p>
 				</div>
 			</div>
@@ -53,8 +60,14 @@ export default function VisualizarProdutoPage() {
 		return (
 			<div className="flex items-center justify-center py-12">
 				<div className="text-center">
-					<p className="font-semibold text-destructive text-lg">Produto não encontrado</p>
-					<Button onClick={() => router.back()} variant="outline" className="mt-4">
+					<p className="font-semibold text-destructive text-lg">
+						Produto não encontrado
+					</p>
+					<Button
+						onClick={() => router.back()}
+						variant="outline"
+						className="mt-4"
+					>
 						Voltar
 					</Button>
 				</div>
@@ -75,11 +88,12 @@ export default function VisualizarProdutoPage() {
 						<h1 className="font-bold text-3xl">{productData.name}</h1>
 						<p className="text-muted-foreground">
 							{productData.code && `${productData.code} • `}
-							Criado em {new Date(productData.createdAt).toLocaleDateString('pt-BR')}
+							Criado em{" "}
+							{new Date(productData.createdAt).toLocaleDateString("pt-BR")}
 						</p>
 					</div>
 				</div>
-				
+
 				<Button asChild>
 					<Link href={`/cadastros/produtos/${productId}/editar`}>
 						<Edit className="mr-2 h-4 w-4" />
@@ -89,7 +103,7 @@ export default function VisualizarProdutoPage() {
 			</div>
 
 			{/* Main Content */}
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 				{/* Informações Básicas */}
 				<Card className="lg:col-span-2">
 					<CardHeader>
@@ -99,44 +113,54 @@ export default function VisualizarProdutoPage() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 							<div>
-								<label className="text-sm font-medium text-muted-foreground">Nome</label>
+								<label className="font-medium text-muted-foreground text-sm">
+									Nome
+								</label>
 								<p className="text-sm">{productData.name}</p>
 							</div>
-							
+
 							{productData.code && (
 								<div>
-									<label className="text-sm font-medium text-muted-foreground">Código</label>
+									<label className="font-medium text-muted-foreground text-sm">
+										Código
+									</label>
 									<p className="text-sm">{productData.code}</p>
 								</div>
 							)}
-							
+
 							{productData.category && (
 								<div>
-									<label className="text-sm font-medium text-muted-foreground">Categoria</label>
+									<label className="font-medium text-muted-foreground text-sm">
+										Categoria
+									</label>
 									<div className="mt-1">
 										<Badge variant="outline">{productData.category}</Badge>
 									</div>
 								</div>
 							)}
-							
+
 							<div>
-								<label className="text-sm font-medium text-muted-foreground">Complexidade</label>
+								<label className="font-medium text-muted-foreground text-sm">
+									Complexidade
+								</label>
 								<div className="mt-1">
-									<Badge className={getComplexityColor('medium')}>
-										{getComplexityLabel('medium')}
+									<Badge className={getComplexityColor("medium")}>
+										{getComplexityLabel("medium")}
 									</Badge>
 								</div>
 							</div>
 						</div>
-						
+
 						{productData.description && (
 							<>
 								<hr className="border-border" />
 								<div>
-									<label className="text-sm font-medium text-muted-foreground">Descrição</label>
-									<p className="text-sm mt-1">{productData.description}</p>
+									<label className="font-medium text-muted-foreground text-sm">
+										Descrição
+									</label>
+									<p className="mt-1 text-sm">{productData.description}</p>
 								</div>
 							</>
 						)}
@@ -155,8 +179,8 @@ export default function VisualizarProdutoPage() {
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<div className="bg-muted/50 rounded p-3">
-									<code className="text-xs font-mono break-all">
+								<div className="rounded bg-muted/50 p-3">
+									<code className="break-all font-mono text-xs">
 										{productData.formula}
 									</code>
 								</div>
@@ -168,13 +192,19 @@ export default function VisualizarProdutoPage() {
 					{productData.margin && (
 						<Card>
 							<CardHeader>
-								<CardTitle className="text-base">Configuração de Preços</CardTitle>
+								<CardTitle className="text-base">
+									Configuração de Preços
+								</CardTitle>
 							</CardHeader>
 							<CardContent className="space-y-3">
 								{productData.margin.markup && (
 									<div className="flex justify-between">
-										<span className="text-sm text-muted-foreground">Markup:</span>
-										<span className="text-sm font-medium">{productData.margin.markup}x</span>
+										<span className="text-muted-foreground text-sm">
+											Markup:
+										</span>
+										<span className="font-medium text-sm">
+											{productData.margin.markup}x
+										</span>
 									</div>
 								)}
 							</CardContent>
@@ -190,13 +220,14 @@ export default function VisualizarProdutoPage() {
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
-							{productData.checklist && productData.checklist.nodes?.length > 0 ? (
+							{productData.checklist &&
+							productData.checklist.nodes?.length > 0 ? (
 								<div className="space-y-2">
 									<div className="flex items-center gap-2 text-green-600">
 										<CheckSquare className="h-4 w-4" />
-										<span className="text-sm font-medium">Configurado</span>
+										<span className="font-medium text-sm">Configurado</span>
 									</div>
-									<p className="text-xs text-muted-foreground">
+									<p className="text-muted-foreground text-xs">
 										{productData.checklist.nodes.length} pergunta(s) criada(s)
 									</p>
 								</div>
@@ -219,13 +250,23 @@ export default function VisualizarProdutoPage() {
 						</CardHeader>
 						<CardContent className="space-y-3">
 							<div className="flex justify-between">
-								<span className="text-sm text-muted-foreground">Criado em:</span>
-								<span className="text-sm">{new Date(productData.createdAt).toLocaleDateString('pt-BR')}</span>
+								<span className="text-muted-foreground text-sm">
+									Criado em:
+								</span>
+								<span className="text-sm">
+									{new Date(productData.createdAt).toLocaleDateString("pt-BR")}
+								</span>
 							</div>
 							{productData.updatedAt && (
 								<div className="flex justify-between">
-									<span className="text-sm text-muted-foreground">Atualizado em:</span>
-									<span className="text-sm">{new Date(productData.updatedAt).toLocaleDateString('pt-BR')}</span>
+									<span className="text-muted-foreground text-sm">
+										Atualizado em:
+									</span>
+									<span className="text-sm">
+										{new Date(productData.updatedAt).toLocaleDateString(
+											"pt-BR",
+										)}
+									</span>
 								</div>
 							)}
 						</CardContent>

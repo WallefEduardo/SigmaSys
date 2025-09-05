@@ -1,12 +1,22 @@
 "use client";
 
-import { Calculator, CheckSquare, Edit, Filter, Package, Plus, Search, Trash2 } from "lucide-react";
+import {
+	Calculator,
+	CheckSquare,
+	Edit,
+	Filter,
+	Package,
+	Plus,
+	Search,
+	Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,11 +27,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ViewToggle } from "@/components/ui/view-toggle";
-import { useConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { api } from "@/lib/trpc";
 import { formatCurrency } from "@/lib/utils/currency";
-
 
 export default function ProdutosPage() {
 	const router = useRouter();
@@ -47,28 +55,29 @@ export default function ProdutosPage() {
 	const { data: categoriesData } = api.products.categories.useQuery();
 
 	// Mutation para deletar produto
-	const { mutateAsync: deleteProduct, isLoading: isDeleting } = api.products.delete.useMutation({
-		onSuccess: () => {
-			refetch();
-		},
-	});
+	const { mutateAsync: deleteProduct, isLoading: isDeleting } =
+		api.products.delete.useMutation({
+			onSuccess: () => {
+				refetch();
+			},
+		});
 
 	const products = productsData?.products || [];
 	const categories = Array.isArray(categoriesData) ? categoriesData : [];
-	
-	// Debug logs removidos
 
+	// Debug logs removidos
 
 	// Debounce para busca
 	const debouncedSearch = useDebounce((term: string) => {
 		// A busca é reativa através do useQuery
 	}, 300);
 
-	// Filtrar produtos no frontend 
+	// Filtrar produtos no frontend
 	const filteredProducts = products.filter((product) => {
 		const matchesComplexity =
-			complexityFilter === "all" || (product.complexity || 'medium') === complexityFilter;
-		return matchesComplexity && (product.active !== false); // Default true se não existir
+			complexityFilter === "all" ||
+			(product.complexity || "medium") === complexityFilter;
+		return matchesComplexity && product.active !== false; // Default true se não existir
 	});
 
 	const formatCurrency = (value: number) => {
@@ -119,8 +128,8 @@ export default function ProdutosPage() {
 			key: "complexity",
 			label: "Complexidade",
 			render: (value: string, item: any) => (
-				<Badge className={getComplexityColor(value || 'medium')}>
-					{getComplexityLabel(value || 'medium')}
+				<Badge className={getComplexityColor(value || "medium")}>
+					{getComplexityLabel(value || "medium")}
 				</Badge>
 			),
 		},
@@ -128,7 +137,9 @@ export default function ProdutosPage() {
 			key: "createdAt",
 			label: "Data de Criação",
 			render: (value: string) => (
-				<div className="text-sm">{new Date(value).toLocaleDateString('pt-BR')}</div>
+				<div className="text-sm">
+					{new Date(value).toLocaleDateString("pt-BR")}
+				</div>
 			),
 		},
 		{
@@ -139,10 +150,12 @@ export default function ProdutosPage() {
 					{value && (value.nodes?.length > 0 || value.length > 0) ? (
 						<>
 							<CheckSquare className="h-3 w-3 text-green-600" />
-							<span className="text-xs text-green-600">Configurado</span>
+							<span className="text-green-600 text-xs">Configurado</span>
 						</>
 					) : (
-						<span className="text-muted-foreground text-xs">Não configurado</span>
+						<span className="text-muted-foreground text-xs">
+							Não configurado
+						</span>
 					)}
 				</div>
 			),
@@ -183,16 +196,19 @@ export default function ProdutosPage() {
 			try {
 				await deleteProduct({ id: product.id });
 			} catch (error: any) {
-				console.error('Erro ao deletar produto:', error);
-				
+				console.error("Erro ao deletar produto:", error);
+
 				// Mostrar erro específico para o usuário
 				let errorMessage = "Erro ao deletar produto";
-				if (error.message?.includes("being used in") && error.message?.includes("orders")) {
+				if (
+					error.message?.includes("being used in") &&
+					error.message?.includes("orders")
+				) {
 					const match = error.message.match(/being used in (\d+) orders?/);
 					const count = match ? match[1] : "alguns";
 					errorMessage = `Não é possível deletar "${product.name}" porque está sendo usado em ${count} pedido${count !== "1" ? "s" : ""}.`;
 				}
-				
+
 				// Mostrar dialog de erro
 				await confirm({
 					title: "Não foi possível deletar",
@@ -273,7 +289,13 @@ export default function ProdutosPage() {
 					</CardHeader>
 					<CardContent>
 						<div className="font-bold text-2xl text-blue-600">
-							{filteredProducts.filter((p) => p.checklist && (p.checklist.nodes?.length > 0 || p.checklist.length > 0)).length}
+							{
+								filteredProducts.filter(
+									(p) =>
+										p.checklist &&
+										(p.checklist.nodes?.length > 0 || p.checklist.length > 0),
+								).length
+							}
 						</div>
 					</CardContent>
 				</Card>
@@ -400,8 +422,12 @@ export default function ProdutosPage() {
 													)}
 												</div>
 											</div>
-											<Badge className={getComplexityColor(product.complexity || 'medium')}>
-												{getComplexityLabel(product.complexity || 'medium')}
+											<Badge
+												className={getComplexityColor(
+													product.complexity || "medium",
+												)}
+											>
+												{getComplexityLabel(product.complexity || "medium")}
 											</Badge>
 										</div>
 										{product.description && (
@@ -419,7 +445,9 @@ export default function ProdutosPage() {
 													Criado em:
 												</span>
 												<span className="text-sm">
-													{new Date(product.createdAt).toLocaleDateString('pt-BR')}
+													{new Date(product.createdAt).toLocaleDateString(
+														"pt-BR",
+													)}
 												</span>
 											</div>
 
@@ -451,26 +479,27 @@ export default function ProdutosPage() {
 										)}
 
 										{/* Checklist Status */}
-										{product.checklist && (product.checklist.nodes?.length > 0) && (
-											<div className="rounded bg-green-50 dark:bg-green-950/20 p-3">
-												<div className="flex items-center gap-2">
-													<CheckSquare className="h-3 w-3 text-green-600" />
-													<span className="text-green-600 font-medium text-xs">
-														CHECKLIST CONFIGURADO
-													</span>
+										{product.checklist &&
+											product.checklist.nodes?.length > 0 && (
+												<div className="rounded bg-green-50 p-3 dark:bg-green-950/20">
+													<div className="flex items-center gap-2">
+														<CheckSquare className="h-3 w-3 text-green-600" />
+														<span className="font-medium text-green-600 text-xs">
+															CHECKLIST CONFIGURADO
+														</span>
+													</div>
+													<div className="mt-1 text-green-600 text-xs">
+														{product.checklist.nodes.length} perguntas criadas
+													</div>
 												</div>
-												<div className="mt-1 text-xs text-green-600">
-													{product.checklist.nodes.length} perguntas criadas
-												</div>
-											</div>
-										)}
+											)}
 									</CardContent>
 
 									<div className="p-6 pt-3">
 										<div className="flex justify-end gap-2">
-											<Button 
-												variant="outline" 
-												size="sm" 
+											<Button
+												variant="outline"
+												size="sm"
 												asChild
 												title="Visualizar"
 											>
@@ -478,9 +507,9 @@ export default function ProdutosPage() {
 													<Package className="h-4 w-4" />
 												</Link>
 											</Button>
-											<Button 
-												variant="outline" 
-												size="sm" 
+											<Button
+												variant="outline"
+												size="sm"
 												asChild
 												title="Editar"
 											>
@@ -488,8 +517,8 @@ export default function ProdutosPage() {
 													<Edit className="h-4 w-4" />
 												</Link>
 											</Button>
-											<Button 
-												variant="outline" 
+											<Button
+												variant="outline"
 												size="sm"
 												onClick={() => handleDelete(product)}
 												title="Deletar"

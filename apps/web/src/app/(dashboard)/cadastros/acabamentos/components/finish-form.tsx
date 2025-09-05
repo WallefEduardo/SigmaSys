@@ -1,20 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-	ArrowLeft, 
-	ArrowRight, 
-	ChevronLeft, 
+import {
+	ArrowLeft,
+	ArrowRight,
+	ChevronLeft,
 	ChevronRight,
-	DollarSign, 
+	DollarSign,
 	Info,
-	Layers, 
-	Package, 
-	Plus, 
-	Save, 
+	Layers,
+	Package,
+	Plus,
+	Save,
 	Settings,
-	Trash2, 
-	X 
+	Trash2,
+	X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -48,29 +48,42 @@ import { formatCurrency } from "@/lib/utils/currency";
 
 const formSchema = z.object({
 	// Aba 1: Informações Básicas
-	name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(200, "Nome não pode ter mais que 200 caracteres"),
+	name: z
+		.string()
+		.min(2, "Nome deve ter pelo menos 2 caracteres")
+		.max(200, "Nome não pode ter mais que 200 caracteres"),
 	description: z.string().optional(),
 	type: z.enum(["simple", "composed"]),
 	unit: z.string(),
-	baseCost: z.coerce.number().min(0, "Custo base deve ser maior ou igual a zero"),
+	baseCost: z.coerce
+		.number()
+		.min(0, "Custo base deve ser maior ou igual a zero"),
 	margin: z.coerce.number().min(1, "Margem deve ser maior que 1"),
 	defaultWidth: z.coerce.number().min(0).optional(),
 	defaultHeight: z.coerce.number().min(0).optional(),
 	tags: z.array(z.string()).default([]),
-	
+
 	// Aba 2: Processos
-	processes: z.array(z.object({
-		processId: z.string(),
-		timeNeeded: z.coerce.number().min(0.01),
-		unit: z.string(),
-	})).default([]),
-	
+	processes: z
+		.array(
+			z.object({
+				processId: z.string(),
+				timeNeeded: z.coerce.number().min(0.01),
+				unit: z.string(),
+			}),
+		)
+		.default([]),
+
 	// Aba 3: Matérias-Primas
-	materials: z.array(z.object({
-		materialId: z.string(),
-		quantity: z.coerce.number().min(0.01),
-		unit: z.string(),
-	})).default([]),
+	materials: z
+		.array(
+			z.object({
+				materialId: z.string(),
+				quantity: z.coerce.number().min(0.01),
+				unit: z.string(),
+			}),
+		)
+		.default([]),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -91,8 +104,12 @@ const units = [
 export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 	const router = useRouter();
 	const [currentTab, setCurrentTab] = useState("info");
-	const [selectedProcesses, setSelectedProcesses] = useState<any[]>(finish?.composition?.processes || []);
-	const [selectedMaterials, setSelectedMaterials] = useState<any[]>(finish?.composition?.materials || []);
+	const [selectedProcesses, setSelectedProcesses] = useState<any[]>(
+		finish?.composition?.processes || [],
+	);
+	const [selectedMaterials, setSelectedMaterials] = useState<any[]>(
+		finish?.composition?.materials || [],
+	);
 	const [tagInput, setTagInput] = useState("");
 
 	// Buscar dados disponíveis
@@ -144,8 +161,8 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 	// Adicionar processo
 	const addProcess = (processId: string) => {
-		const process = availableProcesses.find(p => p.id === processId);
-		if (process && !selectedProcesses.find(p => p.processId === processId)) {
+		const process = availableProcesses.find((p) => p.id === processId);
+		if (process && !selectedProcesses.find((p) => p.processId === processId)) {
 			const newProcess = {
 				processId,
 				timeNeeded: 1,
@@ -159,15 +176,18 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 	// Remover processo
 	const removeProcess = (processId: string) => {
-		const updated = selectedProcesses.filter(p => p.processId !== processId);
+		const updated = selectedProcesses.filter((p) => p.processId !== processId);
 		setSelectedProcesses(updated);
 		form.setValue("processes", updated);
 	};
 
 	// Adicionar material
 	const addMaterial = (materialId: string) => {
-		const material = availableMaterials.find(m => m.id === materialId);
-		if (material && !selectedMaterials.find(m => m.materialId === materialId)) {
+		const material = availableMaterials.find((m) => m.id === materialId);
+		if (
+			material &&
+			!selectedMaterials.find((m) => m.materialId === materialId)
+		) {
 			const newMaterial = {
 				materialId,
 				quantity: 1,
@@ -181,7 +201,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 	// Remover material
 	const removeMaterial = (materialId: string) => {
-		const updated = selectedMaterials.filter(m => m.materialId !== materialId);
+		const updated = selectedMaterials.filter(
+			(m) => m.materialId !== materialId,
+		);
 		setSelectedMaterials(updated);
 		form.setValue("materials", updated);
 	};
@@ -197,7 +219,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 	// Remover tag
 	const removeTag = (tag: string) => {
-		const newTags = watchTags.filter(t => t !== tag);
+		const newTags = watchTags.filter((t) => t !== tag);
 		form.setValue("tags", newTags);
 	};
 
@@ -205,8 +227,14 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 		const formData = {
 			...values,
 			description: values.description || undefined,
-			defaultWidth: values.defaultWidth && values.defaultWidth > 0 ? values.defaultWidth : undefined,
-			defaultHeight: values.defaultHeight && values.defaultHeight > 0 ? values.defaultHeight : undefined,
+			defaultWidth:
+				values.defaultWidth && values.defaultWidth > 0
+					? values.defaultWidth
+					: undefined,
+			defaultHeight:
+				values.defaultHeight && values.defaultHeight > 0
+					? values.defaultHeight
+					: undefined,
 			composition: {
 				materials: selectedMaterials.length > 0 ? selectedMaterials : undefined,
 				processes: selectedProcesses.length > 0 ? selectedProcesses : undefined,
@@ -244,11 +272,17 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 								<Info className="h-4 w-4" />
 								Informações
 							</TabsTrigger>
-							<TabsTrigger value="processes" className="flex items-center gap-2">
+							<TabsTrigger
+								value="processes"
+								className="flex items-center gap-2"
+							>
 								<Settings className="h-4 w-4" />
 								Processos
 							</TabsTrigger>
-							<TabsTrigger value="materials" className="flex items-center gap-2">
+							<TabsTrigger
+								value="materials"
+								className="flex items-center gap-2"
+							>
 								<Package className="h-4 w-4" />
 								Matérias-Primas
 							</TabsTrigger>
@@ -273,9 +307,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 												<FormItem>
 													<FormLabel>Nome do Acabamento *</FormLabel>
 													<FormControl>
-														<Input 
+														<Input
 															placeholder="Ex: Laminação Brilho, Verniz UV..."
-															{...field} 
+															{...field}
 														/>
 													</FormControl>
 													<FormMessage />
@@ -290,7 +324,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 												<FormItem>
 													<FormLabel>Descrição</FormLabel>
 													<FormControl>
-														<Textarea 
+														<Textarea
 															placeholder="Descreva as características do acabamento..."
 															rows={3}
 															{...field}
@@ -311,7 +345,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Tipo de Acabamento *</FormLabel>
-														<Select onValueChange={field.onChange} defaultValue={field.value}>
+														<Select
+															onValueChange={field.onChange}
+															defaultValue={field.value}
+														>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Selecione o tipo" />
@@ -319,11 +356,15 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 															</FormControl>
 															<SelectContent>
 																<SelectItem value="simple">Simples</SelectItem>
-																<SelectItem value="composed">Composto</SelectItem>
+																<SelectItem value="composed">
+																	Composto
+																</SelectItem>
 															</SelectContent>
 														</Select>
 														<FormDescription>
-															{watchType === "simple" ? "Acabamento sem composição de materiais/processos" : "Acabamento com composição personalizada"}
+															{watchType === "simple"
+																? "Acabamento sem composição de materiais/processos"
+																: "Acabamento com composição personalizada"}
 														</FormDescription>
 														<FormMessage />
 													</FormItem>
@@ -336,7 +377,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Unidade de Medida *</FormLabel>
-														<Select onValueChange={field.onChange} defaultValue={field.value}>
+														<Select
+															onValueChange={field.onChange}
+															defaultValue={field.value}
+														>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Selecione a unidade" />
@@ -344,7 +388,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 															</FormControl>
 															<SelectContent>
 																{units.map((unit) => (
-																	<SelectItem key={unit.value} value={unit.value}>
+																	<SelectItem
+																		key={unit.value}
+																		value={unit.value}
+																	>
 																		{unit.label}
 																	</SelectItem>
 																))}
@@ -365,7 +412,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													<FormItem>
 														<FormLabel>Largura Padrão (cm)</FormLabel>
 														<FormControl>
-															<Input 
+															<Input
 																type="number"
 																step="0.01"
 																min="0"
@@ -388,7 +435,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													<FormItem>
 														<FormLabel>Altura Padrão (cm)</FormLabel>
 														<FormControl>
-															<Input 
+															<Input
 																type="number"
 																step="0.01"
 																min="0"
@@ -427,10 +474,14 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 											{watchTags.length > 0 && (
 												<div className="flex flex-wrap gap-2">
 													{watchTags.map((tag) => (
-														<Badge key={tag} variant="secondary" className="flex items-center gap-1">
+														<Badge
+															key={tag}
+															variant="secondary"
+															className="flex items-center gap-1"
+														>
 															{tag}
-															<X 
-																className="h-3 w-3 cursor-pointer hover:text-destructive" 
+															<X
+																className="h-3 w-3 cursor-pointer hover:text-destructive"
 																onClick={() => removeTag(tag)}
 															/>
 														</Badge>
@@ -458,8 +509,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													<FormLabel>Custo Base *</FormLabel>
 													<FormControl>
 														<div className="relative">
-															<span className="absolute left-3 top-2.5 text-muted-foreground">R$</span>
-															<Input 
+															<span className="absolute top-2.5 left-3 text-muted-foreground">
+																R$
+															</span>
+															<Input
 																type="number"
 																step="0.01"
 																min="0"
@@ -485,7 +538,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													<FormLabel>Margem de Lucro *</FormLabel>
 													<FormControl>
 														<div className="relative">
-															<Input 
+															<Input
 																type="number"
 																step="0.1"
 																min="1"
@@ -493,7 +546,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 																className="pr-8"
 																{...field}
 															/>
-															<span className="absolute right-3 top-2.5 text-muted-foreground">x</span>
+															<span className="absolute top-2.5 right-3 text-muted-foreground">
+																x
+															</span>
 														</div>
 													</FormControl>
 													<FormDescription>
@@ -507,20 +562,28 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 										{/* Preview de Preço */}
 										{watchBaseCost > 0 && watchMargin >= 1 && (
 											<div className="rounded-lg bg-muted/50 p-4">
-												<h4 className="font-medium text-sm mb-3">Preview de Preço</h4>
+												<h4 className="mb-3 font-medium text-sm">
+													Preview de Preço
+												</h4>
 												<div className="space-y-2 text-sm">
 													<div className="flex justify-between">
-														<span className="text-muted-foreground">Custo base:</span>
+														<span className="text-muted-foreground">
+															Custo base:
+														</span>
 														<span>{formatCurrency(watchBaseCost)}</span>
 													</div>
 													<div className="flex justify-between">
-														<span className="text-muted-foreground">Margem:</span>
+														<span className="text-muted-foreground">
+															Margem:
+														</span>
 														<span>{watchMargin}x</span>
 													</div>
 													<Separator />
 													<div className="flex justify-between font-semibold">
 														<span>Preço final:</span>
-														<span className="text-primary">{formatCurrency(finalPrice)}</span>
+														<span className="text-primary">
+															{formatCurrency(finalPrice)}
+														</span>
 													</div>
 												</div>
 											</div>
@@ -539,7 +602,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 										Processos do Acabamento
 									</CardTitle>
 									<p className="text-muted-foreground text-sm">
-										{watchType === "simple" ? "Acabamentos simples não usam composição de processos" : "Selecione os processos necessários para este acabamento"}
+										{watchType === "simple"
+											? "Acabamentos simples não usam composição de processos"
+											: "Selecione os processos necessários para este acabamento"}
 									</p>
 								</CardHeader>
 								<CardContent className="space-y-4">
@@ -553,10 +618,17 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													</SelectTrigger>
 													<SelectContent>
 														{availableProcesses
-															.filter(process => !selectedProcesses.find(p => p.processId === process.id))
+															.filter(
+																(process) =>
+																	!selectedProcesses.find(
+																		(p) => p.processId === process.id,
+																	),
+															)
 															.map((process) => (
 																<SelectItem key={process.id} value={process.id}>
-																	{process.name} - {formatCurrency(process.costPerHour)}/{process.timeUnit}
+																	{process.name} -{" "}
+																	{formatCurrency(process.costPerHour)}/
+																	{process.timeUnit}
 																</SelectItem>
 															))}
 													</SelectContent>
@@ -566,16 +638,28 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 											{/* Lista de Processos Selecionados */}
 											{selectedProcesses.length > 0 && (
 												<div className="space-y-3">
-													<h4 className="font-medium">Processos Selecionados:</h4>
+													<h4 className="font-medium">
+														Processos Selecionados:
+													</h4>
 													{selectedProcesses.map((selectedProcess, index) => {
-														const process = availableProcesses.find(p => p.id === selectedProcess.processId);
+														const process = availableProcesses.find(
+															(p) => p.id === selectedProcess.processId,
+														);
 														return (
-															<Card key={selectedProcess.processId} className="p-4">
+															<Card
+																key={selectedProcess.processId}
+																className="p-4"
+															>
 																<div className="flex items-center justify-between gap-4">
 																	<div className="flex-1">
-																		<h5 className="font-medium">{process?.name}</h5>
+																		<h5 className="font-medium">
+																			{process?.name}
+																		</h5>
 																		<p className="text-muted-foreground text-sm">
-																			{formatCurrency(process?.costPerHour || 0)} / {process?.timeUnit}
+																			{formatCurrency(
+																				process?.costPerHour || 0,
+																			)}{" "}
+																			/ {process?.timeUnit}
 																		</p>
 																	</div>
 																	<div className="flex items-center gap-2">
@@ -588,7 +672,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 																			value={selectedProcess.timeNeeded}
 																			onChange={(e) => {
 																				const updated = [...selectedProcesses];
-																				updated[index].timeNeeded = parseFloat(e.target.value) || 0;
+																				updated[index].timeNeeded =
+																					Number.parseFloat(e.target.value) ||
+																					0;
 																				setSelectedProcesses(updated);
 																				form.setValue("processes", updated);
 																			}}
@@ -600,7 +686,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 																			type="button"
 																			variant="outline"
 																			size="sm"
-																			onClick={() => removeProcess(selectedProcess.processId)}
+																			onClick={() =>
+																				removeProcess(selectedProcess.processId)
+																			}
 																		>
 																			<Trash2 className="h-4 w-4" />
 																		</Button>
@@ -616,9 +704,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 									{watchType === "simple" && (
 										<div className="rounded-lg bg-muted/50 p-6 text-center">
-											<Settings className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
+											<Settings className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
 											<p className="text-muted-foreground">
-												Acabamentos simples não requerem configuração de processos.
+												Acabamentos simples não requerem configuração de
+												processos.
 											</p>
 										</div>
 									)}
@@ -635,7 +724,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 										Matérias-Primas do Acabamento
 									</CardTitle>
 									<p className="text-muted-foreground text-sm">
-										{watchType === "simple" ? "Acabamentos simples não usam composição de materiais" : "Selecione as matérias-primas necessárias para este acabamento"}
+										{watchType === "simple"
+											? "Acabamentos simples não usam composição de materiais"
+											: "Selecione as matérias-primas necessárias para este acabamento"}
 									</p>
 								</CardHeader>
 								<CardContent className="space-y-4">
@@ -649,10 +740,20 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 													</SelectTrigger>
 													<SelectContent>
 														{availableMaterials
-															.filter(material => !selectedMaterials.find(m => m.materialId === material.id))
+															.filter(
+																(material) =>
+																	!selectedMaterials.find(
+																		(m) => m.materialId === material.id,
+																	),
+															)
 															.map((material) => (
-																<SelectItem key={material.id} value={material.id}>
-																	{material.name} - {formatCurrency(material.cost)}/{material.unit}
+																<SelectItem
+																	key={material.id}
+																	value={material.id}
+																>
+																	{material.name} -{" "}
+																	{formatCurrency(material.cost)}/
+																	{material.unit}
 																</SelectItem>
 															))}
 													</SelectContent>
@@ -662,16 +763,26 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 											{/* Lista de Materiais Selecionados */}
 											{selectedMaterials.length > 0 && (
 												<div className="space-y-3">
-													<h4 className="font-medium">Matérias-Primas Selecionadas:</h4>
+													<h4 className="font-medium">
+														Matérias-Primas Selecionadas:
+													</h4>
 													{selectedMaterials.map((selectedMaterial, index) => {
-														const material = availableMaterials.find(m => m.id === selectedMaterial.materialId);
+														const material = availableMaterials.find(
+															(m) => m.id === selectedMaterial.materialId,
+														);
 														return (
-															<Card key={selectedMaterial.materialId} className="p-4">
+															<Card
+																key={selectedMaterial.materialId}
+																className="p-4"
+															>
 																<div className="flex items-center justify-between gap-4">
 																	<div className="flex-1">
-																		<h5 className="font-medium">{material?.name}</h5>
+																		<h5 className="font-medium">
+																			{material?.name}
+																		</h5>
 																		<p className="text-muted-foreground text-sm">
-																			{formatCurrency(material?.cost || 0)} / {material?.unit}
+																			{formatCurrency(material?.cost || 0)} /{" "}
+																			{material?.unit}
 																		</p>
 																	</div>
 																	<div className="flex items-center gap-2">
@@ -684,7 +795,9 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 																			value={selectedMaterial.quantity}
 																			onChange={(e) => {
 																				const updated = [...selectedMaterials];
-																				updated[index].quantity = parseFloat(e.target.value) || 0;
+																				updated[index].quantity =
+																					Number.parseFloat(e.target.value) ||
+																					0;
 																				setSelectedMaterials(updated);
 																				form.setValue("materials", updated);
 																			}}
@@ -696,7 +809,11 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 																			type="button"
 																			variant="outline"
 																			size="sm"
-																			onClick={() => removeMaterial(selectedMaterial.materialId)}
+																			onClick={() =>
+																				removeMaterial(
+																					selectedMaterial.materialId,
+																				)
+																			}
 																		>
 																			<Trash2 className="h-4 w-4" />
 																		</Button>
@@ -712,9 +829,10 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 									{watchType === "simple" && (
 										<div className="rounded-lg bg-muted/50 p-6 text-center">
-											<Package className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
+											<Package className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
 											<p className="text-muted-foreground">
-												Acabamentos simples não requerem configuração de matérias-primas.
+												Acabamentos simples não requerem configuração de
+												matérias-primas.
 											</p>
 										</div>
 									)}
@@ -724,7 +842,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 					</Tabs>
 
 					{/* Botões de Navegação */}
-					<div className="flex justify-between items-center pt-6 border-t">
+					<div className="flex items-center justify-between border-t pt-6">
 						<Button
 							type="button"
 							variant="outline"
@@ -735,21 +853,14 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 
 						<div className="flex gap-2">
 							{!isFirstTab && (
-								<Button
-									type="button"
-									variant="outline"
-									onClick={goToPrevTab}
-								>
+								<Button type="button" variant="outline" onClick={goToPrevTab}>
 									<ChevronLeft className="mr-2 h-4 w-4" />
 									Anterior
 								</Button>
 							)}
 
 							{!isLastTab && (
-								<Button
-									type="button"
-									onClick={goToNextTab}
-								>
+								<Button type="button" onClick={goToNextTab}>
 									Avançar
 									<ChevronRight className="ml-2 h-4 w-4" />
 								</Button>
@@ -758,7 +869,7 @@ export function FinishForm({ finish, onSubmit, isLoading }: FinishFormProps) {
 							{isLastTab && (
 								<Button type="submit" disabled={isLoading}>
 									<Save className="mr-2 h-4 w-4" />
-									{isLoading ? "Salvando..." : (finish ? "Atualizar" : "Salvar")}
+									{isLoading ? "Salvando..." : finish ? "Atualizar" : "Salvar"}
 								</Button>
 							)}
 						</div>
