@@ -32,6 +32,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Combobox } from "@/components/ui/combobox";
 import { FormulaEngine, type FormulaVariables } from "@/lib/formula-engine";
 import { api } from "@/lib/trpc";
 import FormulaModal from "./FormulaModal";
@@ -432,85 +433,56 @@ export default function MaterialModal({
 						<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 							<div>
 								<Label htmlFor="material">Matéria Prima *</Label>
-								<Select
-									value={currentForm.materialId}
-									onValueChange={(value) => {
-										const material = materialsOptions.find(
-											(m) => m.id === value,
-										);
-										setCurrentForm((prev) => ({
-											...prev,
-											materialId: value,
-											unit: material?.unit || "un",
-										}));
-									}}
-								>
-									<SelectTrigger className="mt-1">
-										<SelectValue placeholder="Selecione a matéria prima" />
-									</SelectTrigger>
-									<SelectContent>
-										{materialsLoading ? (
-											<SelectItem value="loading" disabled>
-												Carregando materiais...
-											</SelectItem>
-										) : materialsError ? (
-											<SelectItem value="error" disabled>
-												Erro ao carregar materiais
-											</SelectItem>
-										) : materialsOptions.length === 0 ? (
-											<SelectItem value="empty" disabled>
-												Nenhum material encontrado
-											</SelectItem>
-										) : (
-											materialsOptions.map((material) => (
-												<SelectItem key={material.id} value={material.id}>
-													{material.name}
-													<span className="ml-2 text-muted-foreground">
-														(R$ {Number(material.cost).toFixed(2)}/
-														{material.unit})
-													</span>
-												</SelectItem>
-											))
-										)}
-									</SelectContent>
-								</Select>
+								<div className="mt-1">
+									<Combobox
+										options={materialsOptions.map((material) => ({
+											value: material.id,
+											label: material.name,
+											subtitle: `R$ ${Number(material.cost).toFixed(2)}/${material.unit}`,
+										}))}
+										value={currentForm.materialId}
+										onValueChange={(value) => {
+											const material = materialsOptions.find(
+												(m) => m.id === value,
+											);
+											setCurrentForm((prev) => ({
+												...prev,
+												materialId: value,
+												unit: material?.unit || "un",
+											}));
+										}}
+										placeholder="Selecione a matéria prima"
+										searchPlaceholder="Pesquisar matéria prima..."
+										emptyMessage={materialsLoading ? "Carregando materiais..." : materialsError ? "Erro ao carregar materiais" : "Nenhum material encontrado"}
+										loading={materialsLoading}
+										disabled={materialsLoading || materialsError}
+									/>
+								</div>
 							</div>
 
 							<div>
 								<Label htmlFor="equipment">Equipamento (Opcional)</Label>
-								<Select
-									value={currentForm.equipmentId}
-									onValueChange={(value) =>
-										setCurrentForm((prev) => ({ ...prev, equipmentId: value }))
-									}
-								>
-									<SelectTrigger className="mt-1">
-										<SelectValue placeholder="Selecione o equipamento (opcional)" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="none">Nenhum equipamento</SelectItem>
-										{equipmentsLoading ? (
-											<SelectItem value="loading" disabled>
-												Carregando equipamentos...
-											</SelectItem>
-										) : equipmentsError ? (
-											<SelectItem value="error" disabled>
-												Erro ao carregar equipamentos
-											</SelectItem>
-										) : (
-											equipmentsOptions.map((equipment) => (
-												<SelectItem key={equipment.id} value={equipment.id}>
-													{equipment.name}
-													<span className="ml-2 text-muted-foreground">
-														(R${" "}
-														{Number(equipment.totalCostPerM2 || 0).toFixed(2)}
-														/m²)
-													</span>
-												</SelectItem>
-											))
-										)}
-									</SelectContent>
-								</Select>
+								<div className="mt-1">
+									<Combobox
+										options={[
+											{ value: "none", label: "Nenhum equipamento" },
+											...equipmentsOptions.map((equipment) => ({
+												value: equipment.id,
+												label: equipment.name,
+												subtitle: `R$ ${Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²`,
+											}))
+										]}
+										value={currentForm.equipmentId}
+										onValueChange={(value) =>
+											setCurrentForm((prev) => ({ ...prev, equipmentId: value }))
+										}
+										placeholder="Selecione o equipamento (opcional)"
+										searchPlaceholder="Pesquisar equipamento..."
+										emptyMessage={equipmentsLoading ? "Carregando equipamentos..." : equipmentsError ? "Erro ao carregar equipamentos" : "Nenhum equipamento encontrado"}
+										loading={equipmentsLoading}
+										disabled={equipmentsLoading || equipmentsError}
+									/>
+								</div>
 							</div>
 						</div>
 
@@ -745,59 +717,55 @@ export default function MaterialModal({
 							<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 								<div>
 									<Label htmlFor="edit-material">Matéria Prima *</Label>
-									<Select
-										value={currentForm.materialId}
-										onValueChange={(value) => {
-											const material = materialsOptions.find(
-												(m) => m.id === value,
-											);
-											setCurrentForm((prev) => ({
-												...prev,
-												materialId: value,
-												unit: material?.unit || "un",
-											}));
-										}}
-									>
-										<SelectTrigger className="mt-1">
-											<SelectValue placeholder="Selecione a matéria prima" />
-										</SelectTrigger>
-										<SelectContent>
-											{materialsOptions.map((material) => (
-												<SelectItem key={material.id} value={material.id}>
-													{material.name}
-													<span className="ml-2 text-muted-foreground">
-														(R$ {Number(material.cost).toFixed(2)}/
-														{material.unit})
-													</span>
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<div className="mt-1">
+										<Combobox
+											options={materialsOptions.map((material) => ({
+												value: material.id,
+												label: material.name,
+												subtitle: `R$ ${Number(material.cost).toFixed(2)}/${material.unit}`,
+											}))}
+											value={currentForm.materialId}
+											onValueChange={(value) => {
+												const material = materialsOptions.find(
+													(m) => m.id === value,
+												);
+												setCurrentForm((prev) => ({
+													...prev,
+													materialId: value,
+													unit: material?.unit || "un",
+												}));
+											}}
+											placeholder="Selecione a matéria prima"
+											searchPlaceholder="Pesquisar matéria prima..."
+											emptyMessage="Nenhum material encontrado"
+										/>
+									</div>
 								</div>
 
 								<div>
 									<Label htmlFor="edit-equipment">Equipamento (Opcional)</Label>
-									<Select
-										value={currentForm.equipmentId}
-										onValueChange={(value) =>
-											setCurrentForm((prev) => ({
-												...prev,
-												equipmentId: value,
-											}))
-										}
-									>
-										<SelectTrigger className="mt-1">
-											<SelectValue placeholder="Selecione o equipamento (opcional)" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="none">Nenhum equipamento</SelectItem>
-											{equipmentsOptions.map((equipment) => (
-												<SelectItem key={equipment.id} value={equipment.id}>
-													{equipment.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<div className="mt-1">
+										<Combobox
+											options={[
+												{ value: "none", label: "Nenhum equipamento" },
+												...equipmentsOptions.map((equipment) => ({
+													value: equipment.id,
+													label: equipment.name,
+													subtitle: `R$ ${Number(equipment.totalCostPerM2 || 0).toFixed(2)}/m²`,
+												}))
+											]}
+											value={currentForm.equipmentId}
+											onValueChange={(value) =>
+												setCurrentForm((prev) => ({
+													...prev,
+													equipmentId: value,
+												}))
+											}
+											placeholder="Selecione o equipamento (opcional)"
+											searchPlaceholder="Pesquisar equipamento..."
+											emptyMessage="Nenhum equipamento encontrado"
+										/>
+									</div>
 								</div>
 
 								{/* Sistema de Cálculo para Edição */}
