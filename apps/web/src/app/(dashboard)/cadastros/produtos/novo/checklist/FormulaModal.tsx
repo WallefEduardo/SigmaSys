@@ -3,8 +3,11 @@
 import {
 	Calculator,
 	CheckCircle,
+	ChevronDown,
+	ChevronRight,
 	Hash,
 	Info,
+	Lightbulb,
 	Ruler,
 	Search,
 } from "lucide-react";
@@ -65,6 +68,21 @@ export default function FormulaModal({
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedRule, setSelectedRule] = useState<string>("");
+	const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set(['AREA', 'LENGTH', 'UNIT']));
+	const [showExamplesModal, setShowExamplesModal] = useState(false);
+	const [selectedExampleRule, setSelectedExampleRule] = useState<FormulaRule | null>(null);
+
+	const toggleCategory = (category: string) => {
+		setCollapsedCategories(prev => {
+			const newSet = new Set(prev);
+			if (newSet.has(category)) {
+				newSet.delete(category);
+			} else {
+				newSet.add(category);
+			}
+			return newSet;
+		});
+	};
 
 	// Buscar regras de cálculo
 	const { data: calculationRulesData } = api.calculationRules.list.useQuery({
@@ -180,6 +198,17 @@ export default function FormulaModal({
 				usage: string;
 				example: string;
 				variables: Record<string, string>;
+				visualExamples: {
+					title: string;
+					description: string;
+					cases: Array<{
+						name: string;
+						scenario: string;
+						measurements: string;
+						calculation: string;
+						result: string;
+					}>;
+				};
 			}
 		> = {
 			// ÁREA
@@ -189,12 +218,59 @@ export default function FormulaModal({
 					"Use para calcular material da face frontal de placas, painéis e fachadas",
 				example: "Placa 3m x 1m = 3m²",
 				variables: { L: "Largura em metros", A: "Altura em metros" },
+				visualExamples: {
+					title: "Exemplos de Aplicação - Área Frontal",
+					description: "Esta fórmula calcula a área da face principal do produto, ideal para materiais que cobrem toda a frente.",
+					cases: [
+						{
+							name: "🏢 Fachada ACM",
+							scenario: "Revestimento de fachada comercial com painel de ACM",
+							measurements: "Largura: 8m, Altura: 3m",
+							calculation: "L × A = 8 × 3",
+							result: "24m² de ACM necessário"
+						},
+						{
+							name: "🚩 Lona para Toldo",
+							scenario: "Toldo retrátil para estabelecimento comercial",
+							measurements: "Largura: 4m, Altura: 2.5m",
+							calculation: "L × A = 4 × 2.5",
+							result: "10m² de lona necessária"
+						},
+						{
+							name: "🖼️ Painel Publicitário",
+							scenario: "Outdoor em MDF com impressão digital",
+							measurements: "Largura: 6m, Altura: 3m",
+							calculation: "L × A = 6 × 3",
+							result: "18m² de MDF + impressão"
+						}
+					]
+				}
 			},
 			area_traseira: {
 				title: "Área do Verso",
 				usage: "Use para calcular material do verso de placas dupla face",
 				example: "Verso da placa 3m x 1m = 3m²",
 				variables: { L: "Largura em metros", A: "Altura em metros" },
+				visualExamples: {
+					title: "Exemplos de Aplicação - Área Traseira",
+					description: "Para produtos de dupla face que precisam de material no verso.",
+					cases: [
+						{
+							name: "🏪 Totem Dupla Face",
+							scenario: "Totem promocional visível dos dois lados",
+							measurements: "Largura: 1.5m, Altura: 2m",
+							calculation: "L × A = 1.5 × 2",
+							result: "3m² de adesivo para o verso"
+						},
+						{
+							name: "🚥 Placa de Trânsito",
+							scenario: "Sinalização viária com informação nos dois lados",
+							measurements: "Largura: 0.8m, Altura: 1.2m",
+							calculation: "L × A = 0.8 × 1.2",
+							result: "0.96m² de material refletivo"
+						}
+					]
+				}
 			},
 			area_laterais: {
 				title: "Área das Bordas com Avanço",
@@ -206,6 +282,26 @@ export default function FormulaModal({
 					A: "Altura em metros",
 					E: "Espessura/Avanço em metros",
 				},
+				visualExamples: {
+					title: "Exemplos de Aplicação - Bordas com Avanço",
+					description: "Para calcular as laterais de estruturas com profundidade.",
+					cases: [
+						{
+							name: "🏬 Letreiro Caixa",
+							scenario: "Letreiro em caixa com LED interno e avanço",
+							measurements: "Largura: 4m, Altura: 1m, Avanço: 15cm",
+							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (4 × 0.15) + 2 × (1 × 0.15)",
+							result: "1.5m² de ACM para as bordas"
+						},
+						{
+							name: "🏦 Fachada 3D",
+							scenario: "Letra caixa com recorte e profundidade",
+							measurements: "Largura: 2m, Altura: 0.8m, Profundidade: 10cm",
+							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (2 × 0.1) + 2 × (0.8 × 0.1)",
+							result: "0.56m² de chapa para as laterais"
+						}
+					]
+				}
 			},
 			area_total: {
 				title: "Área Completa (Caixa)",
@@ -216,6 +312,19 @@ export default function FormulaModal({
 					A: "Altura em metros",
 					E: "Profundidade em metros",
 				},
+				visualExamples: {
+					title: "Exemplos de Aplicação - Área Total de Caixa",
+					description: "Para calcular todo o material de estruturas tridimensionais fechadas.",
+					cases: [
+						{
+							name: "📦 Totem Promocional",
+							scenario: "Totem em forma de caixa para shopping center",
+							measurements: "Largura: 1m, Altura: 2.5m, Profundidade: 0.4m",
+							calculation: "2×(L×A + L×E + A×E) = 2×(1×2.5 + 1×0.4 + 2.5×0.4)",
+							result: "7.6m² de ACM para toda a estrutura"
+						}
+					]
+				}
 			},
 			area_com_margem: {
 				title: "Área com Sobra de Corte",
@@ -234,6 +343,26 @@ export default function FormulaModal({
 				usage: "Use para calcular perfis, molduras e contornos",
 				example: "Contorno de placa 3m x 1m = 8ml",
 				variables: { L: "Largura em metros", A: "Altura em metros" },
+				visualExamples: {
+					title: "Exemplos de Aplicação - Perímetro",
+					description: "Para calcular perfis que contornam toda a borda da peça.",
+					cases: [
+						{
+							name: "🔲 Perfil de Alumínio",
+							scenario: "Moldura de alumínio para painel ACM",
+							measurements: "Largura: 3m, Altura: 2m",
+							calculation: "2 × (L + A) = 2 × (3 + 2)",
+							result: "10ml de perfil de alumínio"
+						},
+						{
+							name: "🔩 Metalon para Estrutura",
+							scenario: "Estrutura perimetral para back-light",
+							measurements: "Largura: 2.5m, Altura: 1.8m",
+							calculation: "2 × (L + A) = 2 × (2.5 + 1.8)",
+							result: "8.6ml de metalon 30x30"
+						}
+					]
+				}
 			},
 			estrutura_profundidade: {
 				title: "Travessas de Profundidade",
@@ -274,6 +403,26 @@ export default function FormulaModal({
 					A: "Altura em metros",
 					D: "Densidade (unidades por m²)",
 				},
+				visualExamples: {
+					title: "Exemplos de Aplicação - Unidades por Área",
+					description: "Para itens distribuídos uniformemente pela superfície.",
+					cases: [
+						{
+							name: "🔩 Parafusos de Fixação",
+							scenario: "Fixação de chapa ACM na fachada",
+							measurements: "Painel: 4m x 2m, Densidade: 6 parafusos/m²",
+							calculation: "(L × A) × D = (4 × 2) × 6",
+							result: "48 parafusos auto-atarraxantes"
+						},
+						{
+							name: "⚡ LEDs para Back-Light",
+							scenario: "Iluminação interna de letreiro caixa",
+							measurements: "Letreiro: 3m x 1m, Densidade: 25 LEDs/m²",
+							calculation: "(L × A) × D = (3 × 1) × 25",
+							result: "75 LEDs 5050 necessários"
+						}
+					]
+				}
 			},
 			unidades_por_ml: {
 				title: "Quantidade por Metro Linear",
@@ -290,6 +439,26 @@ export default function FormulaModal({
 				usage: "Use para elementos que sempre ficam nos 4 cantos",
 				example: "4 cantoneiras sempre",
 				variables: {},
+				visualExamples: {
+					title: "Exemplos de Aplicação - Elementos nos Cantos",
+					description: "Para itens que sempre são posicionados nos quatro cantos.",
+					cases: [
+						{
+							name: "🔩 Cantoneiras de Proteção",
+							scenario: "Proteção dos cantos de painel ACM",
+							measurements: "Qualquer dimensão do painel",
+							calculation: "Sempre 4 unidades (constante)",
+							result: "4 cantoneiras de alumínio"
+						},
+						{
+							name: "🔍 Suportes de Canto",
+							scenario: "Fixação de painel suspenso na parede",
+							measurements: "Qualquer tamanho de painel",
+							calculation: "Sempre 4 unidades (constante)",
+							result: "4 suportes em L para os cantos"
+						}
+					]
+				}
 			},
 			unidades_por_face: {
 				title: "Quantidade por Face",
@@ -322,13 +491,27 @@ export default function FormulaModal({
 		return matchesSearch && matchesCategory;
 	});
 
-	// Separar sugeridas das outras
+	// Separar por categorias
 	const suggestedRules = filteredRules.filter((rule) =>
 		suggestedRuleIds.includes(rule.id),
 	);
 	const otherRules = filteredRules.filter(
 		(rule) => !suggestedRuleIds.includes(rule.id),
 	);
+	
+	// Agrupar por categoria
+	const rulesByCategory = {
+		AREA: filteredRules.filter(rule => rule.category === 'AREA'),
+		LENGTH: filteredRules.filter(rule => rule.category === 'LENGTH'),
+		UNIT: filteredRules.filter(rule => rule.category === 'UNIT')
+	};
+	
+	const categoryNames = {
+		AREA: 'Área (m²)',
+		LENGTH: 'Comprimento (ml)',
+		UNIT: 'Unidades (un)'
+	};
+	
 	const sortedRules = [...suggestedRules, ...otherRules];
 
 	const getCategoryIcon = (category: string) => {
@@ -373,6 +556,7 @@ export default function FormulaModal({
 		setSelectedRule("");
 		setSearchTerm("");
 		setSelectedCategory("all");
+		setCollapsedCategories(new Set());
 	};
 
 	return (
@@ -430,104 +614,63 @@ export default function FormulaModal({
 						</div>
 					</div>
 
-					{/* Lista de Fórmulas */}
+					{/* Lista de Fórmulas - Organizada por Categorias */}
 					<div className="space-y-4">
+						{/* Seção de Sugeridas */}
 						{suggestedRules.length > 0 && (
-							<div>
-								<div className="mb-3 flex items-center gap-2">
-									<Badge
-										variant="default"
-										className="bg-green-100 text-green-800"
-									>
+							<div className="space-y-3">
+								<div className="flex items-center gap-2">
+									<Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
 										⭐ Sugeridas para este material
 									</Badge>
 								</div>
-								<div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+								<div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
 									{suggestedRules.map((rule) => {
 										const details = getFormulaDetails(rule);
 										const isSelected = selectedRule === rule.id;
-
 										return (
 											<Card
 												key={rule.id}
-												className={`cursor-pointer transition-all hover:shadow-md ${
+												className={`cursor-pointer transition-all hover:shadow-sm ${
 													isSelected
-														? "border-primary bg-primary/5 ring-2 ring-primary"
+														? "border-primary bg-primary/5 ring-1 ring-primary"
 														: "border-border hover:border-primary/50"
 												}`}
 												onClick={() => setSelectedRule(rule.id)}
 											>
-												<CardHeader className="pb-2">
+												<CardHeader className="pb-2 pt-3">
 													<div className="flex items-start justify-between">
-														<div className="flex items-center gap-2">
-															<Badge
-																className={getCategoryColor(rule.category)}
-																variant="secondary"
-															>
-																{getCategoryIcon(rule.category)}
-																<span className="ml-1">{rule.category}</span>
-															</Badge>
-															{isSelected && (
-																<CheckCircle className="h-5 w-5 text-primary" />
-															)}
-														</div>
+														<Badge className={getCategoryColor(rule.category)} variant="secondary">
+															{getCategoryIcon(rule.category)}
+															<span className="ml-1 text-xs">{rule.category}</span>
+														</Badge>
+														{isSelected && <CheckCircle className="h-4 w-4 text-primary" />}
 													</div>
-													<CardTitle className="text-lg">
+													<CardTitle className="text-base leading-tight">
 														{details.title}
 													</CardTitle>
-													<CardDescription className="text-sm">
-														{details.usage}
-													</CardDescription>
 												</CardHeader>
-												<CardContent className="pt-0">
-													<div className="space-y-3">
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																FÓRMULA:
-															</div>
-															<code className="rounded bg-muted px-2 py-1 font-mono text-sm">
+												<CardContent className="pt-0 pb-3">
+													<div className="space-y-2">
+														<div className="text-xs text-muted-foreground">
+															{details.usage}
+														</div>
+														<div className="flex items-center justify-between gap-2">
+															<code className="flex-1 rounded bg-muted px-1 py-0.5 font-mono text-xs">
 																{rule.formula}
 															</code>
-														</div>
-
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																EXEMPLO:
-															</div>
-															<div className="text-green-700 text-sm dark:text-green-300">
-																{details.example}
-															</div>
-														</div>
-
-														{Object.keys(details.variables).length > 0 && (
-															<div>
-																<div className="mb-1 font-medium text-muted-foreground text-xs">
-																	VARIÁVEIS:
-																</div>
-																<div className="flex flex-wrap gap-1">
-																	{Object.entries(details.variables).map(
-																		([variable, description]) => (
-																			<Badge
-																				key={variable}
-																				variant="outline"
-																				className="text-xs"
-																			>
-																				<span className="font-bold font-mono">
-																					{variable}
-																				</span>
-																				: {description}
-																			</Badge>
-																		),
-																	)}
-																</div>
-															</div>
-														)}
-
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																RESULTADO:
-															</div>
-															<Badge variant="outline">{rule.resultUnit}</Badge>
+															<button
+																type="button"
+																onClick={(e) => {
+																	e.stopPropagation();
+																	setSelectedExampleRule(rule);
+																	setShowExamplesModal(true);
+																}}
+																className="flex h-6 w-6 items-center justify-center rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+																title="Ver exemplos práticos"
+															>
+																<Lightbulb className="h-3 w-3" />
+															</button>
 														</div>
 													</div>
 												</CardContent>
@@ -537,109 +680,154 @@ export default function FormulaModal({
 								</div>
 							</div>
 						)}
-
-						{otherRules.length > 0 && (
-							<div>
-								{suggestedRules.length > 0 && (
-									<div className="mt-6 mb-3 flex items-center gap-2">
-										<Badge variant="secondary">
-											Outras fórmulas disponíveis
-										</Badge>
-									</div>
-								)}
-								<div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-									{otherRules.map((rule) => {
-										const details = getFormulaDetails(rule);
-										const isSelected = selectedRule === rule.id;
-
-										return (
-											<Card
-												key={rule.id}
-												className={`cursor-pointer transition-all hover:shadow-md ${
-													isSelected
-														? "border-primary bg-primary/5 ring-2 ring-primary"
-														: "border-border hover:border-primary/50"
-												}`}
-												onClick={() => setSelectedRule(rule.id)}
+						
+						{/* Seções por Categoria */}
+						{selectedCategory === 'all' ? (
+							<div className="space-y-4">
+								{Object.entries(rulesByCategory).map(([category, rules]) => {
+									if (rules.length === 0) return null;
+									
+									const isCollapsed = collapsedCategories.has(category);
+									const categoryRules = rules.filter(rule => !suggestedRuleIds.includes(rule.id));
+									
+									if (categoryRules.length === 0) return null;
+									
+									return (
+										<div key={category} className="space-y-3">
+											<button
+												type="button"
+												onClick={() => toggleCategory(category)}
+												className="flex items-center gap-2 w-full text-left p-2 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors"
 											>
-												<CardHeader className="pb-2">
-													<div className="flex items-start justify-between">
-														<div className="flex items-center gap-2">
-															<Badge
-																className={getCategoryColor(rule.category)}
-																variant="secondary"
+												{isCollapsed ? (
+													<ChevronRight className="h-4 w-4" />
+												) : (
+													<ChevronDown className="h-4 w-4" />
+												)}
+												<Badge className={getCategoryColor(category)} variant="secondary">
+													{getCategoryIcon(category)}
+													<span className="ml-1">{categoryNames[category as keyof typeof categoryNames]}</span>
+												</Badge>
+												<span className="text-xs text-muted-foreground ml-auto">
+													{categoryRules.length} fórmula{categoryRules.length > 1 ? 's' : ''}
+												</span>
+											</button>
+											
+											{!isCollapsed && (
+												<div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+													{categoryRules.map((rule) => {
+														const details = getFormulaDetails(rule);
+														const isSelected = selectedRule === rule.id;
+														return (
+															<Card
+																key={rule.id}
+																className={`cursor-pointer transition-all hover:shadow-sm ${
+																	isSelected
+																		? "border-primary bg-primary/5 ring-1 ring-primary"
+																		: "border-border hover:border-primary/50"
+																}`}
+																onClick={() => setSelectedRule(rule.id)}
 															>
-																{getCategoryIcon(rule.category)}
-																<span className="ml-1">{rule.category}</span>
-															</Badge>
-															{isSelected && (
-																<CheckCircle className="h-5 w-5 text-primary" />
-															)}
-														</div>
-													</div>
-													<CardTitle className="text-lg">
-														{details.title}
-													</CardTitle>
-													<CardDescription className="text-sm">
-														{details.usage}
-													</CardDescription>
-												</CardHeader>
-												<CardContent className="pt-0">
-													<div className="space-y-3">
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																FÓRMULA:
-															</div>
-															<code className="rounded bg-muted px-2 py-1 font-mono text-sm">
-																{rule.formula}
-															</code>
-														</div>
-
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																EXEMPLO:
-															</div>
-															<div className="text-green-700 text-sm dark:text-green-300">
-																{details.example}
-															</div>
-														</div>
-
-														{Object.keys(details.variables).length > 0 && (
-															<div>
-																<div className="mb-1 font-medium text-muted-foreground text-xs">
-																	VARIÁVEIS:
-																</div>
-																<div className="flex flex-wrap gap-1">
-																	{Object.entries(details.variables).map(
-																		([variable, description]) => (
-																			<Badge
-																				key={variable}
-																				variant="outline"
-																				className="text-xs"
+																<CardHeader className="pb-2 pt-3">
+																	<div className="flex items-start justify-between">
+																		<Badge className={getCategoryColor(rule.category)} variant="secondary">
+																			{getCategoryIcon(rule.category)}
+																			<span className="ml-1 text-xs">{rule.category}</span>
+																		</Badge>
+																		{isSelected && <CheckCircle className="h-4 w-4 text-primary" />}
+																	</div>
+																	<CardTitle className="text-base leading-tight">
+																		{details.title}
+																	</CardTitle>
+																</CardHeader>
+																<CardContent className="pt-0 pb-3">
+																	<div className="space-y-2">
+																		<div className="text-xs text-muted-foreground">
+																			{details.usage}
+																		</div>
+																		<div className="flex items-center justify-between gap-2">
+																			<code className="flex-1 rounded bg-muted px-1 py-0.5 font-mono text-xs">
+																				{rule.formula}
+																			</code>
+																			<button
+																				type="button"
+																				onClick={(e) => {
+																					e.stopPropagation();
+																					setSelectedExampleRule(rule);
+																					setShowExamplesModal(true);
+																				}}
+																				className="flex h-6 w-6 items-center justify-center rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+																				title="Ver exemplos práticos"
 																			>
-																				<span className="font-bold font-mono">
-																					{variable}
-																				</span>
-																				: {description}
-																			</Badge>
-																		),
-																	)}
-																</div>
-															</div>
-														)}
-
-														<div>
-															<div className="mb-1 font-medium text-muted-foreground text-xs">
-																RESULTADO:
-															</div>
-															<Badge variant="outline">{rule.resultUnit}</Badge>
-														</div>
+																				<Lightbulb className="h-3 w-3" />
+																			</button>
+																		</div>
+																	</div>
+																</CardContent>
+															</Card>
+														);
+													})}
+												</div>
+											)}
+										</div>
+									);
+								})}
+							</div>
+						) : (
+							/* Categoria específica selecionada */
+							<div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+								{filteredRules.filter(rule => !suggestedRuleIds.includes(rule.id)).map((rule) => {
+									const details = getFormulaDetails(rule);
+									const isSelected = selectedRule === rule.id;
+									return (
+										<Card
+											key={rule.id}
+											className={`cursor-pointer transition-all hover:shadow-sm ${
+												isSelected
+													? "border-primary bg-primary/5 ring-1 ring-primary"
+													: "border-border hover:border-primary/50"
+											}`}
+											onClick={() => setSelectedRule(rule.id)}
+										>
+											<CardHeader className="pb-2 pt-3">
+												<div className="flex items-start justify-between">
+													<Badge className={getCategoryColor(rule.category)} variant="secondary">
+														{getCategoryIcon(rule.category)}
+														<span className="ml-1 text-xs">{rule.category}</span>
+													</Badge>
+													{isSelected && <CheckCircle className="h-4 w-4 text-primary" />}
+												</div>
+												<CardTitle className="text-base leading-tight">
+													{details.title}
+												</CardTitle>
+											</CardHeader>
+											<CardContent className="pt-0 pb-3">
+												<div className="space-y-2">
+													<div className="text-xs text-muted-foreground">
+														{details.usage}
 													</div>
-												</CardContent>
-											</Card>
-										);
-									})}
-								</div>
+													<div className="flex items-center justify-between gap-2">
+														<code className="flex-1 rounded bg-muted px-1 py-0.5 font-mono text-xs">
+															{rule.formula}
+														</code>
+														<button
+															type="button"
+															onClick={(e) => {
+																e.stopPropagation();
+																setSelectedExampleRule(rule);
+																setShowExamplesModal(true);
+															}}
+															className="flex h-6 w-6 items-center justify-center rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+															title="Ver exemplos práticos"
+														>
+															<Lightbulb className="h-3 w-3" />
+														</button>
+													</div>
+												</div>
+											</CardContent>
+										</Card>
+									);
+								})}
 							</div>
 						)}
 
@@ -664,6 +852,93 @@ export default function FormulaModal({
 					</Button>
 				</DialogFooter>
 			</DialogContent>
+
+			{/* Modal de Exemplos Práticos */}
+			<Dialog open={showExamplesModal} onOpenChange={setShowExamplesModal}>
+				<DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2">
+							<Lightbulb className="h-5 w-5 text-blue-600" />
+							{selectedExampleRule && getFormulaDetails(selectedExampleRule).visualExamples?.title}
+						</DialogTitle>
+						<DialogDescription>
+							{selectedExampleRule && getFormulaDetails(selectedExampleRule).visualExamples?.description}
+						</DialogDescription>
+					</DialogHeader>
+
+					{selectedExampleRule && (
+						<div className="space-y-6 py-4">
+							{/* Informações da Fórmula */}
+							<div className="rounded-lg border bg-muted/30 p-4">
+								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+									<div>
+										<div className="mb-2 font-medium text-sm text-muted-foreground">FÓRMULA</div>
+										<code className="rounded bg-background px-3 py-2 font-mono text-sm">
+											{selectedExampleRule.formula}
+										</code>
+									</div>
+									<div>
+										<div className="mb-2 font-medium text-sm text-muted-foreground">CATEGORIA</div>
+										<Badge className={getCategoryColor(selectedExampleRule.category)} variant="secondary">
+											{getCategoryIcon(selectedExampleRule.category)}
+											<span className="ml-1">{categoryNames[selectedExampleRule.category as keyof typeof categoryNames]}</span>
+										</Badge>
+									</div>
+								</div>
+							</div>
+
+							{/* Casos de Exemplo */}
+							<div className="space-y-4">
+								<h3 className="font-semibold text-lg">Exemplos Práticos</h3>
+								<div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+									{getFormulaDetails(selectedExampleRule).visualExamples?.cases.map((example, index) => (
+										<Card key={index} className="border-l-4 border-l-blue-500">
+											<CardHeader className="pb-3">
+												<CardTitle className="text-base">{example.name}</CardTitle>
+												<CardDescription className="text-sm">
+													{example.scenario}
+												</CardDescription>
+											</CardHeader>
+											<CardContent className="space-y-3">
+												<div>
+													<div className="mb-1 font-medium text-xs text-muted-foreground uppercase tracking-wide">
+														Medidas
+													</div>
+													<div className="text-sm">{example.measurements}</div>
+												</div>
+												
+												<div>
+													<div className="mb-1 font-medium text-xs text-muted-foreground uppercase tracking-wide">
+														Cálculo
+													</div>
+													<code className="block rounded bg-muted px-2 py-1 font-mono text-sm">
+														{example.calculation}
+													</code>
+												</div>
+												
+												<div>
+													<div className="mb-1 font-medium text-xs text-muted-foreground uppercase tracking-wide">
+														Resultado
+													</div>
+													<div className="rounded bg-green-50 px-2 py-1 font-medium text-green-800 text-sm dark:bg-green-950/20 dark:text-green-300">
+														{example.result}
+													</div>
+												</div>
+											</CardContent>
+										</Card>
+									))}
+								</div>
+							</div>
+						</div>
+					)}
+
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setShowExamplesModal(false)}>
+							Fechar
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</Dialog>
 	);
 }
