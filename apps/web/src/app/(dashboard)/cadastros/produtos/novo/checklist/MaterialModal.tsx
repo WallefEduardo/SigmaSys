@@ -59,7 +59,6 @@ interface MaterialItem {
 	multiplier?: number; // Multiplicador para fórmulas
 	unit: string;
 	description?: string;
-	measurementText?: string; // Texto personalizado para coleta de medidas
 	// Custos calculados
 	totalMaterialCost?: number;
 	totalEquipmentCost?: number;
@@ -89,7 +88,6 @@ export default function MaterialModal({
 		multiplier: "1",
 		unit: "",
 		description: "",
-		measurementText: "",
 	});
 
 	// 🛡️ Queries protegidas com fallbacks seguros
@@ -253,7 +251,6 @@ export default function MaterialModal({
 					}),
 			unit: currentForm.unit || material?.unit || rule?.resultUnit || "un",
 			description: currentForm.description.trim() || undefined,
-			measurementText: currentForm.measurementText.trim() || undefined,
 			// Custos calculados
 			totalMaterialCost: costs.totalMaterialCost,
 			totalEquipmentCost: costs.totalEquipmentCost,
@@ -272,8 +269,7 @@ export default function MaterialModal({
 			multiplier: "1",
 			unit: "",
 			description: "",
-			measurementText: "",
-		});
+			});
 	};
 
 	const handleFormulaSelect = (
@@ -308,7 +304,6 @@ export default function MaterialModal({
 			multiplier: material.multiplier?.toString() || "1",
 			unit: material.unit,
 			description: material.description || "",
-			measurementText: material.measurementText || "",
 		});
 	};
 
@@ -353,7 +348,6 @@ export default function MaterialModal({
 					}),
 			unit: currentForm.unit || material?.unit || "un",
 			description: currentForm.description.trim() || undefined,
-			measurementText: currentForm.measurementText.trim() || undefined,
 			// Custos calculados
 			totalMaterialCost: costs.totalMaterialCost,
 			totalEquipmentCost: costs.totalEquipmentCost,
@@ -379,8 +373,7 @@ export default function MaterialModal({
 			multiplier: "1",
 			unit: "",
 			description: "",
-			measurementText: "",
-		});
+			});
 	};
 
 	const handleSave = () => {
@@ -404,8 +397,7 @@ export default function MaterialModal({
 			multiplier: "1",
 			unit: "",
 			description: "",
-			measurementText: "",
-		});
+			});
 	};
 
 	const handleShowCostDetail = (material: MaterialItem) => {
@@ -699,34 +691,6 @@ export default function MaterialModal({
 							</p>
 						</div>
 
-						{/* Campo de Texto para Medidas - Só aparece se for fórmula */}
-						{currentForm.calculationType === "formula" &&
-							currentForm.calculationRuleId && (
-								<div className="space-y-2">
-									<Label
-										htmlFor="measurementText"
-										className="font-medium text-base"
-									>
-										Texto Personalizado para Medidas (Opcional)
-									</Label>
-									<Input
-										id="measurementText"
-										value={currentForm.measurementText}
-										onChange={(e) =>
-											setCurrentForm((prev) => ({
-												...prev,
-												measurementText: e.target.value,
-											}))
-										}
-										placeholder="Ex: Informe as dimensões da fachada"
-										className="w-full"
-									/>
-									<p className="text-muted-foreground text-xs">
-										Texto que aparecerá para o vendedor quando for coletar as
-										medidas. Se vazio, usará texto padrão.
-									</p>
-								</div>
-							)}
 
 						<Button
 							type="button"
@@ -1015,34 +979,6 @@ export default function MaterialModal({
 									</p>
 								</div>
 
-								{/* Campo de Texto para Medidas - Edição - Só aparece se for fórmula */}
-								{currentForm.calculationType === "formula" &&
-									currentForm.calculationRuleId && (
-										<div className="space-y-2">
-											<Label
-												htmlFor="edit-measurementText"
-												className="font-medium text-base"
-											>
-												Texto Personalizado para Medidas (Opcional)
-											</Label>
-											<Input
-												id="edit-measurementText"
-												value={currentForm.measurementText}
-												onChange={(e) =>
-													setCurrentForm((prev) => ({
-														...prev,
-														measurementText: e.target.value,
-													}))
-												}
-												placeholder="Ex: Informe as dimensões da fachada"
-												className="w-full"
-											/>
-											<p className="text-muted-foreground text-xs">
-												Texto que aparecerá para o vendedor quando for coletar
-												as medidas. Se vazio, usará texto padrão.
-											</p>
-										</div>
-									)}
 							</div>
 						</div>
 					)}

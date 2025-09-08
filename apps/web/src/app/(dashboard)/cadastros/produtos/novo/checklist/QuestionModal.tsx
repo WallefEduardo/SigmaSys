@@ -46,6 +46,7 @@ interface QuestionModalProps {
 interface ResponseOption {
 	id: string;
 	label: string;
+	measurementText?: string; // Texto personalizado para coleta de medidas desta opção
 	actions: ResponseAction[];
 }
 
@@ -169,6 +170,7 @@ export default function QuestionModal({
 		const newOption: ResponseOption = {
 			id: `option-${Date.now()}`,
 			label: `Opção ${questionData.options.length + 1}`,
+			measurementText: "",
 			actions: [],
 		};
 		setQuestionData((prev) => ({
@@ -195,6 +197,7 @@ export default function QuestionModal({
 			const duplicatedOption: ResponseOption = {
 				id: `opt-${timestamp}-${randomId}`,
 				label: `${optionToDuplicate.label} (cópia)`,
+				measurementText: optionToDuplicate.measurementText || "",
 				actions: optionToDuplicate.actions.map((action, index) => ({
 					...action,
 					id: `act-${timestamp}-${randomId}-${index}`,
@@ -429,6 +432,23 @@ export default function QuestionModal({
 							>
 								<X className="h-4 w-4" />
 							</Button>
+						</div>
+
+						{/* Texto Personalizado para Medidas desta Opção */}
+						<div className="space-y-2">
+							<Label className="text-sm">Texto Personalizado para Medidas (Opcional)</Label>
+							<Input
+								value={option.measurementText || ""}
+								onChange={(e) =>
+									updateOption(option.id, "measurementText", e.target.value)
+								}
+								placeholder="Ex: Informe as dimensões da fachada completa"
+								className="w-full"
+							/>
+							<p className="text-muted-foreground text-xs">
+								Este texto aparecerá para o vendedor quando for coletar medidas para esta opção.
+								Todos os materiais desta opção usarão o mesmo texto.
+							</p>
 						</div>
 
 						{/* Actions for this option */}
