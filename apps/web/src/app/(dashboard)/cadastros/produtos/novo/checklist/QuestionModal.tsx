@@ -1,15 +1,15 @@
 "use client";
 
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
 	Copy,
-	Cpu,
-	Package,
-	Palette,
+	Edit3,
 	Plus,
 	Settings,
 	Trash2,
+	X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -40,6 +40,7 @@ interface QuestionModalProps {
 	onSave: (question: QuestionData) => void;
 	initialData?: any;
 	isEditing?: boolean;
+	fullScreen?: boolean;
 }
 
 interface ResponseOption {
@@ -50,31 +51,22 @@ interface ResponseOption {
 
 interface ResponseAction {
 	id: string;
-	type: "add_material" | "add_process" | "add_equipment" | "add_finish";
-	itemId: string;
-	itemName?: string;
+	type: string;
+	itemName: string;
 	quantity?: number;
-	formula?: string;
-	materials?: any[]; // Para armazenar múltiplos materiais do modal
-	processes?: any[]; // Para armazenar múltiplos processos do modal
-	equipments?: any[]; // Para armazenar múltiplos equipamentos do modal
+	materials?: any[];
+	processes?: any[];
+	equipments?: any[];
 }
 
 interface QuestionData {
 	question: string;
-	description?: string;
+	description: string;
 	responseType: "single" | "multiple" | "conditional";
 	options: ResponseOption[];
 }
 
-const actionTypeIcons = {
-	add_material: Package,
-	add_process: Cpu,
-	add_equipment: Settings,
-	add_finish: Palette,
-};
-
-const actionTypeLabels = {
+const actionTypeLabels: Record<string, string> = {
 	add_material: "Adicionar Material",
 	add_process: "Adicionar Processo",
 	add_equipment: "Adicionar Equipamento",
@@ -87,6 +79,7 @@ export default function QuestionModal({
 	onSave,
 	initialData,
 	isEditing,
+	fullScreen = false,
 }: QuestionModalProps) {
 	const [questionData, setQuestionData] = useState<QuestionData>({
 		question: "",
@@ -102,6 +95,31 @@ export default function QuestionModal({
 		optionId: string;
 		actionId: string;
 	} | null>(null);
+
+	// Memoizar referências de dados para evitar re-renderizações desnecessárias
+	const currentActionMaterials = useMemo(() => {
+		if (!currentEditingAction) return [];
+		return questionData.options
+			.find((opt) => opt.id === currentEditingAction.optionId)
+			?.actions.find((act) => act.id === currentEditingAction.actionId)
+			?.materials || [];
+	}, [currentEditingAction, questionData.options]);
+
+	const currentActionProcesses = useMemo(() => {
+		if (!currentEditingAction) return [];
+		return questionData.options
+			.find((opt) => opt.id === currentEditingAction.optionId)
+			?.actions.find((act) => act.id === currentEditingAction.actionId)
+			?.processes || [];
+	}, [currentEditingAction, questionData.options]);
+
+	const currentActionEquipments = useMemo(() => {
+		if (!currentEditingAction) return [];
+		return questionData.options
+			.find((opt) => opt.id === currentEditingAction.optionId)
+			?.actions.find((act) => act.id === currentEditingAction.actionId)
+			?.equipments || [];
+	}, [currentEditingAction, questionData.options]);
 
 	// Carregar dados iniciais quando estiver editando
 	useEffect(() => {
@@ -127,54 +145,30 @@ export default function QuestionModal({
 		}
 	}, [isOpen, isEditing, JSON.stringify(initialData)]);
 
-	// Fetch real data - usando estrutura correta do tRPC
-	// 🛡️ Queries protegidas com fallbacks seguros
-	const {
-		data: materialsData,
-		isLoading: materialsLoading,
-		error: materialsError,
-	} = api.materials.list.useQuery(
-		{ limit: 100 },
-		{ retry: 1, enabled: isOpen }, // Só executar quando modal abrir
-	);
-	const {
-		data: processesData,
-		isLoading: processesLoading,
-		error: processesError,
-	} = api.processes.list.useQuery({}, { retry: 1, enabled: isOpen });
-	const {
-		data: equipmentsData,
-		isLoading: equipmentsLoading,
-		error: equipmentsError,
-	} = api.equipments.list.useQuery({}, { retry: 1, enabled: isOpen });
-	const {
-		data: finishesData,
-		isLoading: finishesLoading,
-		error: finishesError,
-	} = api.finishes.list.useQuery({}, { retry: 1, enabled: isOpen });
+	const { data: materials } = api.materials.list.useQuery({
+		page: 1,
+		limit: 100,
+	});
 
-	// 🔒 Dados seguros com fallbacks
-	const safeMaterials = materialsData?.materials || [];
-	const safeProcesses = processesData?.processes || [];
-	const safeEquipments = equipmentsData?.equipments || [];
-	const safeFinishes = finishesData?.finishes || [];
+	const { data: processes } = api.processes.list.useQuery({
+		page: 1,
+		limit: 100,
+	});
 
-	// 📊 Loading state geral
-	const isLoadingData =
-		materialsLoading ||
-		processesLoading ||
-		equipmentsLoading ||
-		finishesLoading;
+	const { data: equipment } = api.equipments.list.useQuery({
+		page: 1,
+		limit: 100,
+	});
 
-	const materials = materialsData?.items || [];
-	const processes = processesData || [];
-	const equipment = equipmentsData || [];
-	const finishes = finishesData || [];
+	const { data: finishes } = api.finishes.list.useQuery({
+		page: 1,
+		limit: 100,
+	});
 
 	const addOption = () => {
 		const newOption: ResponseOption = {
-			id: `opt-${Date.now()}`,
-			label: "",
+			id: `option-${Date.now()}`,
+			label: `Opção ${questionData.options.length + 1}`,
 			actions: [],
 		};
 		setQuestionData((prev) => ({
@@ -192,7 +186,7 @@ export default function QuestionModal({
 
 	const duplicateOption = (optionId: string) => {
 		const optionToDuplicate = questionData.options.find(
-			(opt) => opt.id === optionId,
+			(opt) => opt.id === optionId
 		);
 		if (optionToDuplicate) {
 			const timestamp = Date.now();
@@ -222,16 +216,17 @@ export default function QuestionModal({
 		setQuestionData((prev) => ({
 			...prev,
 			options: prev.options.map((opt) =>
-				opt.id === optionId ? { ...opt, [field]: value } : opt,
+				opt.id === optionId ? { ...opt, [field]: value } : opt
 			),
 		}));
 	};
 
-	const addAction = (optionId: string) => {
+	const addAction = (optionId: string, actionType: string) => {
 		const newAction: ResponseAction = {
-			id: `act-${Date.now()}`,
-			type: "add_material",
-			itemId: "",
+			id: `action-${Date.now()}`,
+			type: actionType,
+			itemName: "",
+			quantity: actionType === "add_material" ? 1 : undefined,
 		};
 
 		setQuestionData((prev) => ({
@@ -239,7 +234,7 @@ export default function QuestionModal({
 			options: prev.options.map((opt) =>
 				opt.id === optionId
 					? { ...opt, actions: [...opt.actions, newAction] }
-					: opt,
+					: opt
 			),
 		}));
 	};
@@ -252,8 +247,8 @@ export default function QuestionModal({
 					? {
 							...opt,
 							actions: opt.actions.filter((act) => act.id !== actionId),
-						}
-					: opt,
+					  }
+					: opt
 			),
 		}));
 	};
@@ -262,7 +257,7 @@ export default function QuestionModal({
 		optionId: string,
 		actionId: string,
 		field: string,
-		value: any,
+		value: any
 	) => {
 		setQuestionData((prev) => ({
 			...prev,
@@ -271,24 +266,45 @@ export default function QuestionModal({
 					? {
 							...opt,
 							actions: opt.actions.map((act) =>
-								act.id === actionId ? { ...act, [field]: value } : act,
+								act.id === actionId ? { ...act, [field]: value } : act
 							),
-						}
-					: opt,
+					  }
+					: opt
 			),
 		}));
 	};
 
-	const getItemsForActionType = (type: string) => {
-		switch (type) {
+	const handleActionEdit = (optionId: string, actionId: string) => {
+		setCurrentEditingAction({ optionId, actionId });
+		const action = questionData.options
+			.find((opt) => opt.id === optionId)
+			?.actions.find((act) => act.id === actionId);
+
+		if (action) {
+			switch (action.type) {
+				case "add_material":
+					setMaterialModalOpen(true);
+					break;
+				case "add_process":
+					setProcessModalOpen(true);
+					break;
+				case "add_equipment":
+					setEquipmentModalOpen(true);
+					break;
+			}
+		}
+	};
+
+	const getAvailableItems = (actionType: string) => {
+		switch (actionType) {
 			case "add_material":
-				return materials?.items || [];
+				return materials?.materials || [];
 			case "add_process":
-				return processes || [];
+				return processes?.processes || [];
 			case "add_equipment":
-				return equipment || [];
+				return equipment?.equipments || [];
 			case "add_finish":
-				return finishes || [];
+				return finishes?.finishes || [];
 			default:
 				return [];
 		}
@@ -312,6 +328,297 @@ export default function QuestionModal({
 		}
 	};
 
+	// Renderizar conteúdo do formulário
+	const formContent = (
+		<div className="space-y-6 py-4">
+			{/* Question Fields */}
+			<div className="space-y-4">
+				<div>
+					<Label htmlFor="question">Pergunta *</Label>
+					<Input
+						id="question"
+						value={questionData.question}
+						onChange={(e) =>
+							setQuestionData((prev) => ({
+								...prev,
+								question: e.target.value,
+							}))
+						}
+						placeholder="Digite sua pergunta aqui..."
+					/>
+				</div>
+
+				<div>
+					<Label htmlFor="description">Descrição (opcional)</Label>
+					<Textarea
+						id="description"
+						value={questionData.description}
+						onChange={(e) =>
+							setQuestionData((prev) => ({
+								...prev,
+								description: e.target.value,
+							}))
+						}
+						placeholder="Descrição adicional ou instruções..."
+						rows={2}
+					/>
+				</div>
+
+				<div>
+					<Label htmlFor="responseType">Tipo de Resposta</Label>
+					<Select
+						value={questionData.responseType}
+						onValueChange={(value: "single" | "multiple" | "conditional") =>
+							setQuestionData((prev) => ({ ...prev, responseType: value }))
+						}
+					>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="single">Única Escolha</SelectItem>
+							<SelectItem value="multiple">Múltipla Escolha</SelectItem>
+							<SelectItem value="conditional">Condicional</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+
+			{/* Response Options */}
+			<div className="space-y-4">
+				<div className="flex items-center justify-between">
+					<Label>Opções de Resposta *</Label>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={addOption}
+						className="flex items-center gap-2"
+					>
+						<Plus className="h-4 w-4" />
+						Adicionar Opção
+					</Button>
+				</div>
+
+				{questionData.options.map((option) => (
+					<div key={option.id} className="space-y-4 p-4 border rounded-lg">
+						<div className="flex items-center gap-2">
+							<Input
+								value={option.label}
+								onChange={(e) =>
+									updateOption(option.id, "label", e.target.value)
+								}
+								placeholder="Label da opção"
+								className="flex-1"
+							/>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => duplicateOption(option.id)}
+								title="Duplicar opção"
+							>
+								<Copy className="h-4 w-4" />
+							</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => removeOption(option.id)}
+								className="text-red-600 hover:text-red-700"
+							>
+								<X className="h-4 w-4" />
+							</Button>
+						</div>
+
+						{/* Actions for this option */}
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<Label className="text-sm">Ações desta opção:</Label>
+								<Select
+									onValueChange={(actionType) =>
+										addAction(option.id, actionType)
+									}
+								>
+									<SelectTrigger className="w-40">
+										<SelectValue placeholder="Adicionar ação..." />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="add_material">
+											+ Material
+										</SelectItem>
+										<SelectItem value="add_process">+ Processo</SelectItem>
+										<SelectItem value="add_equipment">
+											+ Equipamento
+										</SelectItem>
+										<SelectItem value="add_finish">+ Acabamento</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+
+							{option.actions.map((action) => (
+								<div
+									key={action.id}
+									className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 p-2 rounded"
+								>
+									<span className="text-sm font-medium text-blue-600">
+										{actionTypeLabels[action.type]}
+									</span>
+									<Select
+										value={action.itemName}
+										onValueChange={(value) =>
+											updateAction(option.id, action.id, "itemName", value)
+										}
+									>
+										<SelectTrigger className="flex-1">
+											<SelectValue placeholder="Selecionar item..." />
+										</SelectTrigger>
+										<SelectContent>
+											{(getAvailableItems(action.type) || []).map((item: any) => (
+												<SelectItem key={item.id} value={item.name}>
+													{item.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+
+									{action.type === "add_material" && (
+										<Input
+											type="number"
+											value={action.quantity || 1}
+											onChange={(e) =>
+												updateAction(
+													option.id,
+													action.id,
+													"quantity",
+													Number.parseFloat(e.target.value) || 1
+												)
+											}
+											className="w-20"
+											placeholder="Qtd"
+											min="0.1"
+											step="0.1"
+										/>
+									)}
+
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() => handleActionEdit(option.id, action.id)}
+										title="Configurar ação"
+									>
+										<Settings className="h-4 w-4" />
+									</Button>
+
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() => removeAction(option.id, action.id)}
+										className="text-red-600 hover:text-red-700"
+									>
+										<Trash2 className="h-4 w-4" />
+									</Button>
+								</div>
+							))}
+						</div>
+					</div>
+				))}
+			</div>
+
+			<div className="flex justify-end gap-4 pt-6 border-t">
+				<Button variant="outline" onClick={onClose}>
+					Cancelar
+				</Button>
+				<Button
+					onClick={handleSave}
+					disabled={
+						!questionData.question || questionData.options.length === 0
+					}
+				>
+					{isEditing ? "Salvar Alterações" : "Criar Pergunta"}
+				</Button>
+			</div>
+		</div>
+	);
+
+	// Se for fullScreen, renderizar como tela dedicada
+	if (fullScreen) {
+		return (
+			<>
+				{formContent}
+
+				{/* Modal de Materiais */}
+				<MaterialModal
+					isOpen={materialModalOpen}
+					onClose={() => {
+						setMaterialModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					onSave={(materials) => {
+						if (currentEditingAction) {
+							updateAction(
+								currentEditingAction.optionId,
+								currentEditingAction.actionId,
+								"materials",
+								materials
+							);
+						}
+						setMaterialModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					initialMaterials={currentActionMaterials}
+				/>
+
+				{/* Modal de Processos */}
+				<ProcessModal
+					isOpen={processModalOpen}
+					onClose={() => {
+						setProcessModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					onSave={(processes) => {
+						if (currentEditingAction) {
+							updateAction(
+								currentEditingAction.optionId,
+								currentEditingAction.actionId,
+								"processes",
+								processes
+							);
+						}
+						setProcessModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					initialProcesses={currentActionProcesses}
+				/>
+
+				{/* Modal de Equipamentos */}
+				<EquipmentModal
+					isOpen={equipmentModalOpen}
+					onClose={() => {
+						setEquipmentModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					onSave={(equipments) => {
+						if (currentEditingAction) {
+							updateAction(
+								currentEditingAction.optionId,
+								currentEditingAction.actionId,
+								"equipments",
+								equipments
+							);
+						}
+						setEquipmentModalOpen(false);
+						setCurrentEditingAction(null);
+					}}
+					equipments={currentActionEquipments}
+				/>
+			</>
+		);
+	}
+
+	// Renderizar como modal tradicional
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
@@ -326,407 +633,7 @@ export default function QuestionModal({
 					</DialogDescription>
 				</DialogHeader>
 
-				<div className="space-y-6 py-4">
-					{/* Question Fields */}
-					<div className="space-y-4">
-						<div>
-							<Label htmlFor="question">Pergunta *</Label>
-							<Input
-								id="question"
-								value={questionData.question}
-								onChange={(e) =>
-									setQuestionData((prev) => ({
-										...prev,
-										question: e.target.value,
-									}))
-								}
-								placeholder="Ex: Qual material você deseja usar?"
-								className="mt-1"
-							/>
-						</div>
-
-						<div>
-							<Label htmlFor="description">Descrição (opcional)</Label>
-							<Textarea
-								id="description"
-								value={questionData.description}
-								onChange={(e) =>
-									setQuestionData((prev) => ({
-										...prev,
-										description: e.target.value,
-									}))
-								}
-								placeholder="Informações adicionais sobre a pergunta"
-								className="mt-1"
-								rows={2}
-							/>
-						</div>
-
-						<div>
-							<Label htmlFor="responseType">Tipo de Resposta</Label>
-							<Select
-								value={questionData.responseType}
-								onValueChange={(value: any) =>
-									setQuestionData((prev) => ({ ...prev, responseType: value }))
-								}
-							>
-								<SelectTrigger className="mt-1">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="single">Escolha Única</SelectItem>
-									<SelectItem value="multiple">Múltipla Escolha</SelectItem>
-									<SelectItem value="conditional">
-										Condicional (leva a outras perguntas)
-									</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-					</div>
-
-					{/* Response Options */}
-					<div className="space-y-4">
-						<div className="flex items-center justify-between">
-							<Label>Opções de Resposta</Label>
-							<Button type="button" size="sm" onClick={addOption}>
-								<Plus className="mr-1 h-4 w-4" />
-								Adicionar Opção
-							</Button>
-						</div>
-
-						{questionData.options.map((option) => (
-							<div key={option.id} className="space-y-4 rounded-lg border p-4">
-								<div className="flex items-start gap-2">
-									<div className="flex-1">
-										<Label>Texto da Opção</Label>
-										<Input
-											value={option.label}
-											onChange={(e) =>
-												updateOption(option.id, "label", e.target.value)
-											}
-											placeholder="Ex: Acrílico 3mm"
-											className="mt-1"
-										/>
-									</div>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										onClick={() => duplicateOption(option.id)}
-										className="mt-6"
-										title="Duplicar opção"
-									>
-										<Copy className="h-4 w-4 text-muted-foreground" />
-									</Button>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										onClick={() => removeOption(option.id)}
-										className="mt-6"
-									>
-										<Trash2 className="h-4 w-4 text-destructive" />
-									</Button>
-								</div>
-
-								{/* Actions for this option */}
-								<div className="ml-4 space-y-3">
-									<div className="flex items-center justify-between">
-										<Label className="text-sm">Ações desta Resposta</Label>
-										<Button
-											type="button"
-											size="sm"
-											variant="outline"
-											onClick={() => addAction(option.id)}
-										>
-											<Plus className="mr-1 h-3 w-3" />
-											Adicionar Ação
-										</Button>
-									</div>
-
-									{option.actions.map((action) => {
-										const Icon = actionTypeIcons[action.type];
-										const items = getItemsForActionType(action.type);
-
-										return (
-											<div
-												key={action.id}
-												className="flex items-center gap-2 rounded bg-muted/50 p-2"
-											>
-												<Icon className="h-4 w-4 text-muted-foreground" />
-
-												<Select
-													value={action.type}
-													onValueChange={(value: any) => {
-														updateAction(option.id, action.id, "type", value);
-														// Se selecionou "Adicionar Material", abrir modal específico
-														if (value === "add_material") {
-															setCurrentEditingAction({
-																optionId: option.id,
-																actionId: action.id,
-															});
-															setMaterialModalOpen(true);
-														}
-													}}
-												>
-													<SelectTrigger className="w-48">
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent>
-														{Object.entries(actionTypeLabels).map(
-															([key, label]) => (
-																<SelectItem key={key} value={key}>
-																	{label}
-																</SelectItem>
-															),
-														)}
-													</SelectContent>
-												</Select>
-
-												{action.type === "add_material" ? (
-													// Seção especial para materiais com modal
-													<div className="flex flex-1 items-center gap-2">
-														{action.materials && action.materials.length > 0 ? (
-															<div className="flex-1 rounded border border-green-200 bg-green-50 p-2 text-sm">
-																<span className="font-medium text-green-800">
-																	{action.materials.length} material
-																	{action.materials.length > 1 ? "ais" : ""}{" "}
-																	configurado
-																	{action.materials.length > 1 ? "s" : ""}
-																</span>
-																<div className="mt-1 text-green-600 text-xs">
-																	{action.materials
-																		.map((mat: any) => mat.materialName)
-																		.join(", ")}
-																</div>
-															</div>
-														) : (
-															<Button
-																type="button"
-																variant="outline"
-																className="flex-1 justify-start"
-																onClick={() => {
-																	setCurrentEditingAction({
-																		optionId: option.id,
-																		actionId: action.id,
-																	});
-																	setMaterialModalOpen(true);
-																}}
-															>
-																<Package className="mr-2 h-4 w-4" />
-																Configurar Materiais
-															</Button>
-														)}
-														{action.materials &&
-															action.materials.length > 0 && (
-																<Button
-																	type="button"
-																	variant="outline"
-																	size="sm"
-																	onClick={() => {
-																		setCurrentEditingAction({
-																			optionId: option.id,
-																			actionId: action.id,
-																		});
-																		setMaterialModalOpen(true);
-																	}}
-																>
-																	Editar
-																</Button>
-															)}
-													</div>
-												) : action.type === "add_process" ? (
-													// Seção especial para processos com modal
-													<div className="flex flex-1 items-center gap-2">
-														{action.processes && action.processes.length > 0 ? (
-															<div className="flex-1 rounded border border-orange-200 bg-orange-50 p-2 text-sm">
-																<span className="font-medium text-orange-800">
-																	{action.processes.length} processo
-																	{action.processes.length > 1 ? "s" : ""}{" "}
-																	configurado
-																	{action.processes.length > 1 ? "s" : ""}
-																</span>
-																<div className="mt-1 text-orange-600 text-xs">
-																	{action.processes
-																		.map((proc: any) => proc.processName)
-																		.join(", ")}
-																</div>
-															</div>
-														) : (
-															<Button
-																type="button"
-																variant="outline"
-																className="flex-1 justify-start"
-																onClick={() => {
-																	setCurrentEditingAction({
-																		optionId: option.id,
-																		actionId: action.id,
-																	});
-																	setProcessModalOpen(true);
-																}}
-															>
-																<Cpu className="mr-2 h-4 w-4" />
-																Configurar Processos
-															</Button>
-														)}
-														{action.processes &&
-															action.processes.length > 0 && (
-																<Button
-																	type="button"
-																	variant="outline"
-																	size="sm"
-																	onClick={() => {
-																		setCurrentEditingAction({
-																			optionId: option.id,
-																			actionId: action.id,
-																		});
-																		setProcessModalOpen(true);
-																	}}
-																>
-																	Editar
-																</Button>
-															)}
-													</div>
-												) : action.type === "add_equipment" ? (
-													// Seção especial para equipamentos com modal
-													<div className="flex flex-1 items-center gap-2">
-														{action.equipments &&
-														action.equipments.length > 0 ? (
-															<div className="flex-1 rounded border border-purple-200 bg-purple-50 p-2 text-sm">
-																<span className="font-medium text-purple-800">
-																	{action.equipments.length} equipamento
-																	{action.equipments.length > 1 ? "s" : ""}{" "}
-																	configurado
-																	{action.equipments.length > 1 ? "s" : ""}
-																</span>
-																<div className="mt-1 text-purple-600 text-xs">
-																	{action.equipments
-																		.map((equip: any) => equip.equipmentName)
-																		.join(", ")}
-																</div>
-															</div>
-														) : (
-															<Button
-																type="button"
-																variant="outline"
-																className="flex-1 justify-start"
-																onClick={() => {
-																	setCurrentEditingAction({
-																		optionId: option.id,
-																		actionId: action.id,
-																	});
-																	setEquipmentModalOpen(true);
-																}}
-															>
-																<Settings className="mr-2 h-4 w-4" />
-																Configurar Equipamentos
-															</Button>
-														)}
-														{action.equipments &&
-															action.equipments.length > 0 && (
-																<Button
-																	type="button"
-																	variant="outline"
-																	size="sm"
-																	onClick={() => {
-																		setCurrentEditingAction({
-																			optionId: option.id,
-																			actionId: action.id,
-																		});
-																		setEquipmentModalOpen(true);
-																	}}
-																>
-																	Editar
-																</Button>
-															)}
-													</div>
-												) : (
-													// Seção normal para outros tipos de ação
-													<>
-														<Select
-															value={action.itemId}
-															onValueChange={(value) => {
-																const item = items.find(
-																	(i: any) => i.id === value,
-																);
-																updateAction(
-																	option.id,
-																	action.id,
-																	"itemId",
-																	value,
-																);
-																updateAction(
-																	option.id,
-																	action.id,
-																	"itemName",
-																	item?.name || "",
-																);
-															}}
-														>
-															<SelectTrigger className="flex-1">
-																<SelectValue placeholder="Selecione o item" />
-															</SelectTrigger>
-															<SelectContent>
-																{items.map((item: any) => (
-																	<SelectItem key={item.id} value={item.id}>
-																		{item.name}
-																		{item.cost && (
-																			<span className="ml-2 text-muted-foreground">
-																				(R$ {item.cost})
-																			</span>
-																		)}
-																	</SelectItem>
-																))}
-															</SelectContent>
-														</Select>
-
-														<Input
-															type="number"
-															placeholder="Qtd"
-															className="w-20"
-															value={action.quantity || ""}
-															onChange={(e) =>
-																updateAction(
-																	option.id,
-																	action.id,
-																	"quantity",
-																	e.target.value,
-																)
-															}
-														/>
-													</>
-												)}
-
-												<Button
-													type="button"
-													variant="ghost"
-													size="icon"
-													onClick={() => removeAction(option.id, action.id)}
-												>
-													<Trash2 className="h-3 w-3 text-destructive" />
-												</Button>
-											</div>
-										);
-									})}
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-
-				<DialogFooter>
-					<Button variant="outline" onClick={onClose}>
-						Cancelar
-					</Button>
-					<Button
-						onClick={handleSave}
-						disabled={
-							!questionData.question || questionData.options.length === 0
-						}
-					>
-						{isEditing ? "Salvar Alterações" : "Criar Pergunta"}
-					</Button>
-				</DialogFooter>
+				{formContent}
 			</DialogContent>
 
 			{/* Modal de Materiais */}
@@ -738,26 +645,17 @@ export default function QuestionModal({
 				}}
 				onSave={(materials) => {
 					if (currentEditingAction) {
-						// Salvar os materiais na ação correspondente
 						updateAction(
 							currentEditingAction.optionId,
 							currentEditingAction.actionId,
 							"materials",
-							materials,
+							materials
 						);
 					}
 					setMaterialModalOpen(false);
 					setCurrentEditingAction(null);
 				}}
-				initialMaterials={
-					currentEditingAction
-						? questionData.options
-								.find((opt) => opt.id === currentEditingAction.optionId)
-								?.actions.find(
-									(act) => act.id === currentEditingAction.actionId,
-								)?.materials || []
-						: []
-				}
+				initialMaterials={currentActionMaterials}
 			/>
 
 			{/* Modal de Processos */}
@@ -769,26 +667,17 @@ export default function QuestionModal({
 				}}
 				onSave={(processes) => {
 					if (currentEditingAction) {
-						// Salvar os processos na ação correspondente
 						updateAction(
 							currentEditingAction.optionId,
 							currentEditingAction.actionId,
 							"processes",
-							processes,
+							processes
 						);
 					}
 					setProcessModalOpen(false);
 					setCurrentEditingAction(null);
 				}}
-				initialProcesses={
-					currentEditingAction
-						? questionData.options
-								.find((opt) => opt.id === currentEditingAction.optionId)
-								?.actions.find(
-									(act) => act.id === currentEditingAction.actionId,
-								)?.processes || []
-						: []
-				}
+				initialProcesses={currentActionProcesses}
 			/>
 
 			{/* Modal de Equipamentos */}
@@ -800,26 +689,17 @@ export default function QuestionModal({
 				}}
 				onSave={(equipments) => {
 					if (currentEditingAction) {
-						// Salvar os equipamentos na ação correspondente
 						updateAction(
 							currentEditingAction.optionId,
 							currentEditingAction.actionId,
 							"equipments",
-							equipments,
+							equipments
 						);
 					}
 					setEquipmentModalOpen(false);
 					setCurrentEditingAction(null);
 				}}
-				initialEquipments={
-					currentEditingAction
-						? questionData.options
-								.find((opt) => opt.id === currentEditingAction.optionId)
-								?.actions.find(
-									(act) => act.id === currentEditingAction.actionId,
-								)?.equipments || []
-						: []
-				}
+				equipments={currentActionEquipments}
 			/>
 		</Dialog>
 	);

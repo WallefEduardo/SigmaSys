@@ -100,10 +100,11 @@ function ChecklistFlowInternal({
 	const [editingNode, setEditingNode] = useState<Node | null>(null);
 	const [deleteNodeId, setDeleteNodeId] = useState<string | null>(null);
 	const [isDeletingNode, setIsDeletingNode] = useState(false);
+	const [showAddQuestionScreen, setShowAddQuestionScreen] = useState(false);
 
-	// Expor função de adicionar pergunta via ref
+	// Expor função de adicionar pergunta via ref (agora abre tela dedicada)
 	const handleOpenAddQuestionModal = useCallback(() => {
-		setIsModalOpen(true);
+		setShowAddQuestionScreen(true);
 	}, []);
 
 	useImperativeHandle(
@@ -209,6 +210,7 @@ function ChecklistFlowInternal({
 				onDelete: () => handleDeleteNode(editingNode.id),
 			});
 			setEditingNode(null);
+			setIsModalOpen(false);
 		} else {
 			// Criando novo node
 			const nodeId = `node-${nextNodeId}`;
@@ -253,6 +255,9 @@ function ChecklistFlowInternal({
 			// ✅ INCREMENT_NODE_ID já é chamado dentro do addNode() no ChecklistProvider
 			// Remoção da duplicação que causava pulo de IDs
 		}
+		
+		// Fechar a tela de adicionar pergunta após salvar
+		setShowAddQuestionScreen(false);
 	};
 
 	// Adicionar callbacks aos nodes (SEM LOGS para evitar spam)
@@ -271,6 +276,36 @@ function ChecklistFlowInternal({
 	}, [nodes, handleEditNode, handleDeleteNode]);
 
 	// Debug removido para produção
+
+	// Se estiver na tela de adicionar pergunta, mostrar apenas ela
+	if (showAddQuestionScreen) {
+		return (
+			<div className="space-y-6">
+				{/* Header da tela de adicionar pergunta */}
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-4">
+						<button
+							onClick={() => setShowAddQuestionScreen(false)}
+							className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+						>
+							← Voltar ao Checklist
+						</button>
+						<h2 className="text-xl font-semibold">Nova Pergunta</h2>
+					</div>
+				</div>
+				
+				{/* Formulário de pergunta em tela cheia */}
+				<QuestionModal
+					isOpen={true}
+					onClose={() => setShowAddQuestionScreen(false)}
+					onSave={handleAddQuestion}
+					initialData={null}
+					isEditing={false}
+					fullScreen={true}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<>

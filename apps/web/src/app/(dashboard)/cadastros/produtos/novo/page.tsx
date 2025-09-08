@@ -105,7 +105,7 @@ export default function NovoProdutoPage() {
 		targetUnit: "m2",
 		markup: 2.5,
 		complexidade: "medium",
-		checklist: null,
+		checklist: undefined,
 	});
 
 	const createProductMutation = api.products.create.useMutation({
@@ -137,7 +137,7 @@ export default function NovoProdutoPage() {
 					edges: formData.checklist.edges || [],
 					selections: formData.checklist.selections || {},
 				}
-			: null;
+			: undefined;
 
 		// Preparar dados do produto
 		const productData = {

@@ -10,7 +10,7 @@ import {
 	Trash2,
 	X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -118,14 +118,31 @@ export default function ProcessModal({
 	const predefinedRules = predefinedRulesData?.rules || [];
 	const allRules = [...calculationRules, ...predefinedRules];
 
+	// Referência estável para comparação
+	const prevInitialProcesses = useRef<ProcessItem[]>([]);
+	
+	// Memoizar apenas quando realmente houve mudança de conteúdo
+	const stableInitialProcesses = useMemo(() => {
+		// Verificar se realmente houve mudança usando JSON.stringify para deep comparison
+		const currentStr = JSON.stringify(initialProcesses);
+		const prevStr = JSON.stringify(prevInitialProcesses.current);
+		
+		if (currentStr !== prevStr) {
+			prevInitialProcesses.current = initialProcesses;
+			return initialProcesses;
+		}
+		
+		return prevInitialProcesses.current;
+	}, [initialProcesses]);
+
 	// Carregar processos iniciais quando modal abrir
 	useEffect(() => {
-		if (isOpen && initialProcesses.length > 0) {
-			setProcesses(initialProcesses);
+		if (isOpen && stableInitialProcesses.length > 0) {
+			setProcesses(stableInitialProcesses);
 		} else if (isOpen) {
 			setProcesses([]);
 		}
-	}, [isOpen, initialProcesses]);
+	}, [isOpen, stableInitialProcesses]);
 
 	const getCategoryColor = (category: string) => {
 		switch (category) {

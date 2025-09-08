@@ -56,7 +56,7 @@ export default function EditarProdutoPage() {
 		targetUnit: "m2",
 		markup: 2.5,
 		complexidade: "medium",
-		checklist: null,
+		checklist: undefined,
 	});
 
 	// Buscar dados do produto
@@ -75,7 +75,7 @@ export default function EditarProdutoPage() {
 				targetUnit: "m2", // default
 				markup: productData.margin?.markup || 2.5,
 				complexidade: "medium", // default
-				checklist: productData.checklist || null,
+				checklist: productData.checklist || undefined,
 			});
 		}
 	}, [productData]);
@@ -109,7 +109,7 @@ export default function EditarProdutoPage() {
 					edges: formData.checklist.edges || [],
 					selections: formData.checklist.selections || {},
 				}
-			: null;
+			: undefined;
 
 		// Preparar dados do produto
 		const productData = {

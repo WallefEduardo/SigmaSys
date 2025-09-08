@@ -10,7 +10,7 @@ import {
 	Trash2,
 	X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -132,14 +132,31 @@ export default function MaterialModal({
 	const allRules = [...calculationRules, ...predefinedRules];
 	const equipmentsOptions = equipmentsData || [];
 
+	// Referência estável para comparação
+	const prevInitialMaterials = useRef<MaterialItem[]>([]);
+	
+	// Memoizar apenas quando realmente houve mudança de conteúdo
+	const stableInitialMaterials = useMemo(() => {
+		// Verificar se realmente houve mudança usando JSON.stringify para deep comparison
+		const currentStr = JSON.stringify(initialMaterials);
+		const prevStr = JSON.stringify(prevInitialMaterials.current);
+		
+		if (currentStr !== prevStr) {
+			prevInitialMaterials.current = initialMaterials;
+			return initialMaterials;
+		}
+		
+		return prevInitialMaterials.current;
+	}, [initialMaterials]);
+
 	// Carregar materiais iniciais quando modal abrir
 	useEffect(() => {
-		if (isOpen && initialMaterials.length > 0) {
-			setMaterials(initialMaterials);
+		if (isOpen && stableInitialMaterials.length > 0) {
+			setMaterials(stableInitialMaterials);
 		} else if (isOpen) {
 			setMaterials([]);
 		}
-	}, [isOpen, initialMaterials]);
+	}, [isOpen, stableInitialMaterials]);
 
 	const getCategoryColor = (category: string) => {
 		switch (category) {
@@ -255,7 +272,6 @@ export default function MaterialModal({
 			multiplier: "1",
 			unit: "",
 			description: "",
-			measurementText: "",
 			measurementText: "",
 		});
 	};
@@ -1048,7 +1064,7 @@ export default function MaterialModal({
 												.reduce(
 													(sum, m) =>
 														sum +
-														((m.materialCost || 0) +
+														(((m.materialCost || 0) * (m.multiplier || 1)) +
 															(m.equipmentCostPerM2 || 0)),
 													0,
 												)
@@ -1114,7 +1130,7 @@ export default function MaterialModal({
 										</div>
 										<div className="text-center">
 											<span className="font-mono text-sm">
-												R$ {(material.materialCost || 0).toFixed(2)}/m²
+												R$ {((material.materialCost || 0) * (material.multiplier || 1)).toFixed(2)}/m²
 											</span>
 										</div>
 										<div className="text-center">
@@ -1130,7 +1146,7 @@ export default function MaterialModal({
 											>
 												R${" "}
 												{(
-													(material.materialCost || 0) +
+													((material.materialCost || 0) * (material.multiplier || 1)) +
 													(material.equipmentCostPerM2 || 0)
 												).toFixed(2)}
 												/m²
@@ -1257,7 +1273,7 @@ export default function MaterialModal({
 									</div>
 									<div className="font-bold font-mono text-blue-700">
 										R${" "}
-										{(selectedMaterialForDetail.materialCost || 0).toFixed(2)}
+										{((selectedMaterialForDetail.materialCost || 0) * (selectedMaterialForDetail.multiplier || 1)).toFixed(2)}
 										/m²
 									</div>
 								</div>
@@ -1308,7 +1324,7 @@ export default function MaterialModal({
 									<div className="font-bold font-mono text-green-700 text-xl">
 										R${" "}
 										{(
-											(selectedMaterialForDetail.materialCost || 0) +
+											((selectedMaterialForDetail.materialCost || 0) * (selectedMaterialForDetail.multiplier || 1)) +
 											(selectedMaterialForDetail.equipmentCostPerM2 || 0)
 										).toFixed(2)}
 										/m²
