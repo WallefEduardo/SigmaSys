@@ -11,6 +11,7 @@ import {
 	Receipt,
 	TrendingUp,
 	Users,
+	Workflow,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -36,6 +37,9 @@ import ChecklistFlow, {
 } from "./checklist/ChecklistFlow";
 import ChecklistStorage from "./checklist/checklist-storage";
 import FlowTestModal from "./checklist/FlowTestModal";
+
+// Import the new CheckFlowBuilder component
+import CheckFlowBuilder from "./checkflow/components/CheckFlowBuilder";
 
 function ChecklistCard({
 	onComplete,
@@ -90,7 +94,7 @@ function ChecklistCard({
 	);
 }
 
-type TabType = "general" | "pricing" | "checklist" | "fiscal" | "market" | "outsourced";
+type TabType = "general" | "pricing" | "checklist" | "checkflow" | "fiscal" | "market" | "outsourced";
 
 export default function NovoProdutoPage() {
 	const router = useRouter();
@@ -186,6 +190,11 @@ export default function NovoProdutoPage() {
 			id: "checklist" as TabType,
 			label: "Checklist",
 			icon: CheckSquare,
+		},
+		{
+			id: "checkflow" as TabType,
+			label: "CheckFlow",
+			icon: Workflow,
 		},
 		{
 			id: "fiscal" as TabType,
@@ -457,6 +466,31 @@ export default function NovoProdutoPage() {
 							checklistData={formData.checklist}
 							onTestFlow={() => setIsTestFlowModalOpen(true)}
 						/>
+					)}
+
+					{/* Tab: CheckFlow (Novo Sistema Custom) */}
+					{activeTab === "checkflow" && (
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Workflow className="h-5 w-5 text-blue-500" />
+									CheckFlow - Sistema Custom
+								</CardTitle>
+								<p className="text-muted-foreground text-sm">
+									Sistema de flow builder custom inspirado no Typebot com @dnd-kit e performance otimizada
+								</p>
+							</CardHeader>
+							<CardContent className="p-0">
+								<div className="h-[600px] w-full">
+									<CheckFlowBuilder
+										className="h-full w-full"
+										showGrid={true}
+										showMiniMap={false}
+										readOnly={false}
+									/>
+								</div>
+							</CardContent>
+						</Card>
 					)}
 
 					{/* Tab: Fiscal */}

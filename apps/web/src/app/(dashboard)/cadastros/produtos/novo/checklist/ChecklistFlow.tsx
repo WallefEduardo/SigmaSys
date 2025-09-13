@@ -21,6 +21,7 @@ import ReactFlow, {
 	ReactFlowProvider,
 } from "reactflow";
 import { SimpleAutoSaveIndicator } from "./AutoSaveIndicator";
+import BlockPalette from "./BlockPalette";
 import { ChecklistProvider, useChecklist } from "./ChecklistProvider";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import EndNode from "./EndNode";
@@ -101,9 +102,12 @@ function ChecklistFlowInternal({
 	const [deleteNodeId, setDeleteNodeId] = useState<string | null>(null);
 	const [isDeletingNode, setIsDeletingNode] = useState(false);
 	const [showAddQuestionScreen, setShowAddQuestionScreen] = useState(false);
+	const [draggedNodeType, setDraggedNodeType] = useState<string | null>(null);
+	const [draggedNodeData, setDraggedNodeData] = useState<any>(null);
 
 	// Expor função de adicionar pergunta via ref (agora abre tela dedicada)
 	const handleOpenAddQuestionModal = useCallback(() => {
+		setEditingNode(null); // Garantir que não está editando quando abrindo modal para nova pergunta
 		setShowAddQuestionScreen(true);
 	}, []);
 
@@ -169,10 +173,23 @@ function ChecklistFlowInternal({
 
 	const onConnect = useCallback(
 		(params: Edge | Connection) => {
-			const newEdges = addEdge(params, edges);
+			// Criar edge com ID único e metadados para sequência
+			const enhancedParams = {
+				...params,
+				id: params.id || `edge-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+				type: params.type || 'smoothstep',
+				// Adicionar metadados para facilitar navegação sequencial
+				data: {
+					createdAt: new Date().toISOString(),
+					sourceNodeType: nodes.find(n => n.id === params.source)?.type,
+					targetNodeType: nodes.find(n => n.id === params.target)?.type,
+				}
+			};
+			
+			const newEdges = addEdge(enhancedParams, edges);
 			updateEdges(newEdges);
 		},
-		[edges, updateEdges],
+		[edges, updateEdges, nodes],
 	);
 
 	// 🔍 Capturar mudanças de viewport (zoom, pan)
@@ -181,6 +198,57 @@ function ChecklistFlowInternal({
 			dispatch({ type: "UPDATE_VIEWPORT", payload: viewport });
 		},
 		[dispatch],
+	);
+
+	// 🎯 Drag & Drop handlers
+	const onDragStart = useCallback((event: React.DragEvent, nodeType: string, nodeData: any) => {
+		setDraggedNodeType(nodeType);
+		setDraggedNodeData(nodeData);
+		event.dataTransfer.setData('application/reactflow', nodeType);
+		event.dataTransfer.effectAllowed = 'move';
+	}, []);
+
+	const onDragOver = useCallback((event: React.DragEvent) => {
+		event.preventDefault();
+		event.dataTransfer.dropEffect = 'move';
+	}, []);
+
+	const onDrop = useCallback(
+		(event: React.DragEvent) => {
+			event.preventDefault();
+
+			if (!draggedNodeType || !draggedNodeData) return;
+
+			// Obter posição do drop no canvas
+			const reactFlowBounds = (event.target as Element).closest('.react-flow')?.getBoundingClientRect();
+			if (!reactFlowBounds) return;
+
+			const position = {
+				x: event.clientX - reactFlowBounds.left - 150, // Centralizar o node
+				y: event.clientY - reactFlowBounds.top - 50,
+			};
+
+			// Criar ID único para o novo node
+			const nodeId = `${draggedNodeType}-${nextNodeId}`;
+			
+			const newNode: Node = {
+				id: nodeId,
+				type: draggedNodeType,
+				position,
+				data: {
+					...draggedNodeData,
+					onEdit: draggedNodeType === 'question' ? () => handleEditNode(nodeId) : undefined,
+					onDelete: draggedNodeType === 'question' ? () => handleDeleteNode(nodeId) : undefined,
+				},
+			};
+
+			addNode(newNode);
+
+			// Reset drag state
+			setDraggedNodeType(null);
+			setDraggedNodeData(null);
+		},
+		[draggedNodeType, draggedNodeData, nextNodeId, addNode, handleEditNode, handleDeleteNode],
 	);
 
 	interface QuestionData {
@@ -213,11 +281,16 @@ function ChecklistFlowInternal({
 			setIsModalOpen(false);
 		} else {
 			// Criando novo node
-			const nodeId = `node-${nextNodeId}`;
+			const nodeId = `question-${nextNodeId}`;
+			
+			// Calcular posição baseada no número de nodes existentes (não incluindo start)
+			const questionNodes = nodes.filter(node => node.type === 'question');
+			const positionY = questionNodes.length * 220 + 150; // Espaçamento maior entre cards
+			
 			const newNode: Node = {
 				id: nodeId,
 				type: "question",
-				position: { x: 250, y: nodes.length * 200 + 50 },
+				position: { x: 300, y: positionY },
 				data: {
 					...questionData,
 					onSelect: (optionId: string) => {
@@ -233,7 +306,7 @@ function ChecklistFlowInternal({
 				const startNode: Node = {
 					id: "start",
 					type: "start",
-					position: { x: 250, y: 0 },
+					position: { x: 300, y: 50 },
 					data: { label: "Início" },
 				};
 
@@ -242,23 +315,42 @@ function ChecklistFlowInternal({
 
 				// Conectar start ao primeiro question
 				const edge: Edge = {
-					id: "e-start-1",
+					id: "e-start-question1",
 					source: "start",
 					target: newNode.id,
 				};
 
 				updateEdges([edge]);
 			} else {
+				// Verificar se start node existe
+				const hasStartNode = nodes.some(node => node.type === 'start' || node.id === 'start');
+				
+				if (!hasStartNode) {
+					const startNode: Node = {
+						id: "start",
+						type: "start",
+						position: { x: 300, y: 50 },
+						data: { label: "Início" },
+					};
+					addNode(startNode);
+				}
+				
 				addNode(newNode);
 			}
-
-			// ✅ INCREMENT_NODE_ID já é chamado dentro do addNode() no ChecklistProvider
-			// Remoção da duplicação que causava pulo de IDs
 		}
+		
+		// Limpar estado de edição
+		setEditingNode(null);
+		setIsModalOpen(false);
 		
 		// Fechar a tela de adicionar pergunta após salvar
 		setShowAddQuestionScreen(false);
 	};
+
+	// 📝 Handle inline update of node data
+	const handleUpdateNode = useCallback((nodeId: string, field: string, value: any) => {
+		updateNode(nodeId, { [field]: value });
+	}, [updateNode]);
 
 	// Adicionar callbacks aos nodes (SEM LOGS para evitar spam)
 	const nodesWithCallbacks = React.useMemo(() => {
@@ -270,10 +362,11 @@ function ChecklistFlowInternal({
 							...node.data,
 							onEdit: () => handleEditNode(node.id),
 							onDelete: () => handleDeleteNode(node.id),
+							onUpdate: (field: string, value: any) => handleUpdateNode(node.id, field, value),
 						}
 					: node.data,
 		}));
-	}, [nodes, handleEditNode, handleDeleteNode]);
+	}, [nodes, handleEditNode, handleDeleteNode, handleUpdateNode]);
 
 	// Debug removido para produção
 
@@ -329,12 +422,20 @@ function ChecklistFlowInternal({
 				isDeleting={isDeletingNode}
 			/>
 
-			<div className="relative h-[600px] w-full overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-				{/* 💾 Auto-Save Indicator */}
-				<div className="absolute top-3 right-3 z-10">
-					<SimpleAutoSaveIndicator />
-				</div>
-				<ReactFlow
+			{/* Layout com Sidebar + Canvas */}
+			<div className="flex h-[600px] w-full overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
+				{/* Sidebar com Blocos */}
+				<BlockPalette onDragStart={onDragStart} />
+				
+				{/* Canvas Area */}
+				<div className="relative flex-1 bg-gray-900">
+					{/* 💾 Auto-Save Indicator */}
+					<div className="absolute top-3 right-3 z-10">
+						<SimpleAutoSaveIndicator />
+					</div>
+					<ReactFlow
+						onDragOver={onDragOver}
+						onDrop={onDrop}
 					nodes={nodesWithCallbacks}
 					edges={edges}
 					onNodesChange={onNodesChange}
@@ -380,7 +481,8 @@ function ChecklistFlowInternal({
 							},
 						}}
 					/>
-				</ReactFlow>
+					</ReactFlow>
+				</div>
 			</div>
 		</>
 	);

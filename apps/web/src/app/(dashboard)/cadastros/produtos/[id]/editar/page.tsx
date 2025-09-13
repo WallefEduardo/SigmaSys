@@ -13,7 +13,7 @@ import {
 	Users,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { FormulaBuilder } from "@/components/forms/formula-builder";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import ChecklistFlow from "../../novo/checklist/ChecklistFlow";
+import ChecklistFlow, { type ChecklistFlowRef } from "../../novo/checklist/ChecklistFlow";
 import FlowTestModal from "../../novo/checklist/FlowTestModal";
 
 type TabType =
@@ -47,6 +47,7 @@ export default function EditarProdutoPage() {
 
 	const [activeTab, setActiveTab] = useState<TabType>("general");
 	const [isTestFlowModalOpen, setIsTestFlowModalOpen] = useState(false);
+	const checklistFlowRef = useRef<ChecklistFlowRef>(null);
 	const [formData, setFormData] = useState<any>({
 		name: "",
 		description: "",
@@ -102,12 +103,28 @@ export default function EditarProdutoPage() {
 			return;
 		}
 
-		// Preparar dados do checklist para o backend
+		// Preparar dados do checklist para o backend com estrutura robusta
 		const checklistData = formData.checklist
 			? {
 					nodes: formData.checklist.nodes || [],
 					edges: formData.checklist.edges || [],
 					selections: formData.checklist.selections || {},
+					// Adicionar metadados para facilitar uso posterior
+					metadata: {
+						version: "1.0",
+						createdAt: new Date().toISOString(),
+						questionCount: (formData.checklist.nodes || []).filter(n => n.type === 'question').length,
+						hasConnections: (formData.checklist.edges || []).length > 0,
+						// Criar ordem sequencial das perguntas baseada na posição Y
+						questionSequence: (formData.checklist.nodes || [])
+							.filter(n => n.type === 'question')
+							.sort((a, b) => (a.position?.y || 0) - (b.position?.y || 0))
+							.map(n => ({
+								id: n.id,
+								question: n.data?.question || '',
+								position: n.position
+							}))
+					}
 				}
 			: undefined;
 
@@ -383,10 +400,8 @@ export default function EditarProdutoPage() {
 										size="sm"
 										variant="outline"
 										onClick={() => {
-											// Abrir modal de adicionar pergunta
-											if ((window as any).openAddQuestionModal) {
-												(window as any).openAddQuestionModal();
-											}
+											// Abrir modal de adicionar pergunta via ref
+											checklistFlowRef.current?.openAddQuestionModal();
 										}}
 									>
 										<Plus className="mr-1 h-4 w-4" />
@@ -406,6 +421,7 @@ export default function EditarProdutoPage() {
 						</CardHeader>
 						<CardContent>
 							<ChecklistFlow
+								ref={checklistFlowRef}
 								onComplete={(config) => {
 									setFormData((prev) => ({
 										...prev,

@@ -2,50 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Drag & Drop Performance Optimizations */
+.dnd-dragging {
+  transform: translateZ(0); /* Enable hardware acceleration */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform; /* Optimize for frequent transform changes */
+}
+
+.dnd-canvas {
+  transform: translateZ(0); /* Enable hardware acceleration for canvas */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Smooth transitions for group movement */
+.group-node-smooth {
+  transition: transform 0.1s ease-out;
+}
+
 @layer base {
 	:root {
-		--background: 0 0% 100%;
-		--foreground: 218 23% 13%;
+		--background: 196 22% 93%;
+		--foreground: 200 15% 22%;
 		--card: 0 0% 100%;
-		--card-foreground: 218 23% 13%;
+		--card-foreground: 200 15% 22%;
 		--popover: 0 0% 100%;
-		--popover-foreground: 218 23% 13%;
-		--primary: 218 23% 13%;
+		--popover-foreground: 200 15% 22%;
+		--primary: 200 15% 22%;
 		--primary-foreground: 0 0% 98%;
-		--secondary: 159 79% 60%;
-		--secondary-foreground: 218 23% 13%;
+		--secondary: 214 95% 93%;
+		--secondary-foreground: 200 15% 22%;
 		--muted: 210 14% 97%;
-		--muted-foreground: 215 15% 58%;
-		--accent: 213 82% 58%;
+		--muted-foreground: 200 8% 46%;
+		--accent: 217 91% 60%;
 		--accent-foreground: 0 0% 98%;
 		--destructive: 0 84% 60%;
 		--destructive-foreground: 0 0% 98%;
 		--border: 220 13% 91%;
 		--input: 220 13% 91%;
-		--ring: 159 79% 60%;
+		--ring: 217 91% 60%;
 		--radius: 0.5rem;
 	}
 
 	.dark {
-		--background: 218 23% 13%;
+		--background: 200 15% 8%;
 		--foreground: 0 0% 98%;
-		--card: 218 23% 13%;
+		--card: 200 15% 12%;
 		--card-foreground: 0 0% 98%;
-		--popover: 218 23% 13%;
+		--popover: 200 15% 12%;
 		--popover-foreground: 0 0% 98%;
-		--primary: 0 0% 98%;
-		--primary-foreground: 218 23% 13%;
-		--secondary: 159 79% 60%;
-		--secondary-foreground: 218 23% 13%;
-		--muted: 218 11% 22%;
-		--muted-foreground: 217 10% 65%;
-		--accent: 213 66% 74%;
-		--accent-foreground: 218 23% 13%;
+		--primary: 217 91% 60%;
+		--primary-foreground: 0 0% 98%;
+		--secondary: 200 15% 15%;
+		--secondary-foreground: 217 91% 60%;
+		--muted: 200 15% 15%;
+		--muted-foreground: 200 8% 65%;
+		--accent: 217 91% 60%;
+		--accent-foreground: 0 0% 98%;
 		--destructive: 0 84% 60%;
 		--destructive-foreground: 0 0% 98%;
-		--border: 217 10% 42%;
-		--input: 217 10% 42%;
-		--ring: 159 79% 60%;
+		--border: 200 15% 20%;
+		--input: 200 15% 20%;
+		--ring: 217 91% 60%;
 	}
 }
 

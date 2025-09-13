@@ -1,9 +1,8 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
+		"target": "ES2022",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
-		"verbatimModuleSyntax": true,
 		"strict": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
@@ -17,6 +16,8 @@
 		"outDir": "./dist",
 		"types": ["node"],
 		"composite": true,
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"incremental": true,
+		"tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
 	}
 }

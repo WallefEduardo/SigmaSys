@@ -5,21 +5,27 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"lint": {
-			"dependsOn": ["^lint"]
+			"dependsOn": ["^lint"],
+			"inputs": ["$TURBO_DEFAULT$", ".eslintrc*", "biome.json"],
+			"outputs": []
 		},
 		"check-types": {
-			"dependsOn": ["^check-types"]
+			"dependsOn": ["^check-types"],
+			"inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"],
+			"outputs": ["**/*.tsbuildinfo"]
 		},
 		"dev": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dependsOn": ["^db:generate"]
 		},
 		"db:push": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"inputs": ["packages/database/prisma/schema.prisma", ".env*"]
 		},
 		"db:studio": {
 			"cache": false,
@@ -27,11 +33,13 @@
 		},
 		"db:migrate": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"inputs": ["packages/database/prisma/schema.prisma", "packages/database/prisma/migrations/**"]
 		},
 		"db:generate": {
-			"cache": false,
-			"persistent": true
+			"cache": true,
+			"inputs": ["packages/database/prisma/schema.prisma"],
+			"outputs": ["packages/database/generated/**"]
 		},
 		"db:start": {
 			"cache": false,
@@ -49,5 +57,12 @@
 			"cache": false,
 			"persistent": true
 		}
-	}
+	},
+	"globalEnv": [
+		"NODE_ENV",
+		"NEXT_TELEMETRY_DISABLED",
+		"TURBOPACK",
+		"DISABLE_QUEUES_IN_DEV",
+		"DISABLE_TELEMETRY_IN_DEV"
+	]
 }

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { Handle, Position } from "reactflow";
+import InlineEditor from "./InlineEditor";
 
 interface QuestionNodeProps {
 	data: {
@@ -27,6 +28,7 @@ interface QuestionNodeProps {
 		onSelect?: (optionId: string) => void;
 		onEdit?: () => void;
 		onDelete?: () => void;
+		onUpdate?: (field: string, value: any) => void;
 	};
 }
 
@@ -39,6 +41,7 @@ const actionIcons: Record<string, any> = {
 
 export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
 	const [selected, setSelected] = useState<string[]>([]);
+	const [editingField, setEditingField] = useState<string | null>(null);
 
 	const handleSelect = (optionId: string) => {
 		if (data.responseType === "single") {
@@ -67,11 +70,26 @@ export default React.memo(function QuestionNode({ data }: QuestionNodeProps) {
 
 			{/* Header */}
 			<div className="mb-3 flex items-center justify-between">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-2 flex-1 min-w-0">
 					<MessageSquare className="h-5 w-5 flex-shrink-0 text-blue-500" />
-					<h3 className="font-semibold text-gray-900 text-sm leading-tight">
-						{data.question}
-					</h3>
+					<div 
+						className="flex-1 min-w-0"
+						onDoubleClick={() => setEditingField('question')}
+					>
+						<InlineEditor
+							value={data.question}
+							isEditing={editingField === 'question'}
+							onSave={(value) => {
+								if (data.onUpdate) {
+									data.onUpdate('question', value);
+								}
+								setEditingField(null);
+							}}
+							onCancel={() => setEditingField(null)}
+							placeholder="Digite a pergunta..."
+							className="font-semibold text-gray-900 text-sm leading-tight cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5"
+						/>
+					</div>
 				</div>
 				<div className="flex gap-1">
 					{data.onEdit && (

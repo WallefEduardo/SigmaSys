@@ -1,4 +1,5 @@
 import { publicProcedure, router } from "../lib/trpc";
+import { adminRouter } from "./admin";
 import { authRouter } from "./auth";
 import { calculationRulesRouter } from "./calculation-rules";
 import { calculationsRouter } from "./calculations";
@@ -7,11 +8,14 @@ import { companiesRouter } from "./companies";
 import { consumablesRouter } from "./consumables";
 import { equipmentsRouter } from "./equipments";
 import { finishesRouter } from "./finishes";
+import { financialRouter } from "./financial";
 import { formulasRouter } from "./formulas";
 import { materialsRouter } from "./materials";
+import { ordersRouter } from "./orders";
 import { plansRouter } from "./plans";
 import { processesRouter } from "./processes";
 import { productsRouter } from "./products";
+import { quotesRouter } from "./quotes";
 import { systemRouter } from "./system";
 import { usersRouter } from "./users";
 
@@ -40,7 +44,15 @@ export const appRouter = router({
 	calculationRules: calculationRulesRouter,
 	calculations: calculationsRouter,
 
-	// Sistema de monitoramento e administração
+	// FASE 6 - Comercial e CRM
+	quotes: quotesRouter,
+	orders: ordersRouter,
+
+	// FASE 7 - Sistema Financeiro Inteligente
+	financial: financialRouter,
+
+	// Sistema de administração
+	admin: adminRouter,
 	system: systemRouter,
 });
 

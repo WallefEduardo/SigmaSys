@@ -223,25 +223,39 @@ export default function FormulaModal({
 					description: "Esta fórmula calcula a área da face principal do produto, ideal para materiais que cobrem toda a frente.",
 					cases: [
 						{
-							name: "🏢 Fachada ACM",
+							name: "Fachada ACM",
 							scenario: "Revestimento de fachada comercial com painel de ACM",
 							measurements: "Largura: 8m, Altura: 3m",
 							calculation: "L × A = 8 × 3",
 							result: "24m² de ACM necessário"
 						},
 						{
-							name: "🚩 Lona para Toldo",
+							name: "Lona para Toldo",
 							scenario: "Toldo retrátil para estabelecimento comercial",
 							measurements: "Largura: 4m, Altura: 2.5m",
 							calculation: "L × A = 4 × 2.5",
 							result: "10m² de lona necessária"
 						},
 						{
-							name: "🖼️ Painel Publicitário",
+							name: "Painel Publicitário",
 							scenario: "Outdoor em MDF com impressão digital",
 							measurements: "Largura: 6m, Altura: 3m",
 							calculation: "L × A = 6 × 3",
 							result: "18m² de MDF + impressão"
+						},
+						{
+							name: "Plotagem de Vitrine",
+							scenario: "Adesivo jateado para privacidade em vidro",
+							measurements: "Largura: 3.5m, Altura: 2.2m",
+							calculation: "L × A = 3.5 × 2.2",
+							result: "7.7m² de vinil jateado"
+						},
+						{
+							name: "Banner para Evento",
+							scenario: "Backdrop para stand em feira de negócios",
+							measurements: "Largura: 5m, Altura: 2.5m",
+							calculation: "L × A = 5 × 2.5",
+							result: "12.5m² de lona blackout"
 						}
 					]
 				}
@@ -256,18 +270,32 @@ export default function FormulaModal({
 					description: "Para produtos de dupla face que precisam de material no verso.",
 					cases: [
 						{
-							name: "🏪 Totem Dupla Face",
+							name: "Totem Dupla Face",
 							scenario: "Totem promocional visível dos dois lados",
 							measurements: "Largura: 1.5m, Altura: 2m",
 							calculation: "L × A = 1.5 × 2",
 							result: "3m² de adesivo para o verso"
 						},
 						{
-							name: "🚥 Placa de Trânsito",
+							name: "Placa de Trânsito",
 							scenario: "Sinalização viária com informação nos dois lados",
 							measurements: "Largura: 0.8m, Altura: 1.2m",
 							calculation: "L × A = 0.8 × 1.2",
 							result: "0.96m² de material refletivo"
+						},
+						{
+							name: "Display de Balcão",
+							scenario: "Expositor de mesa com informações frente e verso",
+							measurements: "Largura: 0.3m, Altura: 0.4m",
+							calculation: "L × A = 0.3 × 0.4",
+							result: "0.12m² de impressão para cada lado"
+						},
+						{
+							name: "Placa Identificação",
+							scenario: "Placa suspensa de identificação comercial",
+							measurements: "Largura: 2m, Altura: 0.8m",
+							calculation: "L × A = 2 × 0.8",
+							result: "1.6m² de ACM para cada face"
 						}
 					]
 				}
@@ -287,18 +315,32 @@ export default function FormulaModal({
 					description: "Para calcular as laterais de estruturas com profundidade.",
 					cases: [
 						{
-							name: "🏬 Letreiro Caixa",
+							name: "Letreiro Caixa",
 							scenario: "Letreiro em caixa com LED interno e avanço",
 							measurements: "Largura: 4m, Altura: 1m, Avanço: 15cm",
 							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (4 × 0.15) + 2 × (1 × 0.15)",
 							result: "1.5m² de ACM para as bordas"
 						},
 						{
-							name: "🏦 Fachada 3D",
+							name: "Fachada 3D",
 							scenario: "Letra caixa com recorte e profundidade",
 							measurements: "Largura: 2m, Altura: 0.8m, Profundidade: 10cm",
 							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (2 × 0.1) + 2 × (0.8 × 0.1)",
 							result: "0.56m² de chapa para as laterais"
+						},
+						{
+							name: "Totem Informativo",
+							scenario: "Totem com profundidade para informações turísticas",
+							measurements: "Largura: 1.2m, Altura: 1.8m, Profundidade: 8cm",
+							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (1.2 × 0.08) + 2 × (1.8 × 0.08)",
+							result: "0.48m² para as 4 laterais"
+						},
+						{
+							name: "Painel Suspenso",
+							scenario: "Display suspenso com avanço para destaque",
+							measurements: "Largura: 3m, Altura: 0.6m, Avanço: 5cm",
+							calculation: "2 × (L × E) + 2 × (A × E) = 2 × (3 × 0.05) + 2 × (0.6 × 0.05)",
+							result: "0.36m² de material para bordas"
 						}
 					]
 				}
@@ -317,11 +359,32 @@ export default function FormulaModal({
 					description: "Para calcular todo o material de estruturas tridimensionais fechadas.",
 					cases: [
 						{
-							name: "📦 Totem Promocional",
+							name: "Totem Promocional",
 							scenario: "Totem em forma de caixa para shopping center",
 							measurements: "Largura: 1m, Altura: 2.5m, Profundidade: 0.4m",
 							calculation: "2×(L×A + L×E + A×E) = 2×(1×2.5 + 1×0.4 + 2.5×0.4)",
 							result: "7.6m² de ACM para toda a estrutura"
+						},
+						{
+							name: "Quiosque de Informações",
+							scenario: "Quiosque fechado para atendimento em evento",
+							measurements: "Largura: 2m, Altura: 2.2m, Profundidade: 1.5m",
+							calculation: "2×(L×A + L×E + A×E) = 2×(2×2.2 + 2×1.5 + 2.2×1.5)",
+							result: "21.4m² de material para toda estrutura"
+						},
+						{
+							name: "Gabinete para TV",
+							scenario: "Estrutura fechada para proteção de monitor externo",
+							measurements: "Largura: 1.2m, Altura: 0.8m, Profundidade: 0.15m",
+							calculation: "2×(L×A + L×E + A×E) = 2×(1.2×0.8 + 1.2×0.15 + 0.8×0.15)",
+							result: "2.46m² de chapa para gabinete completo"
+						},
+						{
+							name: "Display de Produto",
+							scenario: "Expositor em formato de caixa para vitrine",
+							measurements: "Largura: 0.5m, Altura: 0.6m, Profundidade: 0.3m",
+							calculation: "2×(L×A + L×E + A×E) = 2×(0.5×0.6 + 0.5×0.3 + 0.6×0.3)",
+							result: "1.26m² de material para expositor"
 						}
 					]
 				}
@@ -335,6 +398,40 @@ export default function FormulaModal({
 					A: "Altura em metros",
 					M: "Margem em metros",
 				},
+				visualExamples: {
+					title: "Exemplos de Aplicação - Área com Margem",
+					description: "Para quando é necessário sobra de material para corte, dobra ou acabamento.",
+					cases: [
+						{
+							name: "Impressão em Lona",
+							scenario: "Banner com ilhós e bainha para fixação",
+							measurements: "Banner: 3m x 1m, Margem: 5cm para bainha",
+							calculation: "(L + 2×M) × (A + 2×M) = (3 + 2×0.05) × (1 + 2×0.05)",
+							result: "3.315m² de lona necessária"
+						},
+						{
+							name: "Adesivo para Aplicação",
+							scenario: "Adesivo recortado com margem de segurança",
+							measurements: "Arte: 2m x 1.5m, Margem: 3cm para recorte",
+							calculation: "(L + 2×M) × (A + 2×M) = (2 + 2×0.03) × (1.5 + 2×0.03)",
+							result: "3.286m² de vinil adesivo"
+						},
+						{
+							name: "ACM com Dobra",
+							scenario: "Painel ACM com dobra nas bordas para fixação",
+							measurements: "Painel: 4m x 2m, Dobra: 2cm nas bordas",
+							calculation: "(L + 2×M) × (A + 2×M) = (4 + 2×0.02) × (2 + 2×0.02)",
+							result: "8.244m² de chapa ACM"
+						},
+						{
+							name: "Papel de Parede Personalizado",
+							scenario: "Revestimento com margem para ajustes na aplicação",
+							measurements: "Parede: 5m x 2.8m, Margem: 10cm para ajustes",
+							calculation: "(L + 2×M) × (A + 2×M) = (5 + 2×0.1) × (2.8 + 2×0.1)",
+							result: "15.6m² de papel de parede"
+						}
+					]
+				}
 			},
 
 			// COMPRIMENTO
@@ -348,14 +445,14 @@ export default function FormulaModal({
 					description: "Para calcular perfis que contornam toda a borda da peça.",
 					cases: [
 						{
-							name: "🔲 Perfil de Alumínio",
+							name: "Perfil de Alumínio",
 							scenario: "Moldura de alumínio para painel ACM",
 							measurements: "Largura: 3m, Altura: 2m",
 							calculation: "2 × (L + A) = 2 × (3 + 2)",
 							result: "10ml de perfil de alumínio"
 						},
 						{
-							name: "🔩 Metalon para Estrutura",
+							name: "Metalon para Estrutura",
 							scenario: "Estrutura perimetral para back-light",
 							measurements: "Largura: 2.5m, Altura: 1.8m",
 							calculation: "2 × (L + A) = 2 × (2.5 + 1.8)",
@@ -408,14 +505,14 @@ export default function FormulaModal({
 					description: "Para itens distribuídos uniformemente pela superfície.",
 					cases: [
 						{
-							name: "🔩 Parafusos de Fixação",
+							name: "Parafusos de Fixação",
 							scenario: "Fixação de chapa ACM na fachada",
 							measurements: "Painel: 4m x 2m, Densidade: 6 parafusos/m²",
 							calculation: "(L × A) × D = (4 × 2) × 6",
 							result: "48 parafusos auto-atarraxantes"
 						},
 						{
-							name: "⚡ LEDs para Back-Light",
+							name: "LEDs para Back-Light",
 							scenario: "Iluminação interna de letreiro caixa",
 							measurements: "Letreiro: 3m x 1m, Densidade: 25 LEDs/m²",
 							calculation: "(L × A) × D = (3 × 1) × 25",
@@ -444,14 +541,14 @@ export default function FormulaModal({
 					description: "Para itens que sempre são posicionados nos quatro cantos.",
 					cases: [
 						{
-							name: "🔩 Cantoneiras de Proteção",
+							name: "Cantoneiras de Proteção",
 							scenario: "Proteção dos cantos de painel ACM",
 							measurements: "Qualquer dimensão do painel",
 							calculation: "Sempre 4 unidades (constante)",
 							result: "4 cantoneiras de alumínio"
 						},
 						{
-							name: "🔍 Suportes de Canto",
+							name: "Suportes de Canto",
 							scenario: "Fixação de painel suspenso na parede",
 							measurements: "Qualquer tamanho de painel",
 							calculation: "Sempre 4 unidades (constante)",
@@ -465,6 +562,33 @@ export default function FormulaModal({
 				usage: "Use para elementos que se repetem em cada face",
 				example: "1 fechadura por face, 2 faces = 2 unidades",
 				variables: { F: "Número de faces", D: "Quantidade por face" },
+				visualExamples: {
+					title: "Exemplos de Aplicação - Unidades por Face",
+					description: "Para itens que se repetem em cada face do produto.",
+					cases: [
+						{
+							name: "Fechadura Magnética",
+							scenario: "Sistema de abertura para totem dupla face",
+							measurements: "2 faces, 1 fechadura por face",
+							calculation: "F × D = 2 × 1",
+							result: "2 fechaduras magnéticas necessárias"
+						},
+						{
+							name: "Dobradiça para Porta",
+							scenario: "Totem com abertura lateral em ambos os lados",
+							measurements: "2 faces, 3 dobradiças por face",
+							calculation: "F × D = 2 × 3",
+							result: "6 dobradiças para as duas faces"
+						},
+						{
+							name: "Puxador de Gaveta",
+							scenario: "Expositor com gavetas em múltiplas faces",
+							measurements: "4 faces, 2 puxadores por face",
+							calculation: "F × D = 4 × 2",
+							result: "8 puxadores necessários"
+						}
+					]
+				}
 			},
 		};
 

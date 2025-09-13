@@ -45,8 +45,19 @@ model Company {
   planId            String?
   trialEndsAt       DateTime?
   active            Boolean            @default(true)
+  
+  // AI Configuration
+  openaiApiKey      String?
+  claudeApiKey      String?
+  openrouterApiKey  String?
+  aiDefaultProvider String?            @default("openai")
+  aiDefaultModel    String?
+  aiEnabled         Boolean            @default(false)
+  
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  
+  // ERP Relations
   clients           Client[]
   plan              Plan?              @relation(fields: [planId], references: [id])
   consumables       Consumable[]
@@ -60,6 +71,16 @@ model Company {
   quotes            Quote[]
   roles             Role[]
   users             User[]
+  
+  // Financial Module Relations
+  budgetCategories  BudgetCategory[]
+  budgets           Budget[]
+  transactions      Transaction[]
+  financialGoals    FinancialGoal[]
+  financialAlerts   FinancialAlert[]
+  aiInsights        AIInsight[]
+  cashFlowProjections CashFlowProjection[]
+  financialSettings FinancialSettings?
 
   @@map("companies")
 }
@@ -92,6 +113,10 @@ model User {
   company             Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
   creator             User?                  @relation("UserCreator", fields: [createdBy], references: [id])
   createdUsers        User[]                 @relation("UserCreator")
+  
+  // Financial Relations
+  transactions        Transaction[]          @relation("TransactionUser")
+  alerts              FinancialAlert[]       @relation("AlertUser")
 
   @@map("users")
 }
@@ -574,6 +599,7 @@ model Quote {
   client      Client      @relation(fields: [clientId], references: [id])
   company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   calculations QuoteCalculation[]
+  transactions Transaction[]
 
   @@unique([companyId, number])
   @@map("quotes")
@@ -616,6 +642,7 @@ model Order {
   client       Client      @relation(fields: [clientId], references: [id])
   company      Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   quote        Quote?      @relation(fields: [quoteId], references: [id])
+  transactions Transaction[]
 
   @@unique([companyId, number])
   @@map("orders")
@@ -739,6 +766,245 @@ enum CalculationCategory {
   UNIT     // Fórmulas que retornam unidades (un)
 
   @@map("calculation_categories")
+}
+
+// ===== SISTEMA FINANCEIRO INTEGRADO =====
+// =========================================
+
+// Categorias dinâmicas de orçamento
+model BudgetCategory {
+  id          String      @id @default(cuid())
+  name        String
+  type        CategoryType // INCOME, EXPENSE
+  icon        String?
+  color       String?
+  description String?
+  active      Boolean     @default(true)
+  companyId   String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  budgets      Budget[]
+  transactions Transaction[]
+  goals        FinancialGoal[]
+  alerts       FinancialAlert[]
+  insights     AIInsight[]
+  
+  @@unique([companyId, name])
+  @@index([companyId, type])
+  @@map("budget_categories")
+}
+
+// Orçamentos mensais
+model Budget {
+  id             String         @id @default(cuid())
+  month          Int            // 1-12
+  year           Int
+  plannedAmount  Decimal        @db.Decimal(12, 2)
+  categoryId     String
+  companyId      String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  
+  category       BudgetCategory @relation(fields: [categoryId], references: [id])
+  company        Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  @@unique([companyId, categoryId, month, year])
+  @@index([companyId, year, month])
+  @@map("budgets")
+}
+
+// Transações realizadas (integrado com vendas do ERP)
+model Transaction {
+  id            String         @id @default(cuid())
+  amount        Decimal        @db.Decimal(12, 2)
+  description   String
+  date          DateTime
+  type          TransactionType // INCOME, EXPENSE
+  categoryId    String
+  companyId     String
+  userId        String
+  orderId       String?        // Link automático com vendas
+  quoteId       String?        // Link com orçamentos
+  aiCategorized Boolean        @default(false)
+  aiConfidence  Decimal?       @db.Decimal(3, 2) // 0.00 - 1.00
+  tags          String[]       @default([])
+  metadata      Json?          // Dados extras da IA
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  category      BudgetCategory @relation(fields: [categoryId], references: [id])
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user          User           @relation("TransactionUser", fields: [userId], references: [id])
+  order         Order?         @relation(fields: [orderId], references: [id])
+  quote         Quote?         @relation(fields: [quoteId], references: [id])
+  
+  @@index([companyId, date])
+  @@index([companyId, categoryId])
+  @@index([companyId, type])
+  @@index([orderId])
+  @@map("transactions")
+}
+
+// Metas financeiras
+model FinancialGoal {
+  id            String      @id @default(cuid())
+  name          String
+  description   String?
+  targetAmount  Decimal     @db.Decimal(12, 2)
+  currentAmount Decimal     @default(0) @db.Decimal(12, 2)
+  targetDate    DateTime
+  type          GoalType    // EMERGENCY, PURCHASE, INVESTMENT
+  priority      Int         @default(1)
+  categoryId    String?     // Link com categoria de orçamento
+  active        Boolean     @default(true)
+  companyId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  category      BudgetCategory? @relation(fields: [categoryId], references: [id])
+  
+  @@index([companyId, active])
+  @@index([companyId, targetDate])
+  @@map("financial_goals")
+}
+
+// Alertas automáticos da IA
+model FinancialAlert {
+  id          String        @id @default(cuid())
+  type        AlertType     // BUDGET_EXCEEDED, GOAL_RISK, ANOMALY, AI_INSIGHT
+  title       String
+  message     String
+  severity    AlertSeverity // LOW, MEDIUM, HIGH, CRITICAL
+  read        Boolean       @default(false)
+  data        Json?         // Dados contextuais da IA
+  actionable  Boolean       @default(true)
+  expiresAt   DateTime?
+  companyId   String
+  userId      String?
+  categoryId  String?
+  createdAt   DateTime      @default(now())
+  
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user        User?           @relation("AlertUser", fields: [userId], references: [id])
+  category    BudgetCategory? @relation(fields: [categoryId], references: [id])
+  
+  @@index([companyId, read])
+  @@index([companyId, severity])
+  @@index([companyId, type])
+  @@map("financial_alerts")
+}
+
+// Cache de insights da IA (OpenAI + Claude)
+model AIInsight {
+  id          String        @id @default(cuid())
+  type        InsightType   // PREDICTION, RECOMMENDATION, ANALYSIS, PATTERN
+  title       String
+  content     String        // Texto gerado pela IA
+  data        Json          // Dados estruturados
+  confidence  Decimal       @db.Decimal(3, 2) // 0.00 - 1.00
+  model       String        // "gpt-4o", "claude-sonnet-4"
+  prompt      String?       // Prompt usado
+  tokens      Int?          // Tokens consumidos
+  expires     DateTime?
+  categoryId  String?
+  companyId   String
+  createdAt   DateTime      @default(now())
+  
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  category    BudgetCategory? @relation(fields: [categoryId], references: [id])
+  
+  @@index([companyId, type])
+  @@index([companyId, expires])
+  @@index([companyId, createdAt])
+  @@map("ai_insights")
+}
+
+// Fluxo de caixa projetado
+model CashFlowProjection {
+  id            String      @id @default(cuid())
+  date          DateTime    // Data da projeção
+  projectedIn   Decimal     @db.Decimal(12, 2)
+  projectedOut  Decimal     @db.Decimal(12, 2)
+  balance       Decimal     @db.Decimal(12, 2)
+  aiGenerated   Boolean     @default(false)
+  confidence    Decimal?    @db.Decimal(3, 2)
+  companyId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  company       Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  @@unique([companyId, date])
+  @@index([companyId, date])
+  @@map("cash_flow_projections")
+}
+
+// Configurações financeiras por empresa
+model FinancialSettings {
+  id                    String   @id @default(cuid())
+  currency              String   @default("BRL")
+  fiscalYearStart       Int      @default(1) // Mês de início do ano fiscal
+  budgetAlertThreshold  Int      @default(80) // % para alertas
+  aiEnabled             Boolean  @default(true)
+  aiAutoCateg           Boolean  @default(true)
+  aiInsightsFreq        String   @default("daily") // daily, weekly
+  companyId             String   @unique
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  @@map("financial_settings")
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  @@map("category_types")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  @@map("transaction_types")
+}
+
+enum GoalType {
+  EMERGENCY
+  PURCHASE
+  INVESTMENT
+  SAVINGS
+  @@map("goal_types")
+}
+
+enum AlertType {
+  BUDGET_EXCEEDED
+  GOAL_RISK
+  ANOMALY
+  CASH_FLOW
+  AI_INSIGHT
+  PATTERN_DETECTED
+  @@map("alert_types")
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  @@map("alert_severities")
+}
+
+enum InsightType {
+  PREDICTION
+  RECOMMENDATION
+  ANALYSIS
+  PATTERN
+  OPTIMIZATION
+  @@map("insight_types")
 }
 
 

@@ -38,7 +38,7 @@ function MainLayoutContent({ children, className }: MainLayoutProps) {
 			{/* Main - área de conteúdo com scroll isolado */}
 			<main
 				className={cn(
-					"fixed overflow-y-auto overflow-x-hidden p-6 transition-all duration-300",
+					"fixed overflow-y-auto overflow-x-hidden transition-all duration-300",
 					className,
 				)}
 				style={{
@@ -46,9 +46,13 @@ function MainLayoutContent({ children, className }: MainLayoutProps) {
 					left: sidebarWidth,
 					right: 0,
 					bottom: 0,
+					width: `calc(100vw - ${sidebarWidth})`,
+					height: "calc(100vh - 64px)",
 				}}
 			>
-				{children}
+				<div className="w-full min-h-full p-6 bg-background">
+					{children}
+				</div>
 			</main>
 		</div>
 	);

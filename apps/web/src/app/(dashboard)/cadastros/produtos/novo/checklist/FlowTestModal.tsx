@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/trpc";
 import MeasurementCollector from "./MeasurementCollector";
+import { structureChecklistForSequentialFlow, findNextNodeInSequence, type ChecklistStructure } from "./checklist-utils";
 
 interface FlowTestModalProps {
 	isOpen: boolean;
@@ -61,10 +62,18 @@ export default function FlowTestModal({
 			measurements: Record<string, number>;
 		}[]
 	>([]);
+	const [structuredChecklist, setStructuredChecklist] = useState<ChecklistStructure | null>(null);
 
 	// Reset quando modal abre
 	useEffect(() => {
 		if (isOpen && checklistData?.nodes?.length) {
+			// Estruturar checklist para navegação robusta
+			const structured = structureChecklistForSequentialFlow(
+				checklistData.nodes,
+				checklistData.edges || []
+			);
+			setStructuredChecklist(structured);
+
 			// Encontrar o nó inicial (start ou primeiro question)
 			const startNode = checklistData.nodes.find(
 				(node) => node.type === "start",
@@ -305,24 +314,32 @@ export default function FlowTestModal({
 			}
 		}
 
-		// Encontrar próximo nó baseado na resposta
-		const nextEdge = checklistData?.edges?.find(
-			(edge) => edge.source === currentNodeId && edge.sourceHandle === optionId,
-		);
-
-		if (nextEdge) {
-			const nextNode = checklistData?.nodes?.find(
-				(node) => node.id === nextEdge.target,
+		// Usar nova lógica robusta para encontrar próximo nó
+		if (structuredChecklist) {
+			const nextNodeId = findNextNodeInSequence(
+				currentNodeId,
+				optionId,
+				structuredChecklist
 			);
 
-			if (nextNode?.type === "end") {
+			if (nextNodeId) {
+				const nextNode = structuredChecklist.nodes.find(
+					(node) => node.id === nextNodeId,
+				);
+
+				if (nextNode?.type === "end") {
+					setIsCompleted(true);
+					setCurrentNodeId(null);
+				} else {
+					setCurrentNodeId(nextNodeId);
+				}
+			} else {
+				// Se não há próximo nó, finalizar o teste
 				setIsCompleted(true);
 				setCurrentNodeId(null);
-			} else {
-				setCurrentNodeId(nextEdge.target);
 			}
 		} else {
-			// Se não há próximo nó, finalizar o teste
+			// Fallback para compatibilidade
 			setIsCompleted(true);
 			setCurrentNodeId(null);
 		}
@@ -358,22 +375,24 @@ export default function FlowTestModal({
 		setShowMeasurements(false);
 		setPendingAnswer(null);
 
-		// Reiniciar do primeiro nó
-		const startNode = checklistData?.nodes?.find(
-			(node) => node.type === "start",
-		);
-		const firstQuestionNode = checklistData?.nodes?.find(
-			(node) => node.type === "question",
-		);
-
-		if (startNode) {
-			const startEdge = checklistData?.edges?.find(
-				(edge) => edge.source === startNode.id,
+		// Reiniciar do primeiro nó usando estrutura robusta
+		if (structuredChecklist) {
+			const startNode = structuredChecklist.nodes.find(
+				(node) => node.type === "start",
 			);
-			const nextNodeId = startEdge?.target || firstQuestionNode?.id;
-			setCurrentNodeId(nextNodeId || null);
-		} else if (firstQuestionNode) {
-			setCurrentNodeId(firstQuestionNode.id);
+			const firstQuestionNode = structuredChecklist.nodes.find(
+				(node) => node.type === "question",
+			);
+
+			if (startNode) {
+				const startEdge = structuredChecklist.edges?.find(
+					(edge) => edge.source === startNode.id,
+				);
+				const nextNodeId = startEdge?.target || firstQuestionNode?.id;
+				setCurrentNodeId(nextNodeId || null);
+			} else if (firstQuestionNode) {
+				setCurrentNodeId(firstQuestionNode.id);
+			}
 		}
 	};
 

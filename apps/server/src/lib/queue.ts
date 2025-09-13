@@ -644,11 +644,13 @@ export const QueueHelpers = {
 	},
 };
 
-// Inicializar automaticamente se não estiver em teste
-if (!isTest) {
+// Inicializar automaticamente se não estiver em teste, Redis estiver disponível e não for modo dev
+if (!isTest && process.env.REDIS_HOST && !process.env.DISABLE_QUEUES_IN_DEV) {
 	QueueManager.initialize().catch((error) => {
 		logger.error("Failed to initialize queue system", { error });
 	});
+} else if (isDevelopment) {
+	logger.info("🚫 Queue system disabled in development mode");
 }
 
 // Shutdown graceful

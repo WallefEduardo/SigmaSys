@@ -32,7 +32,13 @@
       "Bash(npx tsx:*)",
       "Bash(pnpm run:*)",
       "Bash(tail:*)",
-      "Bash(pnpm check-types:*)"
+      "Bash(pnpm check-types:*)",
+      "mcp__context7__resolve-library-id",
+      "WebFetch(domain:github.com)",
+      "mcp__brave-search__brave_web_search",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm build:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

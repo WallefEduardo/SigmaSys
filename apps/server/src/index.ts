@@ -11,6 +11,7 @@ import { createContext } from "./lib/context";
 import { apiLogger, errorLogger, logger } from "./lib/logger";
 // import { telemetryPlugin } from "./middleware/telemetry";
 import { type AppRouter, appRouter } from "./routers/index";
+import { initializeAI, createDefaultAIConfig } from "./services/ai";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const isTest = process.env.NODE_ENV === "test";
@@ -78,7 +79,24 @@ fastify.get("/health", async () => {
 	};
 });
 
-const port = Number(process.env.PORT) || 3005;
+const port = Number(process.env.PORT);
+
+// Inicializar serviço de IA
+try {
+	const aiConfig = createDefaultAIConfig();
+	if (aiConfig.openaiApiKey || aiConfig.claudeApiKey) {
+		initializeAI(aiConfig);
+		console.log("🤖 AI Service initialized with providers:", {
+			openai: !!aiConfig.openaiApiKey,
+			claude: !!aiConfig.claudeApiKey,
+			default: aiConfig.defaultProvider
+		});
+	} else {
+		console.log("⚠️  AI Service not initialized - no API keys provided");
+	}
+} catch (error) {
+	console.warn("⚠️  Failed to initialize AI Service:", error);
+}
 
 console.log("🔧 Starting server on port:", port);
 console.log("🔧 Environment:", process.env.NODE_ENV);

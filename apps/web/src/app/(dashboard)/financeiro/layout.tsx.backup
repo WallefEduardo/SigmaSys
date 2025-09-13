@@ -1,0 +1,217 @@
+'use client'
+
+import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
+import { 
+  LayoutDashboard, 
+  CreditCard, 
+  Target, 
+  Settings,
+  TrendingUp,
+  Plus,
+  MessageSquare,
+  Bell,
+  ChevronRight,
+  PieChart,
+  Receipt,
+  FolderOpen
+} from 'lucide-react'
+import { api } from '@/lib/trpc'
+import AlertsDropdown from '@/components/financial/AlertsDropdown'
+import FloatingChatButton from '@/components/financial/FloatingChatButton'
+
+const navigation = [
+  {
+    title: 'Dashboard',
+    href: '/financeiro/dashboard',
+    icon: LayoutDashboard,
+    description: 'Visão geral financeira'
+  },
+  {
+    title: 'Transações',
+    href: '/financeiro/transacoes',
+    icon: CreditCard,
+    description: 'Receitas e despesas'
+  },
+  {
+    title: 'Orçamentos',
+    href: '/financeiro/orcamentos',
+    icon: PieChart,
+    description: 'Planejamento mensal'
+  },
+  {
+    title: 'Categorias',
+    href: '/financeiro/categorias',
+    icon: FolderOpen,
+    description: 'Organização financeira'
+  },
+  {
+    title: 'Metas',
+    href: '/financeiro/metas',
+    icon: Target,
+    description: 'Objetivos financeiros'
+  },
+  {
+    title: 'Relatórios',
+    href: '/financeiro/relatorios',
+    icon: Receipt,
+    description: 'Análises detalhadas'
+  },
+  {
+    title: 'Configurações',
+    href: '/financeiro/configuracoes',
+    icon: Settings,
+    description: 'Preferências do sistema'
+  }
+]
+
+interface FinancialLayoutProps {
+  children: React.ReactNode
+}
+
+export default function FinancialLayout({ children }: FinancialLayoutProps) {
+  const pathname = usePathname()
+  const [showAssistant, setShowAssistant] = useState(false)
+
+  // Query para alertas não lidos
+  const { data: alertStats } = api.financial.alerts.getStats.useQuery()
+  const unreadAlerts = alertStats?.unread || 0
+
+  return (
+    <div className="flex h-full">
+      {/* Sidebar */}
+      <div className="w-64 border-r bg-muted/30">
+        <div className="flex h-full flex-col">
+          {/* Header */}
+          <div className="p-6 border-b">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+              <h2 className="text-lg font-semibold">Sistema Financeiro</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Gestão inteligente com IA
+            </p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="p-4 border-b">
+            <div className="flex gap-2">
+              <Button size="sm" className="flex-1">
+                <Plus className="h-4 w-4 mr-1" />
+                Nova Transação
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShowAssistant(!showAssistant)}
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+              <AlertsDropdown />
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <ScrollArea className="flex-1 p-4">
+            <nav className="space-y-2">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={isActive ? 'secondary' : 'ghost'}
+                      className={cn(
+                        'w-full justify-start h-auto p-3 text-left',
+                        isActive && 'bg-secondary'
+                      )}
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            {item.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {item.description}
+                          </p>
+                        </div>
+                        {isActive && (
+                          <ChevronRight className="h-4 w-4 shrink-0" />
+                        )}
+                      </div>
+                    </Button>
+                  </Link>
+                )
+              })}
+            </nav>
+          </ScrollArea>
+
+          {/* AI Status */}
+          <div className="p-4 border-t">
+            <AIStatusIndicator />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Content */}
+        <div className="flex-1 overflow-auto">
+          {children}
+        </div>
+
+        {/* Chat Assistant */}
+        {showAssistant && (
+          <div className="border-t bg-background">
+            <ChatAssistant onClose={() => setShowAssistant(false)} />
+          </div>
+        )}
+      </div>
+
+      {/* Floating Chat Button */}
+      <FloatingChatButton />
+    </div>
+  )
+}
+
+// Componente de status da IA
+function AIStatusIndicator() {
+  const { data: aiStatus } = api.financial.ai.getStatus.useQuery()
+
+  if (!aiStatus?.available) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="w-2 h-2 rounded-full bg-red-500" />
+        IA Indisponível
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-2 text-sm text-green-600">
+      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+      IA Ativa ({aiStatus.providers.default})
+    </div>
+  )
+}
+
+// Importar o componente real do chat
+import dynamic from 'next/dynamic'
+
+const ChatAssistant = dynamic(() => import('@/components/financial/ChatAssistant'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-64 p-4 flex items-center justify-center">
+      <div className="flex items-center gap-2">
+        <MessageSquare className="h-5 w-5 animate-pulse" />
+        <span>Carregando chat...</span>
+      </div>
+    </div>
+  )
+})

@@ -57,3 +57,7 @@ dev-dist
 .dev.vars*
 
 .open-next
+
+# Development optimizations
+.turbo/
+.next/cache/

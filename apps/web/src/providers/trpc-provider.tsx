@@ -51,7 +51,7 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 		api.createClient({
 			links: [
 				httpBatchLink({
-					url: `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3005"}/trpc`,
+					url: `${process.env.NEXT_PUBLIC_SERVER_URL}/trpc`,
 					headers() {
 						// Buscar token do Zustand store
 						if (typeof window === "undefined") {
