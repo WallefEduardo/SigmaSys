@@ -131,13 +131,10 @@ export default function FlowCanvas({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute"
+                      className="relative" // Changed from absolute - let BlockRenderer handle positioning
                       style={{
-                        left: block.position.x,
-                        top: block.position.y,
                         touchAction: 'none',
-                        width: block.dimensions?.width || 200,
-                        height: block.dimensions?.height || 100,
+                        // Remove left/top positioning - let useBlockDrag handle it
                       }}
                     >
                       <BlockRenderer 

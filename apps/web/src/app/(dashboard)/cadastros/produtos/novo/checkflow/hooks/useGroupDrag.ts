@@ -48,7 +48,6 @@ export const useGroupDrag = (group: Group) => {
 
       if (first) {
         // Start drag: select group and focus element (like Typebot)
-        console.log('🚀 Group drag start:', group.id);
         setIsDragging(true);
         selectGroup(group.id);
         
@@ -75,7 +74,6 @@ export const useGroupDrag = (group: Group) => {
 
       if (last) {
         // End drag: update store coordinates (like Typebot's updateGroupsCoordinates)
-        console.log('✅ Group drag end:', group.id, newCoordinates);
         setIsDragging(false);
         
         const finalPosition: Position = {

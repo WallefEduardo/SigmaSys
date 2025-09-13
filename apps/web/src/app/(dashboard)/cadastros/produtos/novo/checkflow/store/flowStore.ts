@@ -75,7 +75,6 @@ export const useFlowStore = create<FlowStore>()(
       },
 
       moveGroup: (id, position) => {
-        console.log('📍 Store moveGroup called:', { id, position });
         set((state) => ({
           groups: state.groups.map((group) =>
             group.id === id ? { ...group, position } : group

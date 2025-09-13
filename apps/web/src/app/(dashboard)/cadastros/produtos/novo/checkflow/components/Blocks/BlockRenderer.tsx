@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDraggableBlock } from '../../hooks/useDragAndDrop';
+import { useBlockDrag } from '../../hooks/useBlockDrag';
 import { useFlowStore } from '../../store/flowStore';
 import StartBlock from './blocks/StartBlock';
 import QuestionBlock from './blocks/QuestionBlock';
@@ -18,7 +19,26 @@ interface BlockRendererProps {
 
 export default function BlockRenderer({ block, readOnly = false }: BlockRendererProps) {
   const { selectedBlocks, selectBlock } = useFlowStore();
-  const { setNodeRef, attributes, listeners, style, isDragging } = useDraggableBlock(block.id, block);
+  
+  // Use smooth @use-gesture drag for canvas blocks (like start), old system for group blocks
+  const isCanvasBlock = block.groupId === 'canvas';
+  
+  // Smooth drag system for canvas blocks
+  const smoothDrag = useBlockDrag(block);
+  
+  // Old @dnd-kit system for group blocks (to not break existing functionality)
+  const dndKitDrag = useDraggableBlock(block.id, block);
+  
+  // Choose which system to use
+  const { setNodeRef, attributes, listeners, style, isDragging } = isCanvasBlock 
+    ? {
+        setNodeRef: smoothDrag.blockRef,
+        attributes: {},
+        listeners: smoothDrag.bind(),
+        style: smoothDrag.style,
+        isDragging: smoothDrag.isDragging
+      }
+    : dndKitDrag;
   
   const isSelected = selectedBlocks.includes(block.id);
 
@@ -56,20 +76,23 @@ export default function BlockRenderer({ block, readOnly = false }: BlockRenderer
 
   return (
     <div
-      ref={setNodeRef}
+      ref={isCanvasBlock ? smoothDrag.blockRef : setNodeRef}
       className={`
-        relative inline-block cursor-pointer transition-all duration-200
+        relative inline-block cursor-pointer
+        ${isCanvasBlock ? '' : 'transition-all duration-200'} 
         ${isDragging ? 'opacity-50' : ''}
-        ${readOnly ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'}
+        ${readOnly ? 'cursor-default' : (isCanvasBlock ? '' : 'cursor-grab active:cursor-grabbing')}
       `}
       style={style}
       onClick={handleClick}
-      {...(readOnly ? {} : { ...attributes, ...listeners })}
+      {...(readOnly || isCanvasBlock ? {} : { ...attributes, ...listeners })}
+      {...(isCanvasBlock && !readOnly ? listeners : {})}
     >
       {/* Block Content with Selection Indicator */}
       <div 
         className={`
-          relative transition-all duration-200
+          relative 
+          ${isCanvasBlock ? '' : 'transition-all duration-200'}
           ${isSelected ? 'ring-2 ring-blue-400 ring-offset-1 rounded-lg' : ''}
         `}
       >
